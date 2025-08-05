@@ -227,11 +227,10 @@
             // Scroll Reveal Animation
             const scrollElements = document.querySelectorAll('.scroll-reveal');
 
-            const elementInView = (el, dividend = 1) => {
+            const elementInView = (el) => {
                 const elementTop = el.getBoundingClientRect().top;
-                return (
-                    elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
-                );
+                // Check if the element is within the viewport
+                return elementTop <= (window.innerHeight || document.documentElement.clientHeight);
             };
 
             const displayScrollElement = (element) => {
@@ -240,19 +239,19 @@
 
             const handleScrollAnimation = () => {
                 scrollElements.forEach((el) => {
-                    if (elementInView(el, 1.25)) {
+                    // Check if the element is in view and not yet visible
+                    if (elementInView(el) && !el.classList.contains('visible')) {
                         displayScrollElement(el);
                     }
                 });
             };
 
-            window.addEventListener('scroll', () => {
-                handleScrollAnimation();
-            });
-
-            // Initial check on page load
+            // Initial check on page load to reveal visible elements
             handleScrollAnimation();
+            
+            // Add scroll event listener to handle elements that come into view later
+            window.addEventListener('scroll', handleScrollAnimation);
         });
     </script>
 </body>
-    </html>
+</html>
