@@ -5,88 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nafsin Ferdous - Cybersecurity Researcher</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
     <style>
         :root {
-            --primary: #0D0D0D;
-            --secondary: #1A535C;
-            --light: #F7FFF7;
-            --dark: #040404;
-            --accent: #FF6B6B;
+            --primary-bg: #111;
+            --secondary-bg: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent-color: #00aaff;
+            --border-color: #333;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: var(--light);
+            color: var(--text-primary);
             margin: 0;
             padding: 0;
-            background-color: var(--primary);
+            background-color: var(--primary-bg);
+            overflow-x: hidden;
         }
-        
+
         .container {
-            max-width: 1100px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         header {
-            background: var(--dark);
-            color: var(--light);
-            padding: 2rem 0;
+            background: var(--primary-bg);
+            padding: 4rem 0;
             text-align: center;
-            position: relative;
+            border-bottom: 1px solid var(--border-color);
         }
-        
+
         .profile-img {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid var(--secondary);
-            margin-bottom: 1rem;
+            border: 5px solid var(--accent-color);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
         }
-        
+
+        .profile-img:hover {
+            transform: scale(1.05);
+        }
+
         h1 {
             margin: 0.5rem 0;
-            font-size: 2.5rem;
-            color: var(--light);
+            font-size: 2.8rem;
+            color: var(--text-primary);
         }
 
         header p {
-            color: #ccc;
-        }
-        
-        h2 {
-            color: var(--accent);
-            border-bottom: 2px solid var(--secondary);
-            padding-bottom: 0.5rem;
-            margin-top: 2rem;
-        }
-        
-        section {
-            background: #1a1a1a;
-            padding: 2rem;
-            margin: 2rem 0;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            min-height: 1.5em; /* Reserve space for typed text */
         }
 
-        section p {
-            color: #ccc;
+        h2 {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+            font-size: 2rem;
         }
-        
+
+        section {
+            background: var(--secondary-bg);
+            padding: 2.5rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+        }
+
         .social-links {
             display: flex;
             justify-content: center;
             gap: 1.5rem;
-            margin: 1.5rem 0;
+            margin: 2rem 0 0;
         }
-        
+
         .social-links a {
-            color: white;
-            background: var(--secondary);
-            width: 40px;
-            height: 40px;
+            color: var(--text-primary);
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -94,52 +108,63 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
-        
+
         .social-links a:hover {
-            background: var(--accent);
-            transform: translateY(-3px);
+            background: var(--accent-color);
+            color: #fff;
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
         }
-        
+
         .education-item {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 3px solid var(--accent-color);
+            padding-left: 1.5rem;
         }
-        
+
+        .education-item:last-child {
+            margin-bottom: 0;
+        }
+
         .education-item h3 {
-            margin-bottom: 0.3rem;
-            color: var(--secondary);
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+            font-size: 1.5rem;
         }
-        
+
         .education-item p {
             margin: 0.3rem 0;
-            color: #aaa;
+            color: var(--text-secondary);
         }
-        
+
         footer {
-            background: var(--dark);
-            color: white;
+            background: var(--primary-bg);
+            color: var(--text-secondary);
             text-align: center;
             padding: 2rem 0;
             margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
         }
-        
-        .contact-info {
-            display: flex;
-            align-items: center;
-            margin: 1rem 0;
+
+        /* Scroll Animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.6s ease-out;
         }
-        
-        .contact-info i {
-            margin-right: 1rem;
-            color: var(--secondary);
+
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
+
         @media (max-width: 768px) {
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
-            
-            .social-links {
-                flex-wrap: wrap;
+
+            section {
+                padding: 2rem;
             }
         }
     </style>
@@ -147,9 +172,9 @@
 <body>
     <header>
         <div class="container">
-            <img src="https://i.imgur.com/gY8n2lk.jpg" alt="Nafsin Ferdous Profile Picture" class="profile-img">
+            <img src="https://lh3.googleusercontent.com/a-/ALV-UjWUEVkB_QQBbon1vCkcG_F7oqxnZNNSogK8AUKHJH6lAvqZplfFxg" alt="Nafsin Ferdous Profile Picture" class="profile-img">
             <h1>Nafsin Ferdous</h1>
-            <p>Cybersecurity Researcher | OSINT Investigator</p>
+            <p><span id="typed-output"></span></p>
             
             <div class="social-links">
                 <a href="https://www.instagram.com/n.ferdous_" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -160,23 +185,23 @@
     </header>
     
     <main class="container">
-        <section id="about">
+        <section id="about" class="scroll-reveal">
             <h2>About Me</h2>
-            <p>I am Nafsin Ferdous, a cybersecurity researcher with a passion for OSINT (Open Source Intelligence) and digital investigations. My work focuses on uncovering digital footprints and analyzing online data to enhance security awareness and protect against potential threats.</p>
-            <p>With a strong technical background and investigative mindset, I enjoy tackling complex cybersecurity challenges and sharing my knowledge through case studies and research.</p>
+            <p>I am a cybersecurity researcher with a passion for OSINT (Open Source Intelligence) and digital investigations. My work focuses on uncovering digital footprints and analyzing online data to enhance security awareness and protect against potential threats.</p>
+            <p>With a strong technical background and an investigative mindset, I enjoy tackling complex cybersecurity challenges and sharing my knowledge through case studies and research.</p>
         </section>
         
-        <section id="education">
+        <section id="education" class="scroll-reveal">
             <h2>Education</h2>
             <div class="education-item">
                 <h3>Bangladesh Army University of Science and Technology (BAUST)</h3>
-                <p>Bachelor of Electrical and Electronic Engineering (EEE)</p>
-                <p>Currently pursuing</p>
+                <p><strong>Degree:</strong> Bachelor of Electrical and Electronic Engineering (EEE)</p>
+                <p><em>Currently pursuing</em></p>
             </div>
             <div class="education-item">
                 <h3>Cantonment Public School & College, Rangpur (CPSCR)</h3>
-                <p>Higher Secondary Certificate (HSC) - 2022</p>
-                <p>Secondary School Certificate (SSC) - 2020</p>
+                <p><strong>Higher Secondary Certificate (HSC)</strong> - 2022</p>
+                <p><strong>Secondary School Certificate (SSC)</strong> - 2020</p>
                 <p>Batch 40</p>
             </div>
         </section>
@@ -187,5 +212,47 @@
             <p>&copy; 2025 Nafsin Ferdous. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Typed.js animation
+            var typed = new Typed('#typed-output', {
+                strings: ["Cybersecurity Researcher", "OSINT Investigator", "Digital Explorer"],
+                typeSpeed: 50,
+                backSpeed: 25,
+                backDelay: 1500,
+                loop: true
+            });
+
+            // Scroll Reveal Animation
+            const scrollElements = document.querySelectorAll('.scroll-reveal');
+
+            const elementInView = (el, dividend = 1) => {
+                const elementTop = el.getBoundingClientRect().top;
+                return (
+                    elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
+                );
+            };
+
+            const displayScrollElement = (element) => {
+                element.classList.add('visible');
+            };
+
+            const handleScrollAnimation = () => {
+                scrollElements.forEach((el) => {
+                    if (elementInView(el, 1.25)) {
+                        displayScrollElement(el);
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', () => {
+                handleScrollAnimation();
+            });
+
+            // Initial check on page load
+            handleScrollAnimation();
+        });
+    </script>
 </body>
-</html>
+    </html>
