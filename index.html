@@ -7,19 +7,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --light: #ecf0f1;
-            --dark: #1a252f;
+            --primary: #0D0D0D;
+            --secondary: #1A535C;
+            --light: #F7FFF7;
+            --dark: #040404;
+            --accent: #FF6B6B;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: var(--light);
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            background-color: var(--primary);
         }
         
         .container {
@@ -29,8 +30,8 @@
         }
         
         header {
-            background: var(--primary);
-            color: white;
+            background: var(--dark);
+            color: var(--light);
             padding: 2rem 0;
             text-align: center;
             position: relative;
@@ -48,21 +49,30 @@
         h1 {
             margin: 0.5rem 0;
             font-size: 2.5rem;
+            color: var(--light);
+        }
+
+        header p {
+            color: #ccc;
         }
         
         h2 {
-            color: var(--primary);
+            color: var(--accent);
             border-bottom: 2px solid var(--secondary);
             padding-bottom: 0.5rem;
             margin-top: 2rem;
         }
         
-        section {o
-            background: white;
+        section {
+            background: #1a1a1a;
             padding: 2rem;
             margin: 2rem 0;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        section p {
+            color: #ccc;
         }
         
         .social-links {
@@ -86,7 +96,7 @@
         }
         
         .social-links a:hover {
-            background: var(--primary);
+            background: var(--accent);
             transform: translateY(-3px);
         }
         
@@ -101,7 +111,7 @@
         
         .education-item p {
             margin: 0.3rem 0;
-            color: #666;
+            color: #aaa;
         }
         
         footer {
@@ -137,7 +147,8 @@
 <body>
     <header>
         <div class="container">
-            <img src="https://instagram.fjed5-2.fna.fbcdn.net/v/t51.2885-19/526254401_18064809083514584_6460526934137003077_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fjed5-2.fna.fbcdn.net&_nc_cat=108&_nc_oc=Q6cZ2QHUpRHBNPcFnsgNy-lTOCC1BUKwpFtRe1JWm9S9fKGrVM8b2Ub9WNGD2zzLy257lPo&_nc_ohc=-F48rdaS7pAQ7kNvwEoFu5G&_nc_gid=Zj0thKuPYnocSAr3SlkWIQ&edm=AEF8tYYBAAAA&ccb=7-5&oh=00_AfVpfpefqcLdoonQQs6CDyGYJoqSyAmgp2Y_05ychNIXCw&oe=68983445&_nc_sid=1e20d2"> <h1>Nafsin Ferdous</h1>
+            <img src="https://i.imgur.com/gY8n2lk.jpg" alt="Nafsin Ferdous Profile Picture" class="profile-img">
+            <h1>Nafsin Ferdous</h1>
             <p>Cybersecurity Researcher | OSINT Investigator</p>
             
             <div class="social-links">
@@ -165,8 +176,7 @@
             <div class="education-item">
                 <h3>Cantonment Public School & College, Rangpur (CPSCR)</h3>
                 <p>Higher Secondary Certificate (HSC) - 2022</p>
-            </hr>
-             <p>Secondary School Certificate (SSC) - 2020</p>
+                <p>Secondary School Certificate (SSC) - 2020</p>
                 <p>Batch 40</p>
             </div>
         </section>
@@ -174,7 +184,7 @@
     
     <footer>
         <div class="container">
-            <p>&copy; 2023 Nafsin Ferdous. All rights reserved.</p>
+            <p>&copy; 2025 Nafsin Ferdous. All rights reserved.</p>
         </div>
     </footer>
 </body>
