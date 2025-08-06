@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Nafsin Ferdous">
-    <meta name="keywords" content="Nafsin Ferdous, hacker-ferdous, Hacker Ferdous">
+    <meta name="keywords" content="Nafsin Ferdous, hacker-ferdous, Hacker Ferdous, নাফসিন ফেরদৌস">
     <title>Nafsin Ferdous - Cybersecurity Enthusiast</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
@@ -89,6 +89,38 @@
             transform: translateY(-5px);
             box-shadow: 0 12px 30px rgba(0,0,0,0.7);
         }
+        
+        .info-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-row strong {
+            color: var(--accent-color);
+            width: 95px;
+            flex-shrink: 0;
+        }
+        
+        /* Style for the (he/him) text */
+        .pronoun {
+            font-size: 0.9em;  /* Smaller font size */
+            opacity: 0.7;      /* Reduced opacity */
+            margin-left: 6px;  /* A little space from "Male" */
+        }
+
+        .separator {
+            border: 0;
+            height: 1px;
+            background: var(--border-color);
+            margin: 2rem 0;
+        }
 
         .social-links {
             display: flex;
@@ -148,7 +180,6 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* Scroll Animation */
         .scroll-reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -189,8 +220,25 @@
     <main class="container">
         <section id="about" class="scroll-reveal">
             <h2>About Me</h2>
-            <p>Born on September 24, 2003, I am a cybersecurity enthusiast currently residing in Rangpur, Bangladesh. My deep passion lies in OSINT (Open Source Intelligence) and digital investigations. While I'm still on my learning journey and consider myself at an intermediate level, I dedicate my free time to exploring digital footprints and analyzing online data.</p>
-            <p>Beyond hacking and programming, I have a strong interest in chess. In 2024, I was the champion in the chess-men competition at the indoor games organized by BGMEA University of Fashion & Technology. I am not only a player but also enjoy teaching the game to others.</p>
+            <div class="basic-info">
+                <div class="info-row">
+                    <strong>Born:</strong>
+                    <div>September 24,<br>2003</div>
+                </div>
+                <div class="info-row">
+                    <strong>Gender:</strong>
+                    <div>Male<span class="pronoun">(he/him)</span></div>
+                </div>
+                <div class="info-row">
+                    <strong>Hobbies:</strong>
+                    <div>Chess, OSINT,<br>Digital Investigations</div>
+                </div>
+            </div>
+
+            <hr class="separator">
+
+            <p>Currently residing in Rangpur, Bangladesh, I am a passionate cybersecurity enthusiast. My deep interest is in the fields of OSINT (Open Source Intelligence) and digital investigations. While I consider myself to be on an intermediate learning path, I dedicate my free time to exploring digital footprints and analyzing online data.</p>
+            <p>Beyond the digital world, I have a strong interest in chess. I was honored to be the champion in the 2024 chess-men competition at the indoor games organized by BGMEA University of Fashion & Technology. I enjoy not only playing the game but also teaching its strategies to others.</p>
         </section>
         
         <section id="education" class="scroll-reveal">
@@ -231,7 +279,6 @@
 
             const elementInView = (el) => {
                 const elementTop = el.getBoundingClientRect().top;
-                // Check if the element is within the viewport
                 return elementTop <= (window.innerHeight || document.documentElement.clientHeight);
             };
 
@@ -241,17 +288,13 @@
 
             const handleScrollAnimation = () => {
                 scrollElements.forEach((el) => {
-                    // Check if the element is in view and not yet visible
                     if (elementInView(el) && !el.classList.contains('visible')) {
                         displayScrollElement(el);
                     }
                 });
             };
 
-            // Initial check on page load to reveal visible elements
             handleScrollAnimation();
-            
-            // Add scroll event listener to handle elements that come into view later
             window.addEventListener('scroll', handleScrollAnimation);
         });
     </script>
