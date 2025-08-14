@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>brainX — Advanced Chat Interface</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* =========================================================
+           LOADER STYLES from load.html
+           ========================================================= */
+        :root {
+            --bg-0: #050914;
+            --bg-1: #081123;
+            --bg-2: #0b1730;
+            --ink-0: #e8f0ff;
+            --ink-1: #b7c6e8;
+            --ink-2: #86a0d6;
+            --brand-1: #3b82f6;
+            --brand-2: #22d3ee;
+            --error-1: #ef4444;
+            --shadow-soft: 0 8px 24px rgba(8, 20, 48, .6);
+            --ring: 0 0 0 3px rgba(59, 130, 246, .4);
+            --radius-lg: 18px;
+            --radius-md: 14px;
+            color-scheme: dark;
+            --brand-1-transparent: rgba(59, 130, 246, 0.2);
+            --glow-color: #60a5fa;
+        }
+
+        #loader-wrapper {
+            background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+
+        .logo-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .loader-logo {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--brand-2);
+            position: relative;
+            z-index: 20;
+            transition: transform 0.3s ease;
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .loader-logo-icon {
+            color: var(--brand-1);
+            position: relative;
+            transform-origin: center;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .loader-logo::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: var(--brand-2);
+            border-radius: 50%;
+            animation: circle-edge 4s linear infinite;
+        }
+
+        @keyframes circle-edge {
+            0% { top: -4px; left: -4px; }
+            25% { top: -4px; left: calc(100% + 4px); }
+            50% { top: calc(100% + 4px); left: calc(100% + 4px); }
+            75% { top: calc(100% + 4px); left: -4px; }
+            100% { top: -4px; left: -4px; }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: var(--brand-1);
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
+            20% { opacity: 0.8; }
+            50% { transform: translateY(-80px) translateX(40px) scale(1.2); }
+            100% { transform: translateY(-180px) translateX(80px) scale(0.2); opacity: 0; }
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+            filter: blur(30px);
+            z-index: 0;
+            animation: orbPulse 8s infinite alternate;
+        }
+
+        @keyframes orbPulse {
+            0% { transform: scale(0.8); opacity: 0.4; }
+            100% { transform: scale(1.2); opacity: 0.7; }
+        }
+        
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        
+        /* =========================================================
+           THEME — Dark Blue & Dynamic (from brainX.html)
+           ========================================================= */
+        @keyframes background-pan {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slide-in-fade {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes bounce{
+            0%, 80%, 100% { transform: translateY(0); opacity: .5; }
+            40% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        * { box-sizing: border-box }
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, .1) 0%, var(--bg-0) 25%, var(--bg-0) 75%, rgba(34, 211, 238, .08) 100%);
+            background-size: 200% 200%;
+            animation: background-pan 25s ease infinite;
+            color: var(--ink-0);
+            font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, Ubuntu, "Helvetica Neue", Arial;
+            letter-spacing: .2px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #chat-app-container {
+            display: none; /* Initially hidden */
+            height: 100%;
+            flex-direction: column;
+            animation: fade-in .5s ease-out;
+        }
+
+        /* =========================================================
+           HEADER
+           ========================================================= */
+        .header {
+            background-color: rgba(8, 17, 35, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #11244e;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--brand-2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon { color: var(--brand-1); }
+
+        /* =========================================================
+           LAYOUT
+           ========================================================= */
+        .wrap{
+            height: 100%;
+            display: grid;
+            grid-template-rows: 1fr auto;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        .chat{
+            position: relative;
+            overflow: auto;
+            padding: 18px 16px 8px 16px;
+        }
+
+        .timeline{
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .day-tag{
+            align-self: center;
+            font-size: 12px;
+            color: var(--ink-2);
+            background: linear-gradient(180deg, #0f1d3e, #0a152e);
+            border: 1px solid #142a58;
+            padding: 6px 12px;
+            border-radius: 999px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .msg{
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            max-width: min(85ch, 94%);
+            animation: slide-in-fade .4s ease-out forwards;
+        }
+
+        .msg.you{ align-self: flex-end; flex-direction: row-reverse; }
+        
+        .bubble{
+            position: relative;
+            background: linear-gradient(160deg, #0f1e3e, #0b1730);
+            border: 1px solid #183164;
+            border-radius: var(--radius-lg);
+            padding: 12px 16px;
+            box-shadow: var(--shadow-soft);
+            max-width: 100%;
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        
+        .bubble h1, .bubble h2, .bubble h3 { margin: 12px 0 6px 0; padding-bottom: 4px; border-bottom: 1px solid #183164; }
+        .bubble h1 { font-size: 1.4em; }
+        .bubble h2 { font-size: 1.2em; }
+        .bubble h3 { font-size: 1.1em; }
+        .bubble ul, .bubble ol { padding-left: 20px; margin: 8px 0; }
+        .bubble li { margin-bottom: 4px; }
+        .bubble strong { font-weight: 700; }
+        .bubble em { font-style: italic; }
+
+        .msg.you .bubble{
+            background: linear-gradient(160deg, #2563eb, #1d4ed8);
+            border-color: #3b82f6;
+            white-space: pre-wrap;
+        }
+        
+        .msg.bot .bubble{ border-bottom-left-radius: 6px; }
+        .msg.you .bubble{ border-bottom-right-radius: 6px; }
+
+        .meta{
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--ink-2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .msg.you .meta{ justify-content: flex-end; }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            background: linear-gradient(180deg, #0c1a38, #0a1430);
+            border: 1px solid #183164;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            border-bottom-left-radius: 6px;
+        }
+        .typing-indicator span {
+            height: 8px; width: 8px; border-radius: 50%;
+            background-color: var(--ink-2);
+            margin: 0 3px;
+            animation: bounce 1.2s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(1){ animation-delay: 0s }
+        .typing-indicator span:nth-child(2){ animation-delay: .2s }
+        .typing-indicator span:nth-child(3){ animation-delay: .4s }
+
+        .dock{
+            position: relative;
+            padding: 10px;
+            background: rgba(8, 17, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #11244e;
+            box-shadow: 0 -10px 30px rgba(0,0,0,.35);
+        }
+        .composer{
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: end;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .btn.primary{
+            height: 44px; width: auto; padding: 0 24px;
+            border-radius: 12px;
+            border: 1px solid #2462df;
+            background: linear-gradient(180deg, #1f5ed7, #1847aa);
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.2s ease;
+        }
+        .btn.primary:hover{ background: linear-gradient(180deg, #3b82f6, #2563eb); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        .btn.primary:focus{ outline: none; box-shadow: var(--shadow-soft), var(--ring) }
+        .btn.primary:active{ transform: translateY(1px); }
+        .btn.primary:disabled { background: var(--bg-2); border-color: #173266; color: var(--ink-2); cursor: not-allowed; transform: translateY(0); box-shadow: var(--shadow-soft); }
+
+        .editor{
+            min-height: 44px; max-height: 180px; overflow: auto;
+            border-radius: 14px; padding: 10px 14px;
+            border: 1px solid #173266;
+            background: linear-gradient(180deg, #0a1530, #09122a);
+            color: var(--ink-0);
+            transition: all 0.2s ease;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .editor[contenteditable="true"]:empty:before{
+            content: attr(data-placeholder);
+            color: var(--ink-2);
+        }
+        .editor:focus {
+            outline: none;
+            border-color: var(--brand-1);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 0 0 3px rgba(59,130,246,.25);
+        }
+
+        .hint{
+            max-width: 1100px; margin: 8px auto 0 auto; color: var(--ink-2);
+            font-size: 12px; display: flex; justify-content: space-between; gap: 10px;
+            opacity: .85; padding: 0 4px;
+        }
+        .hint kbd{
+            background: #0a1530; border: 1px solid #15305f; border-bottom-color: #10244a;
+            border-radius: 6px; padding: 2px 6px; font-size: 11px;
+        }
+        
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fade-in 0.3s ease;
+        }
+        .modal-content {
+            background: linear-gradient(160deg, #0f1e3e, #0b1730);
+            border: 1px solid #183164;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 25px;
+            max-width: 500px;
+            width: 90%;
+            animation: slide-in-fade 0.4s ease-out;
+        }
+        .modal-header {
+            display: flex; align-items: center; gap: 12px;
+            color: var(--error-1);
+            font-size: 1.3rem; font-weight: 700;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #183164;
+        }
+        .modal-body {
+            padding: 18px 0; color: var(--ink-1);
+            font-size: 1rem; line-height: 1.6;
+        }
+        .modal-body small {
+            display: block; margin-top: 15px;
+            color: var(--ink-2); opacity: 0.8;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 13px;
+        }
+        .modal-footer { text-align: right; }
+        .btn.secondary {
+            height: 40px; padding: 0 20px;
+            border-radius: 10px;
+            border: 1px solid #173266;
+            background: linear-gradient(180deg, #0a1530, #09122a);
+            color: var(--ink-0);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn.secondary:hover { border-color: var(--ink-2); color: var(--ink-0); }
+        
+        ::selection{ background: #2563eb; color: white }
+        ::-webkit-scrollbar{ width: 10px; height: 10px }
+        ::-webkit-scrollbar-thumb{ background: #152a58; border-radius: 10px; border: 2px solid var(--bg-1); }
+        ::-webkit-scrollbar-track{ background: var(--bg-1); }
+
+        code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--brand-2); }
+        pre { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; border: 1px solid #183164; white-space: pre-wrap; word-break: break-all; }
+        pre code { color: inherit; }
+        a{ color: #8ab4f8 }
+    </style>
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div id="loader-wrapper">
+        <div class="stars" id="stars"></div>
+        <div class="logo-container">
+            <div class="glow-orb"></div>
+            <div class="particles" id="particles"></div>
+            <div class="loader-logo">
+                <i class="fas fa-brain loader-logo-icon"></i>
+                <span>brainX</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT APP (Initially Hidden) -->
+    <div id="chat-app-container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-brain logo-icon"></i>
+                <span>brainX</span>
+            </div>
+        </header>
+
+        <div class="wrap" id="app">
+            <main class="chat" id="chat" aria-live="polite">
+                <div class="timeline" id="timeline">
+                    <div class="day-tag" id="dayTag">Today</div>
+                </div>
+            </main>
+
+            <footer class="dock" id="dock">
+                <div class="composer">
+                    <div id="editor" class="editor" contenteditable="true" spellcheck="true"
+                         role="textbox"
+                         data-placeholder="Message brainX..."></div>
+                    <button class="btn primary" id="sendBtn" title="Send" disabled>Send</button>
+                </div>
+                <div class="hint">
+                    <div class="left">Creator: Nafsin Ferdous</div>
+                    <div class="right" id="pc-enter-hint">
+                        Press <kbd>Enter</kbd> to send, <kbd>Shift</kbd>+<kbd>Enter</kbd> for new line.
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <div class="modal-overlay" id="errorModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Connection Error</span>
+                </div>
+                <div class="modal-body" id="errorModalBody">
+                    <p>Sorry, I'm having trouble connecting to the BrainX service.</p>
+                    <small id="errorDetails"></small>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn secondary" id="closeErrorModalBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const particlesContainer = document.getElementById('particles');
+        const starsContainer = document.getElementById('stars');
+        const loader = document.getElementById('loader-wrapper');
+        const chatApp = document.getElementById('chat-app-container');
+
+        const starCount = 200;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const posX = Math.random() * 100, posY = Math.random() * 100;
+            const size = Math.random() * 2, duration = Math.random() * 5 + 3, delay = Math.random() * 5;
+            star.style.cssText = `left:${posX}%; top:${posY}%; width:${size}px; height:${size}px; animation-delay:${delay}s; --duration:${duration}s;`;
+            starsContainer.appendChild(star);
+        }
+        
+        const particleCount = 40;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const posX = Math.random() * 100, posY = Math.random() * 100;
+            const size = Math.random() * 4 + 1, delay = Math.random() * 5, duration = Math.random() * 3 + 2;
+            const colorVariation = Math.random() * 40 - 20;
+            particle.style.cssText = `left:${posX}%; top:${posY}%; width:${size}px; height:${size}px; animation-delay:${delay}s; animation-duration:${duration}s; background-color:hsl(${210 + colorVariation}, 90%, 65%);`;
+            particlesContainer.appendChild(particle);
+        }
+
+        const randomLoadTime = Math.random() * (7000 - 3000) + 3000;
+        
+        setTimeout(() => {
+            loader.style.display = 'none';
+            chatApp.style.display = 'flex';
+            initializeChatApp();
+        }, randomLoadTime);
+    });
+
+    function initializeChatApp() {
+        const CONFIG = {
+          appName: 'brainX',
+          GEMINI_API_KEY: 'AIzaSyDSZ-EHB-1sNrwgB4LlQX93McPHLNraB2I',
+          GEMINI_ENDPOINT: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+          systemPrompt: [
+            "You are brainX, a helpful AI assistant created by Nafsin Ferdous on August 14, 2025.",
+            "Format responses using Markdown for text (headings, lists, bold, italic), and code blocks (```).",
+            "For mathematical equations, use LaTeX format. Enclose inline math with single dollar signs (e.g., `$\\sqrt{x}$`) and display math with double dollar signs (e.g., `$$\\int_a^b f(x) dx$$`).",
+            "Always be helpful and friendly."
+          ].join(' '),
+          maxHistory: 10,
+        };
+
+        const $ = s => document.querySelector(s);
+        const chat = $('#chat');
+        const timeline = $('#timeline');
+        const editor = $('#editor');
+        const sendBtn = $('#sendBtn');
+        const errorModal = $('#errorModal');
+        const closeErrorModalBtn = $('#closeErrorModalBtn');
+        const isMobile = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+        const state = { messages: [], busy: false };
+        let lastMessageTimestamp = null;
+
+        const scrollToBottom = () => chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+        const escapeHTML = str => str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag] || tag));
+        const getEditorContent = () => editor.innerHTML.replace(/<div><br><\/div>/g, '\n').replace(/<br>/g, '\n').replace(/<div>/g, '\n').replace(/<\/div>/g, '').replace(/&nbsp;/g, ' ').trim();
+        const fmtTime = ts => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
+
+        function renderMarkdown(text) {
+          let html = text;
+          html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (m, lang, code) => `<pre><code>${escapeHTML(code)}</code></pre>`);
+          html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+          html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+          html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+          html = html.replace(/\*\*\*([^\*]+)\*\*\*/g, '<strong><em>$1</em></strong>').replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^\*]+)\*/g, '<em>$1</em>');
+          html = html.replace(/^\s*[\-\*] (.*$)/gim, '<ul><li>$1</li></ul>').replace(/<\/ul>\n?<ul>/g, '');
+          html = html.replace(/^\s*\d+\. (.*$)/gim, '<ol><li>$1</li></ol>').replace(/<\/ol>\n?<ol>/g, '');
+          html = html.replace(/`([^`]+)`/g, (m, code) => `<code>${escapeHTML(code)}</code>`);
+          html = html.replace(/\n/g, '<br>');
+          html = html.replace(/<br><ul>/g, '<ul>').replace(/<\/ul><br>/g, '</ul>');
+          html = html.replace(/<br><ol>/g, '<ol>').replace(/<\/ol><br>/g, '</ol>');
+          return html;
+        }
+
+        function createMessageNode({ you=false, content='', ts=Date.now() }){
+          const wrap = document.createElement('div');
+          wrap.className = 'msg' + (you ? ' you' : ' bot');
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
+          if (you) { bubble.innerHTML = content; } else { bubble.innerHTML = renderMarkdown(content); }
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.textContent = fmtTime(ts);
+          const body = document.createElement('div');
+          body.style.display = 'flex';
+          body.style.flexDirection = 'column';
+          if (you) { body.style.alignItems = 'flex-end'; }
+          body.appendChild(bubble);
+          body.appendChild(meta);
+          wrap.appendChild(body);
+          return wrap;
+        }
+
+        function mountMessage(opts) {
+            const currentTimestamp = opts.ts;
+        
+            if (lastMessageTimestamp === null || new Date(currentTimestamp).toDateString() !== new Date(lastMessageTimestamp).toDateString()) {
+                const dayTag = document.createElement('div');
+                dayTag.className = 'day-tag';
+                dayTag.textContent = new Date(currentTimestamp).toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+                timeline.appendChild(dayTag);
+            }
+        
+            const node = createMessageNode(opts);
+            timeline.appendChild(node);
+            scrollToBottom();
+            if (!opts.you && /\$|\\/.test(opts.content)) {
+                MathJax.typesetPromise([node]);
+            }
+        
+            lastMessageTimestamp = currentTimestamp;
+            return node;
+        }
+
+        let thinkingNode = null;
+        function showThinking(){
+          if(thinkingNode) return;
+          const wrap = document.createElement('div');
+          wrap.className = 'msg bot';
+          const indicator = document.createElement('div');
+          indicator.className = 'typing-indicator';
+          indicator.innerHTML = '<span></span><span></span><span></span>';
+          wrap.appendChild(indicator);
+          timeline.appendChild(wrap);
+          thinkingNode = wrap;
+          scrollToBottom();
+        }
+        function hideThinking(){ if(thinkingNode){ thinkingNode.remove(); thinkingNode = null; } }
+        
+        function showErrorModal(errorMessage) {
+            $('#errorDetails').textContent = `Error: ${errorMessage}`;
+            errorModal.style.display = 'flex';
+        }
+        function hideErrorModal() {
+            errorModal.style.display = 'none';
+        }
+
+        function startFreshChat() {
+            timeline.innerHTML = '';
+            state.messages = [];
+            lastMessageTimestamp = null;
+            const welcomeMsg = {
+                role: 'model',
+                text: "Hi! I'm **brainX**. How can I help you?",
+                time: Date.now()
+            };
+            mountMessage({
+                you: false,
+                content: welcomeMsg.text,
+                ts: welcomeMsg.time
+            });
+        }
+        
+        const clearEditor = () => editor.innerHTML='';
+        
+        async function onSend(){
+          if(state.busy) return;
+          if (!CONFIG.GEMINI_API_KEY || CONFIG.GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+            showErrorModal("API Key is not set. Please add your Google AI Studio API key to the script.");
+            return;
+          }
+          const content = getEditorContent();
+          if(!content) return;
+
+          const userMsg = { role:'user', parts: [{ text: content }], time: Date.now() };
+          state.messages.push(userMsg);
+          const userMessageNode = mountMessage({ you:true, content: content, ts: userMsg.time });
+          clearEditor();
+          editor.focus();
+          
+          getBotReply(userMessageNode);
+        }
+
+        async function getBotReply(userMessageNode) {
+            state.busy = true;
+            sendBtn.disabled = true;
+            showThinking();
+            try {
+                const reply = await askGemini(state.messages);
+                hideThinking();
+                const modelMsg = { role: 'model', parts: [{ text: reply }], time: Date.now() };
+                mountMessage({ you: false, content: reply, ts: modelMsg.time });
+                state.messages.push(modelMsg);
+            } catch (err) {
+                hideThinking();
+                console.error("API Fetch Error:", err);
+                let specificError = err.message;
+                try {
+                    const errorJson = JSON.parse(err.message.substring(err.message.indexOf('{')));
+                    specificError = errorJson.error.message || "An unknown error occurred.";
+                } catch (e) {}
+                if (specificError.includes("exceeded your current quota")) {
+                    specificError = "You exceeded your current quota. Please try again later.";
+                }
+                showErrorModal(specificError);
+                addResendOption(userMessageNode);
+            } finally {
+                state.busy = false;
+                sendBtn.disabled = editor.textContent.trim().length === 0;
+            }
+        }
+        
+        function addResendOption(userMessageNode) {
+            const meta = userMessageNode.querySelector('.meta');
+            if (!meta || meta.querySelector('.resend-link')) return;
+
+            const resendLink = document.createElement('a');
+            resendLink.href = '#';
+            resendLink.textContent = 'Resend';
+            resendLink.className = 'resend-link';
+            resendLink.style.cssText = 'color: var(--brand-1); text-decoration: underline; margin-left: 8px; cursor: pointer;';
+
+            resendLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                resendLink.remove();
+                getBotReply(userMessageNode);
+            });
+            meta.appendChild(resendLink);
+        }
+
+        async function askGemini(history){
+            const requestBody = {
+              contents: history.map(msg => ({ role: msg.role, parts: msg.parts })),
+              generationConfig: { temperature: 0.7, maxOutputTokens: 2048 },
+              systemInstruction: { parts: { text: CONFIG.systemPrompt } }
+            };
+            const res = await fetch(`${CONFIG.GEMINI_ENDPOINT}?key=${CONFIG.GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+            if(!res.ok) {
+              throw new Error(`API Error (${res.status}): ${await res.text()}`);
+            }
+            const data = await res.json();
+            const modelResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!modelResponse) {
+                console.warn("Model returned an empty response:", data);
+                return "I'm not sure how to respond to that. Please try rephrasing.";
+            }
+            return modelResponse;
+        }
+
+        function init() {
+            if (isMobile) { $('#pc-enter-hint').style.display = 'none'; }
+            sendBtn.addEventListener('click', onSend);
+            editor.addEventListener('keydown', e => {
+              if (e.key === 'Enter' && !e.shiftKey && !isMobile) { e.preventDefault(); onSend(); }
+            });
+            editor.addEventListener('paste', (e) => {
+                e.preventDefault();
+                document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+            });
+            editor.addEventListener('input', () => { sendBtn.disabled = editor.textContent.trim().length === 0; });
+            closeErrorModalBtn.addEventListener('click', hideErrorModal);
+            errorModal.addEventListener('click', (e) => { if(e.target === errorModal) { hideErrorModal(); } });
+            startFreshChat();
+            editor.focus();
+        }
+        
+        init();
+    }
+</script>
+
+</body>
+</html>
