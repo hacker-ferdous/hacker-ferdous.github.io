@@ -296,18 +296,17 @@
 
         .msg.you{ align-self: flex-end; flex-direction: row-reverse; }
         
-        .bubble{
+        .bubble {
             position: relative;
-            background: linear-gradient(160deg, #0f1e3e, #0b1730);
-            border: 1px solid #183164;
-            border-radius: var(--radius-lg);
+    	    background: linear-gradient(160deg, #0f1e3e, #0b1730);
+    	    border: 1px solid #183164;
+    	    border-radius: var(--radius-lg);
             padding: 12px 16px;
-            box-shadow: var(--shadow-soft);
-            max-width: 100%;
-            overflow: hidden;
+    	    box-shadow: var(--shadow-soft);
+    	    max-width: 100%;
             word-wrap: break-word;
-        }
-        
+	}
+
         .bubble h1, .bubble h2, .bubble h3 { margin: 12px 0 6px 0; padding-bottom: 4px; border-bottom: 1px solid #183164; }
         .bubble h1 { font-size: 1.4em; }
         .bubble h2 { font-size: 1.2em; }
@@ -474,7 +473,17 @@
         ::-webkit-scrollbar-track{ background: var(--bg-1); }
 
         code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; color: var(--brand-2); }
-        pre { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; border: 1px solid #183164; white-space: pre-wrap; word-break: break-all; }
+        
+        pre {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #183164;
+            white-space: pre-wrap;
+            word-break: break-word; 
+            overflow-x: auto;
+    	}
+    	
         pre code { color: inherit; }
         a{ color: #8ab4f8 }
     </style>
