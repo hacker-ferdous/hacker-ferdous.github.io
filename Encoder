@@ -1,1 +1,549 @@
-encoder
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Text Encoder - Advanced Text Hiding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover-color: #0069d9;
+            --background-color: #f8f9fa;
+            --container-bg-color: #ffffff;
+            --text-color: #212529;
+            --muted-text-color: #6c757d;
+            --border-color: #dee2e6;
+            --input-bg-color: #f1f3f5;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--container-bg-color);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 600px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .header p {
+            margin-top: 0.5rem;
+            color: var(--muted-text-color);
+            font-size: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--input-bg-color);
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 2rem;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--muted-text-color);
+            position: relative;
+            transition: color 0.3s;
+            border-radius: 6px;
+        }
+
+        .tab-button.active {
+            background-color: var(--container-bg-color);
+            color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group-inline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-clear-btn {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--muted-text-color);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-in-out;
+            padding: 5px;
+        }
+        
+        textarea ~ .input-clear-btn {
+             top: 18px;
+             transform: translateY(0);
+        }
+
+        .input-clear-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .input-clear-btn:hover {
+            color: var(--text-color);
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            background-color: var(--input-bg-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            padding-right: 3rem;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .char-counter {
+            font-size: 0.85rem;
+            color: var(--muted-text-color);
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .action-button:hover {
+            background-color: var(--primary-hover-color);
+            transform: translateY(-2px);
+        }
+        
+        .clear-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: transparent;
+            color: var(--muted-text-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .clear-button:hover {
+            border-color: var(--text-color);
+            color: var(--text-color);
+        }
+
+        .result {
+            margin-top: 2rem;
+            background-color: #e9ecef;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .result h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .output-container {
+            background-color: var(--container-bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .result-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 1.1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .error {
+            color: var(--error-color);
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: center;
+            min-height: 1.2em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--muted-text-color);
+        }
+        
+        .footer a {
+            color: var(--text-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <h1>Secret Text Encoder</h1>
+        <p>Hide your secret text inside an emoji.</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab(event, 'encode')">Encode</button>
+        <button class="tab-button" onclick="openTab(event, 'decode')">Decode</button>
+    </div>
+
+    <!-- Encode Tab -->
+    <section id="encode" class="content active">
+        <div class="form-group">
+            <label for="payload-text">Secret Message:</label>
+            <div class="input-wrapper">
+                <textarea id="payload-text" placeholder="Enter your secret message here..."></textarea>
+                <button class="input-clear-btn" onclick="clearInput('payload-text')" title="Clear text">&times;</button>
+            </div>
+            <div id="char-counter" class="char-counter">0 characters</div>
+        </div>
+        <div class="form-group">
+            <label for="carrier-text">Carrier Text / Emojis:</label>
+            <div class="input-wrapper">
+                <input type="text" id="carrier-text" placeholder="🙂✨🎉 Hello World!" oninput="handleEncode()">
+                <button class="input-clear-btn" onclick="clearInput('carrier-text')" title="Clear text">&times;</button>
+            </div>
+        </div>
+        
+        <div id="encode-result" class="result" style="display:none;">
+            <h3>Encoded Text:</h3>
+            <div class="output-container">
+                <p id="encoded-output" class="result-text"></p>
+            </div>
+            <button id="copy-button" class="action-button" onclick="copyEncodedText()" style="margin-top: 1rem;">Copy</button>
+        </div>
+        <p id="encode-error" class="error"></p>
+    </section>
+
+    <!-- Decode Tab -->
+    <section id="decode" class="content">
+        <div class="form-group">
+             <div class="form-group-inline">
+                <label for="smuggled-text">Emoji with Hidden Text:</label>
+                <button class="clear-button" onclick="pasteToDecodeInput()">Paste</button>
+            </div>
+            <div class="input-wrapper">
+                <textarea id="smuggled-text" placeholder="Paste the encoded text here..."></textarea>
+                <button class="input-clear-btn" onclick="clearInput('smuggled-text')" title="Clear text">&times;</button>
+            </div>
+        </div>
+        <button class="action-button" onclick="handleDecode()">Decode Text</button>
+        
+        <div id="decode-result" class="result" style="display:none;">
+            <h3>Revealed Text:</h3>
+            <div class="output-container">
+                <p id="decoded-output" class="result-text"></p>
+            </div>
+            <button id="copy-decoded-button" class="action-button" onclick="copyDecodedText()" style="margin-top: 1rem;">Copy</button>
+        </div>
+        <p id="decode-error" class="error"></p>
+    </section>
+
+    <footer class="footer">
+        <p><a href="https://hacker-ferdous.github.io" target="_blank" rel="noopener noreferrer">Hacker Ferdous</a> @ 2025</p>
+    </footer>
+</div>
+
+<script>
+    const payloadTextInput = document.getElementById('payload-text');
+    const carrierTextInput = document.getElementById('carrier-text');
+    const charCounter = document.getElementById('char-counter');
+    const encodeResultDiv = document.getElementById('encode-result');
+    const encodedOutputP = document.getElementById('encoded-output');
+    const encodeErrorP = document.getElementById('encode-error');
+
+    const smuggledTextInput = document.getElementById('smuggled-text');
+    const decodeResultDiv = document.getElementById('decode-result');
+    const decodedOutputP = document.getElementById('decoded-output');
+    const decodeErrorP = document.getElementById('decode-error');
+
+    const allInputs = [payloadTextInput, carrierTextInput, smuggledTextInput];
+
+    const ZERO_WIDTH_PAYLOAD_START = 0xE0100;
+    const ZERO_WIDTH_PAYLOAD_END = 0xE01EF;
+
+    payloadTextInput.addEventListener('input', handleEncode);
+    smuggledTextInput.addEventListener('input', handleDecode);
+    carrierTextInput.addEventListener('input', handleEncode);
+
+    allInputs.forEach(input => {
+        input.addEventListener('input', () => toggleClearButtonVisibility(input));
+    });
+
+    function openTab(evt, tabName) {
+        document.querySelectorAll('.content').forEach(content => content.style.display = "none");
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add('active');
+    }
+
+    function handleEncode() {
+        const payloadText = payloadTextInput.value;
+        const carrierText = carrierTextInput.value;
+        
+        updateCharCounter();
+        encodeErrorP.textContent = '';
+        
+        if (!payloadText) {
+            encodeResultDiv.style.display = 'none';
+            return;
+        }
+
+        try {
+            if (!carrierText) {
+                throw new Error("Please provide some carrier text or emojis.");
+            }
+
+            const encoder = new TextEncoder();
+            const payloadBytes = encoder.encode(payloadText);
+
+            let encodedPayload = '';
+            for (const byte of payloadBytes) {
+                encodedPayload += String.fromCodePoint(ZERO_WIDTH_PAYLOAD_START + byte);
+            }
+
+            const smuggledText = carrierText + encodedPayload;
+            
+            encodedOutputP.textContent = smuggledText;
+            encodeResultDiv.style.display = 'block';
+
+        } catch (e) {
+            encodeErrorP.textContent = e.message;
+            encodeResultDiv.style.display = 'none';
+        }
+    }
+
+    function handleDecode() {
+        const smuggledText = smuggledTextInput.value;
+        decodeErrorP.textContent = '';
+        
+        if (!smuggledText) {
+             decodeResultDiv.style.display = 'none';
+             return;
+        }
+
+        try {
+            if (smuggledText.length < 2) {
+                throw new Error("Input is too short to contain a hidden message.");
+            }
+
+            const decodedBytes = [];
+            let foundPayload = false;
+
+            for (const char of smuggledText) {
+                const codePoint = char.codePointAt(0);
+                if (codePoint >= ZERO_WIDTH_PAYLOAD_START && codePoint <= ZERO_WIDTH_PAYLOAD_END) {
+                    foundPayload = true;
+                    decodedBytes.push(codePoint - ZERO_WIDTH_PAYLOAD_START);
+                }
+            }
+
+            if (!foundPayload) {
+                throw new Error("No valid encoded message found in the text.");
+            }
+            
+            const decoder = new TextDecoder();
+            const revealedText = decoder.decode(new Uint8Array(decodedBytes));
+            
+            if (!revealedText) {
+                 throw new Error("Decoded message is empty or corrupt.");
+            }
+
+            decodedOutputP.textContent = revealedText;
+            decodeResultDiv.style.display = 'block';
+
+        } catch (e) {
+            decodeErrorP.textContent = `Error: ${e.message}`;
+            decodeResultDiv.style.display = 'none';
+        }
+    }
+    
+    function toggleClearButtonVisibility(inputElement) {
+        const clearButton = inputElement.nextElementSibling;
+        if (clearButton && clearButton.classList.contains('input-clear-btn')) {
+             if (inputElement.value.length > 0) {
+                clearButton.classList.add('visible');
+            } else {
+                clearButton.classList.remove('visible');
+            }
+        }
+    }
+
+    function clearInput(elementId) {
+        const inputElement = document.getElementById(elementId);
+        if (inputElement) {
+            inputElement.value = '';
+            inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+            toggleClearButtonVisibility(inputElement);
+        }
+    }
+
+    function copyToClipboard(text, buttonElement) {
+         if (!navigator.clipboard) {
+            alert("Clipboard API is not available in your browser.");
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = buttonElement.textContent;
+            buttonElement.textContent = 'Copied!';
+            buttonElement.style.backgroundColor = 'var(--success-color)';
+            buttonElement.style.color = '#fff';
+
+            setTimeout(() => {
+                buttonElement.textContent = originalText;
+                buttonElement.style.backgroundColor = '';
+                buttonElement.style.color = '';
+            }, 2000); 
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+            alert('Failed to copy text.');
+        });
+    }
+
+    function copyEncodedText() {
+        copyToClipboard(encodedOutputP.textContent, document.getElementById('copy-button'));
+    }
+    
+    function copyDecodedText() {
+        copyToClipboard(decodedOutputP.textContent, document.getElementById('copy-decoded-button'));
+    }
+
+    async function pasteToDecodeInput() {
+        try {
+            if (!navigator.clipboard) {
+                alert("Clipboard API is not available in your browser.");
+                return;
+            }
+            const text = await navigator.clipboard.readText();
+            smuggledTextInput.value = text;
+            smuggledTextInput.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+            decodeErrorP.textContent = 'Failed to paste from clipboard.';
+        }
+    }
+
+    function updateCharCounter() {
+        const count = payloadTextInput.value.length;
+        charCounter.textContent = `${count} character${count === 1 ? '' : 's'}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelector('.tab-button.active').click();
+        updateCharCounter();
+        allInputs.forEach(toggleClearButtonVisibility);
+    });
+</script>
+</body>
+</html>
