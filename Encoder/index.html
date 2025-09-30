@@ -8,11 +8,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundle.min.js"></script>
+    
 
 <style>
+    /* --- CSS ভেরিয়েবল এবং বেসিক সেটআপ --- */
     :root {
         --primary-color: #007bff;
         --primary-hover-color: #0069d9;
+        --primary-gradient: linear-gradient(45deg, #007bff, #0056b3);
+        --primary-glow: rgba(0, 123, 255, 0.25);
+        
         --secondary-color: #6c757d;
         --background-color: #f4f7f9;
         --container-bg-color: #ffffff;
@@ -20,11 +26,31 @@
         --muted-text-color: #6c757d;
         --border-color: #dee2e6;
         --input-bg-color: #f1f3f5;
+        
         --success-color: #28a745;
+        --success-glow: rgba(40, 167, 69, 0.2);
         --error-color: #dc3545;
+        --error-glow: rgba(220, 53, 69, 0.2);
+        --info-color: #17a2b8;
+        --info-glow: rgba(23, 162, 184, 0.15);
+        
         --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.12);
         --border-radius: 16px;
-        --transition-speed: 0.3s;
+        --border-radius-small: 10px;
+
+        --transition-speed-fast: 0.2s;
+        --transition-speed-medium: 0.4s;
+        --transition-speed-slow: 0.6s;
+        --animation-curve: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --animation-curve-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* --- গ্লোবাল স্টাইল --- */
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
     }
 
     body {
@@ -37,29 +63,67 @@
         min-height: 100vh;
         margin: 0;
         padding: 1rem;
-        box-sizing: border-box;
     }
 
+    /* --- কীফ্রেম অ্যানিমেশন --- */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes subtlePulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    /* --- প্রধান কন্টেইনার এবং হেডার --- */
     .container {
         background-color: var(--container-bg-color);
-        padding: 2rem;
+        padding: 2.5rem;
         border-radius: var(--border-radius);
         box-shadow: var(--shadow);
         width: 100%;
         max-width: 650px;
-        transition: all var(--transition-speed) ease-in-out;
+        transition: transform var(--transition-speed-medium) var(--animation-curve), box-shadow var(--transition-speed-medium) var(--animation-curve);
+        animation: fadeInDown var(--transition-speed-slow) var(--animation-curve) forwards;
     }
 
     .header {
         text-align: center;
         margin-bottom: 2.5rem;
+        animation: fadeInUp 0.8s var(--animation-curve) 0.2s forwards;
+        opacity: 0;
     }
 
     .header h1 {
         font-size: 2.5rem;
         font-weight: 700;
         margin: 0;
-        background: linear-gradient(45deg, var(--primary-color), #0056b3);
+        background: var(--primary-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -70,12 +134,14 @@
         font-size: 1.1rem;
     }
 
+    /* --- ট্যাব ডিজাইন --- */
     .tabs {
         display: flex;
         background-color: var(--input-bg-color);
-        border-radius: 10px;
+        border-radius: var(--border-radius-small);
         padding: 5px;
         margin-bottom: 2rem;
+        position: relative;
     }
 
     .tab-button {
@@ -88,33 +154,56 @@
         font-weight: 600;
         color: var(--muted-text-color);
         position: relative;
-        transition: all var(--transition-speed) ease;
+        z-index: 2;
+        transition: color var(--transition-speed-medium) var(--animation-curve), transform var(--transition-speed-fast) ease;
         border-radius: 8px;
+    }
+    
+    .tab-button:hover:not(.active) {
+        color: var(--primary-color);
+    }
+    
+    .tab-button:active {
+        transform: scale(0.97);
     }
 
     .tab-button.active {
-        background-color: var(--container-bg-color);
         color: var(--primary-color);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         transform: scale(1.02);
     }
 
+    /* --- ট্যাব কন্টেন্ট --- */
     .content {
         display: none;
-        animation: fadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .content.active {
         display: block;
+        animation: fadeInUp 0.7s var(--animation-curve-smooth);
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(15px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
+    /* --- ফর্ম এলিমেন্টস --- */
     .form-group {
         margin-bottom: 1.75rem;
+    }
+    
+    .password-container {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-20px);
+        margin-top: 0;
+        transition: max-height var(--transition-speed-medium) ease-in-out, 
+                    opacity var(--transition-speed-medium) ease-in-out, 
+                    transform var(--transition-speed-medium) ease-in-out, 
+                    margin-top var(--transition-speed-medium) ease-in-out;
+    }
+
+    .password-container.visible {
+        max-height: 200px;
+        opacity: 1;
+        transform: translateY(0);
+        margin-top: 1.75rem;
     }
 
     .form-group-inline {
@@ -130,6 +219,7 @@
         margin-bottom: 0.5rem;
         font-weight: 600;
         color: #343a40;
+        transition: color var(--transition-speed-fast) ease;
     }
 
     .input-wrapper {
@@ -140,7 +230,7 @@
         position: absolute;
         top: 50%;
         right: 12px;
-        transform: translateY(-50%);
+        transform: translateY(-50%) scale(0.8);
         border: none;
         background: transparent;
         cursor: pointer;
@@ -148,28 +238,35 @@
         color: #adb5bd;
         opacity: 0;
         pointer-events: none;
-        transition: all var(--transition-speed) ease;
+        transition: opacity var(--transition-speed-fast) ease, 
+                    transform var(--transition-speed-medium) var(--animation-curve-smooth), 
+                    color var(--transition-speed-fast) ease;
         padding: 5px;
         line-height: 1;
     }
 
     textarea ~ .input-clear-btn {
          top: 18px;
-         transform: translateY(0);
+         transform: translateY(0) scale(0.8);
     }
 
     .input-clear-btn.visible {
         opacity: 1;
         pointer-events: auto;
+        transform: translateY(-50%) scale(1);
+    }
+    
+    textarea ~ .input-clear-btn.visible {
+         transform: scale(1);
     }
 
     .input-clear-btn:hover {
         color: var(--text-color);
-        transform: translateY(-50%) scale(1.1);
+        transform: translateY(-50%) scale(1.15) rotate(90deg);
     }
     
-    textarea:hover ~ .input-clear-btn:hover {
-        transform: scale(1.1);
+    textarea ~ .input-clear-btn:hover {
+        transform: scale(1.15) rotate(90deg);
     }
 
     input[type="text"],
@@ -178,21 +275,26 @@
         width: 100%;
         padding: 1rem;
         border: 2px solid var(--border-color);
-        border-radius: 10px;
+        border-radius: var(--border-radius-small);
         font-size: 1rem;
         font-family: inherit;
         box-sizing: border-box;
         background-color: var(--container-bg-color);
-        transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        transition: border-color var(--transition-speed-medium), box-shadow var(--transition-speed-medium);
         padding-right: 3.5rem;
     }
-
+    
+    textarea:focus,
     input[type="text"]:focus,
-    input[type="password"]:focus,
-    textarea:focus {
+    input[type="password"]:focus {
         outline: none;
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
+        box-shadow: 0 0 0 4px var(--primary-glow);
+    }
+    
+    input:focus ~ label,
+    textarea:focus ~ label {
+        color: var(--primary-color);
     }
 
     textarea {
@@ -205,25 +307,33 @@
         color: var(--muted-text-color);
         text-align: right;
         margin-top: 0.5rem;
+        transition: color 0.3s ease;
     }
 
+    /* --- বাটন --- */
     .action-button {
         width: 100%;
         padding: 1rem;
         border: none;
-        border-radius: 10px;
-        background: linear-gradient(45deg, var(--primary-color), #0056b3);
+        border-radius: var(--border-radius-small);
+        background: var(--primary-gradient);
         color: #ffffff;
         font-size: 1.1rem;
         font-weight: bold;
         cursor: pointer;
-        transition: all var(--transition-speed) ease;
-        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        transition: transform var(--transition-speed-medium) var(--animation-curve-smooth), 
+                    box-shadow var(--transition-speed-medium) var(--animation-curve-smooth);
+        box-shadow: 0 4px 15px var(--primary-glow);
     }
 
     .action-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 8px 25px var(--primary-glow);
+    }
+    
+    .action-button:active {
+        transform: translateY(-1px) scale(0.99);
+        box-shadow: 0 2px 10px var(--primary-glow);
     }
 
     .clear-button {
@@ -234,21 +344,30 @@
         color: var(--muted-text-color);
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--transition-speed);
+        transition: all var(--transition-speed-fast) var(--animation-curve);
     }
 
     .clear-button:hover {
         border-color: var(--text-color);
         color: var(--text-color);
         background-color: #f8f9fa;
+        transform: translateY(-2px);
+    }
+    
+    .clear-button:active {
+        transform: translateY(0);
+        background-color: #e9ecef;
     }
 
+
+    /* --- ফলাফল এবং আউটপুট স্টাইল --- */
     .result {
         margin-top: 2rem;
         background-color: #e9ecef;
         padding: 1.5rem;
         border-radius: 12px;
         border: 1px solid #d6dde3;
+        animation: fadeInUp 0.6s var(--animation-curve-smooth) forwards;
     }
 
     .result h3 {
@@ -262,8 +381,9 @@
     .output-container {
         background-color: var(--container-bg-color);
         padding: 1rem 1.5rem;
-        border-radius: 10px;
+        border-radius: var(--border-radius-small);
         border: 1px solid var(--border-color);
+        position: relative;
     }
 
     .result-text {
@@ -275,32 +395,52 @@
         line-height: 1.6;
     }
 
-    .error {
-        color: var(--error-color);
+    /* --- স্ট্যাটাস মেসেজ (এলার্ট) --- */
+    .status-message {
         margin-top: 1rem;
         font-weight: 600;
         text-align: center;
-        min-height: 1.2em;
-        background-color: rgba(220, 53, 69, 0.1);
         padding: 0.75rem;
         border-radius: 8px;
+        animation: fadeInUp 0.5s var(--animation-curve-smooth);
+        min-height: 1.2em;
+    }
+
+    .status-message.error {
+        color: var(--error-color);
+        background-color: rgba(220, 53, 69, 0.1);
+        animation: shake 0.6s var(--animation-curve);
+    }
+    .status-message.info {
+        color: var(--info-color);
+        background-color: rgba(23, 162, 184, 0.1);
     }
     
-    #encode-error:empty, #decode-error:empty {
+    #encode-status:empty, #decode-status:empty {
         display: none;
     }
 
+    /* --- চেকবক্স --- */
     .checkbox-container {
         display: flex;
         align-items: center;
         margin-bottom: 1.5rem;
         cursor: pointer;
     }
+    
+    .checkbox-container label {
+        transition: color 0.3s;
+    }
+    
+    .checkbox-container:hover label {
+        color: var(--primary-color);
+    }
 
     .checkbox-container input {
         margin-right: 0.75rem;
     }
 
+    /* --- ফুটার --- */
     .footer {
         text-align: center;
         margin-top: 2.5rem;
@@ -314,20 +454,36 @@
         color: var(--text-color);
         font-weight: 600;
         text-decoration: none;
-        transition: color var(--transition-speed);
+        position: relative;
+        transition: color var(--transition-speed-fast);
+    }
+
+    .footer a::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: var(--primary-color);
+        transform: scaleX(0);
+        transform-origin: bottom right;
+        transition: transform 0.3s ease-out;
     }
 
     .footer a:hover {
         color: var(--primary-color);
-        text-decoration: underline;
     }
 
-    /* --- Responsive Design --- */
+    .footer a:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
 
-    /* For Mobile Phones (Portrait) */
+    /* --- রেসপন্সিভ ডিজাইন --- */
     @media (max-width: 600px) {
         body {
-            padding: 0.5rem;
+            padding: 0;
         }
         .container {
             padding: 1.5rem;
@@ -338,42 +494,18 @@
         .header h1 {
             font-size: 2rem;
         }
-        .header p {
-            font-size: 1rem;
-        }
-        .tab-button {
-            padding: 0.75rem;
-            font-size: 0.9rem;
-        }
-        input[type="text"],
-        input[type="password"],
-        textarea,
-        .action-button {
-            font-size: 1rem;
-        }
-        .result-text {
-            font-size: 1rem;
-        }
     }
-
-    /* For small button phones (like Nokia) */
-    @media (max-width: 320px) {
-        body {
-            padding: 0;
-        }
-        .container {
-            padding: 1rem;
-        }
-        .header h1 {
-            font-size: 1.75rem;
-        }
-        .header p {
-            font-size: 0.9rem;
-        }
-        .tabs {
-            flex-direction: column;
-            gap: 5px;
-        }
+    
+    /* --- অ্যানিমেশন কমাতে চাইলে --- */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
 </style>
 
@@ -383,7 +515,7 @@
 <div class="container">
     <header class="header">
         <h1>Secret Text Encoder</h1>
-        <p>Hide your secret text inside an emoji.</p>
+        <p>Hide your secret text</p>
     </header>
 
     <div class="tabs">
@@ -403,11 +535,11 @@
         </div>
 
         <div class="checkbox-container">
-            <input type="checkbox" id="secure-encrypt-checkbox" onchange="togglePasswordVisibility('encode')">
+            <input type="checkbox" id="secure-encrypt-checkbox">
             <label for="secure-encrypt-checkbox">High Secured Encryption</label>
         </div>
 
-        <div class="form-group" id="encode-password-container" style="display: none;">
+        <div id="encode-password-container" class="password-container">
             <label for="encode-password">Password:</label>
             <div class="input-wrapper">
                 <input type="password" id="encode-password" placeholder="Enter password for encryption">
@@ -420,9 +552,9 @@
         </div>
         
         <div class="form-group">
-            <label for="carrier-text">Carrier Text / Emojis:</label>
+            <label for="carrier-text">Carrier Text/Emojis:</label>
             <div class="input-wrapper">
-                <input type="text" id="carrier-text" placeholder="🙂✨🎉 Hello World!" oninput="handleEncode()">
+                <input type="text" id="carrier-text" placeholder="🙂✨🎉 Hello World!">
                 <button class="input-clear-btn" onclick="clearInput('carrier-text')" title="Clear text">&times;</button>
             </div>
         </div>
@@ -434,14 +566,14 @@
             </div>
             <button id="copy-button" class="action-button" onclick="copyEncodedText()" style="margin-top: 1rem;">Copy</button>
         </div>
-        <p id="encode-error" class="error"></p>
+        <p id="encode-status" class="status-message"></p>
     </section>
 
     <!-- Decode Tab -->
     <section id="decode" class="content">
         <div class="form-group">
              <div class="form-group-inline">
-                <label for="smuggled-text">Emoji with Hidden Text:</label>
+                <label for="smuggled-text"> Carrier Text/Emojis:</label>
                 <button class="clear-button" onclick="pasteToDecodeInput()">Paste</button>
             </div>
             <div class="input-wrapper">
@@ -449,13 +581,8 @@
                 <button class="input-clear-btn" onclick="clearInput('smuggled-text')" title="Clear text">&times;</button>
             </div>
         </div>
-
-        <div class="checkbox-container">
-            <input type="checkbox" id="secure-decrypt-checkbox" onchange="togglePasswordVisibility('decode')">
-            <label for="secure-decrypt-checkbox">Decrypt with Password</label>
-        </div>
         
-        <div class="form-group" id="decode-password-container" style="display:none;">
+        <div id="decode-password-container" class="password-container">
             <label for="decode-password">Password:</label>
             <div class="input-wrapper">
                 <input type="password" id="decode-password" placeholder="Enter password to decrypt">
@@ -474,7 +601,7 @@
             </div>
             <button id="copy-decoded-button" class="action-button" onclick="copyDecodedText()" style="margin-top: 1rem;">Copy</button>
         </div>
-        <p id="decode-error" class="error"></p>
+        <p id="decode-status" class="status-message"></p>
     </section>
 
     <footer class="footer">
@@ -489,70 +616,50 @@
     const charCounter = document.getElementById('char-counter');
     const encodeResultDiv = document.getElementById('encode-result');
     const encodedOutputP = document.getElementById('encoded-output');
-    const encodeErrorP = document.getElementById('encode-error');
+    const encodeStatusP = document.getElementById('encode-status');
 
     const smuggledTextInput = document.getElementById('smuggled-text');
     const decodeResultDiv = document.getElementById('decode-result');
     const decodedOutputP = document.getElementById('decoded-output');
-    const decodeErrorP = document.getElementById('decode-error');
+    const decodeStatusP = document.getElementById('decode-status');
 
     const secureEncryptCheckbox = document.getElementById('secure-encrypt-checkbox');
     const encodePasswordInput = document.getElementById('encode-password');
     const showEncodePasswordCheckbox = document.getElementById('show-encode-password');
-    
-    const secureDecryptCheckbox = document.getElementById('secure-decrypt-checkbox');
+    const encodePasswordContainer = document.getElementById('encode-password-container');
+
     const decodePasswordInput = document.getElementById('decode-password');
+    const decodePasswordContainer = document.getElementById('decode-password-container');
     const showDecodePasswordCheckbox = document.getElementById('show-decode-password');
 
-    const allInputs = [payloadTextInput, carrierTextInput, smuggledTextInput, encodePasswordInput, decodePasswordInput];
+    const allTextInputs = document.querySelectorAll('input[type="text"], input[type="password"], textarea');
 
     // --- Constants ---
     const ZERO_WIDTH_PAYLOAD_START = 0xE0100;
     const ZERO_WIDTH_PAYLOAD_END = 0xE01EF;
+    const ENCRYPTION_FLAG = '1';
+    const PLAINTEXT_FLAG = '0';
+    // --- Security Constants for PBKDF2 ---
+    const KEY_SIZE = 256 / 32; // 256-bit key
+    const ITERATIONS = 2500; // A reasonable number of iterations for client-side PBKDF2
 
-    // --- Obfuscation Layer (Modified as requested) ---
-    // Characters to be replaced (only uppercase letters)
-    const UPPERCASE_CHARS_TO_OBFUSCATE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    // The corresponding special characters (must be 26 unique characters)
-    const MAPPING_SPECIAL_CHARS = '§$¿«œñþ®©µÆßÐ€ÇŒŠŽ¥†‡ˆ‰‹〆一少女'; 
-    
-    const charToSpecialMap = {};
-    const specialToCharMap = {};
-
-    // Build the mapping tables for uppercase characters only
-    for (let i = 0; i < UPPERCASE_CHARS_TO_OBFUSCATE.length; i++) {
-        const originalChar = UPPERCASE_CHARS_TO_OBFUSCATE[i];
-        const specialChar = MAPPING_SPECIAL_CHARS[i];
-        charToSpecialMap[originalChar] = specialChar;
-        specialToCharMap[specialChar] = originalChar;
-    }
-
-    function obfuscate(text) {
-        // This function now only replaces the uppercase letters (A-Z)
-        // because those are the only ones in the 'charToSpecialMap'.
-        // Other characters (a-z, 0-9, +/=) are returned as they are.
-        return text.split('').map(char => charToSpecialMap[char] || char).join('');
-    }
-
-    function deobfuscate(text) {
-        // This function reverses the process, turning the special characters
-        // back into uppercase letters.
-        return text.split('').map(char => specialToCharMap[char] || char).join('');
-    }
-
-    // --- Event Listeners ---
-    payloadTextInput.addEventListener('input', handleEncode);
-    carrierTextInput.addEventListener('input', handleEncode);
-    secureEncryptCheckbox.addEventListener('change', handleEncode);
-    encodePasswordInput.addEventListener('input', handleEncode);
-    
-    smuggledTextInput.addEventListener('input', () => handleDecode(true));
-    decodePasswordInput.addEventListener('input', () => handleDecode(true));
-    secureDecryptCheckbox.addEventListener('change', () => {
-        togglePasswordVisibility('decode');
-        handleDecode(true);
+    // --- Event Listeners for Live Encoding ---
+    payloadTextInput.addEventListener('input', () => {
+        updateCharCounter();
+        handleEncode();
     });
+    carrierTextInput.addEventListener('input', handleEncode);
+    secureEncryptCheckbox.addEventListener('change', () => {
+        encodePasswordContainer.classList.toggle('visible', secureEncryptCheckbox.checked);
+        handleEncode();
+    });
+    encodePasswordInput.addEventListener('input', handleEncode);
 
+    // --- Event Listeners for Live Decoding ---
+    smuggledTextInput.addEventListener('input', handleDecode);
+    decodePasswordInput.addEventListener('input', handleDecode);
+
+    // --- Other Listeners ---
     showEncodePasswordCheckbox.addEventListener('change', function() {
         encodePasswordInput.type = this.checked ? 'text' : 'password';
     });
@@ -561,8 +668,9 @@
         decodePasswordInput.type = this.checked ? 'text' : 'password';
     });
 
-    allInputs.forEach(input => {
+    allTextInputs.forEach(input => {
         input.addEventListener('input', () => toggleClearButtonVisibility(input));
+        toggleClearButtonVisibility(input);
     });
 
     // --- Functions ---
@@ -572,52 +680,75 @@
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.classList.add('active');
     }
-    
-    function togglePasswordVisibility(tab) {
-        const isEncode = tab === 'encode';
-        const checkbox = isEncode ? secureEncryptCheckbox : secureDecryptCheckbox;
-        const container = document.getElementById(`${tab}-password-container`);
-        
-        container.style.display = checkbox.checked ? 'block' : 'none';
 
-        if (isEncode) {
-             handleEncode();
-        } else {
-            decodeResultDiv.style.display = 'none';
-            decodedOutputP.textContent = '';
-            decodeErrorP.textContent = '';
-        }
+    function setStatus(element, message, type = 'error') {
+        element.textContent = message;
+        element.className = `status-message ${type}`;
     }
 
     function handleEncode() {
-        let payloadText = payloadTextInput.value;
+        const payloadText = payloadTextInput.value;
         const carrierText = carrierTextInput.value;
         const useEncryption = secureEncryptCheckbox.checked;
         const password = encodePasswordInput.value;
-        
-        updateCharCounter();
-        encodeErrorP.textContent = '';
-        
+
+        // Reset UI before processing
+        encodeStatusP.textContent = '';
+        encodeResultDiv.style.display = 'none';
+        encodedOutputP.textContent = '';
+
         if (!payloadText) {
-            encodeResultDiv.style.display = 'none';
+            return;
+        }
+        
+        if (!carrierText) {
+            setStatus(encodeStatusP, 'Carrier text is required.', 'info');
+            return;
+        }
+        
+        if (useEncryption && !password) {
+            setStatus(encodeStatusP, 'Password is required for encryption.', 'info');
             return;
         }
 
         try {
-            if (!carrierText) {
-                throw new Error("Please provide some carrier text or emojis.");
-            }
-
+            let finalPayload;
             if (useEncryption) {
-                if (!password) {
-                    throw new Error("Please enter a password for encryption.");
-                }
-                let encrypted = CryptoJS.AES.encrypt(payloadText, password).toString();
-                payloadText = obfuscate(encrypted); 
+                // **USER REQUEST: Add '0' at the start and '1' at the end of the password**
+                const finalPassword = '0' + password + '1';
+
+                // 1. Generate a random salt
+                const salt = CryptoJS.lib.WordArray.random(128 / 8);
+
+                // 2. Derive a secure key using PBKDF2 with the modified password
+                const key = CryptoJS.PBKDF2(finalPassword, salt, {
+                    keySize: KEY_SIZE,
+                    iterations: ITERATIONS
+                });
+
+                // 3. Generate a random Initialization Vector (IV)
+                const iv = CryptoJS.lib.WordArray.random(128 / 8);
+
+                // 4. Encrypt the message
+                const encrypted = CryptoJS.AES.encrypt(payloadText, key, {
+                    iv: iv,
+                    padding: CryptoJS.pad.Pkcs7,
+                    mode: CryptoJS.mode.CBC
+                });
+                
+                // 5. Combine salt, IV, and ciphertext
+                const combinedData = CryptoJS.enc.Base64.stringify(salt) + 
+                                     CryptoJS.enc.Base64.stringify(iv) + 
+                                     CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+
+                finalPayload = ENCRYPTION_FLAG + combinedData;
+
+            } else {
+                finalPayload = PLAINTEXT_FLAG + payloadText;
             }
 
             const encoder = new TextEncoder();
-            const payloadBytes = encoder.encode(payloadText);
+            const payloadBytes = encoder.encode(finalPayload);
 
             let encodedPayload = '';
             for (const byte of payloadBytes) {
@@ -630,22 +761,21 @@
             encodeResultDiv.style.display = 'block';
 
         } catch (e) {
-            encodeErrorP.textContent = e.message;
-            encodeResultDiv.style.display = 'none';
+            setStatus(encodeStatusP, 'An unexpected error occurred during encoding.', 'error');
         }
     }
 
-    function handleDecode(isSilent = false) {
+    function handleDecode() {
         const smuggledText = smuggledTextInput.value;
-        const useDecryption = secureDecryptCheckbox.checked;
         const password = decodePasswordInput.value;
         
-        if (!isSilent) {
-            decodeErrorP.textContent = '';
-        }
-        
-        if (!smuggledText) {
-             decodeResultDiv.style.display = 'none';
+        // Reset UI
+        decodeStatusP.textContent = '';
+        decodeResultDiv.style.display = 'none';
+        decodedOutputP.textContent = '';
+        decodePasswordContainer.classList.remove('visible');
+
+        if (!smuggledText.trim()) {
              return;
         }
 
@@ -662,52 +792,82 @@
             }
 
             if (!foundPayload) {
-                if (!isSilent) throw new Error("No hidden message found.");
+                setStatus(decodeStatusP, "This appears to be plain text. No hidden message found.", 'info');
                 return;
             }
             
             const decoder = new TextDecoder();
-            let revealedText = decoder.decode(new Uint8Array(decodedBytes));
+            const decodedPayload = decoder.decode(new Uint8Array(decodedBytes));
             
-            if (useDecryption) {
+            if (decodedPayload.length < 1) {
+                throw new Error("Hidden data is corrupted.");
+            }
+
+            const flag = decodedPayload.charAt(0);
+            const actualData = decodedPayload.substring(1);
+            let revealedText = '';
+
+            if (flag === ENCRYPTION_FLAG) {
+                decodePasswordContainer.classList.add('visible');
                 if (!password) {
-                    if (!isSilent) throw new Error("Please enter a password to decrypt.");
-                    decodeResultDiv.style.display = 'none';
-                    return;
+                     setStatus(decodeStatusP, "Password required for decryption.", 'info');
+                     return;
+                }
+                
+                if (actualData.length < 48) {
+                    throw new Error("Corrupted data: missing salt/IV.");
                 }
 
-                const deobfuscatedText = deobfuscate(revealedText);
-                const decryptedBytes = CryptoJS.AES.decrypt(deobfuscatedText, password);
+                // 1. Extract salt, IV, and ciphertext
+                const salt = CryptoJS.enc.Base64.parse(actualData.substring(0, 24));
+                const iv = CryptoJS.enc.Base64.parse(actualData.substring(24, 48));
+                const ciphertext = CryptoJS.enc.Base64.parse(actualData.substring(48));
+
+                // **USER REQUEST: Add '0' at the start and '1' at the end of the password**
+                const finalPassword = '0' + password + '1';
+
+                // 2. Re-derive the key using the extracted salt and modified password
+                const key = CryptoJS.PBKDF2(finalPassword, salt, {
+                    keySize: KEY_SIZE,
+                    iterations: ITERATIONS
+                });
+
+                // 3. Decrypt the message
+                const decryptedBytes = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, key, {
+                    iv: iv,
+                    padding: CryptoJS.pad.Pkcs7,
+                    mode: CryptoJS.mode.CBC
+                });
+
                 const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
                 
                 if (!decryptedText) {
                     throw new Error("Wrong password or corrupted data.");
                 }
                 revealedText = decryptedText;
-            }
 
-            decodedOutputP.textContent = revealedText;
-            decodeResultDiv.style.display = 'block';
-            if (decodeErrorP.textContent.includes("Wrong password")) {
-                decodeErrorP.textContent = "";
+            } else if (flag === PLAINTEXT_FLAG) {
+                revealedText = actualData;
+            } else {
+                throw new Error("Hidden data is corrupted or in an unknown format.");
+            }
+            
+            if (revealedText) {
+                decodedOutputP.textContent = revealedText;
+                decodeResultDiv.style.display = 'block';
             }
 
         } catch (e) {
-            if (!isSilent) {
-                decodeErrorP.textContent = `Error: ${e.message}`;
-            }
-            decodeResultDiv.style.display = 'none';
+            setStatus(decodeStatusP, e.message, 'error');
         }
     }
     
     function toggleClearButtonVisibility(inputElement) {
-        const clearButton = inputElement.nextElementSibling;
-        if (clearButton && clearButton.classList.contains('input-clear-btn')) {
-             if (inputElement.value.length > 0) {
-                clearButton.classList.add('visible');
-            } else {
-                clearButton.classList.remove('visible');
-            }
+        const wrapper = inputElement.closest('.input-wrapper');
+        if (!wrapper) return;
+        const clearButton = wrapper.querySelector('.input-clear-btn');
+        if (clearButton) {
+            clearButton.classList.toggle('visible', inputElement.value.length > 0);
         }
     }
 
@@ -716,25 +876,22 @@
         if (inputElement) {
             inputElement.value = '';
             inputElement.dispatchEvent(new Event('input', { bubbles: true }));
-            toggleClearButtonVisibility(inputElement);
+            inputElement.focus();
         }
     }
 
     function copyToClipboard(text, buttonElement) {
-         if (!navigator.clipboard) {
+        if (!navigator.clipboard) {
             alert("Clipboard API is not available in your browser.");
             return;
         }
         navigator.clipboard.writeText(text).then(() => {
             const originalText = buttonElement.textContent;
             buttonElement.textContent = 'Copied!';
-            buttonElement.style.backgroundColor = 'var(--success-color)';
-            buttonElement.style.color = '#fff';
-
+            buttonElement.style.background = 'var(--success-color)';
             setTimeout(() => {
                 buttonElement.textContent = originalText;
-                buttonElement.style.backgroundColor = '';
-                buttonElement.style.color = '';
+                buttonElement.style.background = '';
             }, 2000); 
         }).catch(err => {
             console.error('Failed to copy text: ', err);
@@ -761,7 +918,7 @@
             smuggledTextInput.dispatchEvent(new Event('input', { bubbles: true }));
         } catch (err) {
             console.error('Failed to read clipboard contents: ', err);
-            decodeErrorP.textContent = 'Failed to paste from clipboard.';
+            setStatus(decodeStatusP, 'Failed to paste from clipboard.', 'error');
         }
     }
 
@@ -773,7 +930,6 @@
     document.addEventListener("DOMContentLoaded", () => {
         document.querySelector('.tab-button.active').click();
         updateCharCounter();
-        allInputs.forEach(toggleClearButtonVisibility);
     });
 </script>
 
