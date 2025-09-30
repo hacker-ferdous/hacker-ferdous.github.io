@@ -510,29 +510,33 @@
     const ZERO_WIDTH_PAYLOAD_START = 0xE0100;
     const ZERO_WIDTH_PAYLOAD_END = 0xE01EF;
 
-    // --- Obfuscation Layer (FIXED) ---
-    const BASE64_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-    const SPECIAL_CHARS = '§$¿«œñþ®©µÆßÐ€ÇŒŠŽ¥†‡ˆ‰‹〆一少女®×ロ卍요๏冬季れ米・气廴ゞ๔Ł王丶レ彡私Ø么刁۝ジ多卄神丨㊃㊈㊇㈥㈠㊀㈡㊆㈨㈢㊂㊁';
+    // --- Obfuscation Layer (Modified as requested) ---
+    // Characters to be replaced (only uppercase letters)
+    const UPPERCASE_CHARS_TO_OBFUSCATE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    // The corresponding special characters (must be 26 unique characters)
+    const MAPPING_SPECIAL_CHARS = '§$¿«œñþ®©µÆßÐ€ÇŒŠŽ¥†‡ˆ‰‹〆一少女'; 
     
     const charToSpecialMap = {};
     const specialToCharMap = {};
-    // Ensure the SPECIAL_CHARS string has enough unique characters
-    if (new Set(SPECIAL_CHARS).size >= BASE64_CHARS.length) {
-        for (let i = 0; i < BASE64_CHARS.length; i++) {
-            charToSpecialMap[BASE64_CHARS[i]] = SPECIAL_CHARS[i];
-            specialToCharMap[SPECIAL_CHARS[i]] = BASE64_CHARS[i];
-        }
-    } else {
-        console.error("Fatal Error: SPECIAL_CHARS string does not contain enough unique characters for mapping. Please correct the constant.");
-        alert("A critical error occurred in the encryption mapping. Please contact the developer.");
+
+    // Build the mapping tables for uppercase characters only
+    for (let i = 0; i < UPPERCASE_CHARS_TO_OBFUSCATE.length; i++) {
+        const originalChar = UPPERCASE_CHARS_TO_OBFUSCATE[i];
+        const specialChar = MAPPING_SPECIAL_CHARS[i];
+        charToSpecialMap[originalChar] = specialChar;
+        specialToCharMap[specialChar] = originalChar;
     }
 
-
     function obfuscate(text) {
+        // This function now only replaces the uppercase letters (A-Z)
+        // because those are the only ones in the 'charToSpecialMap'.
+        // Other characters (a-z, 0-9, +/=) are returned as they are.
         return text.split('').map(char => charToSpecialMap[char] || char).join('');
     }
 
     function deobfuscate(text) {
+        // This function reverses the process, turning the special characters
+        // back into uppercase letters.
         return text.split('').map(char => specialToCharMap[char] || char).join('');
     }
 
@@ -772,5 +776,6 @@
         allInputs.forEach(toggleClearButtonVisibility);
     });
 </script>
+
 </body>
 </html>
