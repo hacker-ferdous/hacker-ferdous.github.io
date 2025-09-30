@@ -7,283 +7,376 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #007bff;
-            --primary-hover-color: #0069d9;
-            --background-color: #f8f9fa;
-            --container-bg-color: #ffffff;
-            --text-color: #212529;
-            --muted-text-color: #6c757d;
-            --border-color: #dee2e6;
-            --input-bg-color: #f1f3f5;
-            --success-color: #28a745;
-            --error-color: #dc3545;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --border-radius: 12px;
-        }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
+<style>
+    :root {
+        --primary-color: #007bff;
+        --primary-hover-color: #0069d9;
+        --secondary-color: #6c757d;
+        --background-color: #f4f7f9;
+        --container-bg-color: #ffffff;
+        --text-color: #212529;
+        --muted-text-color: #6c757d;
+        --border-color: #dee2e6;
+        --input-bg-color: #f1f3f5;
+        --success-color: #28a745;
+        --error-color: #dc3545;
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --border-radius: 16px;
+        --transition-speed: 0.3s;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        margin: 0;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .container {
+        background-color: var(--container-bg-color);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 650px;
+        transition: all var(--transition-speed) ease-in-out;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(45deg, var(--primary-color), #0056b3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+        margin-top: 0.5rem;
+        color: var(--muted-text-color);
+        font-size: 1.1rem;
+    }
+
+    .tabs {
+        display: flex;
+        background-color: var(--input-bg-color);
+        border-radius: 10px;
+        padding: 5px;
+        margin-bottom: 2rem;
+    }
+
+    .tab-button {
+        flex: 1;
+        padding: 0.9rem;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--muted-text-color);
+        position: relative;
+        transition: all var(--transition-speed) ease;
+        border-radius: 8px;
+    }
+
+    .tab-button.active {
+        background-color: var(--container-bg-color);
+        color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: scale(1.02);
+    }
+
+    .content {
+        display: none;
+        animation: fadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-group {
+        margin-bottom: 1.75rem;
+    }
+
+    .form-group-inline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-clear-btn {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #adb5bd;
+        opacity: 0;
+        pointer-events: none;
+        transition: all var(--transition-speed) ease;
+        padding: 5px;
+        line-height: 1;
+    }
+
+    textarea ~ .input-clear-btn {
+         top: 18px;
+         transform: translateY(0);
+    }
+
+    .input-clear-btn.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .input-clear-btn:hover {
+        color: var(--text-color);
+        transform: translateY(-50%) scale(1.1);
+    }
+    
+    textarea:hover ~ .input-clear-btn:hover {
+        transform: scale(1.1);
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: inherit;
+        box-sizing: border-box;
+        background-color: var(--container-bg-color);
+        transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        padding-right: 3.5rem;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
+    }
+
+    textarea {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .char-counter {
+        font-size: 0.85rem;
+        color: var(--muted-text-color);
+        text-align: right;
+        margin-top: 0.5rem;
+    }
+
+    .action-button {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(45deg, var(--primary-color), #0056b3);
+        color: #ffffff;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all var(--transition-speed) ease;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+    }
+
+    .action-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+    }
+
+    .clear-button {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        background-color: transparent;
+        color: var(--muted-text-color);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-speed);
+    }
+
+    .clear-button:hover {
+        border-color: var(--text-color);
+        color: var(--text-color);
+        background-color: #f8f9fa;
+    }
+
+    .result {
+        margin-top: 2rem;
+        background-color: #e9ecef;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #d6dde3;
+    }
+
+    .result h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .output-container {
+        background-color: var(--container-bg-color);
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        border: 1px solid var(--border-color);
+    }
+
+    .result-text {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 1.1rem;
+        max-height: 250px;
+        overflow-y: auto;
+        line-height: 1.6;
+    }
+
+    .error {
+        color: var(--error-color);
+        margin-top: 1rem;
+        font-weight: 600;
+        text-align: center;
+        min-height: 1.2em;
+        background-color: rgba(220, 53, 69, 0.1);
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+    
+    #encode-error:empty, #decode-error:empty {
+        display: none;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        cursor: pointer;
+    }
+
+    .checkbox-container input {
+        margin-right: 0.75rem;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 2.5rem;
+        border-top: 1px solid var(--border-color);
+        padding-top: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--muted-text-color);
+    }
+
+    .footer a {
+        color: var(--text-color);
+        font-weight: 600;
+        text-decoration: none;
+        transition: color var(--transition-speed);
+    }
+
+    .footer a:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+
+    /* --- Responsive Design --- */
+
+    /* For Mobile Phones (Portrait) */
+    @media (max-width: 600px) {
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
-            padding: 2rem 1rem;
-            box-sizing: border-box;
+            padding: 0.5rem;
         }
-
         .container {
-            background-color: var(--container-bg-color);
-            padding: 2.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 600px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--text-color);
-        }
-
-        .header p {
-            margin-top: 0.5rem;
-            color: var(--muted-text-color);
-            font-size: 1rem;
-        }
-
-        .tabs {
-            display: flex;
-            background-color: var(--input-bg-color);
-            border-radius: 8px;
-            padding: 5px;
-            margin-bottom: 2rem;
-        }
-
-        .tab-button {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--muted-text-color);
-            position: relative;
-            transition: color 0.3s;
-            border-radius: 6px;
-        }
-
-        .tab-button.active {
-            background-color: var(--container-bg-color);
-            color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .content {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        .content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group-inline {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #343a40;
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-clear-btn {
-            position: absolute;
-            top: 50%;
-            right: 12px;
-            transform: translateY(-50%);
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--muted-text-color);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease-in-out;
-            padding: 5px;
-        }
-        
-        textarea ~ .input-clear-btn {
-             top: 18px;
-             transform: translateY(0);
-        }
-
-        .input-clear-btn.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
-        .input-clear-btn:hover {
-            color: var(--text-color);
-        }
-
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: inherit;
-            box-sizing: border-box;
-            background-color: var(--input-bg-color);
-            transition: border-color 0.2s, box-shadow 0.2s;
-            padding-right: 3rem;
-        }
-        
-        input[type="text"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        .char-counter {
-            font-size: 0.85rem;
-            color: var(--muted-text-color);
-            text-align: right;
-            margin-top: 0.5rem;
-        }
-
-        .action-button {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--primary-color);
-            color: #ffffff;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .action-button:hover {
-            background-color: var(--primary-hover-color);
-            transform: translateY(-2px);
-        }
-        
-        .clear-button {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background-color: transparent;
-            color: var(--muted-text-color);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .clear-button:hover {
-            border-color: var(--text-color);
-            color: var(--text-color);
-        }
-
-        .result {
-            margin-top: 2rem;
-            background-color: #e9ecef;
             padding: 1.5rem;
-            border-radius: 8px;
+            border-radius: 0;
+            box-shadow: none;
+            min-height: 100vh;
         }
-
-        .result h3 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-            color: var(--text-color);
-            font-size: 1.1rem;
-            font-weight: 600;
+        .header h1 {
+            font-size: 2rem;
         }
-        
-        .output-container {
-            background-color: var(--container-bg-color);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+        .header p {
+            font-size: 1rem;
         }
-        
-        .result-text {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-size: 1.1rem;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .error {
-            color: var(--error-color);
-            margin-top: 1rem;
-            font-weight: 600;
-            text-align: center;
-            min-height: 1.2em;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 2.5rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 1.5rem;
+        .tab-button {
+            padding: 0.75rem;
             font-size: 0.9rem;
-            color: var(--muted-text-color);
         }
-        
-        .footer a {
-            color: var(--text-color);
-            font-weight: 600;
-            text-decoration: none;
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        .action-button {
+            font-size: 1rem;
         }
-        
-        .footer a:hover {
-            color: var(--primary-color);
-            text-decoration: underline;
+        .result-text {
+            font-size: 1rem;
         }
+    }
 
-    </style>
+    /* For small button phones (like Nokia) */
+    @media (max-width: 320px) {
+        body {
+            padding: 0;
+        }
+        .container {
+            padding: 1rem;
+        }
+        .header h1 {
+            font-size: 1.75rem;
+        }
+        .header p {
+            font-size: 0.9rem;
+        }
+        .tabs {
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+</style>
+
 </head>
 <body>
 
@@ -308,6 +401,24 @@
             </div>
             <div id="char-counter" class="char-counter">0 characters</div>
         </div>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="secure-encrypt-checkbox" onchange="togglePasswordVisibility('encode')">
+            <label for="secure-encrypt-checkbox">High Secured Encryption</label>
+        </div>
+
+        <div class="form-group" id="encode-password-container" style="display: none;">
+            <label for="encode-password">Password:</label>
+            <div class="input-wrapper">
+                <input type="password" id="encode-password" placeholder="Enter password for encryption">
+                <button class="input-clear-btn" onclick="clearInput('encode-password')" title="Clear text">&times;</button>
+            </div>
+            <div class="checkbox-container" style="margin-top: 0.75rem; margin-bottom: 0;">
+                <input type="checkbox" id="show-encode-password">
+                <label for="show-encode-password" style="font-weight: normal; font-size: 0.9rem; color: var(--muted-text-color);">Show Password</label>
+            </div>
+        </div>
+        
         <div class="form-group">
             <label for="carrier-text">Carrier Text / Emojis:</label>
             <div class="input-wrapper">
@@ -338,7 +449,23 @@
                 <button class="input-clear-btn" onclick="clearInput('smuggled-text')" title="Clear text">&times;</button>
             </div>
         </div>
-        <button class="action-button" onclick="handleDecode()">Decode Text</button>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="secure-decrypt-checkbox" onchange="togglePasswordVisibility('decode')">
+            <label for="secure-decrypt-checkbox">Decrypt with Password</label>
+        </div>
+        
+        <div class="form-group" id="decode-password-container" style="display:none;">
+            <label for="decode-password">Password:</label>
+            <div class="input-wrapper">
+                <input type="password" id="decode-password" placeholder="Enter password to decrypt">
+                <button class="input-clear-btn" onclick="clearInput('decode-password')" title="Clear text">&times;</button>
+            </div>
+            <div class="checkbox-container" style="margin-top: 0.75rem; margin-bottom: 0;">
+                <input type="checkbox" id="show-decode-password">
+                <label for="show-decode-password" style="font-weight: normal; font-size: 0.9rem; color: var(--muted-text-color);">Show Password</label>
+            </div>
+        </div>
         
         <div id="decode-result" class="result" style="display:none;">
             <h3>Revealed Text:</h3>
@@ -356,6 +483,7 @@
 </div>
 
 <script>
+    // --- Element Selection ---
     const payloadTextInput = document.getElementById('payload-text');
     const carrierTextInput = document.getElementById('carrier-text');
     const charCounter = document.getElementById('char-counter');
@@ -368,29 +496,100 @@
     const decodedOutputP = document.getElementById('decoded-output');
     const decodeErrorP = document.getElementById('decode-error');
 
-    const allInputs = [payloadTextInput, carrierTextInput, smuggledTextInput];
+    const secureEncryptCheckbox = document.getElementById('secure-encrypt-checkbox');
+    const encodePasswordInput = document.getElementById('encode-password');
+    const showEncodePasswordCheckbox = document.getElementById('show-encode-password');
+    
+    const secureDecryptCheckbox = document.getElementById('secure-decrypt-checkbox');
+    const decodePasswordInput = document.getElementById('decode-password');
+    const showDecodePasswordCheckbox = document.getElementById('show-decode-password');
 
+    const allInputs = [payloadTextInput, carrierTextInput, smuggledTextInput, encodePasswordInput, decodePasswordInput];
+
+    // --- Constants ---
     const ZERO_WIDTH_PAYLOAD_START = 0xE0100;
     const ZERO_WIDTH_PAYLOAD_END = 0xE01EF;
 
+    // --- Obfuscation Layer (FIXED) ---
+    const BASE64_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    const SPECIAL_CHARS = '§$¿«œñþ®©µÆßÐ€ÇŒŠŽ¥†‡ˆ‰‹〆一少女®×ロ卍요๏冬季れ米・气廴ゞ๔Ł王丶レ彡私Ø么刁۝ジ多卄神丨㊃㊈㊇㈥㈠㊀㈡㊆㈨㈢㊂㊁';
+    
+    const charToSpecialMap = {};
+    const specialToCharMap = {};
+    // Ensure the SPECIAL_CHARS string has enough unique characters
+    if (new Set(SPECIAL_CHARS).size >= BASE64_CHARS.length) {
+        for (let i = 0; i < BASE64_CHARS.length; i++) {
+            charToSpecialMap[BASE64_CHARS[i]] = SPECIAL_CHARS[i];
+            specialToCharMap[SPECIAL_CHARS[i]] = BASE64_CHARS[i];
+        }
+    } else {
+        console.error("Fatal Error: SPECIAL_CHARS string does not contain enough unique characters for mapping. Please correct the constant.");
+        alert("A critical error occurred in the encryption mapping. Please contact the developer.");
+    }
+
+
+    function obfuscate(text) {
+        return text.split('').map(char => charToSpecialMap[char] || char).join('');
+    }
+
+    function deobfuscate(text) {
+        return text.split('').map(char => specialToCharMap[char] || char).join('');
+    }
+
+    // --- Event Listeners ---
     payloadTextInput.addEventListener('input', handleEncode);
-    smuggledTextInput.addEventListener('input', handleDecode);
     carrierTextInput.addEventListener('input', handleEncode);
+    secureEncryptCheckbox.addEventListener('change', handleEncode);
+    encodePasswordInput.addEventListener('input', handleEncode);
+    
+    smuggledTextInput.addEventListener('input', () => handleDecode(true));
+    decodePasswordInput.addEventListener('input', () => handleDecode(true));
+    secureDecryptCheckbox.addEventListener('change', () => {
+        togglePasswordVisibility('decode');
+        handleDecode(true);
+    });
+
+    showEncodePasswordCheckbox.addEventListener('change', function() {
+        encodePasswordInput.type = this.checked ? 'text' : 'password';
+    });
+
+    showDecodePasswordCheckbox.addEventListener('change', function() {
+        decodePasswordInput.type = this.checked ? 'text' : 'password';
+    });
 
     allInputs.forEach(input => {
         input.addEventListener('input', () => toggleClearButtonVisibility(input));
     });
 
+    // --- Functions ---
     function openTab(evt, tabName) {
         document.querySelectorAll('.content').forEach(content => content.style.display = "none");
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.classList.add('active');
     }
+    
+    function togglePasswordVisibility(tab) {
+        const isEncode = tab === 'encode';
+        const checkbox = isEncode ? secureEncryptCheckbox : secureDecryptCheckbox;
+        const container = document.getElementById(`${tab}-password-container`);
+        
+        container.style.display = checkbox.checked ? 'block' : 'none';
+
+        if (isEncode) {
+             handleEncode();
+        } else {
+            decodeResultDiv.style.display = 'none';
+            decodedOutputP.textContent = '';
+            decodeErrorP.textContent = '';
+        }
+    }
 
     function handleEncode() {
-        const payloadText = payloadTextInput.value;
+        let payloadText = payloadTextInput.value;
         const carrierText = carrierTextInput.value;
+        const useEncryption = secureEncryptCheckbox.checked;
+        const password = encodePasswordInput.value;
         
         updateCharCounter();
         encodeErrorP.textContent = '';
@@ -403,6 +602,14 @@
         try {
             if (!carrierText) {
                 throw new Error("Please provide some carrier text or emojis.");
+            }
+
+            if (useEncryption) {
+                if (!password) {
+                    throw new Error("Please enter a password for encryption.");
+                }
+                let encrypted = CryptoJS.AES.encrypt(payloadText, password).toString();
+                payloadText = obfuscate(encrypted); 
             }
 
             const encoder = new TextEncoder();
@@ -424,9 +631,14 @@
         }
     }
 
-    function handleDecode() {
+    function handleDecode(isSilent = false) {
         const smuggledText = smuggledTextInput.value;
-        decodeErrorP.textContent = '';
+        const useDecryption = secureDecryptCheckbox.checked;
+        const password = decodePasswordInput.value;
+        
+        if (!isSilent) {
+            decodeErrorP.textContent = '';
+        }
         
         if (!smuggledText) {
              decodeResultDiv.style.display = 'none';
@@ -434,10 +646,6 @@
         }
 
         try {
-            if (smuggledText.length < 2) {
-                throw new Error("Input is too short to contain a hidden message.");
-            }
-
             const decodedBytes = [];
             let foundPayload = false;
 
@@ -450,21 +658,40 @@
             }
 
             if (!foundPayload) {
-                throw new Error("No valid encoded message found in the text.");
+                if (!isSilent) throw new Error("No hidden message found.");
+                return;
             }
             
             const decoder = new TextDecoder();
-            const revealedText = decoder.decode(new Uint8Array(decodedBytes));
+            let revealedText = decoder.decode(new Uint8Array(decodedBytes));
             
-            if (!revealedText) {
-                 throw new Error("Decoded message is empty or corrupt.");
+            if (useDecryption) {
+                if (!password) {
+                    if (!isSilent) throw new Error("Please enter a password to decrypt.");
+                    decodeResultDiv.style.display = 'none';
+                    return;
+                }
+
+                const deobfuscatedText = deobfuscate(revealedText);
+                const decryptedBytes = CryptoJS.AES.decrypt(deobfuscatedText, password);
+                const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                
+                if (!decryptedText) {
+                    throw new Error("Wrong password or corrupted data.");
+                }
+                revealedText = decryptedText;
             }
 
             decodedOutputP.textContent = revealedText;
             decodeResultDiv.style.display = 'block';
+            if (decodeErrorP.textContent.includes("Wrong password")) {
+                decodeErrorP.textContent = "";
+            }
 
         } catch (e) {
-            decodeErrorP.textContent = `Error: ${e.message}`;
+            if (!isSilent) {
+                decodeErrorP.textContent = `Error: ${e.message}`;
+            }
             decodeResultDiv.style.display = 'none';
         }
     }
