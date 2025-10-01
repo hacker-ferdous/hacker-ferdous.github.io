@@ -4,80 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secret Text Encoder - Advanced Text Hiding</title>
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Crypto & Argon2 Libraries (as in original) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundle.min.js"></script>
-    
 
 <style>
-    /* --- CSS ভেরিয়েবল এবং বেসিক সেটআপ --- */
+    /*
+    ================================================================================
+    --- ROOT :: DESIGN SYSTEM & GLOBAL VARIABLES ---
+    ================================================================================
+    */
     :root {
-        --primary-color: #007bff;
-        --primary-hover-color: #0069d9;
-        --primary-gradient: linear-gradient(45deg, #007bff, #0056b3);
-        --primary-glow: rgba(0, 123, 255, 0.25);
+        /* Color Palette */
+        --color-primary-500: #007aff;
+        --color-primary-600: #006de0;
+        --color-primary-700: #005ec4;
+        --color-primary-100-trans: rgba(0, 122, 255, 0.1);
+        --color-primary-200-trans: rgba(0, 122, 255, 0.2);
+
+        --color-secondary-500: #6c757d;
+        --color-secondary-600: #5a6268;
+        --color-secondary-700: #495057;
+
+        --color-success-500: #28a745;
+        --color-success-600: #218838;
+        --color-success-100-trans: rgba(40, 167, 69, 0.1);
+        --color-success-200-trans: rgba(40, 167, 69, 0.2);
+
+        --color-error-500: #dc3545;
+        --color-error-600: #c82333;
+        --color-error-100-trans: rgba(220, 53, 69, 0.1);
+        --color-error-200-trans: rgba(220, 53, 69, 0.2);
         
-        --secondary-color: #6c757d;
-        --background-color: #f4f7f9;
-        --container-bg-color: #ffffff;
-        --text-color: #212529;
-        --muted-text-color: #6c757d;
-        --border-color: #dee2e6;
-        --input-bg-color: #f1f3f5;
+        --color-info-500: #17a2b8;
+        --color-info-100-trans: rgba(23, 162, 184, 0.1);
+
+        --color-text-primary: #212529;
+        --color-text-secondary: #495057;
+        --color-text-muted: #6c757d;
+        --color-text-inverted: #ffffff;
         
-        --success-color: #28a745;
-        --success-glow: rgba(40, 167, 69, 0.2);
-        --error-color: #dc3545;
-        --error-glow: rgba(220, 53, 69, 0.2);
-        --info-color: #17a2b8;
-        --info-glow: rgba(23, 162, 184, 0.15);
+        --color-background-body: #f8f9fa;
+        --color-background-container: #ffffff;
+        --color-background-input: #f1f3f5;
+        --color-background-input-focus: #ffffff;
+        --color-background-result: #e9ecef;
         
-        --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.12);
-        --border-radius: 16px;
-        --border-radius-small: 10px;
+        --color-border-light: #dee2e6;
+        --color-border-medium: #ced4da;
+        --color-border-dark: #adb5bd;
 
-        --transition-speed-fast: 0.2s;
-        --transition-speed-medium: 0.4s;
-        --transition-speed-slow: 0.6s;
-        --animation-curve: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        --animation-curve-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
+        /* Typography */
+        --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-family-mono: 'Roboto Mono', monospace;
+        --font-size-xs: 0.75rem;  /* 12px */
+        --font-size-sm: 0.875rem; /* 14px */
+        --font-size-base: 1rem;     /* 16px */
+        --font-size-md: 1.125rem; /* 18px */
+        --font-size-lg: 1.25rem;  /* 20px */
+        --font-size-xl: 1.5rem;   /* 24px */
+        --font-size-xxl: 2rem;    /* 32px */
+        --font-size-xxxl: 2.5rem; /* 40px */
+        --line-height-base: 1.6;
+        --font-weight-regular: 400;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --font-weight-bold: 700;
+        --font-weight-extrabold: 800;
+
+        /* Spacing & Sizing */
+        --space-1: 0.25rem;  /* 4px  */
+        --space-2: 0.5rem;   /* 8px  */
+        --space-3: 0.75rem;  /* 12px */
+        --space-4: 1rem;     /* 16px */
+        --space-5: 1.25rem;  /* 20px */
+        --space-6: 1.5rem;   /* 24px */
+        --space-8: 2rem;     /* 32px */
+        --space-10: 2.5rem;  /* 40px */
+        --space-12: 3rem;    /* 48px */
+        --max-width-container: 720px;
+
+        /* Borders & Radii */
+        --border-radius-sm: 8px;
+        --border-radius-md: 12px;
+        --border-radius-lg: 16px;
+        --border-width-sm: 1px;
+        --border-width-md: 2px;
+
+        /* Shadows */
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --shadow-focus: 0 0 0 4px var(--color-primary-200-trans);
+        --shadow-inset: inset 0 2px 4px rgba(0,0,0,0.06);
+
+        /* Transitions & Animations */
+        --transition-duration-fast: 200ms;
+        --transition-duration-medium: 400ms;
+        --transition-duration-slow: 600ms;
+        --transition-easing-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+        --transition-easing-elegant: cubic-bezier(0.25, 0.1, 0.25, 1);
+        --transition-easing-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        
+        /* Z-Index */
+        --z-index-base: 1;
+        --z-index-content: 10;
+        --z-index-sticky: 100;
+        --z-index-modal: 1000;
+    }
+    
+    /*
+    ================================================================================
+    --- KEYFRAMES :: ANIMATIONS LIBRARY ---
+    ================================================================================
+    */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
-    /* --- গ্লোবাল স্টাইল --- */
-    *,
-    *::before,
-    *::after {
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        min-height: 100vh;
-        margin: 0;
-        padding: 1rem;
-    }
-
-    /* --- কীফ্রেম অ্যানিমেশন --- */
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fadeInUp {
+    @keyframes fadeUp {
         from {
             opacity: 0;
             transform: translateY(20px);
@@ -87,80 +139,178 @@
             transform: translateY(0);
         }
     }
+
+    @keyframes fadeDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
     
+    @keyframes backgroundPan {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
     @keyframes subtlePulse {
         0% { transform: scale(1); }
         50% { transform: scale(1.02); }
         100% { transform: scale(1); }
     }
 
-    @keyframes shake {
+    @keyframes errorShake {
         0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-        20%, 40%, 60%, 80% { transform: translateX(5px); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+        20%, 40%, 60%, 80% { transform: translateX(6px); }
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 
-    /* --- প্রধান কন্টেইনার এবং হেডার --- */
+    /*
+    ================================================================================
+    --- GLOBAL :: RESETS & BASE STYLES ---
+    ================================================================================
+    */
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: var(--font-family-sans);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-regular);
+        line-height: var(--line-height-base);
+        color: var(--color-text-primary);
+        background-color: var(--color-background-body);
+        
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: var(--space-8);
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--color-background-input);
+      border-radius: var(--border-radius-sm);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-border-medium);
+      border-radius: var(--border-radius-sm);
+      border: 2px solid var(--color-background-input);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-secondary-500);
+    }
+
+    /*
+    ================================================================================
+    --- LAYOUT :: MAIN CONTAINER & STRUCTURE ---
+    ================================================================================
+    */
     .container {
-        background-color: var(--container-bg-color);
-        padding: 2.5rem;
-        border-radius: var(--border-radius);
-        box-shadow: var(--shadow);
         width: 100%;
-        max-width: 650px;
-        transition: transform var(--transition-speed-medium) var(--animation-curve), box-shadow var(--transition-speed-medium) var(--animation-curve);
-        animation: fadeInDown var(--transition-speed-slow) var(--animation-curve) forwards;
+        max-width: var(--max-width-container);
+        padding: var(--space-10) var(--space-12);
+        background-color: var(--color-background-container);
+        border: var(--border-width-sm) solid var(--color-border-light);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
+        animation: fadeUp var(--transition-duration-slow) var(--transition-easing-elegant) forwards;
+        transition: transform var(--transition-duration-medium) var(--transition-easing-elegant),
+                    box-shadow var(--transition-duration-medium) var(--transition-easing-elegant);
     }
 
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-8);
+    }
+
+    /*
+    ================================================================================
+    --- COMPONENT :: HEADER ---
+    ================================================================================
+    */
     .header {
         text-align: center;
-        margin-bottom: 2.5rem;
-        animation: fadeInUp 0.8s var(--animation-curve) 0.2s forwards;
+        margin-bottom: var(--space-4);
+        animation: fadeDown 0.8s var(--transition-easing-elegant) 0.2s forwards;
         opacity: 0;
     }
 
     .header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 0;
-        background: var(--primary-gradient);
+        font-size: var(--font-size-xxxl);
+        font-weight: var(--font-weight-extrabold);
+        line-height: 1.2;
+        margin-bottom: var(--space-2);
+        background: linear-gradient(45deg, var(--color-primary-500), var(--color-primary-700));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
     .header p {
-        margin-top: 0.5rem;
-        color: var(--muted-text-color);
-        font-size: 1.1rem;
+        font-size: var(--font-size-md);
+        color: var(--color-text-muted);
+        max-width: 500px;
+        margin: 0 auto;
     }
 
-    /* --- ট্যাব ডিজাইন --- */
-    .tabs {
-        display: flex;
-        background-color: var(--input-bg-color);
-        border-radius: var(--border-radius-small);
-        padding: 5px;
-        margin-bottom: 2rem;
+    /*
+    ================================================================================
+    --- COMPONENT :: TABS ---
+    ================================================================================
+    */
+    .tabs-wrapper {
         position: relative;
+        background-color: var(--color-background-input);
+        border-radius: var(--border-radius-md);
+        padding: var(--space-1);
+        display: flex;
+        box-shadow: var(--shadow-inset);
     }
 
     .tab-button {
         flex: 1;
-        padding: 0.9rem;
+        padding: var(--space-3) var(--space-4);
         border: none;
-        background: none;
+        background-color: transparent;
+        border-radius: var(--border-radius-sm);
         cursor: pointer;
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--muted-text-color);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
         position: relative;
-        z-index: 2;
-        transition: color var(--transition-speed-medium) var(--animation-curve), transform var(--transition-speed-fast) ease;
-        border-radius: 8px;
+        z-index: var(--z-index-content);
+        transition: color var(--transition-duration-fast) var(--transition-easing-sharp),
+                    transform var(--transition-duration-fast) var(--transition-easing-bounce);
     }
     
     .tab-button:hover:not(.active) {
-        color: var(--primary-color);
+        color: var(--color-text-primary);
+        background-color: rgba(0,0,0,0.04);
     }
     
     .tab-button:active {
@@ -168,294 +318,583 @@
     }
 
     .tab-button.active {
-        color: var(--primary-color);
-        transform: scale(1.02);
+        color: var(--color-text-inverted);
+    }
+    
+    .tab-slider {
+        content: '';
+        position: absolute;
+        top: var(--space-1);
+        left: var(--space-1);
+        height: calc(100% - var(--space-2));
+        width: calc(50% - var(--space-1));
+        background: linear-gradient(45deg, var(--color-primary-500), var(--color-primary-600));
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-md);
+        z-index: calc(var(--z-index-content) - 1);
+        transition: transform var(--transition-duration-medium) var(--transition-easing-elegant);
+    }
+    
+    .tab-button:nth-child(1).active ~ .tab-slider {
+        transform: translateX(0%);
+    }
+    .tab-button:nth-child(2).active ~ .tab-slider {
+        transform: translateX(100%);
     }
 
-    /* --- ট্যাব কন্টেন্ট --- */
+    /*
+    ================================================================================
+    --- COMPONENT :: FORM CONTENT ---
+    ================================================================================
+    */
     .content {
         display: none;
     }
 
     .content.active {
         display: block;
-        animation: fadeInUp 0.7s var(--animation-curve-smooth);
-    }
-
-    /* --- ফর্ম এলিমেন্টস --- */
-    .form-group {
-        margin-bottom: 1.75rem;
+        animation: fadeUp var(--transition-duration-medium) var(--transition-easing-elegant) forwards;
     }
     
+    .form-group {
+        margin-bottom: var(--space-6);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: var(--space-2);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-primary);
+        font-size: var(--font-size-base);
+        transition: color var(--transition-duration-fast) ease;
+    }
+    
+    .form-group-inline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-4);
+        margin-bottom: var(--space-2);
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    /*
+    ================================================================================
+    --- COMPONENT :: TEXT INPUTS & TEXTAREAS ---
+    ================================================================================
+    */
+    input[type="text"],
+    input[type="password"],
+    textarea {
+        width: 100%;
+        padding: var(--space-3) var(--space-4);
+        font-family: var(--font-family-sans);
+        font-size: var(--font-size-base);
+        color: var(--color-text-primary);
+        background-color: var(--color-background-container);
+        border: var(--border-width-md) solid var(--color-border-light);
+        border-radius: var(--border-radius-md);
+        box-sizing: border-box;
+        transition: border-color var(--transition-duration-fast) var(--transition-easing-sharp), 
+                    box-shadow var(--transition-duration-fast) var(--transition-easing-sharp),
+                    background-color var(--transition-duration-fast) var(--transition-easing-sharp);
+        -webkit-appearance: none;
+    }
+    
+    .input-wrapper input[type="text"],
+    .input-wrapper input[type="password"] {
+        padding-right: calc(var(--space-8) + var(--space-4)); /* Space for two icons */
+    }
+    
+    .input-wrapper textarea {
+        padding-right: var(--space-8); /* Space for one icon */
+    }
+    
+    textarea {
+        min-height: 150px;
+        resize: vertical;
+        line-height: var(--line-height-base);
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--color-primary-500);
+        box-shadow: var(--shadow-focus);
+        background-color: var(--color-background-input-focus);
+    }
+    
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder,
+    textarea::placeholder {
+        color: var(--color-border-dark);
+        opacity: 1;
+        transition: opacity var(--transition-duration-fast) var(--transition-easing-sharp);
+    }
+    
+    input[type="text"]:focus::placeholder,
+    input[type="password"]:focus::placeholder,
+    textarea:focus::placeholder {
+        opacity: 0.5;
+    }
+    
+    .input-adornment {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        gap: var(--space-1);
+    }
+    
+    textarea ~ .input-adornment {
+        top: var(--space-3);
+        transform: translateY(0);
+        align-items: flex-start;
+    }
+    
+    .input-adornment.right {
+        right: var(--space-3);
+    }
+
+    .input-clear-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 1.75rem;
+        line-height: 1;
+        color: var(--color-border-dark);
+        opacity: 0;
+        pointer-events: none;
+        padding: var(--space-1);
+        transform: scale(0.8);
+        transition: opacity var(--transition-duration-fast) ease, 
+                    transform var(--transition-duration-medium) var(--transition-easing-bounce), 
+                    color var(--transition-duration-fast) ease;
+    }
+    
+    .input-clear-btn.visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: scale(1);
+    }
+
+    .input-clear-btn:hover {
+        color: var(--color-text-primary);
+        transform: scale(1.15) rotate(90deg);
+    }
+
+    .char-counter {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-muted);
+        text-align: right;
+        margin-top: var(--space-2);
+        font-family: var(--font-family-mono);
+        transition: color 0.3s ease;
+    }
+
+    /*
+    ================================================================================
+    --- COMPONENT :: CUSTOM CHECKBOX (TOGGLE SWITCH) ---
+    ================================================================================
+    */
+    .toggle-switch-container {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        cursor: pointer;
+        user-select: none;
+        padding: var(--space-2) 0;
+    }
+
+    .toggle-switch-label {
+        font-weight: var(--font-weight-semibold);
+        transition: color var(--transition-duration-fast) ease;
+    }
+    
+    .toggle-switch-container:hover .toggle-switch-label {
+        color: var(--color-primary-500);
+    }
+
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 28px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--color-border-light);
+        border-radius: 34px;
+        transition: var(--transition-duration-medium) var(--transition-easing-elegant);
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        border-radius: 50%;
+        transition: var(--transition-duration-medium) var(--transition-easing-elegant);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .toggle-slider {
+        background-color: var(--color-primary-500);
+    }
+
+    input:focus + .toggle-slider {
+        box-shadow: 0 0 1px var(--color-primary-500);
+    }
+
+    input:checked + .toggle-slider:before {
+        transform: translateX(22px);
+    }
+    
+    .tooltip-wrapper {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .tooltip-icon {
+        margin-left: var(--space-2);
+        color: var(--color-text-muted);
+        font-style: normal;
+        font-weight: bold;
+        border: 1px solid var(--color-border-medium);
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        cursor: help;
+        transition: all var(--transition-duration-fast) ease;
+    }
+    
+    .tooltip-icon:hover {
+        background-color: var(--color-primary-500);
+        color: var(--color-text-inverted);
+        border-color: var(--color-primary-500);
+    }
+    
+    .tooltip-text {
+        visibility: hidden;
+        width: 220px;
+        background-color: var(--color-text-primary);
+        color: #fff;
+        text-align: center;
+        border-radius: var(--border-radius-sm);
+        padding: var(--space-2);
+        position: absolute;
+        z-index: var(--z-index-sticky);
+        bottom: 150%;
+        left: 50%;
+        margin-left: -110px;
+        opacity: 0;
+        transition: opacity var(--transition-duration-fast) ease, visibility var(--transition-duration-fast) ease;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-regular);
+    }
+
+    .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: var(--color-text-primary) transparent transparent transparent;
+    }
+    
+    .tooltip-wrapper:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /*
+    ================================================================================
+    --- COMPONENT :: PASSWORD FIELD & VISIBILITY TOGGLE ---
+    ================================================================================
+    */
     .password-container {
         overflow: hidden;
         max-height: 0;
         opacity: 0;
         transform: translateY(-20px);
-        margin-top: 0;
-        transition: max-height var(--transition-speed-medium) ease-in-out, 
-                    opacity var(--transition-speed-medium) ease-in-out, 
-                    transform var(--transition-speed-medium) ease-in-out, 
-                    margin-top var(--transition-speed-medium) ease-in-out;
+        transition: max-height var(--transition-duration-medium) ease-in-out, 
+                    opacity var(--transition-duration-medium) ease-in-out, 
+                    transform var(--transition-duration-medium) ease-in-out, 
+                    margin-top var(--transition-duration-medium) ease-in-out,
+                    margin-bottom var(--transition-duration-medium) ease-in-out;
     }
 
     .password-container.visible {
-        max-height: 200px;
+        max-height: 300px;
         opacity: 1;
         transform: translateY(0);
-        margin-top: 1.75rem;
-    }
-
-    .form-group-inline {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 0.5rem;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: #343a40;
-        transition: color var(--transition-speed-fast) ease;
-    }
-
-    .input-wrapper {
-        position: relative;
-    }
-
-    .input-clear-btn {
-        position: absolute;
-        top: 50%;
-        right: 12px;
-        transform: translateY(-50%) scale(0.8);
-        border: none;
-        background: transparent;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #adb5bd;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity var(--transition-speed-fast) ease, 
-                    transform var(--transition-speed-medium) var(--animation-curve-smooth), 
-                    color var(--transition-speed-fast) ease;
-        padding: 5px;
-        line-height: 1;
-    }
-
-    textarea ~ .input-clear-btn {
-         top: 18px;
-         transform: translateY(0) scale(0.8);
-    }
-
-    .input-clear-btn.visible {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(-50%) scale(1);
+        margin-top: var(--space-6);
+        margin-bottom: var(--space-6);
     }
     
-    textarea ~ .input-clear-btn.visible {
-         transform: scale(1);
-    }
-
-    .input-clear-btn:hover {
-        color: var(--text-color);
-        transform: translateY(-50%) scale(1.15) rotate(90deg);
-    }
-    
-    textarea ~ .input-clear-btn:hover {
-        transform: scale(1.15) rotate(90deg);
-    }
-
-    input[type="text"],
-    input[type="password"],
-    textarea {
-        width: 100%;
-        padding: 1rem;
-        border: 2px solid var(--border-color);
-        border-radius: var(--border-radius-small);
-        font-size: 1rem;
+    .password-visibility-toggle {
         font-family: inherit;
-        box-sizing: border-box;
-        background-color: var(--container-bg-color);
-        transition: border-color var(--transition-speed-medium), box-shadow var(--transition-speed-medium);
-        padding-right: 3.5rem;
+        font-size: 1rem;
+        color: var(--color-text-muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: var(--space-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color var(--transition-duration-fast) ease, transform var(--transition-duration-fast) ease;
+    }
+    .password-visibility-toggle:hover {
+        color: var(--color-primary-500);
+    }
+    .password-visibility-toggle:active {
+        transform: scale(0.9);
     }
     
-    textarea:focus,
-    input[type="text"]:focus,
-    input[type="password"]:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 4px var(--primary-glow);
-    }
-    
-    input:focus ~ label,
-    textarea:focus ~ label {
-        color: var(--primary-color);
+    .password-visibility-toggle .icon-eye-open,
+    .password-visibility-toggle .icon-eye-closed {
+        width: 24px;
+        height: 24px;
     }
 
-    textarea {
-        min-height: 140px;
-        resize: vertical;
+    #show-encode-password, #show-decode-password {
+        display: none; /* Hide the actual checkbox */
     }
 
-    .char-counter {
-        font-size: 0.85rem;
-        color: var(--muted-text-color);
-        text-align: right;
-        margin-top: 0.5rem;
-        transition: color 0.3s ease;
+    /* Show open eye by default */
+    #show-encode-password ~ .password-visibility-toggle .icon-eye-closed,
+    #show-decode-password ~ .password-visibility-toggle .icon-eye-closed {
+        display: none;
+    }
+    #show-encode-password ~ .password-visibility-toggle .icon-eye-open,
+    #show-decode-password ~ .password-visibility-toggle .icon-eye-open {
+        display: block;
+    }
+    /* Show closed eye when checkbox is checked */
+    #show-encode-password:checked ~ .password-visibility-toggle .icon-eye-closed,
+    #show-decode-password:checked ~ .password-visibility-toggle .icon-eye-closed {
+        display: block;
+    }
+    #show-encode-password:checked ~ .password-visibility-toggle .icon-eye-open,
+    #show-decode-password:checked ~ .password-visibility-toggle .icon-eye-open {
+        display: none;
     }
 
-    /* --- বাটন --- */
+
+    /*
+    ================================================================================
+    --- COMPONENT :: BUTTONS ---
+    ================================================================================
+    */
     .action-button {
         width: 100%;
-        padding: 1rem;
+        padding: var(--space-4);
         border: none;
-        border-radius: var(--border-radius-small);
-        background: var(--primary-gradient);
-        color: #ffffff;
-        font-size: 1.1rem;
-        font-weight: bold;
+        border-radius: var(--border-radius-md);
+        background: linear-gradient(45deg, var(--color-primary-500), var(--color-primary-600));
+        background-size: 200% auto;
+        color: var(--color-text-inverted);
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-bold);
         cursor: pointer;
-        transition: transform var(--transition-speed-medium) var(--animation-curve-smooth), 
-                    box-shadow var(--transition-speed-medium) var(--animation-curve-smooth);
-        box-shadow: 0 4px 15px var(--primary-glow);
+        transition: transform var(--transition-duration-fast) var(--transition-easing-bounce), 
+                    box-shadow var(--transition-duration-fast) var(--transition-easing-elegant),
+                    background-position var(--transition-duration-medium) ease,
+                    background-color var(--transition-duration-medium) ease;
+        box-shadow: 0 4px 15px var(--color-primary-200-trans);
+        position: relative;
+        overflow: hidden;
     }
 
     .action-button:hover {
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 0 8px 25px var(--primary-glow);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px var(--color-primary-200-trans);
+        background-position: right center;
     }
     
     .action-button:active {
         transform: translateY(-1px) scale(0.99);
-        box-shadow: 0 2px 10px var(--primary-glow);
+        box-shadow: 0 2px 10px var(--color-primary-200-trans);
+    }
+    
+    .action-button.success,
+    .action-button[style*="var(--success-color)"] {
+        background: var(--color-success-500) !important;
+        background-image: none !important;
+        box-shadow: 0 4px 15px var(--color-success-200-trans);
     }
 
     .clear-button {
-        padding: 0.5rem 1rem;
-        border: 2px solid var(--border-color);
-        border-radius: 8px;
+        padding: var(--space-2) var(--space-4);
+        border: var(--border-width-md) solid var(--color-border-light);
+        border-radius: var(--border-radius-sm);
         background-color: transparent;
-        color: var(--muted-text-color);
-        font-weight: 600;
+        color: var(--color-text-secondary);
+        font-weight: var(--font-weight-semibold);
         cursor: pointer;
-        transition: all var(--transition-speed-fast) var(--animation-curve);
+        transition: all var(--transition-duration-fast) var(--transition-easing-sharp);
+        white-space: nowrap;
     }
 
     .clear-button:hover {
-        border-color: var(--text-color);
-        color: var(--text-color);
-        background-color: #f8f9fa;
+        border-color: var(--color-secondary-600);
+        color: var(--color-text-primary);
+        background-color: var(--color-background-input);
         transform: translateY(-2px);
     }
     
     .clear-button:active {
         transform: translateY(0);
-        background-color: #e9ecef;
+        background-color: var(--color-border-light);
     }
 
-
-    /* --- ফলাফল এবং আউটপুট স্টাইল --- */
+    /*
+    ================================================================================
+    --- COMPONENT :: RESULT & OUTPUT ---
+    ================================================================================
+    */
     .result {
-        margin-top: 2rem;
-        background-color: #e9ecef;
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 1px solid #d6dde3;
-        animation: fadeInUp 0.6s var(--animation-curve-smooth) forwards;
+        margin-top: var(--space-8);
+        background-color: var(--color-background-body);
+        padding: var(--space-6);
+        border-radius: var(--border-radius-lg);
+        border: var(--border-width-sm) solid var(--color-border-light);
+        animation: fadeUp var(--transition-duration-medium) var(--transition-easing-elegant) forwards;
     }
 
     .result h3 {
         margin-top: 0;
-        margin-bottom: 1rem;
-        color: var(--text-color);
-        font-size: 1.2rem;
-        font-weight: 600;
+        margin-bottom: var(--space-4);
+        color: var(--color-text-primary);
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
     }
 
     .output-container {
-        background-color: var(--container-bg-color);
-        padding: 1rem 1.5rem;
-        border-radius: var(--border-radius-small);
-        border: 1px solid var(--border-color);
+        background-color: var(--color-background-container);
+        padding: var(--space-4) var(--space-5);
+        border-radius: var(--border-radius-md);
+        border: var(--border-width-sm) solid var(--color-border-medium);
         position: relative;
+        box-shadow: var(--shadow-inset);
     }
 
     .result-text {
         white-space: pre-wrap;
         word-wrap: break-word;
-        font-size: 1.1rem;
+        font-family: var(--font-family-sans);
+        font-size: var(--font-size-base);
         max-height: 250px;
         overflow-y: auto;
-        line-height: 1.6;
+        line-height: var(--line-height-base);
+        color: var(--color-text-secondary);
+    }
+    
+    #copy-button, #copy-decoded-button {
+        margin-top: var(--space-5);
     }
 
-    /* --- স্ট্যাটাস মেসেজ (এলার্ট) --- */
+    /*
+    ================================================================================
+    --- COMPONENT :: STATUS MESSAGE (ALERTS) ---
+    ================================================================================
+    */
     .status-message {
-        margin-top: 1rem;
-        font-weight: 600;
+        margin-top: var(--space-4);
+        font-weight: var(--font-weight-semibold);
         text-align: center;
-        padding: 0.75rem;
-        border-radius: 8px;
-        animation: fadeInUp 0.5s var(--animation-curve-smooth);
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--border-radius-md);
+        animation: fadeUp 0.5s var(--transition-easing-elegant);
         min-height: 1.2em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        border: 1px solid transparent;
+    }
+    
+    .status-message:before {
+        font-weight: bold;
+        font-size: 1.2em;
+        line-height: 1;
     }
 
     .status-message.error {
-        color: var(--error-color);
-        background-color: rgba(220, 53, 69, 0.1);
-        animation: shake 0.6s var(--animation-curve);
+        color: var(--color-error-600);
+        background-color: var(--color-error-100-trans);
+        border-color: var(--color-error-200-trans);
+        animation: errorShake 0.6s var(--transition-easing-elegant);
     }
+    .status-message.error:before {
+        content: '⚠';
+    }
+    
     .status-message.info {
-        color: var(--info-color);
-        background-color: rgba(23, 162, 184, 0.1);
+        color: var(--color-info-500);
+        background-color: var(--color-info-100-trans);
+        border-color: rgba(23, 162, 184, 0.2);
+    }
+     .status-message.info:before {
+        content: 'ℹ️';
     }
     
     #encode-status:empty, #decode-status:empty {
         display: none;
     }
 
-    /* --- চেকবক্স --- */
-    .checkbox-container {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        cursor: pointer;
-    }
-    
-    .checkbox-container label {
-        transition: color 0.3s;
-    }
-    
-    .checkbox-container:hover label {
-        color: var(--primary-color);
-    }
-
-    .checkbox-container input {
-        margin-right: 0.75rem;
-    }
-
-    /* --- ফুটার --- */
+    /*
+    ================================================================================
+    --- COMPONENT :: FOOTER ---
+    ================================================================================
+    */
     .footer {
         text-align: center;
-        margin-top: 2.5rem;
-        border-top: 1px solid var(--border-color);
-        padding-top: 1.5rem;
-        font-size: 0.9rem;
-        color: var(--muted-text-color);
+        margin-top: var(--space-10);
+        border-top: var(--border-width-sm) solid var(--color-border-light);
+        padding-top: var(--space-6);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-muted);
     }
 
     .footer a {
-        color: var(--text-color);
-        font-weight: 600;
+        color: var(--color-text-secondary);
+        font-weight: var(--font-weight-semibold);
         text-decoration: none;
         position: relative;
-        transition: color var(--transition-speed-fast);
+        transition: color var(--transition-duration-fast);
     }
 
     .footer a::after {
@@ -463,16 +902,16 @@
         position: absolute;
         width: 100%;
         height: 2px;
-        bottom: -4px;
+        bottom: -6px;
         left: 0;
-        background-color: var(--primary-color);
+        background-color: var(--color-primary-500);
         transform: scaleX(0);
         transform-origin: bottom right;
         transition: transform 0.3s ease-out;
     }
 
     .footer a:hover {
-        color: var(--primary-color);
+        color: var(--color-primary-500);
     }
 
     .footer a:hover::after {
@@ -480,23 +919,48 @@
         transform-origin: bottom left;
     }
 
-    /* --- রেসপন্সিভ ডিজাইন --- */
+    /*
+    ================================================================================
+    --- RESPONSIVE DESIGN ---
+    ================================================================================
+    */
+    @media (max-width: 768px) {
+        body {
+            padding: var(--space-4);
+        }
+        .container {
+            padding: var(--space-8);
+        }
+        .header h1 {
+            font-size: var(--font-size-xxl);
+        }
+    }
+    
     @media (max-width: 600px) {
         body {
             padding: 0;
+            align-items: stretch;
         }
         .container {
-            padding: 1.5rem;
+            padding: var(--space-8) var(--space-6);
             border-radius: 0;
+            border: none;
             box-shadow: none;
             min-height: 100vh;
         }
         .header h1 {
             font-size: 2rem;
         }
+        .tab-button {
+            padding: var(--space-3);
+        }
     }
     
-    /* --- অ্যানিমেশন কমাতে চাইলে --- */
+    /*
+    ================================================================================
+    --- ACCESSIBILITY :: REDUCED MOTION ---
+    ================================================================================
+    */
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -515,97 +979,123 @@
 <div class="container">
     <header class="header">
         <h1>Secret Text Encoder</h1>
-        <p>Hide your secret text</p>
+        <p>Embed your private messages within plain text using advanced steganography and encryption.</p>
     </header>
 
-    <div class="tabs">
-        <button class="tab-button active" onclick="openTab(event, 'encode')">Encode</button>
-        <button class="tab-button" onclick="openTab(event, 'decode')">Decode</button>
+    <div class="main-content">
+        <div class="tabs-container">
+            <div class="tabs-wrapper">
+                <button class="tab-button active" onclick="openTab(event, 'encode')">Encode</button>
+                <button class="tab-button" onclick="openTab(event, 'decode')">Decode</button>
+                <span class="tab-slider"></span>
+            </div>
+        </div>
+
+        <!-- Encode Tab -->
+        <section id="encode" class="content active">
+            <div class="form-group">
+                <label for="payload-text" class="form-label">Secret Message</label>
+                <div class="input-wrapper">
+                    <textarea id="payload-text" placeholder="Enter the message you want to hide..."></textarea>
+                    <div class="input-adornment right">
+                        <button class="input-clear-btn" onclick="clearInput('payload-text')" title="Clear text">&times;</button>
+                    </div>
+                </div>
+                <div id="char-counter" class="char-counter">0 characters</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="carrier-text" class="form-label">Carrier Text/Emojis</label>
+                <div class="input-wrapper">
+                    <input type="text" id="carrier-text" placeholder="e.g., ✨ Hello World! This is regular text. 🎉">
+                     <div class="input-adornment right">
+                        <button class="input-clear-btn" onclick="clearInput('carrier-text')" title="Clear text">&times;</button>
+                    </div>
+                </div>
+            </div>
+
+            <label class="toggle-switch-container">
+                <div class="toggle-switch">
+                    <input type="checkbox" id="secure-encrypt-checkbox">
+                    <span class="toggle-slider"></span>
+                </div>
+                <span class="toggle-switch-label">
+                    High-Security Encryption
+                </span>
+                <div class="tooltip-wrapper">
+                     <i class="tooltip-icon">?</i>
+                     <span class="tooltip-text">Uses strong AES-256 encryption. A password will be required to decode the message.</span>
+                </div>
+            </label>
+
+            <div id="encode-password-container" class="password-container">
+                <label for="encode-password" class="form-label">Encryption Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="encode-password" placeholder="Enter a strong password">
+                    <div class="input-adornment right">
+                        <input type="checkbox" id="show-encode-password">
+                        <label for="show-encode-password" class="password-visibility-toggle" title="Show/Hide Password">
+                            <svg class="icon-eye-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg class="icon-eye-closed" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        </label>
+                        <button class="input-clear-btn" onclick="clearInput('encode-password')" title="Clear password">&times;</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="encode-result" class="result" style="display:none;">
+                <h3>Encoded Text</h3>
+                <div class="output-container">
+                    <p id="encoded-output" class="result-text"></p>
+                </div>
+                <button id="copy-button" class="action-button" onclick="copyEncodedText()">Copy to Clipboard</button>
+            </div>
+            <p id="encode-status" class="status-message"></p>
+        </section>
+
+        <!-- Decode Tab -->
+        <section id="decode" class="content">
+            <div class="form-group">
+                 <div class="form-group-inline">
+                    <label for="smuggled-text" class="form-label">Encoded Carrier Text</label>
+                    <button class="clear-button" onclick="pasteToDecodeInput()">Paste from Clipboard</button>
+                </div>
+                <div class="input-wrapper">
+                    <textarea id="smuggled-text" placeholder="Paste the text containing the hidden message here..."></textarea>
+                    <div class="input-adornment right">
+                        <button class="input-clear-btn" onclick="clearInput('smuggled-text')" title="Clear text">&times;</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="decode-password-container" class="password-container">
+                <label for="decode-password" class="form-label">Decryption Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="decode-password" placeholder="Enter password to reveal message">
+                    <div class="input-adornment right">
+                        <input type="checkbox" id="show-decode-password">
+                        <label for="show-decode-password" class="password-visibility-toggle" title="Show/Hide Password">
+                            <svg class="icon-eye-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <svg class="icon-eye-closed" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                        </label>
+                        <button class="input-clear-btn" onclick="clearInput('decode-password')" title="Clear password">&times;</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="decode-result" class="result" style="display:none;">
+                <h3>Revealed Secret Message</h3>
+                <div class="output-container">
+                    <p id="decoded-output" class="result-text"></p>
+                </div>
+                <button id="copy-decoded-button" class="action-button" onclick="copyDecodedText()">Copy Revealed Text</button>
+            </div>
+            <p id="decode-status" class="status-message"></p>
+        </section>
     </div>
 
-    <!-- Encode Tab -->
-    <section id="encode" class="content active">
-        <div class="form-group">
-            <label for="payload-text">Secret Message:</label>
-            <div class="input-wrapper">
-                <textarea id="payload-text" placeholder="Enter your secret message here..."></textarea>
-                <button class="input-clear-btn" onclick="clearInput('payload-text')" title="Clear text">&times;</button>
-            </div>
-            <div id="char-counter" class="char-counter">0 characters</div>
-        </div>
-
-        <div class="checkbox-container">
-            <input type="checkbox" id="secure-encrypt-checkbox">
-            <label for="secure-encrypt-checkbox">High Secured Encryption</label>
-        </div>
-
-        <div id="encode-password-container" class="password-container">
-            <label for="encode-password">Password:</label>
-            <div class="input-wrapper">
-                <input type="password" id="encode-password" placeholder="Enter password for encryption">
-                <button class="input-clear-btn" onclick="clearInput('encode-password')" title="Clear text">&times;</button>
-            </div>
-            <div class="checkbox-container" style="margin-top: 0.75rem; margin-bottom: 0;">
-                <input type="checkbox" id="show-encode-password">
-                <label for="show-encode-password" style="font-weight: normal; font-size: 0.9rem; color: var(--muted-text-color);">Show Password</label>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="carrier-text">Carrier Text/Emojis:</label>
-            <div class="input-wrapper">
-                <input type="text" id="carrier-text" placeholder="🙂✨🎉 Hello World!">
-                <button class="input-clear-btn" onclick="clearInput('carrier-text')" title="Clear text">&times;</button>
-            </div>
-        </div>
-        
-        <div id="encode-result" class="result" style="display:none;">
-            <h3>Encoded Text:</h3>
-            <div class="output-container">
-                <p id="encoded-output" class="result-text"></p>
-            </div>
-            <button id="copy-button" class="action-button" onclick="copyEncodedText()" style="margin-top: 1rem;">Copy</button>
-        </div>
-        <p id="encode-status" class="status-message"></p>
-    </section>
-
-    <!-- Decode Tab -->
-    <section id="decode" class="content">
-        <div class="form-group">
-             <div class="form-group-inline">
-                <label for="smuggled-text"> Carrier Text/Emojis:</label>
-                <button class="clear-button" onclick="pasteToDecodeInput()">Paste</button>
-            </div>
-            <div class="input-wrapper">
-                <textarea id="smuggled-text" placeholder="Paste the encoded text here..."></textarea>
-                <button class="input-clear-btn" onclick="clearInput('smuggled-text')" title="Clear text">&times;</button>
-            </div>
-        </div>
-        
-        <div id="decode-password-container" class="password-container">
-            <label for="decode-password">Password:</label>
-            <div class="input-wrapper">
-                <input type="password" id="decode-password" placeholder="Enter password to decrypt">
-                <button class="input-clear-btn" onclick="clearInput('decode-password')" title="Clear text">&times;</button>
-            </div>
-            <div class="checkbox-container" style="margin-top: 0.75rem; margin-bottom: 0;">
-                <input type="checkbox" id="show-decode-password">
-                <label for="show-decode-password" style="font-weight: normal; font-size: 0.9rem; color: var(--muted-text-color);">Show Password</label>
-            </div>
-        </div>
-        
-        <div id="decode-result" class="result" style="display:none;">
-            <h3>Revealed Text:</h3>
-            <div class="output-container">
-                <p id="decoded-output" class="result-text"></p>
-            </div>
-            <button id="copy-decoded-button" class="action-button" onclick="copyDecodedText()" style="margin-top: 1rem;">Copy</button>
-        </div>
-        <p id="decode-status" class="status-message"></p>
-    </section>
-
     <footer class="footer">
-        <p><a href="https://hacker-ferdous.github.io" target="_blank" rel="noopener noreferrer">Hacker Ferdous</a> @ 2025</p>
+        <p>Developed with ❤️ by <a href="https://hacker-ferdous.github.io" target="_blank" rel="noopener noreferrer">Hacker Ferdous</a> &copy; 2025</p>
     </footer>
 </div>
 
@@ -641,7 +1131,7 @@
     const PLAINTEXT_FLAG = '0';
     // --- Security Constants for PBKDF2 ---
     const KEY_SIZE = 256 / 32; // 256-bit key
-    const ITERATIONS = 2500; // A reasonable number of iterations for client-side PBKDF2
+    const ITERATIONS = 4500; // A reasonable number of iterations for client-side PBKDF2
 
     // --- Event Listeners for Live Encoding ---
     payloadTextInput.addEventListener('input', () => {
