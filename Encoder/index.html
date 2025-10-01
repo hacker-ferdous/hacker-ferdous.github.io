@@ -865,6 +865,24 @@
         scroll-behavior: auto !important;
       }
     }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .loader {
+    width: 1.1em;
+    height: 1.1em;
+    border: 0.15em solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 800ms linear infinite;
+    flex-shrink: 0;
+}
+
+    *,
+    *::before,
+    *::after {
 </style>
 
 </head>
@@ -994,40 +1012,62 @@
 </div>
 
 <script>
-    // --- Element Selection ---
     const payloadTextInput = document.getElementById('payload-text');
     const carrierTextInput = document.getElementById('carrier-text');
     const charCounter = document.getElementById('char-counter');
     const encodeResultDiv = document.getElementById('encode-result');
     const encodedOutputP = document.getElementById('encoded-output');
     const encodeStatusP = document.getElementById('encode-status');
-
     const smuggledTextInput = document.getElementById('smuggled-text');
     const decodeResultDiv = document.getElementById('decode-result');
     const decodedOutputP = document.getElementById('decoded-output');
     const decodeStatusP = document.getElementById('decode-status');
-
     const secureEncryptCheckbox = document.getElementById('secure-encrypt-checkbox');
     const encodePasswordInput = document.getElementById('encode-password');
     const showEncodePasswordCheckbox = document.getElementById('show-encode-password');
     const encodePasswordContainer = document.getElementById('encode-password-container');
-
     const decodePasswordInput = document.getElementById('decode-password');
     const decodePasswordContainer = document.getElementById('decode-password-container');
     const showDecodePasswordCheckbox = document.getElementById('show-decode-password');
-
     const allTextInputs = document.querySelectorAll('input[type="text"], input[type="password"], textarea');
 
-    // --- Constants ---
     const ZERO_WIDTH_PAYLOAD_START = 0xE0100;
     const ZERO_WIDTH_PAYLOAD_END = 0xE01EF;
     const ENCRYPTION_FLAG = '1';
     const PLAINTEXT_FLAG = '0';
-    // --- Security Constants for PBKDF2 ---
-    const KEY_SIZE = 256 / 32; // 256-bit key
-    const ITERATIONS = 2500; // A reasonable number of iterations for client-side PBKDF2
+    const KEY_SIZE = 256 / 32;
 
-    // --- Event Listeners for Live Encoding ---
+    let DYNAMIC_ITERATIONS = 5000;
+
+    async function determineOptimalIterations() {
+        try {
+            const targetDuration = 500;
+            const benchmarkIterations = 1000;
+            const salt = CryptoJS.lib.WordArray.random(128 / 8);
+            
+            const startTime = performance.now();
+            CryptoJS.PBKDF2("benchmark", salt, {
+                keySize: KEY_SIZE,
+                iterations: benchmarkIterations
+            });
+            const endTime = performance.now();
+            
+            const elapsedTime = endTime - startTime;
+            
+            if (elapsedTime > 0) {
+                const iterationsPerMs = benchmarkIterations / elapsedTime;
+                let calculatedIterations = Math.round(iterationsPerMs * targetDuration);
+                DYNAMIC_ITERATIONS = Math.max(500, Math.min(1000000, calculatedIterations));
+            }
+        } catch (e) {
+            DYNAMIC_ITERATIONS = 5000;
+        }
+    }
+    
+    (async () => {
+        await determineOptimalIterations();
+    })();
+
     payloadTextInput.addEventListener('input', () => {
         updateCharCounter();
         handleEncode();
@@ -1039,11 +1079,9 @@
     });
     encodePasswordInput.addEventListener('input', handleEncode);
 
-    // --- Event Listeners for Live Decoding ---
     smuggledTextInput.addEventListener('input', handleDecode);
     decodePasswordInput.addEventListener('input', handleDecode);
 
-    // --- Other Listeners ---
     showEncodePasswordCheckbox.addEventListener('change', function() {
         encodePasswordInput.type = this.checked ? 'text' : 'password';
     });
@@ -1057,22 +1095,19 @@
         toggleClearButtonVisibility(input);
     });
 
-    // --- Functions ---
     function openTab(evt, tabName) {
-    document.querySelectorAll('.content').forEach(content => {
-        content.classList.remove('active');
-    });
-
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    document.getElementById(tabName).classList.add('active');
-    evt.currentTarget.classList.add('active');
+        document.querySelectorAll('.content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.getElementById(tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
     }
 
     function setStatus(element, message, type = 'error') {
-        element.textContent = message;
+        element.innerHTML = message;
         element.className = `status-message ${type}`;
     }
 
@@ -1082,82 +1117,93 @@
         const useEncryption = secureEncryptCheckbox.checked;
         const password = encodePasswordInput.value;
 
-        encodeStatusP.textContent = '';
+        encodeStatusP.innerHTML = '';
         encodeResultDiv.style.display = 'none';
         encodedOutputP.textContent = '';
 
         if (!payloadText) {
             return;
         }
-        
+
         if (!carrierText) {
             setStatus(encodeStatusP, 'Carrier text is required.', 'info');
             return;
         }
-        
+
         if (useEncryption && !password) {
             setStatus(encodeStatusP, 'Password is required for encryption.', 'info');
             return;
         }
 
-        try {
-            let finalPayload;
-            if (useEncryption) {
-                const finalPassword = '0' + password + '1';
-                const salt = CryptoJS.lib.WordArray.random(128 / 8);
-                const key = CryptoJS.PBKDF2(finalPassword, salt, {
-                    keySize: KEY_SIZE,
-                    iterations: ITERATIONS
-                });
-                const iv = CryptoJS.lib.WordArray.random(128 / 8);
-                const encrypted = CryptoJS.AES.encrypt(payloadText, key, {
-                    iv: iv,
-                    padding: CryptoJS.pad.Pkcs7,
-                    mode: CryptoJS.mode.CBC
-                });
-                const combinedData = CryptoJS.enc.Base64.stringify(salt) + 
-                                     CryptoJS.enc.Base64.stringify(iv) + 
-                                     CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-                finalPayload = ENCRYPTION_FLAG + combinedData;
-            } else {
-                finalPayload = PLAINTEXT_FLAG + payloadText;
+        if (useEncryption) {
+            setStatus(encodeStatusP, '<div class="loader"></div>Encrypting... this may take a moment.', 'info');
+            setTimeout(() => {
+                try {
+                    const finalPassword = '0' + password + '1';
+                    const salt = CryptoJS.lib.WordArray.random(128 / 8);
+                    const key = CryptoJS.PBKDF2(finalPassword, salt, {
+                        keySize: KEY_SIZE,
+                        iterations: DYNAMIC_ITERATIONS
+                    });
+                    const iv = CryptoJS.lib.WordArray.random(128 / 8);
+                    const encrypted = CryptoJS.AES.encrypt(payloadText, key, {
+                        iv: iv,
+                        padding: CryptoJS.pad.Pkcs7,
+                        mode: CryptoJS.mode.CBC
+                    });
+                    const combinedData = DYNAMIC_ITERATIONS + ';' +
+                        CryptoJS.enc.Base64.stringify(salt) +
+                        CryptoJS.enc.Base64.stringify(iv) +
+                        CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+                    const finalPayload = ENCRYPTION_FLAG + combinedData;
+                    const encoder = new TextEncoder();
+                    const payloadBytes = encoder.encode(finalPayload);
+                    let encodedPayload = '';
+                    for (const byte of payloadBytes) {
+                        encodedPayload += String.fromCodePoint(ZERO_WIDTH_PAYLOAD_START + byte);
+                    }
+                    const smuggledText = carrierText + encodedPayload;
+                    encodedOutputP.textContent = smuggledText;
+                    encodeResultDiv.style.display = 'block';
+                    encodeStatusP.innerHTML = '';
+                } catch (e) {
+                    setStatus(encodeStatusP, 'An unexpected error occurred during encoding.', 'error');
+                }
+            }, 50);
+        } else {
+            try {
+                const finalPayload = PLAINTEXT_FLAG + payloadText;
+                const encoder = new TextEncoder();
+                const payloadBytes = encoder.encode(finalPayload);
+                let encodedPayload = '';
+                for (const byte of payloadBytes) {
+                    encodedPayload += String.fromCodePoint(ZERO_WIDTH_PAYLOAD_START + byte);
+                }
+                const smuggledText = carrierText + encodedPayload;
+                encodedOutputP.textContent = smuggledText;
+                encodeResultDiv.style.display = 'block';
+            } catch (e) {
+                setStatus(encodeStatusP, 'An unexpected error occurred during encoding.', 'error');
             }
-
-            const encoder = new TextEncoder();
-            const payloadBytes = encoder.encode(finalPayload);
-
-            let encodedPayload = '';
-            for (const byte of payloadBytes) {
-                encodedPayload += String.fromCodePoint(ZERO_WIDTH_PAYLOAD_START + byte);
-            }
-
-            const smuggledText = carrierText + encodedPayload;
-            
-            encodedOutputP.textContent = smuggledText;
-            encodeResultDiv.style.display = 'block';
-
-        } catch (e) {
-            setStatus(encodeStatusP, 'An unexpected error occurred during encoding.', 'error');
         }
     }
 
     function handleDecode() {
         const smuggledText = smuggledTextInput.value;
         const password = decodePasswordInput.value;
-        
-        decodeStatusP.textContent = '';
+
+        decodeStatusP.innerHTML = '';
         decodeResultDiv.style.display = 'none';
         decodedOutputP.textContent = '';
         decodePasswordContainer.classList.remove('visible');
 
         if (!smuggledText.trim()) {
-             return;
+            return;
         }
 
         try {
             const decodedBytes = [];
             let foundPayload = false;
-
             for (const char of smuggledText) {
                 const codePoint = char.codePointAt(0);
                 if (codePoint >= ZERO_WIDTH_PAYLOAD_START && codePoint <= ZERO_WIDTH_PAYLOAD_END) {
@@ -1170,65 +1216,78 @@
                 setStatus(decodeStatusP, "This appears to be plain text. No hidden message found.", 'info');
                 return;
             }
-            
+
             const decoder = new TextDecoder();
             const decodedPayload = decoder.decode(new Uint8Array(decodedBytes));
-            
+
             if (decodedPayload.length < 1) {
                 throw new Error("Hidden data is corrupted.");
             }
 
             const flag = decodedPayload.charAt(0);
             const actualData = decodedPayload.substring(1);
-            let revealedText = '';
 
             if (flag === ENCRYPTION_FLAG) {
                 decodePasswordContainer.classList.add('visible');
                 if (!password) {
-                     setStatus(decodeStatusP, "Password required for decryption.", 'info');
-                     return;
-                }
-                
-                if (actualData.length < 48) {
-                    throw new Error("Corrupted data: missing salt/IV.");
+                    setStatus(decodeStatusP, "Password required for decryption.", 'info');
+                    return;
                 }
 
-                const salt = CryptoJS.enc.Base64.parse(actualData.substring(0, 24));
-                const iv = CryptoJS.enc.Base64.parse(actualData.substring(24, 48));
-                const ciphertext = CryptoJS.enc.Base64.parse(actualData.substring(48));
-                const finalPassword = '0' + password + '1';
-                const key = CryptoJS.PBKDF2(finalPassword, salt, {
-                    keySize: KEY_SIZE,
-                    iterations: ITERATIONS
-                });
-                const decryptedBytes = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, key, {
-                    iv: iv,
-                    padding: CryptoJS.pad.Pkcs7,
-                    mode: CryptoJS.mode.CBC
-                });
-                const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-                
-                if (!decryptedText) {
-                    throw new Error("Wrong password or corrupted data.");
-                }
-                revealedText = decryptedText;
+                setStatus(decodeStatusP, '<div class="loader"></div>Decrypting... this may take a moment.', 'info');
+                setTimeout(() => {
+                    try {
+                        const delimiterIndex = actualData.indexOf(';');
+                        if (delimiterIndex === -1) {
+                            throw new Error("Corrupted data: missing iteration count.");
+                        }
+                        const iterations = parseInt(actualData.substring(0, delimiterIndex), 10);
+                        const encryptedData = actualData.substring(delimiterIndex + 1);
 
+                        if (isNaN(iterations) || iterations <= 0) {
+                           throw new Error("Corrupted data: invalid iteration count.");
+                        }
+                        if (encryptedData.length < 48) {
+                            throw new Error("Corrupted data: missing salt/IV.");
+                        }
+                        
+                        const salt = CryptoJS.enc.Base64.parse(encryptedData.substring(0, 24));
+                        const iv = CryptoJS.enc.Base64.parse(encryptedData.substring(24, 48));
+                        const ciphertext = CryptoJS.enc.Base64.parse(encryptedData.substring(48));
+                        const finalPassword = '0' + password + '1';
+                        const key = CryptoJS.PBKDF2(finalPassword, salt, {
+                            keySize: KEY_SIZE,
+                            iterations: iterations
+                        });
+                        const decryptedBytes = CryptoJS.AES.decrypt({
+                            ciphertext: ciphertext
+                        }, key, {
+                            iv: iv,
+                            padding: CryptoJS.pad.Pkcs7,
+                            mode: CryptoJS.mode.CBC
+                        });
+                        const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                        if (!decryptedText) {
+                            throw new Error("Wrong password or corrupted data.");
+                        }
+                        decodedOutputP.textContent = decryptedText;
+                        decodeResultDiv.style.display = 'block';
+                        decodeStatusP.innerHTML = '';
+                    } catch (e) {
+                         setStatus(decodeStatusP, "Wrong password or corrupted data.", 'error');
+                    }
+                }, 50);
             } else if (flag === PLAINTEXT_FLAG) {
-                revealedText = actualData;
+                decodedOutputP.textContent = actualData;
+                decodeResultDiv.style.display = 'block';
             } else {
                 throw new Error("Hidden data is corrupted or in an unknown format.");
             }
-            
-            if (revealedText) {
-                decodedOutputP.textContent = revealedText;
-                decodeResultDiv.style.display = 'block';
-            }
-
         } catch (e) {
             setStatus(decodeStatusP, e.message, 'error');
         }
     }
-    
+
     function toggleClearButtonVisibility(inputElement) {
         const wrapper = inputElement.closest('.input-wrapper');
         if (!wrapper) return;
@@ -1242,7 +1301,9 @@
         const inputElement = document.getElementById(elementId);
         if (inputElement) {
             inputElement.value = '';
-            inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+            inputElement.dispatchEvent(new Event('input', {
+                bubbles: true
+            }));
             inputElement.focus();
         }
     }
@@ -1259,7 +1320,7 @@
             setTimeout(() => {
                 buttonElement.textContent = originalText;
                 buttonElement.style.background = '';
-            }, 2000); 
+            }, 2000);
         }).catch(err => {
             console.error('Failed to copy text: ', err);
             alert('Failed to copy text.');
@@ -1269,7 +1330,7 @@
     function copyEncodedText() {
         copyToClipboard(encodedOutputP.textContent, document.getElementById('copy-button'));
     }
-    
+
     function copyDecodedText() {
         copyToClipboard(decodedOutputP.textContent, document.getElementById('copy-decoded-button'));
     }
@@ -1282,7 +1343,9 @@
             }
             const text = await navigator.clipboard.readText();
             smuggledTextInput.value = text;
-            smuggledTextInput.dispatchEvent(new Event('input', { bubbles: true }));
+            smuggledTextInput.dispatchEvent(new Event('input', {
+                bubbles: true
+            }));
         } catch (err) {
             console.error('Failed to read clipboard contents: ', err);
             setStatus(decodeStatusP, 'Failed to paste from clipboard.', 'error');
@@ -1297,15 +1360,12 @@
     document.addEventListener("DOMContentLoaded", () => {
         document.querySelector('.tab-button.active').click();
         updateCharCounter();
-
         const tooltipWrappers = document.querySelectorAll('.tooltip-wrapper');
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         let timeoutId = null;
-
         tooltipWrappers.forEach(wrapper => {
             const icon = wrapper.querySelector('.tooltip-icon');
             if (!icon) return;
-
             const closeAllTooltips = (exceptWrapper = null) => {
                 tooltipWrappers.forEach(otherWrapper => {
                     if (otherWrapper !== exceptWrapper) {
@@ -1313,34 +1373,28 @@
                     }
                 });
             };
-            
             const handleTooltipPosition = (wrapper) => {
                 const tooltipText = wrapper.querySelector('.tooltip-text');
                 if (!tooltipText) return;
-                
                 tooltipText.style.transform = '';
                 const rect = tooltipText.getBoundingClientRect();
                 const viewportWidth = window.innerWidth;
-
                 if (rect.right > viewportWidth) {
                     const overflowAmount = rect.right - viewportWidth;
                     tooltipText.style.transform = `translateX(-${overflowAmount + 15}px)`;
                 }
-                 if (rect.left < 0) {
+                if (rect.left < 0) {
                     const overflowAmount = Math.abs(rect.left);
                     tooltipText.style.transform = `translateX(${overflowAmount + 15}px)`;
                 }
             };
-
             if (isTouchDevice) {
                 icon.addEventListener('click', (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    
                     clearTimeout(timeoutId);
                     const wasActive = wrapper.classList.contains('active');
                     closeAllTooltips();
-
                     if (!wasActive) {
                         wrapper.classList.add('active');
                         handleTooltipPosition(wrapper);
@@ -1355,13 +1409,11 @@
                     wrapper.classList.add('active');
                     handleTooltipPosition(wrapper);
                 });
-
                 icon.addEventListener('mouseleave', () => {
                     wrapper.classList.remove('active');
                 });
             }
         });
-
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.tooltip-wrapper')) {
                 tooltipWrappers.forEach(wrapper => {
