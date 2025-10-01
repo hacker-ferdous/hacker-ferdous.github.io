@@ -15,115 +15,85 @@
     <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundle.min.js"></script>
 
 <style>
-    /*
-    ================================================================================
-    --- ROOT :: DESIGN SYSTEM & GLOBAL VARIABLES ---
-    ================================================================================
-    */
     :root {
-        /* Color Palette */
         --color-primary-500: #007aff;
         --color-primary-600: #006de0;
         --color-primary-700: #005ec4;
         --color-primary-100-trans: rgba(0, 122, 255, 0.1);
         --color-primary-200-trans: rgba(0, 122, 255, 0.2);
-
         --color-secondary-500: #6c757d;
         --color-secondary-600: #5a6268;
         --color-secondary-700: #495057;
-
         --color-success-500: #28a745;
         --color-success-600: #218838;
         --color-success-100-trans: rgba(40, 167, 69, 0.1);
         --color-success-200-trans: rgba(40, 167, 69, 0.2);
-
         --color-error-500: #dc3545;
         --color-error-600: #c82333;
         --color-error-100-trans: rgba(220, 53, 69, 0.1);
         --color-error-200-trans: rgba(220, 53, 69, 0.2);
-        
         --color-info-500: #17a2b8;
         --color-info-100-trans: rgba(23, 162, 184, 0.1);
-
         --color-text-primary: #212529;
         --color-text-secondary: #495057;
         --color-text-muted: #6c757d;
         --color-text-inverted: #ffffff;
-        
-        --color-background-body: #f8f9fa;
+        --color-background-body: #ffffff;
         --color-background-container: #ffffff;
         --color-background-input: #f1f3f5;
         --color-background-input-focus: #ffffff;
         --color-background-result: #e9ecef;
-        
         --color-border-light: #dee2e6;
         --color-border-medium: #ced4da;
         --color-border-dark: #adb5bd;
-
-        /* Typography */
         --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-family-mono: 'Roboto Mono', monospace;
-        --font-size-xs: 0.75rem;  /* 12px */
-        --font-size-sm: 0.875rem; /* 14px */
-        --font-size-base: 1rem;     /* 16px */
-        --font-size-md: 1.125rem; /* 18px */
-        --font-size-lg: 1.25rem;  /* 20px */
-        --font-size-xl: 1.5rem;   /* 24px */
-        --font-size-xxl: 2rem;    /* 32px */
-        --font-size-xxxl: 2.5rem; /* 40px */
+        --font-size-xs: 0.75rem;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-md: 1.125rem;
+        --font-size-lg: 1.25rem;
+        --font-size-xl: 1.5rem;
+        --font-size-xxl: 2rem;
+        --font-size-xxxl: 2.5rem;
         --line-height-base: 1.6;
         --font-weight-regular: 400;
         --font-weight-medium: 500;
         --font-weight-semibold: 600;
         --font-weight-bold: 700;
         --font-weight-extrabold: 800;
-
-        /* Spacing & Sizing */
-        --space-1: 0.25rem;  /* 4px  */
-        --space-2: 0.5rem;   /* 8px  */
-        --space-3: 0.75rem;  /* 12px */
-        --space-4: 1rem;     /* 16px */
-        --space-5: 1.25rem;  /* 20px */
-        --space-6: 1.5rem;   /* 24px */
-        --space-8: 2rem;     /* 32px */
-        --space-10: 2.5rem;  /* 40px */
-        --space-12: 3rem;    /* 48px */
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-5: 1.25rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-10: 2.5rem;
+        --space-12: 3rem;
         --max-width-container: 720px;
-
-        /* Borders & Radii */
         --border-radius-sm: 8px;
         --border-radius-md: 12px;
         --border-radius-lg: 16px;
         --border-width-sm: 1px;
         --border-width-md: 2px;
-
-        /* Shadows */
         --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
         --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
         --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
         --shadow-focus: 0 0 0 4px var(--color-primary-200-trans);
         --shadow-inset: inset 0 2px 4px rgba(0,0,0,0.06);
-
-        /* Transitions & Animations */
         --transition-duration-fast: 200ms;
         --transition-duration-medium: 400ms;
         --transition-duration-slow: 600ms;
         --transition-easing-sharp: cubic-bezier(0.4, 0, 0.6, 1);
         --transition-easing-elegant: cubic-bezier(0.25, 0.1, 0.25, 1);
         --transition-easing-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        
-        /* Z-Index */
         --z-index-base: 1;
         --z-index-content: 10;
         --z-index-sticky: 100;
         --z-index-modal: 1000;
     }
-    
-    /*
-    ================================================================================
-    --- KEYFRAMES :: ANIMATIONS LIBRARY ---
-    ================================================================================
-    */
+
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
@@ -173,11 +143,6 @@
         to { transform: rotate(360deg); }
     }
 
-    /*
-    ================================================================================
-    --- GLOBAL :: RESETS & BASE STYLES ---
-    ================================================================================
-    */
     *,
     *::before,
     *::after {
@@ -200,15 +165,14 @@
         line-height: var(--line-height-base);
         color: var(--color-text-primary);
         background-color: var(--color-background-body);
-        
         display: flex;
         justify-content: center;
         align-items: flex-start;
         min-height: 100vh;
         padding: var(--space-8);
+        overflow-x: hidden;
     }
     
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 10px;
     }
@@ -225,11 +189,6 @@
       background: var(--color-secondary-500);
     }
 
-    /*
-    ================================================================================
-    --- LAYOUT :: MAIN CONTAINER & STRUCTURE ---
-    ================================================================================
-    */
     .container {
         width: 100%;
         max-width: var(--max-width-container);
@@ -241,6 +200,8 @@
         animation: fadeUp var(--transition-duration-slow) var(--transition-easing-elegant) forwards;
         transition: transform var(--transition-duration-medium) var(--transition-easing-elegant),
                     box-shadow var(--transition-duration-medium) var(--transition-easing-elegant);
+                    
+        overflow-x: hidden;
     }
 
     .main-content {
@@ -249,11 +210,6 @@
         gap: var(--space-8);
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: HEADER ---
-    ================================================================================
-    */
     .header {
         text-align: center;
         margin-bottom: var(--space-4);
@@ -278,11 +234,6 @@
         margin: 0 auto;
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: TABS ---
-    ================================================================================
-    */
     .tabs-wrapper {
         position: relative;
         background-color: var(--color-background-input);
@@ -342,11 +293,6 @@
         transform: translateX(100%);
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: FORM CONTENT ---
-    ================================================================================
-    */
     .content {
         display: none;
     }
@@ -385,11 +331,6 @@
         align-items: center;
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: TEXT INPUTS & TEXTAREAS ---
-    ================================================================================
-    */
     input[type="text"],
     input[type="password"],
     textarea {
@@ -410,11 +351,11 @@
     
     .input-wrapper input[type="text"],
     .input-wrapper input[type="password"] {
-        padding-right: calc(var(--space-8) + var(--space-4)); /* Space for two icons */
+        padding-right: calc(var(--space-8) + var(--space-4));
     }
     
     .input-wrapper textarea {
-        padding-right: var(--space-8); /* Space for one icon */
+        padding-right: var(--space-8);
     }
     
     textarea {
@@ -501,11 +442,6 @@
         transition: color 0.3s ease;
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: CUSTOM CHECKBOX (TOGGLE SWITCH) ---
-    ================================================================================
-    */
     .toggle-switch-container {
         display: flex;
         align-items: center;
@@ -633,16 +569,11 @@
         border-color: var(--color-text-primary) transparent transparent transparent;
     }
     
-    .tooltip-wrapper:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
+    .tooltip-wrapper.active .tooltip-text {
+    visibility: visible;
+    opacity: 1;
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: PASSWORD FIELD & VISIBILITY TOGGLE ---
-    ================================================================================
-    */
     .password-container {
         overflow: hidden;
         max-height: 0;
@@ -690,10 +621,9 @@
     }
 
     #show-encode-password, #show-decode-password {
-        display: none; /* Hide the actual checkbox */
+        display: none;
     }
 
-    /* Show open eye by default */
     #show-encode-password ~ .password-visibility-toggle .icon-eye-closed,
     #show-decode-password ~ .password-visibility-toggle .icon-eye-closed {
         display: none;
@@ -702,7 +632,6 @@
     #show-decode-password ~ .password-visibility-toggle .icon-eye-open {
         display: block;
     }
-    /* Show closed eye when checkbox is checked */
     #show-encode-password:checked ~ .password-visibility-toggle .icon-eye-closed,
     #show-decode-password:checked ~ .password-visibility-toggle .icon-eye-closed {
         display: block;
@@ -712,12 +641,6 @@
         display: none;
     }
 
-
-    /*
-    ================================================================================
-    --- COMPONENT :: BUTTONS ---
-    ================================================================================
-    */
     .action-button {
         width: 100%;
         padding: var(--space-4);
@@ -780,11 +703,6 @@
         background-color: var(--color-border-light);
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: RESULT & OUTPUT ---
-    ================================================================================
-    */
     .result {
         margin-top: var(--space-8);
         background-color: var(--color-background-body);
@@ -826,11 +744,6 @@
         margin-top: var(--space-5);
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: STATUS MESSAGE (ALERTS) ---
-    ================================================================================
-    */
     .status-message {
         margin-top: var(--space-4);
         font-weight: var(--font-weight-semibold);
@@ -875,11 +788,6 @@
         display: none;
     }
 
-    /*
-    ================================================================================
-    --- COMPONENT :: FOOTER ---
-    ================================================================================
-    */
     .footer {
         text-align: center;
         margin-top: var(--space-10);
@@ -919,11 +827,6 @@
         transform-origin: bottom left;
     }
 
-    /*
-    ================================================================================
-    --- RESPONSIVE DESIGN ---
-    ================================================================================
-    */
     @media (max-width: 768px) {
         body {
             padding: var(--space-4);
@@ -955,12 +858,7 @@
             padding: var(--space-3);
         }
     }
-    
-    /*
-    ================================================================================
-    --- ACCESSIBILITY :: REDUCED MOTION ---
-    ================================================================================
-    */
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -1007,7 +905,7 @@
             <div class="form-group">
                 <label for="carrier-text" class="form-label">Carrier Text/Emojis</label>
                 <div class="input-wrapper">
-                    <input type="text" id="carrier-text" placeholder="e.g., ✨ Hello World! This is regular text. 🎉">
+                    <input type="text" id="carrier-text" placeholder="e.g., ✨ Hello World!">
                      <div class="input-adornment right">
                         <button class="input-clear-btn" onclick="clearInput('carrier-text')" title="Clear text">&times;</button>
                     </div>
@@ -1131,7 +1029,7 @@
     const PLAINTEXT_FLAG = '0';
     // --- Security Constants for PBKDF2 ---
     const KEY_SIZE = 256 / 32; // 256-bit key
-    const ITERATIONS = 4500; // A reasonable number of iterations for client-side PBKDF2
+    const ITERATIONS = 2500; // A reasonable number of iterations for client-side PBKDF2
 
     // --- Event Listeners for Live Encoding ---
     payloadTextInput.addEventListener('input', () => {
@@ -1188,7 +1086,6 @@
         const useEncryption = secureEncryptCheckbox.checked;
         const password = encodePasswordInput.value;
 
-        // Reset UI before processing
         encodeStatusP.textContent = '';
         encodeResultDiv.style.display = 'none';
         encodedOutputP.textContent = '';
@@ -1210,35 +1107,22 @@
         try {
             let finalPayload;
             if (useEncryption) {
-                // **USER REQUEST: Add '0' at the start and '1' at the end of the password**
                 const finalPassword = '0' + password + '1';
-
-                // 1. Generate a random salt
                 const salt = CryptoJS.lib.WordArray.random(128 / 8);
-
-                // 2. Derive a secure key using PBKDF2 with the modified password
                 const key = CryptoJS.PBKDF2(finalPassword, salt, {
                     keySize: KEY_SIZE,
                     iterations: ITERATIONS
                 });
-
-                // 3. Generate a random Initialization Vector (IV)
                 const iv = CryptoJS.lib.WordArray.random(128 / 8);
-
-                // 4. Encrypt the message
                 const encrypted = CryptoJS.AES.encrypt(payloadText, key, {
                     iv: iv,
                     padding: CryptoJS.pad.Pkcs7,
                     mode: CryptoJS.mode.CBC
                 });
-                
-                // 5. Combine salt, IV, and ciphertext
                 const combinedData = CryptoJS.enc.Base64.stringify(salt) + 
                                      CryptoJS.enc.Base64.stringify(iv) + 
                                      CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-
                 finalPayload = ENCRYPTION_FLAG + combinedData;
-
             } else {
                 finalPayload = PLAINTEXT_FLAG + payloadText;
             }
@@ -1265,7 +1149,6 @@
         const smuggledText = smuggledTextInput.value;
         const password = decodePasswordInput.value;
         
-        // Reset UI
         decodeStatusP.textContent = '';
         decodeResultDiv.style.display = 'none';
         decodedOutputP.textContent = '';
@@ -1314,27 +1197,19 @@
                     throw new Error("Corrupted data: missing salt/IV.");
                 }
 
-                // 1. Extract salt, IV, and ciphertext
                 const salt = CryptoJS.enc.Base64.parse(actualData.substring(0, 24));
                 const iv = CryptoJS.enc.Base64.parse(actualData.substring(24, 48));
                 const ciphertext = CryptoJS.enc.Base64.parse(actualData.substring(48));
-
-                // **USER REQUEST: Add '0' at the start and '1' at the end of the password**
                 const finalPassword = '0' + password + '1';
-
-                // 2. Re-derive the key using the extracted salt and modified password
                 const key = CryptoJS.PBKDF2(finalPassword, salt, {
                     keySize: KEY_SIZE,
                     iterations: ITERATIONS
                 });
-
-                // 3. Decrypt the message
                 const decryptedBytes = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, key, {
                     iv: iv,
                     padding: CryptoJS.pad.Pkcs7,
                     mode: CryptoJS.mode.CBC
                 });
-
                 const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
                 
                 if (!decryptedText) {
@@ -1384,7 +1259,7 @@
         navigator.clipboard.writeText(text).then(() => {
             const originalText = buttonElement.textContent;
             buttonElement.textContent = 'Copied!';
-            buttonElement.style.background = 'var(--success-color)';
+            buttonElement.style.background = 'var(--color-success-500)';
             setTimeout(() => {
                 buttonElement.textContent = originalText;
                 buttonElement.style.background = '';
@@ -1426,6 +1301,79 @@
     document.addEventListener("DOMContentLoaded", () => {
         document.querySelector('.tab-button.active').click();
         updateCharCounter();
+
+        const tooltipWrappers = document.querySelectorAll('.tooltip-wrapper');
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        let timeoutId = null;
+
+        tooltipWrappers.forEach(wrapper => {
+            const icon = wrapper.querySelector('.tooltip-icon');
+            if (!icon) return;
+
+            const closeAllTooltips = (exceptWrapper = null) => {
+                tooltipWrappers.forEach(otherWrapper => {
+                    if (otherWrapper !== exceptWrapper) {
+                        otherWrapper.classList.remove('active');
+                    }
+                });
+            };
+            
+            const handleTooltipPosition = (wrapper) => {
+                const tooltipText = wrapper.querySelector('.tooltip-text');
+                if (!tooltipText) return;
+                
+                tooltipText.style.transform = '';
+                const rect = tooltipText.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+
+                if (rect.right > viewportWidth) {
+                    const overflowAmount = rect.right - viewportWidth;
+                    tooltipText.style.transform = `translateX(-${overflowAmount + 15}px)`;
+                }
+                 if (rect.left < 0) {
+                    const overflowAmount = Math.abs(rect.left);
+                    tooltipText.style.transform = `translateX(${overflowAmount + 15}px)`;
+                }
+            };
+
+            if (isTouchDevice) {
+                icon.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    clearTimeout(timeoutId);
+                    const wasActive = wrapper.classList.contains('active');
+                    closeAllTooltips();
+
+                    if (!wasActive) {
+                        wrapper.classList.add('active');
+                        handleTooltipPosition(wrapper);
+                        timeoutId = setTimeout(() => {
+                            wrapper.classList.remove('active');
+                        }, 3000);
+                    }
+                });
+            } else {
+                icon.addEventListener('mouseenter', () => {
+                    closeAllTooltips();
+                    wrapper.classList.add('active');
+                    handleTooltipPosition(wrapper);
+                });
+
+                icon.addEventListener('mouseleave', () => {
+                    wrapper.classList.remove('active');
+                });
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.tooltip-wrapper')) {
+                tooltipWrappers.forEach(wrapper => {
+                    wrapper.classList.remove('active');
+                });
+                clearTimeout(timeoutId);
+            }
+        });
     });
 </script>
 
