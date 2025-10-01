@@ -1165,10 +1165,16 @@
 
     // --- Functions ---
     function openTab(evt, tabName) {
-        document.querySelectorAll('.content').forEach(content => content.style.display = "none");
-        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.classList.add('active');
+    document.querySelectorAll('.content').forEach(content => {
+        content.classList.remove('active');
+    });
+
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    document.getElementById(tabName).classList.add('active');
+    evt.currentTarget.classList.add('active');
     }
 
     function setStatus(element, message, type = 'error') {
