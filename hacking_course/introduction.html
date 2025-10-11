@@ -1,0 +1,855 @@
+<!-- Ethical Hacking [Part 1] -->
+<!--IF I GET 50+ LIKES I WILL PROVIDE YOU THE NEXT PART -->
+
+
+<!-- Let us know in the comments which type of hacking you want to learn -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Introduction to Ethical Hacking</title>
+        <style>
+            
+    
+            /* --- Google Fonts Import --- */
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap'); /* 
+    ========================================
+    CSS Variables (Custom Properties) for Theming
+    ========================================
+    */
+            :root {
+                /* Color Palette */
+                --color-background: #121212;
+                /* Very dark grey, near black */
+                --color-surface: #1e1e1e;
+                /* Dark grey for content cards */
+                --color-primary: #bb86fc;
+                /* A vibrant purple for accents */
+                --color-secondary: #03dac6;
+                /* A teal for secondary accents */
+                --color-text-primary: #e0e0e0;
+                /* Light grey for primary text */
+                --color-text-secondary: #a0a0a0;
+                /* Dimmer grey for less important text */
+                --color-border: #333;
+                /* Typography */
+                --font-primary: 'Poppins', Arial, sans-serif;
+                --font-weight-light: 300;
+                --font-weight-regular: 400;
+                --font-weight-semibold: 600;
+                --font-weight-bold: 700;
+                /* Spacing & Sizing */
+                --spacing-unit: 8px;
+                --border-radius: 8px;
+                --shadow-elevation-medium: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+                --transition-speed: 0.3s ease;
+            }
+
+            /* 
+    ========================================
+    Global & Reset Styles
+    ========================================
+    */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family: var(--font-primary);
+                line-height: 1.8;
+                background-color: var(--color-background);
+                color: var(--color-text-primary);
+                font-weight: var(--font-weight-regular);
+            }
+
+            /* 
+    ========================================
+    Main Layout & Container
+    ========================================
+    */
+            .container {
+                width: 90%;
+                max-width: 1100px;
+                margin: 0 auto;
+                overflow: hidden;
+                padding: calc(var(--spacing-unit) * 3) 0;
+            }
+
+            /* 
+    ========================================
+    Header & Navigation
+    ========================================
+    */
+            header {
+                background: var(--color-surface);
+                color: #fff;
+                padding-top: calc(var(--spacing-unit) * 4);
+                min-height: 80px;
+                border-bottom: 4px solid var(--color-primary);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            header h1 {
+                text-align: center;
+                text-transform: uppercase;
+                margin: 0;
+                font-size: 2.5rem;
+                font-weight: var(--font-weight-bold);
+                letter-spacing: 2px;
+                color: var(--color-text-primary);
+            }
+
+            /* 
+    ========================================
+    Language Selector
+    ========================================
+    */
+            .language-selector {
+                text-align: right;
+                padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+                background: rgba(0,0,0,0.2);
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            .language-selector label {
+                color: var(--color-text-secondary);
+                margin-right: var(--spacing-unit);
+                font-weight: var(--font-weight-light);
+            }
+
+            #lang-select {
+                padding: var(--spacing-unit);
+                border-radius: var(--border-radius);
+                background-color: var(--color-surface);
+                color: var(--color-text-primary);
+                border: 1px solid var(--color-border);
+                transition: all var(--transition-speed);
+                cursor: pointer;
+            }
+
+            #lang-select:hover {
+                border-color: var(--color-primary);
+                box-shadow: 0 0 8px var(--color-primary);
+            }
+
+            /* 
+    ========================================
+    Main Content Styling
+    ========================================
+    */
+            .main-content {
+                padding: calc(var(--spacing-unit) * 5);
+                background: var(--color-surface);
+                margin-top: calc(var(--spacing-unit) * 4);
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow-elevation-medium);
+                border: 1px solid var(--color-border);
+            }
+
+            .main-content h2 {
+                color: var(--color-primary);
+                font-size: 2rem;
+                margin-bottom: calc(var(--spacing-unit) * 2);
+                padding-bottom: var(--spacing-unit);
+                border-bottom: 2px solid var(--color-secondary);
+                font-weight: var(--font-weight-semibold);
+            }
+
+            .main-content h3 {
+                color: var(--color-secondary);
+                font-size: 1.5rem;
+                margin-top: calc(var(--spacing-unit) * 4);
+                margin-bottom: var(--spacing-unit);
+                font-weight: var(--font-weight-semibold);
+            }
+
+            .main-content p {
+                margin-bottom: calc(var(--spacing-unit) * 2);
+                color: var(--color-text-secondary);
+            }
+
+            .main-content img {
+                max-width: 100%;
+                height: auto;
+                border-radius: var(--border-radius);
+                margin-bottom: calc(var(--spacing-unit) * 4);
+                box-shadow: var(--shadow-elevation-medium);
+                border: 2px solid var(--color-border);
+            }
+
+            /* Custom List Styling */
+            .main-content ul {
+                list-style-type: none;
+                padding-left: 0;
+                margin-bottom: calc(var(--spacing-unit) * 3);
+            }
+
+            .main-content ul li {
+                background: rgba(0, 0, 0, 0.1);
+                margin-bottom: var(--spacing-unit);
+                padding: calc(var(--spacing-unit) * 2);
+                border-left: 4px solid var(--color-secondary);
+                border-radius: 0 var(--border-radius) var(--border-radius) 0;
+                color: var(--color-text-secondary);
+                transition: all var(--transition-speed);
+            }
+
+            .main-content ul li:hover {
+                transform: translateX(10px);
+                border-left-color: var(--color-primary);
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+            .main-content ul li strong {
+                color: var(--color-text-primary);
+                font-weight: var(--font-weight-semibold);
+            }
+
+            /* 
+    ========================================
+    Footer
+    ========================================
+    */
+            footer {
+                background: var(--color-surface);
+                color: var(--color-text-secondary);
+                text-align: center;
+                padding: calc(var(--spacing-unit) * 4);
+                margin-top: calc(var(--spacing-unit) * 4);
+                border-top: 4px solid var(--color-primary);
+            }
+
+            /* 
+    ========================================
+    Responsive Design for Mobile Devices
+    ========================================
+    */
+            @media(max-width: 768px) {
+                header h1 {
+                    font-size: 1.8rem;
+                }
+
+                .language-selector {
+                    text-align: center;
+                }
+
+                .main-content {
+                    padding: calc(var(--spacing-unit) * 3);
+                }
+
+                .main-content h2 {
+                    font-size: 1.6rem;
+                }
+
+                .main-content h3 {
+                    font-size: 1.3rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <h1 data-lang-key="title">Introduction to Ethical Hacking</h1>
+            </div>
+        </header>
+        <div class="language-selector">
+            <label for="lang-select" data-lang-key="select_language">Select Language:</label>
+            <select id="lang-select">
+                <option value="en">English</option>
+                <option value="zh">Mandarin Chinese</option>
+                <option value="hi">Hindi</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="ar">Arabic</option>
+                <option value="bn">Bengali</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="ur">Urdu</option>
+            </select>
+        </div>
+        <div class="container main-content">
+            <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2070&auto=format&fit=crop" alt="Ethical Hacking Concept">
+            <h2 data-lang-key="what_is_hacking_title">What is Ethical Hacking?</h2>
+            <p data-lang-key="what_is_hacking_p1">Ethical hacking, also known as penetration testing or white-hat hacking, is the practice of legally and deliberately attempting to break into the computers and devices of an organization. By doing so, ethical hackers can test the organization's defenses, highlighting any vulnerabilities in their systems and networks before malicious hackers can exploit them.</p>
+            <p data-lang-key="what_is_hacking_p2">An ethical hacker is a cybersecurity professional who has the same skills and uses the same tools as a malicious hacker, but their goal is to improve network security without causing harm. The primary benefit of ethical hacking is to prevent data from being stolen and misused by malicious attackers.</p>
+            <img src="https://images.unsplash.com/photo-1510915228340-29c85a43dcfe?q=80&w=2070&auto=format&fit=crop" alt="Cybersecurity professional at work">
+            <h2 data-lang-key="why_is_it_important_title">Why is Ethical Hacking Important?</h2>
+            <p data-lang-key="why_is_it_important_p1">In today's digital world, where sensitive data is stored across various businesses, networks, and servers, it's crucial to protect it. Ethical hacking plays a vital role in strengthening an organization's security posture. It helps in identifying vulnerabilities from an attacker's point of view so that weak points can be fixed.</p>
+            <ul>
+                <li data-lang-key="why_is_it_important_li1">
+                    <strong>Discovering Vulnerabilities:</strong>
+                    It helps organizations discover vulnerabilities before hackers do, preventing costly data breaches.
+                </li>
+                <li data-lang-key="why_is_it_important_li2">
+                    <strong>Strengthening Defenses:</strong>
+                    By simulating real-world attacks, organizations can strengthen their defenses against outside attacks.
+                </li>
+                <li data-lang-key="why_is_it_important_li3">
+                    <strong>Regulatory Compliance:</strong>
+                    Many industries require compliance with security standards, and ethical hacking helps in achieving this.
+                </li>
+                <li data-lang-key="why_is_it_important_li4">
+                    <strong>Building Trust:</strong>
+                    A commitment to security through regular ethical hacking enhances customer trust and confidence in the brand.
+                </li>
+            </ul>
+            <h2 data-lang-key="key_concepts_title">Key Concepts in Ethical Hacking</h2>
+            <p data-lang-key="key_concepts_p1">Ethical hacking follows a structured process to identify vulnerabilities. Some of the key concepts and phases include:</p>
+            <ul>
+                <li data-lang-key="key_concepts_li1">
+                    <strong>Reconnaissance:</strong>
+                    This is the initial phase where the hacker gathers as much information as possible about the target system.
+                </li>
+                <li data-lang-key="key_concepts_li2">
+                    <strong>Scanning:</strong>
+                    In this phase, the ethical hacker uses tools to identify open ports, live systems, and services running on the network.
+                </li>
+                <li data-lang-key="key_concepts_li3">
+                    <strong>Gaining Access:</strong>
+                    Here, the hacker exploits the vulnerabilities found during the reconnaissance and scanning phases to gain access to the system.
+                </li>
+                <li data-lang-key="key_concepts_li4">
+                    <strong>Maintaining Access:</strong>
+                    This involves ensuring persistent access to the compromised system to gather as much data as possible.
+                </li>
+                <li data-lang-key="key_concepts_li5">
+                    <strong>Clearing Tracks:</strong>
+                    In the final phase, the ethical hacker removes all traces of their activities to avoid detection.
+                </li>
+            </ul>
+            <h2 data-lang-key="types_of_hackers_title">Types of Hackers</h2>
+            <p data-lang-key="types_of_hackers_p1">Hackers are typically categorized by their motives, which are often symbolized by different colored "hats":</p>
+            <ul>
+                <li data-lang-key="types_of_hackers_li1">
+                    <strong>White Hat Hackers:</strong>
+                    These are the ethical hackers. They have explicit permission from the owner of the IT assets to find vulnerabilities. Their goal is to improve security.
+                </li>
+                <li data-lang-key="types_of_hackers_li2">
+                    <strong>Black Hat Hackers:</strong>
+                    These are malicious hackers who break into systems without permission for personal or financial gain. Their actions are illegal and harmful.
+                </li>
+                <li data-lang-key="types_of_hackers_li3">
+                    <strong>Grey Hat Hackers:</strong>
+                    This is a blend of the two. Grey hat hackers may break into a system without permission, but they will not exploit the vulnerabilities for malicious purposes. Instead, they might report the vulnerability to the owner, sometimes requesting a fee.
+                </li>
+            </ul>
+            <h2 data-lang-key="common_tools_title">Common Ethical Hacking Tools</h2>
+            <p data-lang-key="common_tools_p1">Ethical hackers use a variety of tools to conduct penetration tests. Some of the most popular tools include:</p>
+            <ul>
+                <li data-lang-key="common_tools_li1">
+                    <strong>Nmap (Network Mapper):</strong>
+                    Used for network discovery and security auditing. It can find live hosts, open ports, running services, and operating system versions.
+                </li>
+                <li data-lang-key="common_tools_li2">
+                    <strong>Wireshark:</strong>
+                    A network protocol analyzer that lets you see what's happening on your network at a microscopic level.
+                </li>
+                <li data-lang-key="common_tools_li3">
+                    <strong>Metasploit:</strong>
+                    A powerful framework for developing and executing exploit code against a remote target machine.
+                </li>
+                <li data-lang-key="common_tools_li4">
+                    <strong>Burp Suite:</strong>
+                    An integrated platform for performing security testing of web applications.
+                </li>
+                <li data-lang-key="common_tools_li5">
+                    <strong>SQLMap:</strong>
+                    An open-source tool that automates the process of detecting and exploiting SQL injection flaws.
+                </li>
+            </ul>
+            <h2 data-lang-key="faq_title">Frequently Asked Questions (FAQ)</h2>
+            <h3 data-lang-key="faq_q1">Is ethical hacking a legal profession?</h3>
+            <p data-lang-key="faq_a1">Yes, ethical hacking is completely legal as long as it is done with the explicit and documented permission of the organization whose systems are being tested. Ethical hackers operate under strict contracts and non-disclosure agreements to ensure that all activities are authorized and confidential.</p>
+            <h3 data-lang-key="faq_q2">What skills are required to become an ethical hacker?</h3>
+            <p data-lang-key="faq_a2">An ethical hacker needs a strong foundation in networking, operating systems (like Linux and Windows), and programming/scripting languages (such as Python, Bash, or PowerShell). Additionally, they need in-depth knowledge of cybersecurity principles, common vulnerabilities, and security tools. Soft skills like problem-solving, critical thinking, and clear communication are also essential.</p>
+            <h3 data-lang-key="faq_q3">How is ethical hacking different from malicious hacking?</h3>
+            <p data-lang-key="faq_a3">The primary difference is intent and permission. Ethical hackers have authorization from the asset owner to find and report vulnerabilities with the goal of improving security. Malicious hackers (black hats) act illegally, without permission, and with harmful intent, such as stealing data, causing disruption, or demanding a ransom.</p>
+            <h3 data-lang-key="faq_q4">What are some common attacks simulated by ethical hackers?</h3>
+            <p data-lang-key="faq_a4">Ethical hackers simulate a wide range of attacks to test an organization's defenses. Common examples include SQL injection, Cross-Site Scripting (XSS), phishing simulations, denial-of-service (DoS) tests, and attempts to exploit misconfigured servers or unpatched software.</p>
+            <h3 data-lang-key="faq_q5">Do I need certifications to work as an ethical hacker?</h3>
+            <p data-lang-key="faq_a5">While not always mandatory, certifications are highly recommended as they validate your skills and knowledge. Popular certifications in this field include Certified Ethical Hacker (CEH), Offensive Security Certified Professional (OSCP), and CompTIA PenTest+.</p>
+        </div>
+        <footer>
+        <p>
+            <a href="https://hacker-ferdous.github.io/" style="color: var(--color-text-secondary); text-decoration: none;">© 2025 Nafsin Ferdous</a>
+        </p>
+</footer><script type="text/javascript">
+    const translations = {
+        en: {
+            title: "Introduction to Ethical Hacking",
+            select_language: "Select Language:",
+            what_is_hacking_title: "What is Ethical Hacking?",
+            what_is_hacking_p1: "Ethical hacking, also known as penetration testing or white-hat hacking, is the practice of legally and deliberately attempting to break into the computers and devices of an organization. By doing so, ethical hackers can test the organization's defenses, highlighting any vulnerabilities in their systems and networks before malicious hackers can exploit them.",
+            what_is_hacking_p2: "An ethical hacker is a cybersecurity professional who has the same skills and uses the same tools as a malicious hacker, but their goal is to improve network security without causing harm. The primary benefit of ethical hacking is to prevent data from being stolen and misused by malicious attackers.",
+            why_is_it_important_title: "Why is Ethical Hacking Important?",
+            why_is_it_important_p1: "In today's digital world, where sensitive data is stored across various businesses, networks, and servers, it's crucial to protect it. Ethical hacking plays a vital role in strengthening an organization's security posture. It helps in identifying vulnerabilities from an attacker's point of view so that weak points can be fixed.",
+            why_is_it_important_li1: "<strong>Discovering Vulnerabilities:</strong> It helps organizations discover vulnerabilities before hackers do, preventing costly data breaches.",
+            why_is_it_important_li2: "<strong>Strengthening Defenses:</strong> By simulating real-world attacks, organizations can strengthen their defenses against outside attacks.",
+            why_is_it_important_li3: "<strong>Regulatory Compliance:</strong> Many industries require compliance with security standards, and ethical hacking helps in achieving this.",
+            why_is_it_important_li4: "<strong>Building Trust:</strong> A commitment to security through regular ethical hacking enhances customer trust and confidence in the brand.",
+            key_concepts_title: "Key Concepts in Ethical Hacking",
+            key_concepts_p1: "Ethical hacking follows a structured process to identify vulnerabilities. Some of the key concepts and phases include:",
+            key_concepts_li1: "<strong>Reconnaissance:</strong> This is the initial phase where the hacker gathers as much information as possible about the target system.",
+            key_concepts_li2: "<strong>Scanning:</strong> In this phase, the ethical hacker uses tools to identify open ports, live systems, and services running on the network.",
+            key_concepts_li3: "<strong>Gaining Access:</strong> Here, the hacker exploits the vulnerabilities found during the reconnaissance and scanning phases to gain access to the system.",
+            key_concepts_li4: "<strong>Maintaining Access:</strong> This involves ensuring persistent access to the compromised system to gather as much data as possible.",
+            key_concepts_li5: "<strong>Clearing Tracks:</strong> In the final phase, the ethical hacker removes all traces of their activities to avoid detection.",
+            types_of_hackers_title: "Types of Hackers",
+            types_of_hackers_p1: "Hackers are typically categorized by their motives, which are often symbolized by different colored 'hats':",
+            types_of_hackers_li1: "<strong>White Hat Hackers:</strong> These are the ethical hackers. They have explicit permission from the owner of the IT assets to find vulnerabilities. Their goal is to improve security.",
+            types_of_hackers_li2: "<strong>Black Hat Hackers:</strong> These are malicious hackers who break into systems without permission for personal or financial gain. Their actions are illegal and harmful.",
+            types_of_hackers_li3: "<strong>Grey Hat Hackers:</strong> This is a blend of the two. Grey hat hackers may break into a system without permission, but they will not exploit the vulnerabilities for malicious purposes. Instead, they might report the vulnerability to the owner, sometimes requesting a fee.",
+            common_tools_title: "Common Ethical Hacking Tools",
+            common_tools_p1: "Ethical hackers use a variety of tools to conduct penetration tests. Some of the most popular tools include:",
+            common_tools_li1: "<strong>Nmap (Network Mapper):</strong> Used for network discovery and security auditing. It can find live hosts, open ports, running services, and operating system versions.",
+            common_tools_li2: "<strong>Wireshark:</strong> A network protocol analyzer that lets you see what's happening on your network at a microscopic level.",
+            common_tools_li3: "<strong>Metasploit:</strong> A powerful framework for developing and executing exploit code against a remote target machine.",
+            common_tools_li4: "<strong>Burp Suite:</strong> An integrated platform for performing security testing of web applications.",
+            common_tools_li5: "<strong>SQLMap:</strong> An open-source tool that automates the process of detecting and exploiting SQL injection flaws.",
+            faq_title: "Frequently Asked Questions (FAQ)",
+            faq_q1: "Is ethical hacking a legal profession?",
+            faq_a1: "Yes, ethical hacking is completely legal as long as it is done with the explicit and documented permission of the organization whose systems are being tested. Ethical hackers operate under strict contracts and non-disclosure agreements to ensure that all activities are authorized and confidential.",
+            faq_q2: "What skills are required to become an ethical hacker?",
+            faq_a2: "An ethical hacker needs a strong foundation in networking, operating systems (like Linux and Windows), and programming/scripting languages (such as Python, Bash, or PowerShell). Additionally, they need in-depth knowledge of cybersecurity principles, common vulnerabilities, and security tools. Soft skills like problem-solving, critical thinking, and clear communication are also essential.",
+            faq_q3: "How is ethical hacking different from malicious hacking?",
+            faq_a3: "The primary difference is intent and permission. Ethical hackers have authorization from the asset owner to find and report vulnerabilities with the goal of improving security. Malicious hackers (black hats) act illegally, without permission, and with harmful intent, such as stealing data, causing disruption, or demanding a ransom.",
+            faq_q4: "What are some common attacks simulated by ethical hackers?",
+            faq_a4: "Ethical hackers simulate a wide range of attacks to test an organization's defenses. Common examples include SQL injection, Cross-Site Scripting (XSS), phishing simulations, denial-of-service (DoS) tests, and attempts to exploit misconfigured servers or unpatched software.",
+            faq_q5: "Do I need certifications to work as an ethical hacker?",
+            faq_a5: "While not always mandatory, certifications are highly recommended as they validate your skills and knowledge. Popular certifications in this field include Certified Ethical Hacker (CEH), Offensive Security Certified Professional (OSCP), and CompTIA PenTest+."
+        },
+        zh: {
+            title: "道德黑客入门",
+            select_language: "选择语言:",
+            what_is_hacking_title: "什么是道德黑客？",
+            what_is_hacking_p1: "道德黑客，也称为渗透测试或白帽黑客，是合法并故意尝试侵入组织计算机和设备的行为。通过这样做，道德黑客可以在恶意黑客利用之前测试组织的防御，突出其系统和网络中的任何漏洞。",
+            what_is_hacking_p2: "道德黑客是网络安全专业人员，他们拥有与恶意黑客相同的技能和工具，但他们的目标是在不造成伤害的情况下提高网络安全性。道德黑客的主要好处是防止数据被恶意攻击者窃取和滥用。",
+            why_is_it_important_title: "为什么道德黑客很重要？",
+            why_is_it_important_p1: "在当今的数字世界中，敏感数据存储在各种企业、网络和服务器中，保护它是至关重要的。道德黑客在加强组织的安全状况方面起着至关重要的作用。它有助于从攻击者的角度识别漏洞，以便可以修复薄弱环节。",
+            why_is_it_important_li1: "<strong>发现漏洞：</strong> 它可以帮助组织在黑客发现漏洞之前发现它们，从而防止代价高昂的数据泄露。",
+            why_is_it_important_li2: "<strong>加强防御：</strong> 通过模拟真实世界的攻击，组织可以加强其对外部攻击的防御。",
+            why_is_it_important_li3: "<strong>法规遵从性：</strong> 许多行业要求遵守安全标准，而道德黑客有助于实现这一目标。",
+            why_is_it_important_li4: "<strong>建立信任：</strong> 通过定期的道德黑客行为来致力于安全，可以增强客户对品牌的信任和信心。",
+            key_concepts_title: "道德黑客的关键概念",
+            key_concepts_p1: "道德黑客遵循一个结构化的过程来识别漏洞。一些关键概念和阶段包括：",
+            key_concepts_li1: "<strong>侦察：</strong> 这是黑客尽可能多地收集有关目标系统信息的初始阶段。",
+            key_concepts_li2: "<strong>扫描：</strong> 在此阶段，道德黑客使用工具识别网络上的开放端口、活动系统和服务。",
+            key_concepts_li3: "<strong>获得访问权限：</strong> 在这里，黑客利用在侦察和扫描阶段发现的漏洞来获得对系统的访问权限。",
+            key_concepts_li4: "<strong>维持访问权限：</strong> 这包括确保持久访问受感染的系统，以收集尽可能多的数据。",
+            key_concepts_li5: "<strong>清除痕迹：</strong> 在最后阶段，道德黑客会清除其所有活动痕迹以避免被发现。",
+
+            types_of_hackers_title: "黑客的类型",
+            types_of_hackers_p1: "黑客通常根据其动机进行分类，通常用不同颜色的“帽子”来象征：",
+            types_of_hackers_li1: "<strong>白帽黑客：</strong> 这些是道德黑客。他们获得 IT 资产所有者的明确许可来发现漏洞。他们的目标是提高安全性。",
+            types_of_hackers_li2: "<strong>黑帽黑客：</strong> 这些是恶意黑客，他们未经许可闯入系统以获取个人或经济利益。他们的行为是非法和有害的。",
+            types_of_hackers_li3: "<strong>灰帽黑客：</strong> 这是两者的混合体。灰帽黑客可能会在未经许可的情况下侵入系统，但他们不会出于恶意目的利用漏洞。相反，他们可能会向所有者报告漏洞，有时会要求收费。",
+            common_tools_title: "常见的道德黑客工具",
+            common_tools_p1: "道德黑客使用各种工具进行渗透测试。一些最受欢迎的工具包括：",
+            common_tools_li1: "<strong>Nmap (网络映射器):</strong> 用于网络发现和安全审计。它可以发现活动主机、开放端口、正在运行的服务和操作系统版本。",
+            common_tools_li2: "<strong>Wireshark:</strong> 一种网络协议分析器，可让您在微观层面查看网络上发生的情况。",
+            common_tools_li3: "<strong>Metasploit:</strong> 一个功能强大的框架，用于开发和执行针对远程目标机器的漏洞利用代码。",
+            common_tools_li4: "<strong>Burp Suite:</strong> 一个用于执行 Web 应用程序安全测试的集成平台。",
+            common_tools_li5: "<strong>SQLMap:</strong> 一种开源工具，可自动检测和利用 SQL 注入漏洞。",
+            faq_title: "常见问题解答 (FAQ)",
+            faq_q1: "道德黑客是合法职业吗？",
+            faq_a1: "是的，只要获得被测试系统所属组织的明确书面许可，道德黑客就是完全合法的。道德黑客在严格的合同和保密协议下运作，以确保所有活动都经过授权且保密。",
+            faq_q2: "成为一名道德黑客需要哪些技能？",
+            faq_a2: "道德黑客需要在网络、操作系统（如 Linux 和 Windows）以及编程/脚本语言（如 Python、Bash 或 PowerShell）方面有坚实的基础。此外，他们还需要深入了解网络安全原则、常见漏洞和安全工具。解决问题、批判性思维和清晰沟通等软技能也至关重要。",
+            faq_q3: "道德黑客与恶意黑客有何不同？",
+            faq_a3: "主要区别在于意图和许可。道德黑客获得资产所有者的授权，以发现和报告漏洞，从而提高安全性。恶意黑客（黑帽）的行为是非法的，未经许可，并带有有害意图，例如窃取数据、造成破坏或索要赎金。",
+            faq_q4: "道德黑客模拟的一些常见攻击有哪些？",
+            faq_a4: "道德黑客模拟各种攻击来测试组织的防御能力。常见示例包括 SQL 注入、跨站脚本 (XSS)、网络钓鱼模拟、拒绝服务 (DoS) 测试以及利用配置错误的服务器或未打补丁的软件的尝试。",
+            faq_q5: "我需要认证才能成为一名道德黑客吗？",
+            faq_a5: "虽然并非总是强制性的，但强烈建议获得认证，因为它们可以验证您的技能和知识。该领域的热门认证包括认证道德黑客 (CEH)、进攻性安全认证专家 (OSCP) 和 CompTIA PenTest+。"
+        },
+        hi: {
+            title: "एथिकल हैकिंग का परिचय",
+            select_language: "भाषा चुनें:",
+            what_is_hacking_title: "एथिकल हैकिंग क्या है?",
+            what_is_hacking_p1: "एथिकल हैकिंग, जिसे पेनेट्रेशन टेस्टिंग या व्हाइट-हैट हैकिंग के रूप में भी जाना जाता है, कानूनी रूप से और जानबूझकर किसी संगठन के कंप्यूटर और उपकरणों में घुसने का प्रयास करने की प्रथा है। ऐसा करके, एथिकल हैकर संगठन की सुरक्षा का परीक्षण कर सकते हैं, दुर्भावनापूर्ण हैकर्स द्वारा उनका फायदा उठाने से पहले उनके सिस्टम और नेटवर्क में किसी भी कमजोरियों को उजागर कर सकते हैं।",
+            what_is_hacking_p2: "एक एथिकल हैकर एक साइबर सुरक्षा पेशेवर होता है जिसके पास दुर्भावनापूर्ण हैकर के समान कौशल और उपकरण होते हैं, लेकिन उनका लक्ष्य नुकसान पहुंचाए बिना नेटवर्क सुरक्षा में सुधार करना होता है। एथिकल हैकिंग का प्राथमिक लाभ दुर्भावनापूर्ण हमलावरों द्वारा डेटा को चोरी और दुरुपयोग से रोकना है।",
+            why_is_it_important_title: "एथिकल हैकिंग क्यों महत्वपूर्ण है?",
+            why_is_it_important_p1: "आज की डिजिटल दुनिया में, जहां संवेदनशील डेटा विभिन्न व्यवसायों, नेटवर्कों और सर्वरों पर संग्रहीत होता है, इसकी सुरक्षा करना महत्वपूर्ण है। एथिकल हैकिंग किसी संगठन की सुरक्षा स्थिति को मजबूत करने में महत्वपूर्ण भूमिका निभाती है। यह एक हमलावर के दृष्टिकोण से कमजोरियों की पहचान करने में मदद करता है ताकि कमजोर बिंदुओं को ठीक किया जा सके।",
+            why_is_it_important_li1: "<strong>कमजोरियों की खोज:</strong> यह संगठनों को हैकर्स से पहले कमजोरियों की खोज करने में मदद करता है, जिससे महंगी डेटा उल्लंघनों को रोका जा सकता है।",
+            why_is_it_important_li2: "<strong>सुरक्षा को मजबूत करना:</strong> वास्तविक दुनिया के हमलों का अनुकरण करके, संगठन बाहरी हमलों के खिलाफ अपनी सुरक्षा को मजबूत कर सकते हैं।",
+            why_is_it_important_li3: "<strong>नियामक अनुपालन:</strong> कई उद्योगों को सुरक्षा मानकों के अनुपालन की आवश्यकता होती है, और एथिकल हैकिंग इसे प्राप्त करने में मदद करती है।",
+            why_is_it_important_li4: "<strong>विश्वास का निर्माण:</strong> नियमित एथिकल हैकिंग के माध्यम से सुरक्षा के प्रति प्रतिबद्धता ब्रांड में ग्राहकों के विश्वास और आत्मविश्वास को बढ़ाती है।",
+            key_concepts_title: "एथिकल हैकिंग में मुख्य अवधारणाएं",
+            key_concepts_p1: "एथिकल हैकिंग कमजोरियों की पहचान करने के लिए एक संरचित प्रक्रिया का पालन करती है। कुछ प्रमुख अवधारणाओं और चरणों में शामिल हैं:",
+            key_concepts_li1: "<strong>टोही:</strong> यह प्रारंभिक चरण है जहां हैकर लक्ष्य प्रणाली के बारे में जितनी संभव हो उतनी जानकारी इकट्ठा करता है।",
+            key_concepts_li2: "<strong>स्कैनिंग:</strong> इस चरण में, एथिकल हैकर नेटवर्क पर खुले बंदरगाहों, लाइव सिस्टम और सेवाओं की पहचान करने के लिए उपकरणों का उपयोग करता है।",
+            key_concepts_li3: "<strong>पहुंच प्राप्त करना:</strong> यहां, हैकर सिस्टम तक पहुंच प्राप्त करने के लिए टोही और स्कैनिंग चरणों के दौरान पाई गई कमजोरियों का फायदा उठाता है।",
+            key_concepts_li4: "<strong>पहुंच बनाए रखना:</strong> इसमें जितना संभव हो उतना डेटा इकट्ठा करने के लिए समझौता किए गए सिस्टम तक लगातार पहुंच सुनिश्चित करना शामिल है।",
+            key_concepts_li5: "<strong>निशान मिटाना:</strong> अंतिम चरण में, एथिकल हैकर पता लगाने से बचने के लिए अपनी सभी गतिविधियों के निशान हटा देता है।",
+
+            types_of_hackers_title: "हैकर्स के प्रकार",
+            types_of_hackers_p1: "हैकर्स को आम तौर पर उनके उद्देश्यों के आधार पर वर्गीकृत किया जाता है, जिन्हें अक्सर अलग-अलग रंग की 'टोपी' द्वारा दर्शाया जाता है:",
+            types_of_hackers_li1: "<strong>व्हाइट हैट हैकर्स:</strong> ये एथिकल हैकर्स होते हैं। उनके पास कमजोरियों को खोजने के लिए आईटी संपत्ति के मालिक से स्पष्ट अनुमति होती है। उनका लक्ष्य सुरक्षा में सुधार करना है।",
+            types_of_hackers_li2: "<strong>ब्लैक हैट हैकर्स:</strong> ये दुर्भावनापूर्ण हैकर होते हैं जो व्यक्तिगत या वित्तीय लाभ के लिए बिना अनुमति के सिस्टम में सेंध लगाते हैं। उनके कार्य अवैध और हानिकारक हैं।",
+            types_of_hackers_li3: "<strong>ग्रे हैट हैकर्स:</strong> यह दोनों का मिश्रण है। ग्रे हैट हैकर्स बिना अनुमति के किसी सिस्टम में सेंध लगा सकते हैं, लेकिन वे दुर्भावनापूर्ण उद्देश्यों के लिए कमजोरियों का फायदा नहीं उठाएंगे। इसके बजाय, वे मालिक को भेद्यता की रिपोर्ट कर सकते हैं, कभी-कभी शुल्क का अनुरोध करते हैं।",
+            common_tools_title: "सामान्य एथिकल हैकिंग उपकरण",
+            common_tools_p1: "एथिकल हैकर पैठ परीक्षण करने के लिए विभिन्न उपकरणों का उपयोग करते हैं। कुछ सबसे लोकप्रिय उपकरणों में शामिल हैं:",
+            common_tools_li1: "<strong>Nmap (नेटवर्क मैपर):</strong> नेटवर्क खोज और सुरक्षा ऑडिटिंग के लिए उपयोग किया जाता है। यह लाइव होस्ट, खुले पोर्ट, चल रही सेवाओं और ऑपरेटिंग सिस्टम संस्करणों को ढूंढ सकता है।",
+            common_tools_li2: "<strong>Wireshark:</strong> एक नेटवर्क प्रोटोकॉल एनालाइज़र जो आपको यह देखने देता है कि आपके नेटवर्क पर सूक्ष्म स्तर पर क्या हो रहा है।",
+            common_tools_li3: "<strong>Metasploit:</strong> एक दूरस्थ लक्ष्य मशीन के खिलाफ शोषण कोड को विकसित करने और निष्पादित करने के लिए एक शक्तिशाली ढांचा।",
+            common_tools_li4: "<strong>Burp Suite:</strong> वेब अनुप्रयोगों के सुरक्षा परीक्षण करने के लिए एक एकीकृत मंच।",
+            common_tools_li5: "<strong>SQLMap:</strong> एक ओपन-सोर्स टूल जो SQL इंजेक्शन खामियों का पता लगाने और उनका फायदा उठाने की प्रक्रिया को स्वचालित करता है।",
+            faq_title: "अक्सर पूछे जाने वाले प्रश्न (FAQ)",
+            faq_q1: "क्या एथिकल हैकिंग एक कानूनी पेशा है?",
+            faq_a1: "हाँ, एथिकल हैकिंग पूरी तरह से कानूनी है जब तक कि यह उस संगठन की स्पष्ट और प्रलेखित अनुमति से किया जाता है जिसके सिस्टम का परीक्षण किया जा रहा है। एथिकल हैकर यह सुनिश्चित करने के लिए सख्त अनुबंधों और गैर-प्रकटीकरण समझौतों के तहत काम करते हैं कि सभी गतिविधियाँ अधिकृत और गोपनीय हैं।",
+            faq_q2: "एक एथिकल हैकर बनने के लिए किन कौशलों की आवश्यकता होती है?",
+            faq_a2: "एक एथिकल हैकर को नेटवर्किंग, ऑपरेटिंग सिस्टम (जैसे लिनक्स और विंडोज), और प्रोग्रामिंग/स्क्रिप्टिंग भाषाओं (जैसे पायथन, बैश, या पॉवरशेल) में एक मजबूत नींव की आवश्यकता होती है। इसके अतिरिक्त, उन्हें साइबर सुरक्षा सिद्धांतों, सामान्य कमजोरियों और सुरक्षा उपकरणों का गहन ज्ञान होना चाहिए। समस्या-समाधान, महत्वपूर्ण सोच और स्पष्ट संचार जैसे सॉफ्ट कौशल भी आवश्यक हैं।",
+            faq_q3: "एथिकल हैकिंग दुर्भावनापूर्ण हैकिंग से कैसे अलग है?",
+            faq_a3: "प्राथमिक अंतर इरादे और अनुमति का है। एथिकल हैकर्स के पास सुरक्षा में सुधार के लक्ष्य के साथ कमजोरियों को खोजने और रिपोर्ट करने के लिए संपत्ति के मालिक से प्राधिकरण होता है। दुर्भावनापूर्ण हैकर (ब्लैक हैट) अवैध रूप से, बिना अनुमति के, और हानिकारक इरादे से कार्य करते हैं, जैसे डेटा चोरी करना, व्यवधान पैदा करना, या फिरौती की मांग करना।",
+            faq_q4: "एथिकल हैकर्स द्वारा अनुकरण किए जाने वाले कुछ सामान्य हमले कौन से हैं?",
+            faq_a4: "एथिकल हैकर किसी संगठन की सुरक्षा का परीक्षण करने के लिए कई तरह के हमलों का अनुकरण करते हैं। सामान्य उदाहरणों में SQL इंजेक्शन, क्रॉस-साइट स्क्रिप्टिंग (XSS), फ़िशिंग सिमुलेशन, सेवा से इनकार (DoS) परीक्षण, और गलत कॉन्फ़िगर किए गए सर्वर या बिना पैच वाले सॉफ़्टवेयर का फायदा उठाने के प्रयास शामिल हैं।",
+            faq_q5: "क्या मुझे एक एथिकल हैकर के रूप में काम करने के लिए प्रमाणपत्रों की आवश्यकता है?",
+            faq_a5: "हालांकि हमेशा अनिवार्य नहीं होता है, प्रमाणपत्रों की अत्यधिक अनुशंसा की जाती है क्योंकि वे आपके कौशल और ज्ञान को मान्य करते हैं। इस क्षेत्र के लोकप्रिय प्रमाणपत्रों में सर्टिफाइड एथिकल हैकर (CEH), ऑफेंसिव सिक्योरिटी सर्टिफाइड प्रोफेशनल (OSCP), और CompTIA PenTest+ शामिल हैं।"
+        },
+        es: {
+            title: "Introducción al Hacking Ético",
+            select_language: "Seleccionar idioma:",
+            what_is_hacking_title: "¿Qué es el Hacking Ético?",
+            what_is_hacking_p1: "El hacking ético, también conocido como pruebas de penetración o hacking de sombrero blanco, es la práctica de intentar entrar legal y deliberadamente en las computadoras y dispositivos de una organización. Al hacerlo, los hackers éticos pueden probar las defensas de la organización, destacando cualquier vulnerabilidad en sus sistemas y redes antes de que los hackers maliciosos puedan explotarlas.",
+            what_is_hacking_p2: "Un hacker ético es un profesional de la ciberseguridad que tiene las mismas habilidades y utiliza las mismas herramientas que un hacker malicioso, pero su objetivo es mejorar la seguridad de la red sin causar daño. El principal beneficio del hacking ético es evitar que los atacantes maliciosos roben y utilicen indebidamente los datos.",
+            why_is_it_important_title: "¿Por qué es importante el Hacking Ético?",
+            why_is_it_important_p1: "En el mundo digital actual, donde los datos sensibles se almacenan en diversas empresas, redes y servidores, es crucial protegerlos. El hacking ético juega un papel vital en el fortalecimiento de la postura de seguridad de una organización. Ayuda a identificar vulnerabilidades desde el punto de vista de un atacante para que se puedan corregir los puntos débiles.",
+            why_is_it_important_li1: "<strong>Descubrimiento de Vulnerabilidades:</strong> Ayuda a las organizaciones a descubrir vulnerabilidades antes que los hackers, previniendo costosas brechas de datos.",
+            why_is_it_important_li2: "<strong>Fortalecimiento de las Defensas:</strong> Al simular ataques del mundo real, las organizaciones pueden fortalecer sus defensas contra ataques externos.",
+            why_is_it_important_li3: "<strong>Cumplimiento Normativo:</strong> Muchas industrias requieren el cumplimiento de estándares de seguridad, y el hacking ético ayuda a lograrlo.",
+            why_is_it_important_li4: "<strong>Construcción de Confianza:</strong> Un compromiso con la seguridad a través del hacking ético regular mejora la confianza y la seguridad del cliente en la marca.",
+            key_concepts_title: "Conceptos Clave en el Hacking Ético",
+            key_concepts_p1: "El hacking ético sigue un proceso estructurado para identificar vulnerabilidades. Algunos de los conceptos y fases clave incluyen:",
+            key_concepts_li1: "<strong>Reconocimiento:</strong> Esta es la fase inicial donde el hacker recopila la mayor cantidad de información posible sobre el sistema objetivo.",
+            key_concepts_li2: "<strong>Escaneo:</strong> En esta fase, el hacker ético utiliza herramientas para identificar puertos abiertos, sistemas activos y servicios que se ejecutan en la red.",
+            key_concepts_li3: "<strong>Obtención de Acceso:</strong> Aquí, el hacker explota las vulnerabilidades encontradas durante las fases de reconocimiento y escaneo para obtener acceso al sistema.",
+            key_concepts_li4: "<strong>Mantenimiento del Acceso:</strong> Esto implica asegurar un acceso persistente al sistema comprometido para recopilar la mayor cantidad de datos posible.",
+            key_concepts_li5: "<strong>Borrado de Huellas:</strong> En la fase final, el hacker ético elimina todos los rastros de sus actividades para evitar ser detectado.",
+
+            types_of_hackers_title: "Tipos de Hackers",
+            types_of_hackers_p1: "Los hackers se clasifican normalmente por sus motivos, que a menudo se simbolizan con 'sombreros' de diferentes colores:",
+            types_of_hackers_li1: "<strong>Hackers de Sombrero Blanco:</strong> Estos son los hackers éticos. Tienen permiso explícito del propietario de los activos de TI para encontrar vulnerabilidades. Su objetivo es mejorar la seguridad.",
+            types_of_hackers_li2: "<strong>Hackers de Sombrero Negro:</strong> Son hackers maliciosos que irrumpen en los sistemas sin permiso para obtener ganancias personales o financieras. Sus acciones son ilegales y dañinas.",
+            types_of_hackers_li3: "<strong>Hackers de Sombrero Gris:</strong> Es una mezcla de los dos. Los hackers de sombrero gris pueden entrar en un sistema sin permiso, pero no explotarán las vulnerabilidades con fines maliciosos. En su lugar, pueden informar de la vulnerabilidad al propietario, a veces solicitando una tarifa.",
+            common_tools_title: "Herramientas Comunes de Hacking Ético",
+            common_tools_p1: "Los hackers éticos utilizan una variedad de herramientas para realizar pruebas de penetración. Algunas de las herramientas más populares incluyen:",
+            common_tools_li1: "<strong>Nmap (Network Mapper):</strong> Se utiliza para el descubrimiento de redes y la auditoría de seguridad. Puede encontrar hosts activos, puertos abiertos, servicios en ejecución y versiones de sistemas operativos.",
+            common_tools_li2: "<strong>Wireshark:</strong> Un analizador de protocolos de red que le permite ver lo que está sucediendo en su red a un nivel microscópico.",
+            common_tools_li3: "<strong>Metasploit:</strong> Un potente marco para desarrollar y ejecutar código de explotación contra una máquina objetivo remota.",
+            common_tools_li4: "<strong>Burp Suite:</strong> Una plataforma integrada para realizar pruebas de seguridad de aplicaciones web.",
+            common_tools_li5: "<strong>SQLMap:</strong> Una herramienta de código abierto que automatiza el proceso de detección y explotación de fallas de inyección SQL.",
+            faq_title: "Preguntas Frecuentes (FAQ)",
+            faq_q1: "¿Es el hacking ético una profesión legal?",
+            faq_a1: "Sí, el hacking ético es completamente legal siempre que se realice con el permiso explícito y documentado de la organización cuyos sistemas se están probando. Los hackers éticos operan bajo estrictos contratos y acuerdos de no divulgación para garantizar que todas las actividades estén autorizadas y sean confidenciales.",
+            faq_q2: "¿Qué habilidades se requieren para convertirse en un hacker ético?",
+            faq_a2: "Un hacker ético necesita una base sólida en redes, sistemas operativos (como Linux y Windows) y lenguajes de programación/scripting (como Python, Bash o PowerShell). Además, necesita un conocimiento profundo de los principios de ciberseguridad, las vulnerabilidades comunes y las herramientas de seguridad. Habilidades blandas como la resolución de problemas, el pensamiento crítico y la comunicación clara también son esenciales.",
+            faq_q3: "¿En qué se diferencia el hacking ético del hacking malicioso?",
+            faq_a3: "La principal diferencia es la intención y el permiso. Los hackers éticos tienen autorización del propietario del activo para encontrar e informar vulnerabilidades con el objetivo de mejorar la seguridad. Los hackers maliciosos (sombreros negros) actúan ilegalmente, sin permiso y con intenciones dañinas, como robar datos, causar interrupciones o exigir un rescate.",
+            faq_q4: "¿Cuáles son algunos ataques comunes simulados por hackers éticos?",
+            faq_a4: "Los hackers éticos simulan una amplia gama de ataques para probar las defensas de una organización. Ejemplos comunes incluyen inyección de SQL, Cross-Site Scripting (XSS), simulaciones de phishing, pruebas de denegación de servicio (DoS) e intentos de explotar servidores mal configurados o software sin parches.",
+            faq_q5: "¿Necesito certificaciones para trabajar como hacker ético?",
+            faq_a5: "Aunque no siempre son obligatorias, las certificaciones son muy recomendables ya que validan sus habilidades y conocimientos. Las certificaciones populares en este campo incluyen Certified Ethical Hacker (CEH), Offensive Security Certified Professional (OSCP) y CompTIA PenTest+."
+        },
+        fr: {
+            title: "Introduction au Hacking Éthique",
+            select_language: "Sélectionner la langue:",
+            what_is_hacking_title: "Qu'est-ce que le Hacking Éthique ?",
+            what_is_hacking_p1: "Le hacking éthique, également connu sous le nom de test d'intrusion ou de hacking à chapeau blanc, est la pratique consistant à tenter légalement et délibérément de s'introduire dans les ordinateurs et les appareils d'une organisation. Ce faisant, les hackers éthiques peuvent tester les défenses de l'organisation, en soulignant les vulnérabilités de leurs systèmes et réseaux avant que les hackers malveillants ne puissent les exploiter.",
+            what_is_hacking_p2: "Un hacker éthique est un professionnel de la cybersécurité qui possède les mêmes compétences et utilise les mêmes outils qu'un hacker malveillant, mais son objectif est d'améliorer la sécurité du réseau sans causer de dommages. Le principal avantage du hacking éthique est d'empêcher le vol et l'utilisation abusive des données par des attaquants malveillants.",
+            why_is_it_important_title: "Pourquoi le Hacking Éthique est-il Important ?",
+            why_is_it_important_p1: "Dans le monde numérique d'aujourd'hui, où des données sensibles sont stockées dans diverses entreprises, réseaux et serveurs, il est crucial de les protéger. Le hacking éthique joue un rôle vital dans le renforcement de la posture de sécurité d'une organisation. Il aide à identifier les vulnérabilités du point de vue d'un attaquant afin de corriger les points faibles.",
+            why_is_it_important_li1: "<strong>Découverte de Vulnérabilités :</strong> Il aide les organisations à découvrir les vulnérabilités avant les hackers, prévenant ainsi les violations de données coûteuses.",
+            why_is_it_important_li2: "<strong>Renforcement des Défenses :</strong> En simulant des attaques du monde réel, les organisations peuvent renforcer leurs défenses contre les attaques externes.",
+            why_is_it_important_li3: "<strong>Conformité Réglementaire :</strong> De nombreuses industries exigent la conformité aux normes de sécurité, et le hacking éthique aide à y parvenir.",
+            why_is_it_important_li4: "<strong>Instauration de la Confiance :</strong> Un engagement en faveur de la sécurité par le biais de piratages éthiques réguliers renforce la confiance des clients dans la marque.",
+            key_concepts_title: "Concepts Clés du Hacking Éthique",
+            key_concepts_p1: "Le hacking éthique suit un processus structuré pour identifier les vulnérabilités. Certains des concepts et phases clés incluent :",
+            key_concepts_li1: "<strong>Reconnaissance :</strong> C'est la phase initiale où le hacker recueille autant d'informations que possible sur le système cible.",
+            key_concepts_li2: "<strong>Scan :</strong> Dans cette phase, le hacker éthique utilise des outils pour identifier les ports ouverts, les systèmes actifs et les services fonctionnant sur le réseau.",
+            key_concepts_li3: "<strong>Obtention de l'Accès :</strong> Ici, le hacker exploite les vulnérabilités trouvées lors des phases de reconnaissance et de scan pour accéder au système.",
+            key_concepts_li4: "<strong>Maintien de l'Accès :</strong> Cela implique de garantir un accès persistant au système compromis pour recueillir autant de données que possible.",
+            key_concepts_li5: "<strong>Effacement des Traces :</strong> Dans la phase finale, le hacker éthique supprime toutes les traces de ses activités pour éviter d'être détecté.",
+
+            types_of_hackers_title: "Types de Hackers",
+            types_of_hackers_p1: "Les hackers sont généralement classés selon leurs motivations, qui sont souvent symbolisées par des 'chapeaux' de différentes couleurs :",
+            types_of_hackers_li1: "<strong>Hackers au Chapeau Blanc :</strong> Ce sont les hackers éthiques. Ils ont la permission explicite du propriétaire des actifs informatiques pour trouver des vulnérabilités. Leur but est d'améliorer la sécurité.",
+            types_of_hackers_li2: "<strong>Hackers au Chapeau Noir :</strong> Ce sont des hackers malveillants qui s'introduisent dans les systèmes sans autorisation à des fins de gain personnel ou financier. Leurs actions sont illégales et nuisibles.",
+            types_of_hackers_li3: "<strong>Hackers au Chapeau Gris :</strong> C'est un mélange des deux. Les hackers au chapeau gris peuvent s'introduire dans un système sans autorisation, mais ils n'exploiteront pas les vulnérabilités à des fins malveillantes. Au lieu de cela, ils pourraient signaler la vulnérabilité au propriétaire, demandant parfois une rémunération.",
+            common_tools_title: "Outils Courants de Hacking Éthique",
+            common_tools_p1: "Les hackers éthiques utilisent une variété d'outils pour effectuer des tests d'intrusion. Certains des outils les plus populaires incluent :",
+            common_tools_li1: "<strong>Nmap (Network Mapper) :</strong> Utilisé pour la découverte de réseau et l'audit de sécurité. Il peut trouver des hôtes actifs, des ports ouverts, des services en cours d'exécution et des versions de systèmes d'exploitation.",
+            common_tools_li2: "<strong>Wireshark :</strong> Un analyseur de protocole réseau qui vous permet de voir ce qui se passe sur votre réseau à un niveau microscopique.",
+            common_tools_li3: "<strong>Metasploit :</strong> Un framework puissant pour développer et exécuter du code d'exploitation contre une machine cible distante.",
+            common_tools_li4: "<strong>Burp Suite :</strong> Une plateforme intégrée pour effectuer des tests de sécurité des applications web.",
+            common_tools_li5: "<strong>SQLMap :</strong> Un outil open-source qui automatise le processus de détection et d'exploitation des failles d'injection SQL.",
+            faq_title: "Foire Aux Questions (FAQ)",
+            faq_q1: "Le hacking éthique est-il une profession légale ?",
+            faq_a1: "Oui, le hacking éthique est tout à fait légal tant qu'il est effectué avec l'autorisation explicite et documentée de l'organisation dont les systèmes sont testés. Les hackers éthiques opèrent sous des contrats stricts et des accords de non-divulgation pour garantir que toutes les activités sont autorisées et confidentielles.",
+            faq_q2: "Quelles compétences sont requises pour devenir un hacker éthique ?",
+            faq_a2: "Un hacker éthique a besoin d'une base solide en matière de réseaux, de systèmes d'exploitation (comme Linux et Windows) et de langages de programmation/scripting (comme Python, Bash ou PowerShell). De plus, il a besoin d'une connaissance approfondie des principes de la cybersécurité, des vulnérabilités courantes et des outils de sécurité. Des compétences non techniques comme la résolution de problèmes, la pensée critique et une communication claire sont également essentielles.",
+            faq_q3: "En quoi le hacking éthique diffère-t-il du hacking malveillant ?",
+            faq_a3: "La principale différence réside dans l'intention et l'autorisation. Les hackers éthiques ont l'autorisation du propriétaire de l'actif pour trouver et signaler les vulnérabilités dans le but d'améliorer la sécurité. Les hackers malveillants (chapeaux noirs) agissent illégalement, sans autorisation et avec une intention nuisible, comme voler des données, provoquer des perturbations ou exiger une rançon.",
+            faq_q4: "Quelles sont les attaques courantes simulées par les hackers éthiques ?",
+            faq_a4: "Les hackers éthiques simulent un large éventail d'attaques pour tester les défenses d'une organisation. Les exemples courants incluent l'injection SQL, le Cross-Site Scripting (XSS), les simulations de phishing, les tests de déni de service (DoS) et les tentatives d'exploitation de serveurs mal configurés ou de logiciels non corrigés.",
+            faq_q5: "Ai-je besoin de certifications pour travailler comme hacker éthique ?",
+            faq_a5: "Bien qu'elles ne soient pas toujours obligatoires, les certifications sont fortement recommandées car elles valident vos compétences et vos connaissances. Les certifications populaires dans ce domaine incluent le Certified Ethical Hacker (CEH), l'Offensive Security Certified Professional (OSCP) et le CompTIA PenTest+."
+        },
+        ar: {
+            title: "مقدمة في القرصنة الأخلاقية",
+            select_language: "اختار اللغة:",
+            what_is_hacking_title: "ما هي القرصنة الأخلاقية؟",
+            what_is_hacking_p1: "القرصنة الأخلاقية، والمعروفة أيضًا باسم اختبار الاختراق أو قرصنة القبعة البيضاء، هي ممارسة محاولة اقتحام أجهزة الكمبيوتر والأجهزة الخاصة بمؤسسة بشكل قانوني ومتعمد. من خلال القيام بذلك، يمكن للقراصنة الأخلاقيين اختبار دفاعات المنظمة، وتسليط الضوء على أي نقاط ضعف في أنظمتهم وشبكاتهم قبل أن يتمكن المتسللون الضارون من استغلالها.",
+            what_is_hacking_p2: "الهاكر الأخلاقي هو متخصص في الأمن السيبراني لديه نفس المهارات ويستخدم نفس الأدوات التي يستخدمها الهاكر الخبيث، لكن هدفه هو تحسين أمن الشبكة دون التسبب في ضرر. الفائدة الأساسية للقرصنة الأخلاقية هي منع سرقة البيانات وإساءة استخدامها من قبل المهاجمين الخبثاء.",
+            why_is_it_important_title: "لماذا تعتبر القرصنة الأخلاقية مهمة؟",
+            why_is_it_important_p1: "في عالم اليوم الرقمي، حيث يتم تخزين البيانات الحساسة عبر مختلف الشركات والشبكات والخوادم، من الأهمية بمكان حمايتها. تلعب القرصنة الأخلاقية دورًا حيويًا في تعزيز الموقف الأمني للمؤسسة. فهي تساعد في تحديد نقاط الضعف من وجهة نظر المهاجم بحيث يمكن إصلاح النقاط الضعيفة.",
+            why_is_it_important_li1: "<strong>اكتشاف نقاط الضعف:</strong> يساعد المؤسسات على اكتشاف نقاط الضعف قبل المتسللين، مما يمنع خروقات البيانات المكلفة.",
+            why_is_it_important_li2: "<strong>تعزيز الدفاعات:</strong> من خلال محاكاة هجمات العالم الحقيقي، يمكن للمنظمات تعزيز دفاعاتها ضد الهجمات الخارجية.",
+            why_is_it_important_li3: "<strong>الامتثال التنظيمي:</strong> تتطلب العديد من الصناعات الامتثال لمعايير الأمان، وتساعد القرصنة الأخلاقية في تحقيق ذلك.",
+            why_is_it_important_li4: "<strong>بناء الثقة:</strong> الالتزام بالأمان من خلال القرصنة الأخلاقية المنتظمة يعزز ثقة العملاء في العلامة التجارية.",
+            key_concepts_title: "المفاهيم الأساسية في القرصنة الأخلاقية",
+            key_concepts_p1: "تتبع القرصنة الأخلاقية عملية منظمة لتحديد نقاط الضعف. تشمل بعض المفاهيم والمراحل الرئيسية ما يلي:",
+            key_concepts_li1: "<strong>الاستطلاع:</strong> هذه هي المرحلة الأولية حيث يجمع المتسلل أكبر قدر ممكن من المعلومات حول النظام المستهدف.",
+            key_concepts_li2: "<strong>المسح:</strong> في هذه المرحلة، يستخدم الهاكر الأخلاقي أدوات لتحديد المنافذ المفتوحة والأنظمة الحية والخدمات التي تعمل على الشبكة.",
+            key_concepts_li3: "<strong>الحصول على حق الوصول:</strong> هنا، يستغل المتسلل نقاط الضعف التي تم العثور عليها خلال مرحلتي الاستطلاع والمسح للوصول إلى النظام.",
+            key_concepts_li4: "<strong>الحفاظ على الوصول:</strong> يتضمن ذلك ضمان الوصول المستمر إلى النظام المخترق لجمع أكبر قدر ممكن من البيانات.",
+            key_concepts_li5: "<strong>محو الآثار:</strong> في المرحلة النهائية، يزيل الهاكر الأخلاقي جميع آثار أنشطته لتجنب الكشف.",
+
+            types_of_hackers_title: "أنواع المتسللين",
+            types_of_hackers_p1: "يتم تصنيف المتسللين عادةً حسب دوافعهم، والتي غالبًا ما يرمز إليها بـ 'قبعات' ملونة مختلفة:",
+            types_of_hackers_li1: "<strong>قراصنة القبعة البيضاء:</strong> هؤلاء هم المتسللون الأخلاقيون. لديهم إذن صريح من مالك أصول تكنولوجيا المعلومات للعثور على نقاط الضعف. هدفهم هو تحسين الأمن.",
+            types_of_hackers_li2: "<strong>قراصنة القبعة السوداء:</strong> هؤلاء هم المتسللون الخبثاء الذين يخترقون الأنظمة دون إذن لتحقيق مكاسب شخصية أو مالية. أفعالهم غير قانونية وضارة.",
+            types_of_hackers_li3: "<strong>قراصنة القبعة الرمادية:</strong> هذا مزيج من الاثنين. قد يخترق قراصنة القبعة الرمادية نظامًا دون إذن، لكنهم لن يستغلوا نقاط الضعف لأغراض خبيثة. بدلاً من ذلك، قد يبلغون عن نقطة الضعف للمالك، ويطلبون أحيانًا رسومًا.",
+            common_tools_title: "أدوات القرصنة الأخلاقية الشائعة",
+            common_tools_p1: "يستخدم المتسللون الأخلاقيون مجموعة متنوعة من الأدوات لإجراء اختبارات الاختراق. تتضمن بعض الأدوات الأكثر شيوعًا ما يلي:",
+            common_tools_li1: "<strong>Nmap (مخطط الشبكة):</strong> يستخدم لاكتشاف الشبكة وتدقيق الأمان. يمكنه العثور على المضيفين النشطين والمنافذ المفتوحة والخدمات قيد التشغيل وإصدارات أنظمة التشغيل.",
+            common_tools_li2: "<strong>Wireshark:</strong> محلل بروتوكول الشبكة الذي يتيح لك رؤية ما يحدث على شبكتك على المستوى المجهري.",
+            common_tools_li3: "<strong>Metasploit:</strong> إطار عمل قوي لتطوير وتنفيذ رمز الاستغلال ضد جهاز مستهدف بعيد.",
+            common_tools_li4: "<strong>Burp Suite:</strong> منصة متكاملة لإجراء اختبار أمان لتطبيقات الويب.",
+            common_tools_li5: "<strong>SQLMap:</strong> أداة مفتوحة المصدر تعمل على أتمتة عملية اكتشاف واستغلال عيوب حقن SQL.",
+            faq_title: "الأسئلة المتداولة (FAQ)",
+            faq_q1: "هل القرصنة الأخلاقية مهنة قانونية؟",
+            faq_a1: "نعم، القرصنة الأخلاقية قانونية تمامًا طالما يتم إجراؤها بإذن صريح وموثق من المنظمة التي يتم اختبار أنظمتها. يعمل المتسللون الأخلاقيون بموجب عقود صارمة واتفاقيات عدم إفشاء لضمان أن جميع الأنشطة مصرح بها وسرية.",
+            faq_q2: "ما هي المهارات المطلوبة لتصبح هاكر أخلاقي؟",
+            faq_a2: "يحتاج الهاكر الأخلاقي إلى أساس قوي في الشبكات وأنظمة التشغيل (مثل Linux و Windows) ولغات البرمجة / البرمجة النصية (مثل Python أو Bash أو PowerShell). بالإضافة إلى ذلك، يحتاجون إلى معرفة متعمقة بمبادئ الأمن السيبراني ونقاط الضعف الشائعة وأدوات الأمان. المهارات الشخصية مثل حل المشكلات والتفكير النقدي والتواصل الواضح ضرورية أيضًا.",
+            faq_q3: "كيف تختلف القرصنة الأخلاقية عن القرصنة الخبيثة؟",
+            faq_a3: "الفرق الأساسي هو النية والإذن. يمتلك المتسللون الأخلاقيون تفويضًا من مالك الأصول للعثور على نقاط الضعف والإبلاغ عنها بهدف تحسين الأمان. يعمل المتسللون الخبثاء (ذوو القبعات السوداء) بشكل غير قانوني، دون إذن، وبنية ضارة، مثل سرقة البيانات أو التسبب في تعطيل أو المطالبة بفدية.",
+            faq_q4: "ما هي بعض الهجمات الشائعة التي يحاكيها المتسللون الأخلاقيون؟",
+            faq_a4: "يحاكي المتسللون الأخلاقيون مجموعة واسعة من الهجمات لاختبار دفاعات المنظمة. تشمل الأمثلة الشائعة حقن SQL، والبرمجة النصية عبر المواقع (XSS)، ومحاكاة التصيد الاحتيالي، واختبارات رفض الخدمة (DoS)، ومحاولات استغلال الخوادم التي تم تكوينها بشكل خاطئ أو البرامج غير المصححة.",
+            faq_q5: "هل أحتاج إلى شهادات للعمل كهاكر أخلاقي؟",
+            faq_a5: "على الرغم من أنها ليست إلزامية دائمًا، إلا أنه يوصى بشدة بالشهادات لأنها تثبت صحة مهاراتك ومعرفتك. تشمل الشهادات الشائعة في هذا المجال Certified Ethical Hacker (CEH) و Offensive Security Certified Professional (OSCP) و CompTIA PenTest+."
+        },
+        bn: {
+            title: "এথিক্যাল হ্যাকিং-এর ভূমিকা",
+            select_language: "ভাষা নির্বাচন করুন:",
+            what_is_hacking_title: "এথিক্যাল হ্যাকিং কী?",
+            what_is_hacking_p1: "এথিক্যাল হ্যাকিং, যা পেনিট্রেশন টেস্টিং বা হোয়াইট-হ্যাট হ্যাকিং নামেও পরিচিত, এটি আইনসম্মতভাবে এবং ইচ্ছাকৃতভাবে কোনও সংস্থার কম্পিউটার এবং ডিভাইসগুলিতে প্রবেশ করার একটি অনুশীলন। এর মাধ্যমে, এথিক্যাল হ্যাকাররা সংস্থার প্রতিরক্ষা ব্যবস্থা পরীক্ষা করতে পারে এবং ক্ষতিকারক হ্যাকারদের দ্বারা সিস্টেমের দুর্বলতাগুলি কাজে লাগানোর আগেই তা চিহ্নিত করতে পারে।",
+            what_is_hacking_p2: "একজন এথিক্যাল হ্যাকার হলেন একজন সাইবারসিকিউরিটি পেশাদার, যার দক্ষতা এবং সরঞ্জামগুলি ক্ষতিকারক হ্যাকারের মতোই, কিন্তু তার লক্ষ্য ক্ষতি না করে নেটওয়ার্কের সুরক্ষা উন্নত করা। এথিক্যাল হ্যাকিংয়ের প্রাথমিক সুবিধা হলো ডেটা চুরি এবং ক্ষতিকারক আক্রমণকারীদের দ্বারা এর অপব্যবহার রোধ করা।",
+            why_is_it_important_title: "এথিক্যাল হ্যাকিং কেন গুরুত্বপূর্ণ?",
+            why_is_it_important_p1: "আজকের ডিজিটাল বিশ্বে, যেখানে সংবেদনশীল ডেটা বিভিন্ন ব্যবসা, নেটওয়ার্ক এবং সার্ভারে সংরক্ষিত থাকে, সেখানে এটি রক্ষা করা অত্যন্ত গুরুত্বপূর্ণ। এথিক্যাল হ্যাকিং একটি সংস্থার সুরক্ষা অবস্থানকে শক্তিশালী করতে গুরুত্বপূর্ণ ভূমিকা পালন করে। এটি আক্রমণকারীর দৃষ্টিকোণ থেকে দুর্বলতাগুলি চিহ্নিত করতে সহায়তা করে যাতে দুর্বল স্থানগুলি সংশোধন করা যায়।",
+            why_is_it_important_li1: "<strong>দুর্বলতা খুঁজে বের করা:</strong> এটি সংস্থাগুলিকে হ্যাকারদের আগে দুর্বলতা খুঁজে পেতে সাহায্য করে, যা ব্যয়বহুল ডেটা লঙ্ঘন প্রতিরোধ করে।",
+            why_is_it_important_li2: "<strong>প্রতিরক্ষা ব্যবস্থা শক্তিশালী করা:</strong> বাস্তব-বিশ্বের আক্রমণের অনুকরণ করে, সংস্থাগুলি বাইরের আক্রমণের বিরুদ্ধে তাদের প্রতিরক্ষা ব্যবস্থা শক্তিশালী করতে পারে।",
+            why_is_it_important_li3: "<strong>নিয়ন্ত্রক সম্মতি:</strong> অনেক শিল্পের জন্য সুরক্ষা মান মেনে চলা প্রয়োজন, এবং এথিক্যাল হ্যাকিং এটি অর্জনে সহায়তা করে।",
+            why_is_it_important_li4: "<strong>বিশ্বাস তৈরি করা:</strong> নিয়মিত এথিক্যাল হ্যাকিংয়ের মাধ্যমে সুরক্ষার প্রতি প্রতিশ্রুতি ব্র্যান্ডের প্রতি গ্রাহকের আস্থা এবং বিশ্বাস বাড়ায়।",
+            key_concepts_title: "এথিক্যাল হ্যাকিং-এর মূল ধারণা",
+            key_concepts_p1: "এথিক্যাল হ্যাকিং দুর্বলতা চিহ্নিত করার জন্য একটি কাঠামোবদ্ধ প্রক্রিয়া অনুসরণ করে। কিছু মূল ধারণা এবং ধাপগুলির মধ্যে রয়েছে:",
+            key_concepts_li1: "<strong>অনুসন্ধান (Reconnaissance):</strong> এটি প্রাথমিক পর্যায় যেখানে হ্যাকার লক্ষ্য সিস্টেম সম্পর্কে যতটা সম্ভব তথ্য সংগ্রহ করে।",
+            key_concepts_li2: "<strong>স্ক্যানিং (Scanning):</strong> এই পর্যায়ে, এথিক্যাল হ্যাকার নেটওয়ার্কে খোলা পোর্ট, লাইভ সিস্টেম এবং পরিষেবাগুলি সনাক্ত করতে সরঞ্জাম ব্যবহার করে।",
+            key_concepts_li3: "<strong>অ্যাক্সেস অর্জন (Gaining Access):</strong> এখানে, হ্যাকার সিস্টেমের অ্যাক্সেস পাওয়ার জন্য অনুসন্ধান এবং স্ক্যানিং পর্যায়ে পাওয়া দুর্বলতাগুলিকে কাজে লাগায়।",
+            key_concepts_li4: "<strong>অ্যাক্সেস বজায় রাখা (Maintaining Access):</strong> এটি আপোস করা সিস্টেমে স্থায়ী অ্যাক্সেস নিশ্চিত করে যাতে যতটা সম্ভব ডেটা সংগ্রহ করা যায়।",
+            key_concepts_li5: "<strong>ট্র্যাক পরিষ্কার করা (Clearing Tracks):</strong> চূড়ান্ত পর্যায়ে, এথিক্যাল হ্যাকার সনাক্তকরণ এড়াতে তাদের সমস্ত কার্যকলাপের চিহ্ন মুছে ফেলে।",
+
+            types_of_hackers_title: "হ্যাকারদের প্রকারভেদ",
+            types_of_hackers_p1: "হ্যাকারদের সাধারণত তাদের উদ্দেশ্যের উপর ভিত্তি করে শ্রেণীবদ্ধ করা হয়, যা প্রায়শই বিভিন্ন রঙের 'টুপি' দ্বারা প্রতীকায়িত হয়:",
+            types_of_hackers_li1: "<strong>হোয়াইট হ্যাট হ্যাকার (White Hat Hackers):</strong> এরা হলেন এথিক্যাল হ্যাকার। তাদের আইটি অ্যাসেটের মালিকের কাছ থেকে দুর্বলতা খুঁজে বের করার জন্য সুস্পষ্ট অনুমতি থাকে। তাদের লক্ষ্য হলো নিরাপত্তা উন্নত করা।",
+            types_of_hackers_li2: "<strong>ব্ল্যাক হ্যাট হ্যাকার (Black Hat Hackers):</strong> এরা হলো দূষিত হ্যাকার যারা ব্যক্তিগত বা আর্থিক লাভের জন্য অনুমতি ছাড়াই সিস্টেমে প্রবেশ করে। তাদের কার্যকলাপ অবৈধ এবং ক্ষতিকর।",
+            types_of_hackers_li3: "<strong>গ্রে হ্যাট হ্যাকার (Grey Hat Hackers):</strong> এটি উভয়ের মিশ্রণ। গ্রে হ্যাট হ্যাকাররা অনুমতি ছাড়াই সিস্টেমে প্রবেশ করতে পারে, কিন্তু তারা দূষিত উদ্দেশ্যে দুর্বলতা ব্যবহার করে না। পরিবর্তে, তারা মালিককে দুর্বলতা সম্পর্কে রিপোর্ট করতে পারে, কখনও কখনও একটি ফি অনুরোধ করে।",
+            common_tools_title: "সাধারণ এথিক্যাল হ্যাকিং টুলস",
+            common_tools_p1: "এথিক্যাল হ্যাকাররা পেনিট্রেশন টেস্ট করার জন্য বিভিন্ন টুল ব্যবহার করে। কিছু জনপ্রিয় টুলের মধ্যে রয়েছে:",
+            common_tools_li1: "<strong>Nmap (Network Mapper):</strong> নেটওয়ার্ক আবিষ্কার এবং নিরাপত্তা নিরীক্ষার জন্য ব্যবহৃত হয়। এটি লাইভ হোস্ট, খোলা পোর্ট, চলমান পরিষেবা এবং অপারেটিং সিস্টেমের সংস্করণ খুঁজে পেতে পারে।",
+            common_tools_li2: "<strong>Wireshark:</strong> একটি নেটওয়ার্ক প্রোটোকল বিশ্লেষক যা আপনাকে আপনার নেটওয়ার্কে একটি আণুবীক্ষণিক স্তরে কী ঘটছে তা দেখতে দেয়।",
+            common_tools_li3: "<strong>Metasploit:</strong> একটি দূরবর্তী টার্গেট মেশিনের বিরুদ্ধে এক্সপ্লয়েট কোড বিকাশ এবং কার্যকর করার জন্য একটি শক্তিশালী ফ্রেমওয়ার্ক।",
+            common_tools_li4: "<strong>Burp Suite:</strong> ওয়েব অ্যাপ্লিকেশনের নিরাপত্তা পরীক্ষা করার জন্য একটি সমন্বিত প্ল্যাটফর্ম।",
+            common_tools_li5: "<strong>SQLMap:</strong> একটি ওপেন সোর্স টুল যা SQL ইনজেকশন ত্রুটি সনাক্তকরণ এবং কাজে লাগানোর প্রক্রিয়া স্বয়ংক্রিয় করে।",
+            faq_title: "সচরাচর জিজ্ঞাস্য (FAQ)",
+            faq_q1: "এথিক্যাল হ্যাকিং কি একটি আইনি পেশা?",
+            faq_a1: "হ্যাঁ, এথিক্যাল হ্যাকিং সম্পূর্ণ আইনি, যতক্ষণ এটি সেই সংস্থার সুস্পষ্ট এবং নথিভুক্ত অনুমতি নিয়ে করা হয় যার সিস্টেম পরীক্ষা করা হচ্ছে। এথিক্যাল হ্যাকাররা কঠোর চুক্তি এবং নন-ডিসক্লোজার অ্যাগ্রিমেন্টের অধীনে কাজ করে যাতে সমস্ত কার্যকলাপ অনুমোদিত এবং গোপনীয় থাকে।",
+            faq_q2: "একজন এথিক্যাল হ্যাকার হতে কী কী দক্ষতার প্রয়োজন?",
+            faq_a2: "একজন এথিক্যাল হ্যাকারের নেটওয়ার্কিং, অপারেটিং সিস্টেম (যেমন লিনাক্স এবং উইন্ডোজ), এবং প্রোগ্রামিং/স্ক্রিপ্টিং ভাষা (যেমন পাইথন, ব্যাশ, বা পাওয়ারশেল) সম্পর্কে শক্তিশালী ভিত্তি থাকা প্রয়োজন। এছাড়াও, তাদের সাইবারসিকিউরিটি নীতি, সাধারণ দুর্বলতা এবং সুরক্ষা সরঞ্জাম সম্পর্কে গভীর জ্ঞান প্রয়োজন। সমস্যা সমাধান, সমালোচনামূলক চিন্তাভাবনা এবং স্পষ্ট যোগাযোগের মতো সফট স্কিলও অপরিহার্য।",
+            faq_q3: "এথিক্যাল হ্যাকিং এবং ক্ষতিকারক হ্যাকিংয়ের মধ্যে পার্থক্য কী?",
+            faq_a3: "প্রাথমিক পার্থক্য হলো উদ্দেশ্য এবং অনুমতি। এথিক্যাল হ্যাকারদের নিরাপত্তা উন্নত করার লক্ষ্যে দুর্বলতা খুঁজে বের করে রিপোর্ট করার জন্য অ্যাসেটের মালিকের কাছ থেকে অনুমোদন থাকে। অন্যদিকে, ক্ষতিকারক হ্যাকাররা (ব্ল্যাক হ্যাট) অবৈধভাবে, অনুমতি ছাড়াই এবং ক্ষতিকারক উদ্দেশ্য নিয়ে কাজ করে, যেমন ডেটা চুরি করা, বিঘ্ন ঘটানো বা মুক্তিপণ দাবি করা।",
+            faq_q4: "এথিক্যাল হ্যাকাররা সাধারণত কোন ধরনের আক্রমণ সিমুলেট করে?",
+            faq_a4: "এথিক্যাল হ্যাকাররা একটি সংস্থার প্রতিরক্ষা ব্যবস্থা পরীক্ষা করার জন্য বিস্তৃত আক্রমণ সিমুলেট করে। সাধারণ উদাহরণগুলির মধ্যে রয়েছে SQL ইনজেকশন, ক্রস-সাইট স্ক্রিপ্টিং (XSS), ফিশিং সিমুলেশন, ডিনায়েল-অফ-সার্ভিস (DoS) পরীক্ষা, এবং ভুলভাবে কনফিগার করা সার্ভার বা আনপ্যাচড সফ্টওয়্যারকে কাজে লাগানোর প্রচেষ্টা।",
+            faq_q5: "একজন এথিক্যাল হ্যাকার হিসেবে কাজ করার জন্য কি আমার সার্টিফিকেশন প্রয়োজন?",
+            faq_a5: "যদিও সবসময় বাধ্যতামূলক নয়, সার্টিফিকেশনগুলি অত্যন্ত সুপারিশ করা হয় কারণ সেগুলি আপনার দক্ষতা এবং জ্ঞানকে প্রমাণ করে। এই ক্ষেত্রের জনপ্রিয় সার্টিফিকেশনগুলির মধ্যে রয়েছে সার্টিফাইড এথিক্যাল হ্যাকার (CEH), অফেনসিভ সিকিউরিটি সার্টিফাইড প্রফেশনাল (OSCP), এবং CompTIA PenTest+।"
+        },
+        pt: {
+            title: "Introdução ao Hacking Ético",
+            select_language: "Selecione o idioma:",
+            what_is_hacking_title: "O que é Hacking Ético?",
+            what_is_hacking_p1: "O hacking ético, também conhecido como teste de penetração ou hacking de chapéu branco, é a prática de tentar invadir legal e deliberadamente os computadores e dispositivos de uma organização. Ao fazer isso, os hackers éticos podem testar as defesas da organização, destacando quaisquer vulnerabilidades em seus sistemas e redes antes que hackers mal-intencionados possam explorá-las.",
+            what_is_hacking_p2: "Um hacker ético é um profissional de cibersegurança que possui as mesmas habilidades e usa as mesmas ferramentas que um hacker mal-intencionado, mas seu objetivo é mejorar a segurança da rede sem causar danos. O principal benefício do hacking ético é evitar que dados sejam roubados e mal utilizados por invasores mal-intencionados.",
+            why_is_it_important_title: "Por que o Hacking Ético é Importante?",
+            why_is_it_important_p1: "No mundo digital de hoje, onde dados sensíveis são armazenados em várias empresas, redes e servidores, é crucial protegê-los. O hacking ético desempenha um papel vital no fortalecimento da postura de segurança de uma organização. Ajuda a identificar vulnerabilidades do ponto de vista de um invasor para que os pontos fracos possam ser corrigidos.",
+            why_is_it_important_li1: "<strong>Descobrindo Vulnerabilidades:</strong> Ajuda as organizações a descobrir vulnerabilidades antes dos hackers, prevenindo violações de dados dispendiosas.",
+            why_is_it_important_li2: "<strong>Fortalecendo as Defesas:</strong> Ao simular ataques do mundo real, as organizações podem fortalecer suas defesas contra ataques externos.",
+            why_is_it_important_li3: "<strong>Conformidade Regulatória:</strong> Muitas indústrias exigem conformidade com padrões de segurança, e o hacking ético ajuda a alcançar isso.",
+            why_is_it_important_li4: "<strong>Construindo Confiança:</strong> Um compromisso com a segurança por meio de hacking ético regular aumenta a confiança do cliente na marca.",
+            key_concepts_title: "Conceitos-Chave em Hacking Ético",
+            key_concepts_p1: "O hacking ético segue um processo estruturado para identificar vulnerabilidades. Alguns dos principais conceitos e fases incluem:",
+            key_concepts_li1: "<strong>Reconhecimento:</strong> Esta é a fase inicial em que o hacker reúne o máximo de informações possível sobre o sistema alvo.",
+            key_concepts_li2: "<strong>Varredura:</strong> Nesta fase, o hacker ético usa ferramentas para identificar portas abertas, sistemas ativos e serviços em execução na rede.",
+            key_concepts_li3: "<strong>Obtendo Acesso:</strong> Aqui, o hacker explora as vulnerabilidades encontradas durante as fases de reconhecimento e varredura para obter acesso ao sistema.",
+            key_concepts_li4: "<strong>Mantendo o Acesso:</strong> Isso envolve garantir acesso persistente ao sistema comprometido para coletar o máximo de dados possível.",
+            key_concepts_li5: "<strong>Limpando Rastros:</strong> Na fase final, o hacker ético remove todos os vestígios de suas atividades para evitar a detecção.",
+
+            types_of_hackers_title: "Tipos de Hackers",
+            types_of_hackers_p1: "Os hackers são normalmente categorizados por seus motivos, que são frequentemente simbolizados por 'chapéus' de cores diferentes:",
+            types_of_hackers_li1: "<strong>Hackers de Chapéu Branco:</strong> Estes são os hackers éticos. Eles têm permissão explícita do proprietário dos ativos de TI para encontrar vulnerabilidades. Seu objetivo é melhorar a segurança.",
+            types_of_hackers_li2: "<strong>Hackers de Chapéu Preto:</strong> São hackers mal-intencionados que invadem sistemas sem permissão para ganho pessoal ou financeiro. Suas ações são ilegais e prejudiciais.",
+            types_of_hackers_li3: "<strong>Hackers de Chapéu Cinza:</strong> É uma mistura dos dois. Hackers de chapéu cinza podem invadir um sistema sem permissão, mas não explorarão as vulnerabilidades para fins maliciosos. Em vez disso, eles podem relatar a vulnerabilidade ao proprietário, às vezes solicitando uma taxa.",
+            common_tools_title: "Ferramentas Comuns de Hacking Ético",
+            common_tools_p1: "Hackers éticos usam uma variedade de ferramentas para conduzir testes de penetração. Algumas das ferramentas mais populares incluem:",
+            common_tools_li1: "<strong>Nmap (Network Mapper):</strong> Usado para descoberta de rede e auditoria de segurança. Ele pode encontrar hosts ativos, portas abertas, serviços em execução e versões de sistemas operacionais.",
+            common_tools_li2: "<strong>Wireshark:</strong> Um analisador de protocolo de rede que permite ver o que está acontecendo em sua rede em um nível microscópico.",
+            common_tools_li3: "<strong>Metasploit:</strong> Um framework poderoso para desenvolver e executar código de exploração contra uma máquina alvo remota.",
+            common_tools_li4: "<strong>Burp Suite:</strong> Uma plataforma integrada para realizar testes de segurança de aplicativos da web.",
+            common_tools_li5: "<strong>SQLMap:</strong> Uma ferramenta de código aberto que automatiza o processo de detecção e exploração de falhas de injeção de SQL.",
+            faq_title: "Perguntas Frequentes (FAQ)",
+            faq_q1: "O hacking ético é uma profissão legal?",
+            faq_a1: "Sim, o hacking ético é completamente legal, desde que seja feito com a permissão explícita e documentada da organização cujos sistemas estão sendo testados. Os hackers éticos operam sob contratos estritos e acordos de não divulgação para garantir que todas as atividades sejam autorizadas e confidenciais.",
+            faq_q2: "Quais habilidades são necessárias para se tornar um hacker ético?",
+            faq_a2: "Um hacker ético precisa de uma base sólida em redes, sistemas operacionais (como Linux e Windows) e linguagens de programação/script (como Python, Bash ou PowerShell). Além disso, eles precisam de conhecimento aprofundado dos princípios de cibersegurança, vulnerabilidades comuns e ferramentas de segurança. Habilidades interpessoais como resolução de problemas, pensamento crítico e comunicação clara também são essenciais.",
+            faq_q3: "Como o hacking ético difere do hacking mal-intencionado?",
+            faq_a3: "A principal diferença é a intenção e a permissão. Os hackers éticos têm autorização do proprietário do ativo para encontrar e relatar vulnerabilidades com o objetivo de melhorar a segurança. Hackers mal-intencionados (chapéus pretos) agem ilegalmente, sem permissão e com intenção prejudicial, como roubar dados, causar interrupções ou exigir um resgate.",
+            faq_q4: "Quais são alguns ataques comuns simulados por hackers éticos?",
+            faq_a4: "Hackers éticos simulam uma ampla gama de ataques para testar as defesas de uma organização. Exemplos comuns incluem injeção de SQL, Cross-Site Scripting (XSS), simulações de phishing, testes de negação de serviço (DoS) e tentativas de explorar servidores mal configurados ou software não corrigido.",
+            faq_q5: "Preciso de certificações para trabalhar como hacker ético?",
+            faq_a5: "Embora nem sempre sejam obrigatórias, as certificações são altamente recomendadas, pois validam suas habilidades e conhecimentos. Certificações populares neste campo incluem Certified Ethical Hacker (CEH), Offensive Security Certified Professional (OSCP) e CompTIA PenTest+."
+        },
+        ru: {
+            title: "Введение в Этичный Хакинг",
+            select_language: "Выберите язык:",
+            what_is_hacking_title: "Что такое Этичный Хакинг?",
+            what_is_hacking_p1: "Этичный хакинг, также известный как тестирование на проникновение или хакинг в белой шляпе, — это практика законной и преднамеренной попытки проникновения в компьютеры и устройства организации. Таким образом, этичные хакеры могут проверить защитные механизмы организации, выявив любые уязвимости в их системах и сетях до того, как злоумышленники смогут их использовать.",
+            what_is_hacking_p2: "Этичный хакер — это специалист по кибербезопасности, который обладает теми же навыками и использует те же инструменты, что и злоумышленник, но его цель — улучшить безопасность сети, не причиняя вреда. Основное преимущество этичного хакинга — предотвращение кражи и неправомерного использования данных злоумышленниками.",
+            why_is_it_important_title: "Почему Этичный Хакинг Важен?",
+            why_is_it_important_p1: "В современном цифровом мире, где конфиденциальные данные хранятся в различных компаниях, сетях и на серверах, крайне важно их защищать. Этичный хакинг играет жизненно важную роль в укреплении безопасности организации. Он помогает выявлять уязвимости с точки зрения злоумышленника, чтобы можно было исправить слабые места.",
+            why_is_it_important_li1: "<strong>Обнаружение уязвимостей:</strong> Помогает организациям обнаруживать уязвимости раньше хакеров, предотвращая дорогостоящие утечки данных.",
+            why_is_it_important_li2: "<strong>Укрепление защиты:</strong> Симулируя реальные атаки, организации могут укрепить свою защиту от внешних атак.",
+            why_is_it_important_li3: "<strong>Соблюдение нормативных требований:</strong> Многие отрасли требуют соблюдения стандартов безопасности, и этичный хакинг помогает в этом.",
+            why_is_it_important_li4: "<strong>Построение доверия:</strong> Приверженность безопасности через регулярный этичный хакинг повышает доверие клиентов к бренду.",
+            key_concepts_title: "Ключевые Концепции в Этичном Хакинге",
+            key_concepts_p1: "Этичный хакинг следует структурированному процессу для выявления уязвимостей. Некоторые из ключевых концепций и фаз включают:",
+            key_concepts_li1: "<strong>Разведка:</strong> Это начальная фаза, на которой хакер собирает как можно больше информации о целевой системе.",
+            key_concepts_li2: "<strong>Сканирование:</strong> На этом этапе этичный хакер использует инструменты для определения открытых портов, работающих систем и служб в сети.",
+            key_concepts_li3: "<strong>Получение доступа:</strong> Здесь хакер использует уязвимости, найденные на этапах разведки и сканирования, для получения доступа к системе.",
+            key_concepts_li4: "<strong>Поддержание доступа:</strong> Это включает обеспечение постоянного доступа к скомпрометированной системе для сбора как можно большего количества данных.",
+            key_concepts_li5: "<strong>Заметание следов:</strong> На заключительном этапе этичный хакер удаляет все следы своей деятельности, чтобы избежать обнаружения.",
+
+            types_of_hackers_title: "Типы хакеров",
+            types_of_hackers_p1: "Хакеров обычно классифицируют по их мотивам, которые часто символизируют «шляпы» разного цвета:",
+            types_of_hackers_li1: "<strong>Хакеры в белой шляпе:</strong> Это этичные хакеры. У них есть явное разрешение от владельца ИТ-активов на поиск уязвимостей. Их цель — повысить безопасность.",
+            types_of_hackers_li2: "<strong>Хакеры в черной шляпе:</strong> Это злонамеренные хакеры, которые взламывают системы без разрешения для личной или финансовой выгоды. Их действия незаконны и вредны.",
+            types_of_hackers_li3: "<strong>Хакеры в серой шляпе:</strong> Это смесь двух предыдущих. Хакеры в серой шляпе могут взломать систему без разрешения, но они не будут использовать уязвимости в злонамеренных целях. Вместо этого они могут сообщить об уязвимости владельцу, иногда за вознаграждение.",
+            common_tools_title: "Распространенные инструменты для этичного хакинга",
+            common_tools_p1: "Этичные хакеры используют различные инструменты для проведения тестов на проникновение. Некоторые из самых популярных инструментов включают:",
+            common_tools_li1: "<strong>Nmap (Network Mapper):</strong> Используется для обнаружения сети и аудита безопасности. Он может находить активные хосты, открытые порты, запущенные службы и версии операционных систем.",
+            common_tools_li2: "<strong>Wireshark:</strong> Анализатор сетевых протоколов, который позволяет вам видеть, что происходит в вашей сети на микроскопическом уровне.",
+            common_tools_li3: "<strong>Metasploit:</strong> Мощная платформа для разработки и выполнения кода эксплойта на удаленной целевой машине.",
+            common_tools_li4: "<strong>Burp Suite:</strong> Интегрированная платформа для проведения тестирования безопасности веб-приложений.",
+            common_tools_li5: "<strong>SQLMap:</strong> Инструмент с открытым исходным кодом, который автоматизирует процесс обнаружения и использования уязвимостей SQL-инъекций.",
+            faq_title: "Часто задаваемые вопросы (FAQ)",
+            faq_q1: "Является ли этичный хакинг легальной профессией?",
+            faq_a1: "Да, этичный хакинг полностью легален, если он проводится с явного и документально подтвержденного разрешения организации, чьи системы тестируются. Этичные хакеры работают в рамках строгих контрактов и соглашений о неразглашении, чтобы гарантировать, что все действия санкционированы и конфиденциальны.",
+            faq_q2: "Какие навыки необходимы, чтобы стать этичным хакером?",
+            faq_a2: "Этичному хакеру необходимы прочные знания в области сетей, операционных систем (таких как Linux и Windows) и языков программирования/скриптов (таких как Python, Bash или PowerShell). Кроме того, им необходимы глубокие знания принципов кибербезопасности, распространенных уязвимостей и инструментов безопасности. Также важны такие «мягкие» навыки, как решение проблем, критическое мышление и четкое общение.",
+            faq_q3: "Чем этичный хакинг отличается от злонамеренного хакинга?",
+            faq_a3: "Основное различие заключается в намерениях и разрешении. У этичных хакеров есть разрешение от владельца актива на поиск и сообщение об уязвимостях с целью повышения безопасности. Злонамеренные хакеры (в черных шляпах) действуют незаконно, без разрешения и со злым умыслом, например, крадут данные, вызывают сбои или требуют выкуп.",
+            faq_q4: "Какие распространенные атаки имитируют этичные хакеры?",
+            faq_a4: "Этичные хакеры имитируют широкий спектр атак для проверки защиты организации. Распространенные примеры включают SQL-инъекции, межсайтовый скриптинг (XSS), имитацию фишинга, тесты на отказ в обслуживании (DoS) и попытки использования неправильно настроенных серверов или непропатченного программного обеспечения.",
+            faq_q5: "Нужны ли мне сертификаты для работы этичным хакером?",
+            faq_a5: "Хотя это не всегда обязательно, сертификаты настоятельно рекомендуются, поскольку они подтверждают ваши навыки и знания. Популярные сертификаты в этой области включают Certified Ethical Hacker (CEH), Offensive Security Certified Professional (OSCP) и CompTIA PenTest+."
+        },
+        ur: {
+            title: "اخلاقی ہیکنگ کا تعارف",
+            select_language: "زبان منتخب کریں:",
+            what_is_hacking_title: "اخلاقی ہیکنگ کیا ہے؟",
+            what_is_hacking_p1: "اخلاقی ہیکنگ، جسے پینیٹریشن ٹیسٹنگ یا وائٹ ہیٹ ہیکنگ بھی کہا جاتا ہے، قانونی طور پر اور جان بوجھ کر کسی تنظیم کے کمپیوٹرز اور آلات میں داخل ہونے کی کوشش کرنے کا عمل ہے۔ ایسا کرنے سے، اخلاقی ہیکرز تنظیم کے دفاع کی جانچ کر سکتے ہیں، ان کے سسٹمز اور نیٹ ورکس میں کسی بھی کمزوری کو اجاگر کر سکتے ہیں اس سے پہلے کہ بدنیتی پر مبنی ہیکرز ان کا استحصال کر سکیں۔",
+            what_is_hacking_p2: "ایک اخلاقی ہیکر ایک سائبرسیکیوریٹی پیشہ ور ہے جس کے پاس وہی مہارتیں اور اوزار ہوتے ہیں جو ایک بدنیتی پر مبنی ہیکر کے پاس ہوتے ہیں، لیکن ان کا مقصد نقصان پہنچائے بغیر نیٹ ورک کی حفاظت کو بہتر بنانا ہے۔ اخلاقی ہیکنگ کا بنیادی فائدہ ڈیٹا کو چوری ہونے اور بدنیتی پر مبنی حملہ آوروں کے ذریعے غلط استعمال سے بچانا ہے۔",
+            why_is_it_important_title: "اخلاقی ہیکنگ کیوں ضروری ہے؟",
+            why_is_it_important_p1: "آج کی ڈیجیٹل دنیا میں، جہاں حساس ڈیٹا مختلف کاروباروں، نیٹ ورक्स اور سرورز پر محفوظ کیا جاتا ہے، اس کی حفاظت کرنا بہت ضروری ہے۔ اخلاقی ہیکنگ کسی تنظیم کی حفاظتی پوزیشن کو مضبوط بنانے میں اہم کردار ادا کرتی ہے۔ یہ حملہ آور کے نقطہ نظر سے کمزوریوں کی نشاندہی کرنے میں مدد کرتی ہے تاکہ کمزور نکات کو ٹھیک کیا جا سکے۔",
+            why_is_it_important_li1: "<strong>کمزوریوں کی دریافت:</strong> یہ تنظیموں کو ہیکرز سے پہلے کمزوریوں کو دریافت کرنے میں مدد کرتا ہے, مہنگے ڈیٹا کی خلاف ورزیوں کو روکتا ہے۔",
+            why_is_it_important_li2: "<strong>دفاع کو مضبوط بنانا:</strong> حقیقی دنیا کے حملوں کی تقلید کرکے، تنظیمیں بیرونی حملوں کے خلاف اپنے دفاع کو مضبوط بنا سکتی ہیں۔",
+            why_is_it_important_li3: "<strong>ریگولیٹری تعمیل:</strong> بہت سی صنعتوں کو حفاظتی معیارات کی تعمیل کی ضرورت ہوتی ہے، اور اخلاقی ہیکنگ اسے حاصل کرنے میں مدد کرتی ہے۔",
+            why_is_it_important_li4: "<strong>اعتماد کی تعمیر:</strong> باقاعدہ اخلاقی ہیکنگ کے ذریعے حفاظت کے عزم سے برانڈ میں گاہکوں کا اعتماد اور بھروسہ بڑھتا ہے۔",
+            key_concepts_title: "اخلاقی ہیکنگ میں کلیدی تصورات",
+            key_concepts_p1: "اخلاقی ہیکنگ کمزوریوں کی نشاندہی کے لیے ایک منظم عمل کی پیروی کرتی ہے۔ کچھ کلیدی تصورات اور مراحل میں شامل ہیں:",
+            key_concepts_li1: "<strong>reconnaissance (معلومات جمع کرنا):</strong> یہ ابتدائی مرحلہ ہے جہاں ہیکر ہدف کے نظام کے بارے میں زیادہ سے زیادہ معلومات جمع کرتا ہے۔",
+            key_concepts_li2: "<strong>سکیننگ:</strong> اس مرحلے میں, اخلاقی ہیکر نیٹ ورک پر کھلے بندرگاہوں، لائیو سسٹمز اور خدمات کی نشاندہی کے لیے اوزار استعمال کرتا ہے۔",
+            key_concepts_li3: "<strong>رسائی حاصل کرنا:</strong> یہاں, ہیکر نظام تک رسائی حاصل کرنے کے لیے معلومات جمع کرنے اور سکیننگ کے مراحل کے دوران پائی جانے والی کمزوریوں کا استحصال کرتا ہے۔",
+            key_concepts_li4: "<strong>رسائی برقرار رکھنا:</strong> اس میں زیادہ سے زیادہ ڈیٹا اکٹھا کرنے کے لیے سمجھوتہ شدہ نظام تک مستقل رسائی کو یقینی بنانا شامل ہے۔",
+            key_concepts_li5: "<strong>نشان مٹانا:</strong> آخری مرحلے میں, اخلاقی ہیکر پتہ لگانے سے بچنے کے لیے اپنی تمام سرگرمیوں کے نشانات کو ہٹا دیتا ہے۔",
+
+            types_of_hackers_title: "ہیکرز کی اقسام",
+            types_of_hackers_p1: "ہیکرز کو عام طور پر ان کے مقاصد کے لحاظ سے درجہ بندی کیا جاتا ہے, جو اکثر مختلف رنگوں کی 'ٹوپیوں' سے ظاہر ہوتا ہے:",
+            types_of_hackers_li1: "<strong>وائٹ ہیٹ ہیکرز:</strong> یہ اخلاقی ہیکرز ہیں۔ انہیں آئی ٹی اثاثوں کے مالک سے کمزوریاں تلاش کرنے کی واضح اجازت ہوتی ہے۔ ان کا مقصد سیکیورٹی کو بہتر بنانا ہے۔",
+            types_of_hackers_li2: "<strong>بلیک ہیٹ ہیکرز:</strong> یہ بدنیتی پر مبنی ہیکرز ہیں جو ذاتی یا مالی فائدے کے لیے بغیر اجازت کے سسٹمز میں گھس جاتے ہیں۔ ان کے اقدامات غیر قانونی اور نقصان دہ ہیں۔",
+            types_of_hackers_li3: "<strong>گرے ہیٹ ہیکرز:</strong> یہ دونوں کا مرکب ہے۔ گرے ہیٹ ہیکرز بغیر اجازت کے کسی سسٹم میں گھس سکتے ہیں, لیکن وہ بدنیتی پر مبنی مقاصد کے لیے کمزوریوں کا استحصال نہیں کریں گے۔ اس کے بجائے, وہ مالک کو کمزوری کی اطلاع دے سکتے ہیں, بعض اوقات فیس کا مطالبہ کرتے ہیں۔",
+            common_tools_title: "عام اخلاقی ہیکنگ ٹولز",
+            common_tools_p1: "اخلاقی ہیکرز پینیٹریشن ٹیسٹ کرنے کے لیے مختلف قسم کے ٹولز استعمال کرتے ہیں۔ کچھ مشہور ترین ٹولز میں شامل ہیں:",
+            common_tools_li1: "<strong>Nmap (نیٹ ورک میپر):</strong> نیٹ ورک کی دریافت اور سیکیورٹی آڈٹ کے لیے استعمال ہوتا ہے۔ یہ لائیو ہوسٹس, کھلے پورٹس, چل رہی خدمات, اور آپریٹنگ سسٹم کے ورژنز تلاش کر سکتا ہے۔",
+            common_tools_li2: "<strong>Wireshark:</strong> ایک نیٹ ورک پروٹوکول تجزیہ کار جو آپ کو یہ دیکھنے دیتا ہے کہ آپ کے نیٹ ورک پر خوردبینی سطح پر کیا ہو رہا ہے۔",
+            common_tools_li3: "<strong>Metasploit:</strong> ایک دور دراز ہدف مشین کے خلاف استحصال کوڈ تیار کرنے اور اسے چلانے کے لیے ایک طاقتور فریم ورک۔",
+            common_tools_li4: "<strong>Burp Suite:</strong> ویب ایپلیکیشنز کی سیکیورٹی ٹیسٹنگ کے لیے ایک مربوط پلیٹ فارم۔",
+            common_tools_li5: "<strong>SQLMap:</strong> ایک اوپن سورس ٹول جو SQL انجیکشن کی خامیوں کا پتہ لگانے اور ان کا استحصال کرنے کے عمل کو خودکار کرتا ہے۔",
+            faq_title: "اکثر پوچھے گئے سوالات (FAQ)",
+            faq_q1: "کیا اخلاقی ہیکنگ ایک قانونی پیشہ ہے؟",
+            faq_a1: "جی ہاں, اخلاقی ہیکنگ مکمل طور پر قانونی ہے جب تک کہ یہ اس تنظیم کی واضح اور دستاویزی اجازت سے کی جائے جس کے سسٹمز کی جانچ کی جا رہی ہے۔ اخلاقی ہیکرز سخت معاہدوں اور غیر افشاء کے معاہدوں کے تحت کام کرتے ہیں تاکہ یہ یقینی بنایا جا سکے کہ تمام سرگرمیاں مجاز اور خفیہ ہیں۔",
+            faq_q2: "اخلاقی ہیکر بننے کے لیے کن مہارتوں کی ضرورت ہے؟",
+            faq_a2: "ایک اخلاقی ہیکر کو نیٹ ورکنگ, آپریٹنگ سسٹمز (جیسے لینکس اور ونڈوز), اور پروگرامنگ/اسکرپٹنگ زبانوں (جیسے پائتھون, بیش, یا پاور شیل) میں مضبوط بنیاد کی ضرورت ہوتی ہے۔ مزید برآں, انہیں سائبرسیکیوریٹی کے اصولوں, عام کمزوریوں, اور سیکیورٹی ٹولز کا گہرا علم ہونا چاہیے۔ مسئلہ حل کرنے, تنقیدی سوچ, اور واضح مواصلات جیسی نرم مہارتیں بھی ضروری ہیں۔",
+            faq_q3: "اخلاقی ہیکنگ بدنیتی پر مبنی ہیکنگ سے کیسے مختلف ہے؟",
+            faq_a3: "بنیادی فرق نیت اور اجازت کا ہے۔ اخلاقی ہیکرز کے پاس اثاثہ کے مالک سے سیکیورٹی کو بہتر بنانے کے مقصد سے کمزوریاں تلاش کرنے اور ان کی اطلاع دینے کا اختیار ہوتا ہے۔ بدنیتی پر مبنی ہیکرز (بلیک ہیٹس) غیر قانونی طور پر, بغیر اجازت کے, اور نقصان دہ نیت سے کام کرتے ہیں, جیسے ڈیٹا چوری کرنا, خلل پیدا کرنا, یا تاوان کا مطالبہ کرنا۔",
+            faq_q4: "اخلاقی ہیکرز کے ذریعے نقل کیے جانے والے کچھ عام حملے کون سے ہیں؟",
+            faq_a4: "اخلاقی ہیکرز کسی تنظیم کے دفاع کی جانچ کے لیے وسیع پیمانے پر حملوں کی نقل کرتے ہیں۔ عام مثالوں میں SQL انجیکشن, کراس سائٹ اسکرپٹنگ (XSS), فشنگ سمولیشنز, ڈینائل آف سروس (DoS) ٹیسٹ, اور غلط طریقے سے ترتیب شدہ سرورز یا غیر پیچ شدہ سافٹ ویئر کا استحصال کرنے کی کوششیں شامل ہیں۔",
+            faq_q5: "کیا مجھے اخلاقی ہیکر کے طور پر کام کرنے کے لیے سرٹیفیکیشنز کی ضرورت ہے؟",
+            faq_a5: "اگرچہ ہمیشہ لازمی نہیں, سرٹیفیکیشنز کی بہت سفارش کی جاتی ہے کیونکہ وہ آپ کی مہارتوں اور علم کی توثیق کرتی ہیں۔ اس شعبے میں مشہور سرٹیفیکیشنز میں سرٹیفائیڈ ایتھیکل ہیکر (CEH), آفینسیو سیکیورٹی سرٹیفائیڈ پروفیشنل (OSCP), اور CompTIA PenTest+ شامل ہیں۔"
+        }
+    };
+
+    const langSelect = document.getElementById('lang-select');
+    const elementsToTranslate = document.querySelectorAll('[data-lang-key]');
+
+    function changeLanguage(lang) {
+        elementsToTranslate.forEach(element => {
+            const key = element.getAttribute('data-lang-key');
+            if (translations[lang] && translations[lang][key]) {
+                element.innerHTML = translations[lang][key];
+            }
+        }
+        );
+        document.documentElement.lang = lang;
+        if (lang === 'ar' || lang === 'ur') {
+            document.body.style.direction = 'rtl';
+        } else {
+            document.body.style.direction = 'ltr';
+        }
+    }
+
+    langSelect.addEventListener('change', (event) => {
+        changeLanguage(event.target.value);
+    }
+    );
+
+    // Initial language setup - Changed to English
+    changeLanguage('en');
+</script>
+</body>
