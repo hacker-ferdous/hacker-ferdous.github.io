@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Kali Linux</title>
+    <style>
+        /* --- Google Fonts Import --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        /* 
+        ========================================
+        CSS Variables (Custom Properties) for Theming
+        ========================================
+        */
+        :root {
+            /* Color Palette */
+            --color-background: #121212;
+            /* Very dark grey, near black */
+            --color-surface: #1e1e1e;
+            /* Dark grey for content cards */
+            --color-primary: #bb86fc;
+            /* A vibrant purple for accents */
+            --color-secondary: #03dac6;
+            /* A teal for secondary accents */
+            --color-text-primary: #e0e0e0;
+            /* Light grey for primary text */
+            --color-text-secondary: #a0a0a0;
+            /* Dimmer grey for less important text */
+            --color-border: #333;
+            /* Typography */
+            --font-primary: 'Poppins', Arial, sans-serif;
+            --font-weight-light: 300;
+            --font-weight-regular: 400;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            /* Spacing & Sizing */
+            --spacing-unit: 8px;
+            --border-radius: 8px;
+            --shadow-elevation-medium: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            --transition-speed: 0.3s ease;
+        }
+
+        /* 
+        ========================================
+        Global & Reset Styles
+        ========================================
+        */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            line-height: 1.8;
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-regular);
+        }
+
+        /* 
+        ========================================
+        Main Layout & Container
+        ========================================
+        */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: calc(var(--spacing-unit) * 3) 0;
+        }
+
+        /* 
+        ========================================
+        Header & Navigation
+        ========================================
+        */
+        header {
+            background: var(--color-surface);
+            color: #fff;
+            padding-top: calc(var(--spacing-unit) * 4);
+            min-height: 80px;
+            border-bottom: 4px solid var(--color-primary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            text-align: center;
+            text-transform: uppercase;
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            letter-spacing: 2px;
+            color: var(--color-text-primary);
+        }
+
+        /* 
+        ========================================
+        Language Selector
+        ========================================
+        */
+        .language-selector {
+            text-align: right;
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .language-selector label {
+            color: var(--color-text-secondary);
+            margin-right: var(--spacing-unit);
+            font-weight: var(--font-weight-light);
+        }
+
+        #lang-select {
+            padding: var(--spacing-unit);
+            border-radius: var(--border-radius);
+            background-color: var(--color-surface);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+            transition: all var(--transition-speed);
+            cursor: pointer;
+        }
+
+        #lang-select:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 8px var(--color-primary);
+        }
+
+        /* 
+        ========================================
+        Main Content Styling
+        ========================================
+        */
+        .main-content {
+            padding: calc(var(--spacing-unit) * 5);
+            background: var(--color-surface);
+            margin-top: calc(var(--spacing-unit) * 4);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-elevation-medium);
+            border: 1px solid var(--color-border);
+        }
+
+        .main-content h2 {
+            color: var(--color-primary);
+            font-size: 2rem;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            padding-bottom: var(--spacing-unit);
+            border-bottom: 2px solid var(--color-secondary);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .main-content h3 {
+            color: var(--color-secondary);
+            font-size: 1.5rem;
+            margin-top: calc(var(--spacing-unit) * 4);
+            margin-bottom: var(--spacing-unit);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .main-content a {
+            color: var(--color-secondary);
+            text-decoration: none;
+        }
+
+        .main-content a:hover {
+            text-decoration: underline;
+            color: var(--color-primary);
+        }
+
+        .main-content p {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            color: var(--color-text-secondary);
+        }
+
+        .main-content img {
+	    display: block;
+	    margin-left: auto; 
+	    margin-right: auto;
+	    max-width: 100%;
+	    height: auto;
+	    border-radius: var(--border-radius);
+	    margin-bottom: calc(var(--spacing-unit) * 4);
+	    box-shadow: var(--shadow-elevation-medium);
+	    border: 2px solid var(--color-border);
+	}
+
+        /* Custom List Styling */
+        .main-content ul, .main-content ol {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: calc(var(--spacing-unit) * 3);
+        }
+
+        .main-content ul li, .main-content ol li {
+            background: rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-unit);
+            padding: calc(var(--spacing-unit) * 2);
+            border-left: 4px solid var(--color-secondary);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            color: var(--color-text-secondary);
+            transition: all var(--transition-speed);
+        }
+
+        .main-content ul li:hover, .main-content ol li:hover {
+            transform: translateX(10px);
+            border-left-color: var(--color-primary);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content ul li strong, .main-content ol li strong {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        /* 
+        ========================================
+        Footer
+        ========================================
+        */
+        footer {
+            background: var(--color-surface);
+            color: var(--color-text-secondary);
+            text-align: center;
+            padding: calc(var(--spacing-unit) * 4);
+            margin-top: calc(var(--spacing-unit) * 4);
+            border-top: 4px solid var(--color-primary);
+        }
+
+        /* 
+        ========================================
+        Responsive Design for Mobile Devices
+        ========================================
+        */
+        @media(max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .language-selector {
+                text-align: center;
+            }
+
+            .main-content {
+                padding: calc(var(--spacing-unit) * 3);
+            }
+
+            .main-content h2 {
+                font-size: 1.6rem;
+            }
+
+            .main-content h3 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 data-lang-key="title">Introduction to Kali Linux</h1>
+        </div>
+    </header>
+    <div class="language-selector">
+        <label for="lang-select" data-lang-key="select_language">Select Language:</label>
+        <select id="lang-select">
+            	<option value="en">English</option>
+	    	<option value="zh">Mandarin Chinese</option>
+	    	<option value="hi">Hindi</option>
+		<option value="es">Spanish</option>
+		<option value="fr">French</option>
+		<option value="ar">Arabic</option>
+		<option value="bn">Bengali</option>
+		<option value="pt">Portuguese</option>
+		<option value="ru">Russian</option>
+		<option value="ur">Urdu</option>
+        </select>
+    </div>
+    <div class="container main-content">
+        <img src="https://db0dce98.rocketcdn.me/en/files/2024/11/Kali-Linux-DataScientest-1024x512.webp" alt="Kali Linux Concept">
+        
+        <h2 data-lang-key="what_is_kali_title">What is Kali Linux?</h2>
+        <p data-lang-key="what_is_kali_p1">Kali Linux is an open-source, Debian-based Linux distribution geared towards various information security tasks, such as Penetration Testing, Security Research, Computer Forensics, and Reverse Engineering. It is developed, funded, and maintained by Offensive Security, a leading information security training company.</p>
+        <p data-lang-key="what_is_kali_p2">Essentially, Kali Linux is a toolkit pre-packaged with over 600 penetration-testing tools. This allows security professionals and ethical hackers to have a comprehensive set of tools ready to use right after installation, saving significant time and effort.</p>
+        
+        <h2 data-lang-key="why_use_kali_title">Why Use Kali Linux for Hacking?</h2>
+        <p data-lang-key="why_use_kali_p1">Kali Linux is the preferred operating system for many cybersecurity professionals for several key reasons:</p>
+        <ul>
+            <li data-lang-key="why_use_kali_li1">
+                <strong>Vast Collection of Tools:</strong> It comes with a massive collection of pre-installed and pre-configured security tools, including Nmap, Wireshark, Metasploit, and Burp Suite.
+            </li>
+            <li data-lang-key="why_use_kali_li2">
+                <strong>Free and Open Source:</strong> Kali Linux is completely free to use, and its development tree is open for anyone to view and modify.
+            </li>
+            <li data-lang-key="why_use_kali_li3">
+                <strong>Secure Development Environment:</strong> The development team is a small, trusted group, and all packages and repositories are GPG signed to ensure their integrity.
+            </li>
+            <li data-lang-key="why_use_kali_li4">
+                <strong>Portability:</strong> Kali Linux can be run from a live USB drive, allowing for portability and use on any machine without leaving a trace.
+            </li>
+             <li data-lang-key="why_use_kali_li5">
+                <strong>Wide-Ranging Device Support:</strong> It supports a wide variety of hardware, including ARM devices, which makes it versatile for different testing scenarios.
+            </li>
+        </ul>
+
+        <h2 data-lang-key="installation_methods_title">Installation Methods</h2>
+        <p data-lang-key="installation_methods_p1">There are two primary ways to install and use Kali Linux, depending on your needs. For beginners, using a virtual machine is highly recommended as it is safer and does not affect your main operating system.</p>
+
+        <h3 data-lang-key="method1_title">Method 1: Installing in a Virtual Machine (VirtualBox)</h3>
+        <p data-lang-key="method1_p1">Running Kali Linux in a virtual machine (VM) allows you to use it as an application within your current operating system (like Windows or macOS). This is the safest and easiest way to start.</p>
+        <ol>
+            <li data-lang-key="method1_step1">
+                <strong>Download and Install VirtualBox:</strong> Get the latest version of Oracle VM VirtualBox from their <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank">official website</a> and install it.
+            </li>
+            <li data-lang-key="method1_step2">
+                <strong>Download Kali Linux Image:</strong> Go to the <a href="https://www.kali.org/get-kali/" target="_blank">official Kali Linux downloads page</a>. For VirtualBox, it's easiest to download the pre-built "VirtualBox" image.
+            </li>
+            <li data-lang-key="method1_step3">
+                <strong>Import the Virtual Machine:</strong> Open VirtualBox, go to `File > Import Appliance`, and select the Kali Linux `.ova` file you downloaded. Follow the on-screen prompts to import it.
+            </li>
+            <li data-lang-key="method1_step4">
+                <strong>Start Kali Linux:</strong> Once imported, select the Kali Linux machine from the list in VirtualBox and click "Start". The default login credentials are typically `kali` for both the username and password.
+            </li>
+        </ol>
+
+        <h3 data-lang-key="method2_title">Method 2: Installing as a Main OS (Bare Metal/Dual Boot)</h3>
+        <p data-lang-key="method2_p1">This method involves installing Kali Linux directly onto your computer's hard drive, either replacing your current OS or installing it alongside (dual boot). This is for advanced users and offers the best performance. <strong>Warning: This can lead to data loss if not done correctly. Always back up your data first.</strong></p>
+        <ol>
+            <li data-lang-key="method2_step1">
+                <strong>Download the Kali Linux ISO:</strong> From the <a href="https://www.kali.org/get-kali/" target="_blank">official downloads page</a>, get the "Installer" image.
+            </li>
+            <li data-lang-key="method2_step2">
+                <strong>Create a Bootable USB Drive:</strong> Use a tool like <a href="https://rufus.ie/" target="_blank">Rufus</a> or BalenaEtcher to write the downloaded ISO file to a USB drive (at least 8GB).
+            </li>
+            <li data-lang-key="method2_step3">
+                <strong>Boot from the USB Drive:</strong> Restart your computer and enter the BIOS/UEFI settings to boot from the USB drive. You may need to disable "Secure Boot".
+            </li>
+            <li data-lang-key="method2_step4">
+                <strong>Follow the Installer:</strong> Choose "Graphical Install" from the boot menu and follow the step-by-step instructions. You will need to configure language, location, keyboard, and user accounts. The most critical step is disk partitioning, where you can choose to use the entire disk or partition it for a dual boot setup.
+            </li>
+        </ol>
+
+        <h2 data-lang-key="recommended_resources_title">Recommended Resources</h2>
+        <p data-lang-key="recommended_resources_p1">For more detailed instructions and learning, check out these official and community resources:</p>
+        <ul>
+            <!-- Suggestion for official website -->
+            <li data-lang-key="resources_li1">
+                <strong>Official Kali Linux Documentation:</strong> The most comprehensive and accurate source of information. <a href="https://www.kali.org/docs/" target="_blank">Visit Kali Docs</a>.
+            </li>
+            <!-- Suggestion for a YouTube video -->
+            <li data-lang-key="resources_li2">
+                <strong>Installation Video Guide:</strong> A helpful step-by-step video tutorial on installing Kali Linux. <a href="https://www.youtube.com/watch?v=W6_nBr8SbPE" target="_blank">Watch on YouTube</a>.
+            </li>
+             <li data-lang-key="resources_li3">
+                <strong>freeCodeCamp Tutorial:</strong> A full-length course on Linux basics for ethical hackers using Kali. <a href="https://www.youtube.com/watch?v=coQ5dg8wM2o" target="_blank">Watch on YouTube</a>.
+            </li>
+        </ul>
+
+    </div>
+    <footer>
+        <p>
+            <a href="https://hacker-ferdous.github.io/" style="color: var(--color-text-secondary); text-decoration: none;">© 2025 Nafsin Ferdous</a>
+        </p>
+    </footer>
+    <script type="text/javascript">
+    const translations = {
+        en: {
+            title: "Introduction to Kali Linux",
+            select_language: "Select Language:",
+            what_is_kali_title: "What is Kali Linux?",
+            what_is_kali_p1: "Kali Linux is an open-source, Debian-based Linux distribution geared towards various information security tasks, such as Penetration Testing, Security Research, Computer Forensics, and Reverse Engineering.",
+            what_is_kali_p2: "Essentially, Kali Linux is a toolkit pre-packaged with over 600 penetration-testing tools. This allows security professionals and ethical hackers to have a comprehensive set of tools ready to use right after installation, saving significant time and effort.",
+            why_use_kali_title: "Why Use Kali Linux for Hacking?",
+            why_use_kali_p1: "Kali Linux is the preferred operating system for many cybersecurity professionals for several key reasons:",
+            why_use_kali_li1: "<strong>Vast Collection of Tools:</strong> It comes with a massive collection of pre-installed and pre-configured security tools, including Nmap, Wireshark, Metasploit, and Burp Suite.",
+            why_use_kali_li2: "<strong>Free and Open Source:</strong> Kali Linux is completely free to use, and its development tree is open for anyone to view and modify.",
+            why_use_kali_li3: "<strong>Secure Development Environment:</strong> The development team is a small, trusted group, and all packages and repositories are GPG signed to ensure their integrity.",
+            why_use_kali_li4: "<strong>Portability:</strong> Kali Linux can be run from a live USB drive, allowing for portability and use on any machine without leaving a trace.",
+            why_use_kali_li5: "<strong>Wide-Ranging Device Support:</strong> It supports a wide variety of hardware, including ARM devices, which makes it versatile for different testing scenarios.",
+            installation_methods_title: "Installation Methods",
+            installation_methods_p1: "There are two primary ways to install and use Kali Linux, depending on your needs. For beginners, using a virtual machine is highly recommended as it is safer and does not affect your main operating system.",
+            method1_title: "Method 1: Installing in a Virtual Machine (VirtualBox)",
+            method1_p1: "Running Kali Linux in a virtual machine (VM) allows you to use it as an application within your current operating system (like Windows or macOS). This is the safest and easiest way to start.",
+            method1_step1: "<strong>Download and Install VirtualBox:</strong> Get the latest version of Oracle VM VirtualBox from their <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>official website</a> and install it.",
+            method1_step2: "<strong>Download Kali Linux Image:</strong> Go to the <a href='https://www.kali.org/get-kali/' target='_blank'>official Kali Linux downloads page</a>. For VirtualBox, it's easiest to download the pre-built \"VirtualBox\" image.",
+            method1_step3: "<strong>Import the Virtual Machine:</strong> Open VirtualBox, go to `File > Import Appliance`, and select the Kali Linux `.ova` file you downloaded. Follow the on-screen prompts to import it.",
+            method1_step4: "<strong>Start Kali Linux:</strong> Once imported, select the Kali Linux machine from the list in VirtualBox and click \"Start\". The default login credentials are typically `kali` for both the username and password.",
+            method2_title: "Method 2: Installing as a Main OS (Bare Metal/Dual Boot)",
+            method2_p1: "This method involves installing Kali Linux directly onto your computer's hard drive, either replacing your current OS or installing it alongside (dual boot). This is for advanced users and offers the best performance. <strong>Warning: This can lead to data loss if not done correctly. Always back up your data first.</strong>",
+            method2_step1: "<strong>Download the Kali Linux ISO:</strong> From the <a href='https://www.kali.org/get-kali/' target='_blank'>official downloads page</a>, get the \"Installer\" image.",
+            method2_step2: "<strong>Create a Bootable USB Drive:</strong> Use a tool like <a href='https://rufus.ie/' target='_blank'>Rufus</a> or BalenaEtcher to write the downloaded ISO file to a USB drive (at least 8GB).",
+            method2_step3: "<strong>Boot from the USB Drive:</strong> Restart your computer and enter the BIOS/UEFI settings to boot from the USB drive. You may need to disable \"Secure Boot\".",
+            method2_step4: "<strong>Follow the Installer:</strong> Choose \"Graphical Install\" from the boot menu and follow the step-by-step instructions. You will need to configure language, location, keyboard, and user accounts. The most critical step is disk partitioning, where you can choose to use the entire disk or partition it for a dual boot setup.",
+            recommended_resources_title: "Recommended Resources",
+            recommended_resources_p1: "For more detailed instructions and learning, check out these official and community resources:",
+            resources_li1: "<strong>Official Kali Linux Documentation:</strong> The most comprehensive and accurate source of information. <a href='https://www.kali.org/docs/' target='_blank'>Visit Kali Docs</a>.",
+            resources_li2: "<strong>Installation Video Guide:</strong> A helpful step-by-step video tutorial on installing Kali Linux. <a href='https://www.youtube.com/watch?v=W6_nBr8SbPE' target='_blank'>Watch on YouTube</a>.",
+            resources_li3: "<strong>freeCodeCamp Tutorial:</strong> A full-length course on Linux basics for ethical hackers using Kali. <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>Watch on YouTube</a>."
+        },
+        zh: {
+            title: "Kali Linux 简介",
+            select_language: "选择语言:",
+            what_is_kali_title: "什么是 Kali Linux?",
+            what_is_kali_p1: "Kali Linux 是一个开源的、基于 Debian 的 Linux 发行版，专为各种信息安全任务而设计，例如渗透测试、安全研究、计算机取证和逆向工程。",
+            what_is_kali_p2: "从本质上讲，Kali Linux 是一个预装了 600 多个渗透测试工具的工具包。这使得安全专业人员和道德黑客能够在安装后立即拥有一套全面的工具集，从而节省大量时间和精力。",
+            why_use_kali_title: "为什么使用 Kali Linux进行黑客攻击？",
+            why_use_kali_p1: "Kali Linux 是许多网络安全专业人员首选的操作系统，原因有以下几点：",
+            why_use_kali_li1: "<strong>庞大的工具集：</strong> 它附带了大量预安装和预配置的安全工具，包括 Nmap、Wireshark、Metasploit 和 Burp Suite。",
+            why_use_kali_li2: "<strong>免费和开源：</strong> Kali Linux 完全免费使用，其开发树对任何人开放，可以查看和修改。",
+            why_use_kali_li3: "<strong>安全的开发环境：</strong> 开发团队是一个小而受信任的团体，所有软件包和存储库都经过 GPG 签名以确保其完整性。",
+            why_use_kali_li4: "<strong>便携性：</strong> Kali Linux 可以从实时 USB 驱动器运行，从而实现便携性并在任何机器上使用，而不会留下任何痕迹。",
+            why_use_kali_li5: "<strong>广泛的设备支持：</strong> 它支持包括 ARM 设备在内的各种硬件，使其适用于不同的测试场景。",
+            installation_methods_title: "安装方法",
+            installation_methods_p1: "安装和使用 Kali Linux 主要有两种方式，具体取决于您的需求。对于初学者，强烈建议使用虚拟机，因为它更安全，并且不会影响您的主操作系统。",
+            method1_title: "方法一：在虚拟机中安装 (VirtualBox)",
+            method1_p1: "在虚拟机 (VM) 中运行 Kali Linux，您可以将其作为当前操作系统（如 Windows 或 macOS）中的一个应用程序来使用。这是最安全、最简单的入门方式。",
+            method1_step1: "<strong>下载并安装 VirtualBox：</strong> 从 <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>官方网站</a> 获取最新版本的 Oracle VM VirtualBox 并进行安装。",
+            method1_step2: "<strong>下载 Kali Linux 镜像：</strong> 前往 <a href='https://www.kali.org/get-kali/' target='_blank'>Kali Linux 官方下载页面</a>。对于 VirtualBox，下载预构建的 “VirtualBox” 镜像是最简单的方法。",
+            method1_step3: "<strong>导入虚拟机：</strong> 打开 VirtualBox，转到“文件”>“导入虚拟应用”，然后选择您下载的 Kali Linux `.ova` 文件。按照屏幕上的提示进行导入。",
+            method1_step4: "<strong>启动 Kali Linux：</strong> 导入后，从 VirtualBox 的列表中选择 Kali Linux 虚拟机，然后单击“启动”。默认的登录凭据通常是用户名和密码均为 `kali`。",
+            method2_title: "方法二：作为主操作系统安装（裸机/双启动）",
+            method2_p1: "此方法涉及将 Kali Linux 直接安装到计算机的硬盘上，可以替换您当前的操作系统，也可以与之并存（双启动）。这适用于高级用户，可提供最佳性能。<strong>警告：如果操作不当，可能会导致数据丢失。请务必先备份您的数据。</strong>",
+            method2_step1: "<strong>下载 Kali Linux ISO：</strong> 从 <a href='https://www.kali.org/get-kali/' target='_blank'>官方下载页面</a> 获取“安装程序”镜像。",
+            method2_step2: "<strong>创建可启动的 USB 驱动器：</strong> 使用 <a href='https://rufus.ie/' target='_blank'>Rufus</a> 或 BalenaEtcher 等工具将下载的 ISO 文件写入 USB 驱动器（至少 8GB）。",
+            method2_step3: "<strong>从 USB 驱动器启动：</strong> 重启计算机并进入 BIOS/UEFI 设置，以从 USB 驱动器启动。您可能需要禁用“安全启动”。",
+            method2_step4: "<strong>按照安装程序操作：</strong> 从启动菜单中选择“图形化安装”，并按照分步说明进行操作。您需要配置语言、位置、键盘和用户帐户。最关键的步骤是磁盘分区，您可以选择使用整个磁盘或为双启动设置进行分区。",
+            recommended_resources_title: "推荐资源",
+            recommended_resources_p1: "有关更详细的说明和学习，请查看这些官方和社区资源：",
+            resources_li1: "<strong>Kali Linux 官方文档：</strong> 最全面、最准确的信息来源。 <a href='https://www.kali.org/docs/' target='_blank'>访问 Kali Docs</a>。",
+            resources_li2: "<strong>安装视频指南：</strong> 一个关于安装 Kali Linux 的有用的分步视频教程。 <a href='https://www.youtube.com/watch?v=3JiffjCDXVk' target='_blank'>在 YouTube 上观看</a>。",
+            resources_li3: "<strong>freeCodeCamp 教程：</strong> 一个关于使用 Kali 为道德黑客讲解 Linux 基础知识的完整课程。 <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>在 YouTube 上观看</a>。"
+        }
+        
+        ,
+hi: {
+    title: "काली लिनक्स का परिचय",
+    select_language: "भाषा चुनें:",
+    what_is_kali_title: "काली लिनक्स क्या है?",
+    what_is_kali_p1: "काली लिनक्स एक ओपन-सोर्स, डेबियन-आधारित लिनक्स वितरण है जो विभिन्न सूचना सुरक्षा कार्यों, जैसे पेनेट्रेशन टेस्टिंग, सुरक्षा अनुसंधान, कंप्यूटर फोरेंसिक्स और रिवर्स इंजीनियरिंग के लिए तैयार किया गया है।",
+    what_is_kali_p2: "संक्षेप में, काली लिनक्स 600 से अधिक पेनेट्रेशन-परीक्षण उपकरणों के साथ पहले से पैक किया गया एक टूलकिट है। यह सुरक्षा पेशेवरों और नैतिक हैकर्स को स्थापना के तुरंत बाद उपयोग के लिए तैयार उपकरणों का एक व्यापक सेट रखने की अनुमति देता है, जिससे महत्वपूर्ण समय और प्रयास की बचत होती है।",
+    why_use_kali_title: "हैकिंग के लिए काली लिनक्स का उपयोग क्यों करें?",
+    why_use_kali_p1: "काली लिनक्स कई प्रमुख कारणों से कई साइबर सुरक्षा पेशेवरों के लिए पसंदीदा ऑपरेटिंग सिस्टम है:",
+    why_use_kali_li1: "<strong>उपकरणों का विशाल संग्रह:</strong> यह पहले से स्थापित और पूर्व-कॉन्फ़िगर सुरक्षा उपकरणों के एक विशाल संग्रह के साथ आता है, जिसमें Nmap, Wireshark, Metasploit, और Burp Suite शामिल हैं।",
+    why_use_kali_li2: "<strong>मुफ़्त और ओपन सोर्स:</strong> काली लिनक्स उपयोग करने के लिए पूरी तरह से मुफ़्त है, और इसका विकास ट्री किसी के भी देखने और संशोधित करने के लिए खुला है।",
+    why_use_kali_li3: "<strong>सुरक्षित विकास वातावरण:</strong> विकास टीम एक छोटा, विश्वसनीय समूह है, और सभी पैकेज और रिपॉजिटरी उनकी अखंडता सुनिश्चित करने के लिए जीपीजी हस्ताक्षरित हैं।",
+    why_use_kali_li4: "<strong>पोर्टेबिलिटी:</strong> काली लिनक्स को लाइव यूएसबी ड्राइव से चलाया जा सकता है, जिससे पोर्टेबिलिटी और किसी भी मशीन पर बिना कोई निशान छोड़े उपयोग की अनुमति मिलती है।",
+    why_use_kali_li5: "<strong>व्यापक डिवाइस समर्थन:</strong> यह एआरएम उपकरणों सहित विभिन्न प्रकार के हार्डवेयर का समर्थन करता है, जो इसे विभिन्न परीक्षण परिदृश्यों के लिए बहुमुखी बनाता है।",
+    installation_methods_title: "स्थापना के तरीके",
+    installation_methods_p1: "आपकी आवश्यकताओं के आधार पर काली लिनक्स को स्थापित करने और उपयोग करने के दो प्राथमिक तरीके हैं। शुरुआती लोगों के लिए, वर्चुअल मशीन का उपयोग करने की अत्यधिक अनुशंसा की जाती है क्योंकि यह सुरक्षित है और आपके मुख्य ऑपरेटिंग सिस्टम को प्रभावित नहीं करता है।",
+    method1_title: "विधि 1: वर्चुअल मशीन में स्थापित करना (वर्चुअलबॉक्स)",
+    method1_p1: "वर्चुअल मशीन (वीएम) में काली लिनक्स चलाना आपको इसे अपने वर्तमान ऑपरेटिंग सिस्टम (जैसे विंडोज या मैकओएस) के भीतर एक एप्लिकेशन के रूप में उपयोग करने की अनुमति देता है। यह शुरू करने का सबसे सुरक्षित और आसान तरीका है।",
+    method1_step1: "<strong>वर्चुअलबॉक्स डाउनलोड और इंस्टॉल करें:</strong> उनकी <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>आधिकारिक वेबसाइट</a> से Oracle VM वर्चुअलबॉक्स का नवीनतम संस्करण प्राप्त करें और इसे इंस्टॉल करें।",
+    method1_step2: "<strong>काली लिनक्स छवि डाउनलोड करें:</strong> <a href='https://www.kali.org/get-kali/' target='_blank'>आधिकारिक काली लिनक्स डाउनलोड पृष्ठ</a> पर जाएं। वर्चुअलबॉक्स के लिए, पहले से निर्मित \"वर्चुअलबॉक्स\" छवि डाउनलोड करना सबसे आसान है।",
+    method1_step3: "<strong>वर्चुअल मशीन आयात करें:</strong> वर्चुअलबॉक्स खोलें, `फ़ाइल > उपकरण आयात करें` पर जाएं, और आपके द्वारा डाउनलोड की गई काली लिनक्स `.ova` फ़ाइल का चयन करें। इसे आयात करने के लिए ऑन-स्क्रीन संकेतों का पालन करें।",
+    method1_step4: "<strong>काली लिनक्स प्रारंभ करें:</strong> आयात होने के बाद, वर्चुअलबॉक्स में सूची से काली लिनक्स मशीन का चयन करें और \"प्रारंभ करें\" पर क्लिक करें। डिफ़ॉल्ट लॉगिन क्रेडेंशियल आमतौर पर उपयोगकर्ता नाम और पासवर्ड दोनों के लिए `kali` होते हैं।",
+    method2_title: "विधि 2: मुख्य ओएस के रूप में स्थापित करना (बेयर मेटल/डुअल बूट)",
+    method2_p1: "इस विधि में काली लिनक्स को सीधे आपके कंप्यूटर की हार्ड ड्राइव पर स्थापित करना शामिल है, या तो आपके वर्तमान ओएस को प्रतिस्थापित करना या इसे साथ-साथ स्थापित करना (डुअल बूट)। यह उन्नत उपयोगकर्ताओं के लिए है और सर्वश्रेष्ठ प्रदर्शन प्रदान करता है। <strong>चेतावनी: यदि सही ढंग से नहीं किया गया तो इससे डेटा हानि हो सकती है। हमेशा पहले अपने डेटा का बैकअप लें।</strong>",
+    method2_step1: "<strong>काली लिनक्स आईएसओ डाउनलोड करें:</strong> <a href='https://www.kali.org/get-kali/' target='_blank'>आधिकारिक डाउनलोड पृष्ठ</a> से, \"इंस्टॉलर\" छवि प्राप्त करें।",
+    method2_step2: "<strong>एक बूटेबल यूएसबी ड्राइव बनाएं:</strong> डाउनलोड की गई आईएसओ फ़ाइल को यूएसबी ड्राइव (कम से कम 8 जीबी) पर लिखने के लिए <a href='https://rufus.ie/' target='_blank'>रूफस</a> या बालेनाएचर जैसे टूल का उपयोग करें।",
+    method2_step3: "<strong>यूएसबी ड्राइव से बूट करें:</strong> अपने कंप्यूटर को पुनरारंभ करें और यूएसबी ड्राइव से बूट करने के लिए BIOS/UEFI सेटिंग्स दर्ज करें। आपको \"सुरक्षित बूट\" को अक्षम करने की आवश्यकता हो सकती है।",
+    method2_step4: "<strong>इंस्टॉलर का पालन करें:</strong> बूट मेनू से \"ग्राफिकल इंस्टॉल\" चुनें और चरण-दर-चरण निर्देशों का पालन करें। आपको भाषा, स्थान, कीबोर्ड और उपयोगकर्ता खातों को कॉन्फ़िगर करने की आवश्यकता होगी। सबसे महत्वपूर्ण कदम डिस्क विभाजन है, जहां आप पूरी डिस्क का उपयोग करना या डुअल बूट सेटअप के लिए इसे विभाजित करना चुन सकते हैं।",
+    recommended_resources_title: "अनुशंसित संसाधन",
+    recommended_resources_p1: "अधिक विस्तृत निर्देशों और सीखने के लिए, इन आधिकारिक और सामुदायिक संसाधनों को देखें:",
+    resources_li1: "<strong>आधिकारिक काली लिनक्स दस्तावेज़ीकरण:</strong> जानकारी का सबसे व्यापक और सटीक स्रोत। <a href='https://www.kali.org/docs/' target='_blank'>काली डॉक्स पर जाएं</a>।",
+    resources_li2: "<strong>स्थापना वीडियो गाइड:</strong> काली लिनक्स स्थापित करने पर एक सहायक चरण-दर-चरण वीडियो ट्यूटोरियल। <a href='https://www.youtube.com/watch?v=jkvxhb-fVXc' target='_blank'>YouTube पर देखें</a>।",
+    resources_li3: "<strong>फ्रीकोडकैंप ट्यूटोरियल:</strong> काली का उपयोग करके नैतिक हैकर्स के लिए लिनक्स की मूल बातों पर एक पूर्ण-लंबाई वाला पाठ्यक्रम। <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>YouTube पर देखें</a>।"
+},
+es: {
+    title: "Introducción a Kali Linux",
+    select_language: "Seleccionar idioma:",
+    what_is_kali_title: "¿Qué es Kali Linux?",
+    what_is_kali_p1: "Kali Linux es una distribución de Linux de código abierto, basada en Debian, orientada a diversas tareas de seguridad de la información, como pruebas de penetración, investigación de seguridad, informática forense e ingeniería inversa.",
+    what_is_kali_p2: "Esencialmente, Kali Linux es un conjunto de herramientas preempaquetado con más de 600 herramientas de pruebas de penetración. Esto permite a los profesionales de la seguridad y a los hackers éticos tener un conjunto completo de herramientas listas para usar justo después de la instalación, ahorrando mucho tiempo y esfuerzo.",
+    why_use_kali_title: "¿Por qué usar Kali Linux para hackear?",
+    why_use_kali_p1: "Kali Linux es el sistema operativo preferido por muchos profesionales de la ciberseguridad por varias razones clave:",
+    why_use_kali_li1: "<strong>Vasta colección de herramientas:</strong> Viene con una enorme colección de herramientas de seguridad preinstaladas y preconfiguradas, incluyendo Nmap, Wireshark, Metasploit y Burp Suite.",
+    why_use_kali_li2: "<strong>Gratuito y de código abierto:</strong> Kali Linux es de uso completamente gratuito, y su árbol de desarrollo está abierto para que cualquiera lo vea y modifique.",
+    why_use_kali_li3: "<strong>Entorno de desarrollo seguro:</strong> El equipo de desarrollo es un grupo pequeño y de confianza, y todos los paquetes y repositorios están firmados con GPG para garantizar su integridad.",
+    why_use_kali_li4: "<strong>Portabilidad:</strong> Kali Linux se puede ejecutar desde una unidad USB en vivo, lo que permite la portabilidad y el uso en cualquier máquina sin dejar rastro.",
+    why_use_kali_li5: "<strong>Amplio soporte de dispositivos:</strong> Es compatible con una amplia variedad de hardware, incluidos los dispositivos ARM, lo que lo hace versátil para diferentes escenarios de prueba.",
+    installation_methods_title: "Métodos de instalación",
+    installation_methods_p1: "Hay dos formas principales de instalar y usar Kali Linux, dependiendo de sus necesidades. Para los principiantes, se recomienda encarecidamente usar una máquina virtual, ya que es más seguro y no afecta a su sistema operativo principal.",
+    method1_title: "Método 1: Instalación en una máquina virtual (VirtualBox)",
+    method1_p1: "Ejecutar Kali Linux en una máquina virtual (VM) le permite usarlo como una aplicación dentro de su sistema operativo actual (como Windows o macOS). Esta es la forma más segura y fácil de empezar.",
+    method1_step1: "<strong>Descargue e instale VirtualBox:</strong> Obtenga la última versión de Oracle VM VirtualBox desde su <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>sitio web oficial</a> e instálela.",
+    method1_step2: "<strong>Descargue la imagen de Kali Linux:</strong> Vaya a la <a href='https://www.kali.org/get-kali/' target='_blank'>página oficial de descargas de Kali Linux</a>. Para VirtualBox, lo más fácil es descargar la imagen preconstruida de \"VirtualBox\".",
+    method1_step3: "<strong>Importe la máquina virtual:</strong> Abra VirtualBox, vaya a `Archivo > Importar servicio virtualizado` y seleccione el archivo `.ova` de Kali Linux que descargó. Siga las instrucciones en pantalla para importarlo.",
+    method1_step4: "<strong>Inicie Kali Linux:</strong> Una vez importada, seleccione la máquina Kali Linux de la lista en VirtualBox y haga clic en \"Iniciar\". Las credenciales de inicio de sesión predeterminadas suelen ser `kali` tanto para el nombre de usuario como para la contraseña.",
+    method2_title: "Método 2: Instalación como sistema operativo principal (Bare Metal/Arranque dual)",
+    method2_p1: "Este método implica instalar Kali Linux directamente en el disco duro de su computadora, ya sea reemplazando su sistema operativo actual o instalándolo junto a él (arranque dual). Esto es para usuarios avanzados y ofrece el mejor rendimiento. <strong>Advertencia: Esto puede provocar la pérdida de datos si no se hace correctamente. Siempre haga una copia de seguridad de sus datos primero.</strong>",
+    method2_step1: "<strong>Descargue la ISO de Kali Linux:</strong> Desde la <a href='https://www.kali.org/get-kali/' target='_blank'>página oficial de descargas</a>, obtenga la imagen del \"Instalador\".",
+    method2_step2: "<strong>Cree una unidad USB de arranque:</strong> Utilice una herramienta como <a href='https://rufus.ie/' target='_blank'>Rufus</a> o BalenaEtcher para escribir el archivo ISO descargado en una unidad USB (de al menos 8 GB).",
+    method2_step3: "<strong>Arranque desde la unidad USB:</strong> Reinicie su computadora e ingrese a la configuración de BIOS/UEFI para arrancar desde la unidad USB. Es posible que deba deshabilitar el \"Arranque seguro\".",
+    method2_step4: "<strong>Siga el instalador:</strong> Elija \"Instalación gráfica\" en el menú de arranque y siga las instrucciones paso a paso. Deberá configurar el idioma, la ubicación, el teclado y las cuentas de usuario. El paso más crítico es el particionamiento del disco, donde puede optar por usar todo el disco o particionarlo para una configuración de arranque dual.",
+    recommended_resources_title: "Recursos recomendados",
+    recommended_resources_p1: "Para obtener instrucciones más detalladas y aprendizaje, consulte estos recursos oficiales y de la comunidad:",
+    resources_li1: "<strong>Documentación oficial de Kali Linux:</strong> La fuente de información más completa y precisa. <a href='https://www.kali.org/docs/' target='_blank'>Visitar Kali Docs</a>.",
+    resources_li2: "<strong>Guía de video de instalación:</strong> Un útil tutorial en video paso a paso sobre la instalación de Kali Linux. <a href='https://www.youtube.com/watch?v=34qH4lx5qvk' target='_blank'>Ver en YouTube</a>.",
+    resources_li3: "<strong>Tutorial de freeCodeCamp:</strong> Un curso completo sobre los conceptos básicos de Linux para hackers éticos que utilizan Kali. <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>Ver en YouTube</a>。"
+},
+fr: {
+    title: "Introduction à Kali Linux",
+    select_language: "Sélectionner la langue:",
+    what_is_kali_title: "Qu'est-ce que Kali Linux?",
+    what_is_kali_p1: "Kali Linux est une distribution Linux open-source, basée sur Debian, destinée à diverses tâches de sécurité de l'information, telles que les tests d'intrusion, la recherche en sécurité, l'informatique légale et la rétro-ingénierie.",
+    what_is_kali_p2: "Essentiellement, Kali Linux est une boîte à outils pré-empaquetée avec plus de 600 outils de test d'intrusion. Cela permet aux professionnels de la sécurité et aux hackers éthiques de disposer d'un ensemble complet d'outils prêts à l'emploi dès l'installation, ce qui permet d'économiser beaucoup de temps et d'efforts.",
+    why_use_kali_title: "Pourquoi utiliser Kali Linux pour le piratage?",
+    why_use_kali_p1: "Kali Linux est le système d'exploitation préféré de nombreux professionnels de la cybersécurité pour plusieurs raisons clés:",
+    why_use_kali_li1: "<strong>Vaste collection d'outils:</strong> Il est livré avec une collection massive d'outils de sécurité pré-installés et pré-configurés, notamment Nmap, Wireshark, Metasploit et Burp Suite.",
+    why_use_kali_li2: "<strong>Gratuit et open source:</strong> Kali Linux est entièrement gratuit et son arborescence de développement est ouverte à tous pour consultation et modification.",
+    why_use_kali_li3: "<strong>Environnement de développement sécurisé:</strong> L'équipe de développement est un petit groupe de confiance, et tous les paquets et dépôts sont signés GPG pour garantir leur intégrité.",
+    why_use_kali_li4: "<strong>Portabilité:</strong> Kali Linux peut être exécuté à partir d'une clé USB live, ce qui permet une portabilité et une utilisation sur n'importe quelle machine sans laisser de trace.",
+    why_use_kali_li5: "<strong>Prise en charge étendue des appareils:</strong> Il prend en charge une grande variété de matériel, y compris les appareils ARM, ce qui le rend polyvalent pour différents scénarios de test.",
+    installation_methods_title: "Méthodes d'installation",
+    installation_methods_p1: "Il existe deux manières principales d'installer et d'utiliser Kali Linux, en fonction de vos besoins. Pour les débutants, l'utilisation d'une machine virtuelle est fortement recommandée car elle est plus sûre et n'affecte pas votre système d'exploitation principal.",
+    method1_title: "Méthode 1: Installation dans une machine virtuelle (VirtualBox)",
+    method1_p1: "L'exécution de Kali Linux dans une machine virtuelle (VM) vous permet de l'utiliser comme une application au sein de votre système d'exploitation actuel (comme Windows ou macOS). C'est le moyen le plus sûr et le plus simple de commencer.",
+    method1_step1: "<strong>Téléchargez et installez VirtualBox:</strong> Obtenez la dernière version d'Oracle VM VirtualBox sur leur <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>site officiel</a> et installez-la.",
+    method1_step2: "<strong>Téléchargez l'image de Kali Linux:</strong> Allez sur la <a href='https://www.kali.org/get-kali/' target='_blank'>page de téléchargement officielle de Kali Linux</a>. Pour VirtualBox, le plus simple est de télécharger l'image \"VirtualBox\" pré-construite.",
+    method1_step3: "<strong>Importez la machine virtuelle:</strong> Ouvrez VirtualBox, allez dans `Fichier > Importer un appareil virtuel`, et sélectionnez le fichier `.ova` de Kali Linux que vous avez téléchargé. Suivez les instructions à l'écran pour l'importer.",
+    method1_step4: "<strong>Démarrez Kali Linux:</strong> Une fois importée, sélectionnez la machine Kali Linux dans la liste de VirtualBox et cliquez sur \"Démarrer\". Les informations de connexion par défaut sont généralement `kali` pour le nom d'utilisateur et le mot de passe.",
+    method2_title: "Méthode 2: Installation en tant que système d'exploitation principal (Bare Metal/Dual Boot)",
+    method2_p1: "Cette méthode consiste à installer Kali Linux directement sur le disque dur de votre ordinateur, soit en remplaçant votre système d'exploitation actuel, soit en l'installant à ses côtés (dual boot). Ceci est destiné aux utilisateurs avancés et offre les meilleures performances. <strong>Avertissement: Cela peut entraîner une perte de données si cela n'est pas fait correctement. Sauvegardez toujours vos données en premier.</strong>",
+    method2_step1: "<strong>Téléchargez l'ISO de Kali Linux:</strong> Depuis la <a href='https://www.kali.org/get-kali/' target='_blank'>page de téléchargement officielle</a>, obtenez l'image \"Installer\".",
+    method2_step2: "<strong>Créez une clé USB amorçable:</strong> Utilisez un outil comme <a href='https://rufus.ie/' target='_blank'>Rufus</a> ou BalenaEtcher pour écrire le fichier ISO téléchargé sur une clé USB (au moins 8 Go).",
+    method2_step3: "<strong>Démarrez à partir de la clé USB:</strong> Redémarrez votre ordinateur et entrez dans les paramètres BIOS/UEFI pour démarrer à partir de la clé USB. Vous devrez peut-être désactiver le \"Secure Boot\".",
+    method2_step4: "<strong>Suivez l'installateur:</strong> Choisissez \"Installation graphique\" dans le menu de démarrage et suivez les instructions étape par étape. Vous devrez configurer la langue, l'emplacement, le clavier et les comptes d'utilisateurs. L'étape la plus critique est le partitionnement du disque, où vous pouvez choisir d'utiliser le disque entier ou de le partitionner pour une configuration en double démarrage.",
+    recommended_resources_title: "Ressources recommandées",
+    recommended_resources_p1: "Pour des instructions plus détaillées et pour apprendre, consultez ces ressources officielles et communautaires:",
+    resources_li1: "<strong>Documentation officielle de Kali Linux:</strong> La source d'information la plus complète et la plus précise. <a href='https://www.kali.org/docs/' target='_blank'>Visitez Kali Docs</a>.",
+    resources_li2: "<strong>Guide vidéo d'installation:</strong> Un tutoriel vidéo étape par étape utile sur l'installation de Kali Linux. <a href='https://www.youtube.com/watch?v=xcbR1m5O8sc' target='_blank'>Regarder sur YouTube</a>.",
+    resources_li3: "<strong>Tutoriel freeCodeCamp:</strong> Un cours complet sur les bases de Linux pour les hackers éthiques utilisant Kali. <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>Regarder sur YouTube</a>。"
+},
+ar: {
+    title: "مقدمة إلى كالي لينكس",
+    select_language: "اختار اللغة:",
+    what_is_kali_title: "ما هو كالي لينكس؟",
+    what_is_kali_p1: "كالي لينكس هو توزيعة لينكس مفتوحة المصدر ومبنية على ديبيان، موجهة نحو مهام أمن المعلومات المختلفة، مثل اختبار الاختراق، وأبحاث الأمن، والتحقيق الجنائي الرقمي، والهندسة العكسية.",
+    what_is_kali_p2: "بشكل أساسي، كالي لينكس هو مجموعة أدوات معبأة مسبقًا بأكثر من 600 أداة لاختبار الاختراق. وهذا يسمح لمحترفي الأمن والمتسللين الأخلاقيين بالحصول على مجموعة شاملة من الأدوات الجاهزة للاستخدام فور التثبيت، مما يوفر وقتًا وجهدًا كبيرين.",
+    why_use_kali_title: "لماذا استخدام كالي لينكس في القرصنة؟",
+    why_use_kali_p1: "كالي لينكس هو نظام التشغيل المفضل للعديد من محترفي الأمن السيبراني لعدة أسباب رئيسية:",
+    why_use_kali_li1: "<strong>مجموعة واسعة من الأدوات:</strong> يأتي مع مجموعة ضخمة من أدوات الأمان المثبتة مسبقًا والمعدة مسبقًا، بما في ذلك Nmap و Wireshark و Metasploit و Burp Suite.",
+    why_use_kali_li2: "<strong>مجاني ومفتوح المصدر:</strong> كالي لينكس مجاني تمامًا للاستخدام، وشجرة تطويره مفتوحة لأي شخص لعرضها وتعديلها.",
+    why_use_kali_li3: "<strong>بيئة تطوير آمنة:</strong> فريق التطوير مجموعة صغيرة وموثوقة، وجميع الحزم والمستودعات موقعة بـ GPG لضمان سلامتها.",
+    why_use_kali_li4: "<strong>قابلية النقل:</strong> يمكن تشغيل كالي لينكس من محرك أقراص USB مباشر، مما يسمح بقابلية النقل والاستخدام على أي جهاز دون ترك أي أثر.",
+    why_use_kali_li5: "<strong>دعم واسع النطاق للأجهزة:</strong> يدعم مجموعة واسعة من الأجهزة، بما في ذلك أجهزة ARM، مما يجعله متعدد الاستخدامات لسيناريوهات الاختبار المختلفة.",
+    installation_methods_title: "طرق التثبيت",
+    installation_methods_p1: "هناك طريقتان أساسيتان لتثبيت واستخدام كالي لينكس، اعتمادًا على احتياجاتك. بالنسبة للمبتدئين، يوصى بشدة باستخدام جهاز افتراضي لأنه أكثر أمانًا ولا يؤثر على نظام التشغيل الرئيسي.",
+    method1_title: "الطريقة الأولى: التثبيت في جهاز افتراضي (VirtualBox)",
+    method1_p1: "يتيح لك تشغيل كالي لينكس في جهاز افتراضي (VM) استخدامه كتطبيق داخل نظام التشغيل الحالي (مثل Windows أو macOS). هذه هي الطريقة الأكثر أمانًا وأسهل للبدء.",
+    method1_step1: "<strong>تنزيل وتثبيت VirtualBox:</strong> احصل على أحدث إصدار من Oracle VM VirtualBox من <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>موقعهم الرسمي</a> وقم بتثبيته.",
+    method1_step2: "<strong>تنزيل صورة كالي لينكس:</strong> انتقل إلى <a href='https://www.kali.org/get-kali/' target='_blank'>صفحة تنزيلات كالي لينكس الرسمية</a>. بالنسبة لـ VirtualBox، من الأسهل تنزيل صورة \"VirtualBox\" المعدة مسبقًا.",
+    method1_step3: "<strong>استيراد الجهاز الافتراضي:</strong> افتح VirtualBox، وانتقل إلى `ملف > استيراد جهاز`، وحدد ملف `.ova` الخاص بكالي لينكس الذي قمت بتنزيله. اتبع التعليمات التي تظهر على الشاشة لاستيراده.",
+    method1_step4: "<strong>بدء تشغيل كالي لينكس:</strong> بمجرد الاستيراد، حدد جهاز كالي لينكس من القائمة في VirtualBox وانقر فوق \"بدء\". تكون بيانات اعتماد تسجيل الدخول الافتراضية عادةً `kali` لكل من اسم المستخدم وكلمة المرور.",
+    method2_title: "الطريقة الثانية: التثبيت كنظام تشغيل رئيسي (Bare Metal / Dual Boot)",
+    method2_p1: "تتضمن هذه الطريقة تثبيت كالي لينكس مباشرة على محرك الأقراص الثابتة بجهاز الكمبيوتر الخاص بك، إما عن طريق استبدال نظام التشغيل الحالي أو تثبيته بجانبه (التمهيد المزدوج). هذا للمستخدمين المتقدمين ويوفر أفضل أداء. <strong>تحذير: قد يؤدي ذلك إلى فقدان البيانات إذا لم يتم بشكل صحيح. قم دائمًا بعمل نسخة احتياطية من بياناتك أولاً.</strong>",
+    method2_step1: "<strong>تنزيل Kali Linux ISO:</strong> من <a href='https://www.kali.org/get-kali/' target='_blank'>صفحة التنزيلات الرسمية</a> ، احصل على صورة \"المثبت\".",
+    method2_step2: "<strong>إنشاء محرك أقراص USB قابل للتمهيد:</strong> استخدم أداة مثل <a href='https://rufus.ie/' target='_blank'>Rufus</a> أو BalenaEtcher لكتابة ملف ISO الذي تم تنزيله على محرك أقراص USB (8 جيجابايت على الأقل).",
+    method2_step3: "<strong>التمهيد من محرك أقراص USB:</strong> أعد تشغيل الكمبيوتر وأدخل إعدادات BIOS / UEFI للتمهيد من محرك أقراص USB. قد تحتاج إلى تعطيل \"التمهيد الآمن\".",
+    method2_step4: "<strong>اتبع المثبت:</strong> اختر \"التثبيت الرسومي\" من قائمة التمهيد واتبع التعليمات خطوة بخطوة. ستحتاج إلى تكوين اللغة والموقع ولوحة المفاتيح وحسابات المستخدمين. الخطوة الأكثر أهمية هي تقسيم القرص ، حيث يمكنك اختيار استخدام القرص بأكمله أو تقسيمه لإعداد تمهيد مزدوج.",
+    recommended_resources_title: "الموارد الموصى بها",
+    recommended_resources_p1: "لمزيد من الإرشادات التفصيلية والتعلم ، تحقق من هذه الموارد الرسمية والمجتمعية:",
+    resources_li1: "<strong>وثائق كالي لينكس الرسمية:</strong> المصدر الأكثر شمولاً ودقة للمعلومات. <a href='https://www.kali.org/docs/' target='_blank'>قم بزيارة Kali Docs</a>.",
+    resources_li2: "<strong>دليل فيديو التثبيت:</strong> برنامج تعليمي مفيد بالفيديو خطوة بخطوة حول تثبيت كالي لينكس. <a href='https://www.youtube.com/watch?v=0VTkU1_fLvg' target='_blank'>شاهد على يوتيوب</a>.",
+    resources_li3: "<strong>برنامج freeCodeCamp التعليمي:</strong> دورة كاملة حول أساسيات لينكس للمتسللين الأخلاقيين باستخدام كالي. <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>شاهد على يوتيوب</a>。"
+},
+bn: {
+    title: "কালি লিনাক্সের ভূমিকা",
+    select_language: "ভাষা নির্বাচন করুন:",
+    what_is_kali_title: "কালি লিনাক্স কী?",
+    what_is_kali_p1: "কালি লিনাক্স একটি ওপেন-সোর্স, ডেবিয়ান-ভিত্তিক লিনাক্স ডিস্ট্রিবিউশন যা বিভিন্ন তথ্য সুরক্ষা কাজের জন্য তৈরি, যেমন পেনিট্রেশন টেস্টিং, সিকিউরিটি রিসার্চ, কম্পিউটার ফরেনসিক এবং রিভার্স ইঞ্জিনিয়ারিং।",
+    what_is_kali_p2: "মূলত, কালি লিনাক্স একটি টুলকিট যা ৬০০ টিরও বেশি পেনিট্রেশন-টেস্টিং টুল দিয়ে আগে থেকেই সজ্জিত থাকে। এটি সুরক্ষা পেশাদার এবং নৈতিক হ্যাকারদের ইনস্টলেশনের পরেই ব্যবহারের জন্য একটি বিস্তৃত সরঞ্জাম সেট পেতে সাহায্য করে, যা উল্লেখযোগ্য সময় এবং প্রচেষ্টা বাঁচায়।",
+    why_use_kali_title: "হ্যাকিংয়ের জন্য কালি লিনাক্স কেন ব্যবহার করবেন?",
+    why_use_kali_p1: "বিভিন্ন মূল কারণে কালি লিনাক্স অনেক সাইবারসিকিউরিটি পেশাদারদের পছন্দের অপারেটিং সিস্টেম:",
+    why_use_kali_li1: "<strong>সরঞ্জামের বিশাল সংগ্রহ:</strong> এটি Nmap, Wireshark, Metasploit, এবং Burp Suite সহ প্রচুর পরিমাণে পূর্ব-ইনস্টল করা এবং পূর্ব-কনফিগার করা সুরক্ষা সরঞ্জাম নিয়ে আসে।",
+    why_use_kali_li2: "<strong>বিনামূল্যে এবং ওপেন সোর্স:</strong> কালি লিনাক্স ব্যবহারের জন্য সম্পূর্ণ বিনামূল্যে, এবং এর ডেভেলপমেন্ট ট্রি যে কেউ দেখতে এবং পরিবর্তন করতে পারে।",
+    why_use_kali_li3: "<strong>সুরক্ষিত ডেভেলপমেন্ট এনভায়রনমেন্ট:</strong> ডেভেলপমেন্ট টিম একটি ছোট, বিশ্বস্ত গোষ্ঠী, এবং সমস্ত প্যাকেজ এবং রিপোজিটরি তাদের অখণ্ডতা নিশ্চিত করার জন্য GPG স্বাক্ষরিত।",
+    why_use_kali_li4: "<strong>বহনযোগ্যতা:</strong> কালি লিনাক্স একটি লাইভ ইউএসবি ড্রাইভ থেকে চালানো যেতে পারে, যা বহনযোগ্যতা এবং কোনও চিহ্ন না রেখে যেকোনো মেশিনে ব্যবহারের অনুমতি দেয়।",
+    why_use_kali_li5: "<strong>বিস্তৃত ডিভাইস সমর্থন:</strong> এটি এআরএম ডিভাইস সহ বিভিন্ন ধরণের হার্ডওয়্যার সমর্থন করে, যা এটিকে বিভিন্ন পরীক্ষার পরিস্থিতির জন্য বহুমুখী করে তোলে।",
+    installation_methods_title: "ইনস্টলেশন পদ্ধতি",
+    installation_methods_p1: "আপনার প্রয়োজনের উপর নির্ভর করে কালি লিনাক্স ইনস্টল এবং ব্যবহার করার দুটি প্রাথমিক উপায় রয়েছে। নতুনদের জন্য, একটি ভার্চুয়াল মেশিন ব্যবহার করার পরামর্শ দেওয়া হয় কারণ এটি নিরাপদ এবং আপনার প্রধান অপারেটিং সিস্টেমকে প্রভাবিত করে না।",
+    method1_title: "পদ্ধতি ১: ভার্চুয়াল মেশিনে ইনস্টল করা (ভার্চুয়ালবক্স)",
+    method1_p1: "একটি ভার্চুয়াল মেশিনে (ভিএম) কালি লিনাক্স চালানো আপনাকে এটিকে আপনার বর্তমান অপারেটিং সিস্টেমের (যেমন উইন্ডোজ বা ম্যাকওএস) মধ্যে একটি অ্যাপ্লিকেশন হিসাবে ব্যবহার করতে দেয়। এটি শুরু করার সবচেয়ে নিরাপদ এবং সহজ উপায়।",
+    method1_step1: "<strong>ভার্চুয়ালবক্স ডাউনলোড এবং ইনস্টল করুন:</strong> তাদের <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>অফিসিয়াল ওয়েবসাইট</a> থেকে Oracle VM VirtualBox-এর সর্বশেষ সংস্করণটি নিন এবং এটি ইনস্টল করুন।",
+    method1_step2: "<strong>কালি লিনাক্স ইমেজ ডাউনলোড করুন:</strong> <a href='https://www.kali.org/get-kali/' target='_blank'>অফিসিয়াল কালি লিনাক্স ডাউনলোড পৃষ্ঠায়</a> যান। ভার্চুয়ালবক্সের জন্য, আগে থেকে তৈরি \"ভার্চুয়ালবক্স\" ইমেজ ডাউনলোড করা সবচেয়ে সহজ।",
+    method1_step3: "<strong>ভার্চুয়াল মেশিন ইম্পোর্ট করুন:</strong> ভার্চুয়ালবক্স খুলুন, `ফাইল > অ্যাপ্লায়েন্স ইম্পোর্ট করুন`-এ যান এবং আপনার ডাউনলোড করা কালি লিনাক্স `.ova` ফাইলটি নির্বাচন করুন। এটি ইম্পোর্ট করতে অন-স্ক্রিন নির্দেশাবলী অনুসরণ করুন।",
+    method1_step4: "<strong>কালি লিনাক্স শুরু করুন:</strong> ইম্পোর্ট করার পরে, ভার্চুয়ালবক্সের তালিকা থেকে কালি লিনাক্স মেশিনটি নির্বাচন করুন এবং \"স্টার্ট\" ক্লিক করুন। ডিফল্ট লগইন শংসাপত্রগুলি সাধারণত ব্যবহারকারীর নাম এবং পাসওয়ার্ড উভয়ের জন্য `kali` হয়।",
+    method2_title: "পদ্ধতি ২: মূল ওএস হিসাবে ইনস্টল করা (বেয়ার মেটাল/ডুয়াল বুট)",
+    method2_p1: "এই পদ্ধতিতে আপনার কম্পিউটারের হার্ড ড্রাইভে সরাসরি কালি লিনাক্স ইনস্টল করা জড়িত, হয় আপনার বর্তমান ওএস প্রতিস্থাপন করে বা এর পাশাপাশি ইনস্টল করে (ডুয়াল বুট)। এটি উন্নত ব্যবহারকারীদের জন্য এবং সেরা পারফরম্যান্স সরবরাহ করে। <strong>সতর্কতা: এটি সঠিকভাবে না করলে ডেটা হারাতে পারে। প্রথমে সর্বদা আপনার ডেটা ব্যাক আপ করুন।</strong>",
+    method2_step1: "<strong>কালি লিনাক্স আইএসও ডাউনলোড করুন:</strong> <a href='https://www.kali.org/get-kali/' target='_blank'>অফিসিয়াল ডাউনলোড পৃষ্ঠা</a> থেকে, \"ইনস্টলার\" ইমেজটি নিন।",
+    method2_step2: "<strong>একটি বুটযোগ্য ইউএসবি ড্রাইভ তৈরি করুন:</strong> ডাউনলোড করা আইএসও ফাইলটি একটি ইউএসবি ড্রাইভে (কমপক্ষে 8GB) লেখার জন্য <a href='https://rufus.ie/' target='_blank'>রুফাস</a> বা বালেনাইচারের মতো একটি সরঞ্জাম ব্যবহার করুন।",
+    method2_step3: "<strong>ইউএসবি ড্রাইভ থেকে বুট করুন:</strong> আপনার কম্পিউটার পুনরায় চালু করুন এবং ইউএসবি ড্রাইভ থেকে বুট করার জন্য BIOS/UEFI সেটিংসে প্রবেশ করুন। আপনাকে \"সিকিওর বুট\" নিষ্ক্রিয় করতে হতে পারে।",
+    method2_step4: "<strong>ইনস্টলারটি অনুসরণ করুন:</strong> বুট মেনু থেকে \"গ্রাফিকাল ইনস্টল\" চয়ন করুন এবং ধাপে ধাপে নির্দেশাবলী অনুসরণ করুন। আপনাকে ভাষা, অবস্থান, কীবোর্ড এবং ব্যবহারকারী অ্যাকাউন্টগুলি কনফিগার করতে হবে। সবচেয়ে গুরুত্বপূর্ণ পদক্ষেপ হল ডিস্ক পার্টিশনিং, যেখানে আপনি পুরো ডিস্ক ব্যবহার করতে বা ডুয়াল বুট সেটআপের জন্য এটি পার্টিশন করতে বেছে নিতে পারেন।",
+    recommended_resources_title: "প্রস্তাবিত সম্পদ",
+    recommended_resources_p1: "আরও বিস্তারিত নির্দেশাবলী এবং শেখার জন্য, এই অফিসিয়াল এবং কমিউনিটি সম্পদগুলি দেখুন:",
+    resources_li1: "<strong>অফিসিয়াল কালি লিনাক্স ডকুমেন্টেশন:</strong> তথ্যের সবচেয়ে ব্যাপক এবং সঠিক উৎস। <a href='https://www.kali.org/docs/' target='_blank'>কালি ডক্স দেখুন</a>।",
+    resources_li2: "<strong>ইনস্টলেশন ভিডিও গাইড:</strong> কালি লিনাক্স ইনস্টল করার বিষয়ে একটি সহায়ক ধাপে ধাপে ভিডিও টিউটোরিয়াল। <a href='https://www.youtube.com/watch?v=mOle5yMz67k' target='_blank'>ইউটিউবে দেখুন</a>।",
+    resources_li3: "<strong>ফ্রিকোডক্যাম্প টিউটোরিয়াল:</strong> কালি ব্যবহার করে নৈতিক হ্যাকারদের জন্য লিনাক্সের মৌলিক বিষয়গুলির উপর একটি পূর্ণ-দৈর্ঘ্যের কোর্স। <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>ইউটিউবে দেখুন</a>।"
+},
+pt: {
+    title: "Introdução ao Kali Linux",
+    select_language: "Selecione o idioma:",
+    what_is_kali_title: "O que é o Kali Linux?",
+    what_is_kali_p1: "O Kali Linux é uma distribuição Linux de código aberto, baseada no Debian, voltada para várias tarefas de segurança da informação, como Testes de Invasão, Pesquisa de Segurança, Forense Computacional e Engenharia Reversa.",
+    what_is_kali_p2: "Essencialmente, o Kali Linux é um kit de ferramentas pré-empacotado com mais de 600 ferramentas de teste de invasão. Isso permite que profissionais de segurança e hackers éticos tenham um conjunto abrangente de ferramentas prontas para uso logo após a instalação, economizando tempo e esforço significativos.",
+    why_use_kali_title: "Por que usar o Kali Linux para Hacking?",
+    why_use_kali_p1: "O Kali Linux é o sistema operacional preferido de muitos profissionais de cibersegurança por várias razões principais:",
+    why_use_kali_li1: "<strong>Vasta coleção de ferramentas:</strong> Ele vem com uma enorme coleção de ferramentas de segurança pré-instaladas e pré-configuradas, incluindo Nmap, Wireshark, Metasploit e Burp Suite.",
+    why_use_kali_li2: "<strong>Gratuito e de código aberto:</strong> O Kali Linux é totalmente gratuito para usar, e sua árvore de desenvolvimento está aberta para qualquer pessoa visualizar e modificar.",
+    why_use_kali_li3: "<strong>Ambiente de desenvolvimento seguro:</strong> A equipe de desenvolvimento é um grupo pequeno e confiável, e todos os pacotes e repositórios são assinados com GPG para garantir sua integridade.",
+    why_use_kali_li4: "<strong>Portabilidade:</strong> O Kali Linux pode ser executado a partir de um pendrive ao vivo, permitindo portabilidade e uso em qualquer máquina sem deixar rastros.",
+    why_use_kali_li5: "<strong>Amplo suporte a dispositivos:</strong> Ele suporta uma ampla variedade de hardware, incluindo dispositivos ARM, o que o torna versátil para diferentes cenários de teste.",
+    installation_methods_title: "Métodos de Instalação",
+    installation_methods_p1: "Existem duas maneiras principais de instalar и usar o Kali Linux, dependendo de suas necessidades. Para iniciantes, é altamente recomendável usar uma máquina virtual, pois é mais seguro e não afeta seu sistema operacional principal.",
+    method1_title: "Método 1: Instalando em uma Máquina Virtual (VirtualBox)",
+    method1_p1: "Executar o Kali Linux em uma máquina virtual (VM) permite que você o use como um aplicativo em seu sistema operacional atual (como Windows ou macOS). Esta é a maneira mais segura e fácil de começar.",
+    method1_step1: "<strong>Baixe e instale o VirtualBox:</strong> Obtenha a versão mais recente do Oracle VM VirtualBox em seu <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>site oficial</a> e instale-o.",
+    method1_step2: "<strong>Baixe a imagem do Kali Linux:</strong> Vá para a <a href='https://www.kali.org/get-kali/' target='_blank'>página oficial de downloads do Kali Linux</a>. Para o VirtualBox, é mais fácil baixar a imagem \"VirtualBox\" pré-construída.",
+    method1_step3: "<strong>Importe a Máquina Virtual:</strong> Abra o VirtualBox, vá para `Arquivo > Importar Appliance` e selecione o arquivo `.ova` do Kali Linux que você baixou. Siga as instruções na tela para importá-lo.",
+    method1_step4: "<strong>Inicie o Kali Linux:</strong> Uma vez importado, selecione a máquina Kali Linux na lista do VirtualBox e clique em \"Iniciar\". As credenciais de login padrão são geralmente `kali` para o nome de usuário e a senha.",
+    method2_title: "Método 2: Instalando como SO Principal (Bare Metal/Dual Boot)",
+    method2_p1: "Este método envolve a instalação do Kali Linux diretamente no disco rígido do seu computador, substituindo seu SO atual ou instalando-o ao lado (dual boot). Isso é para usuários avançados e oferece o melhor desempenho. <strong>Aviso: Isso pode levar à perda de dados se não for feito corretamente. Sempre faça backup de seus dados primeiro.</strong>",
+    method2_step1: "<strong>Baixe a ISO do Kali Linux:</strong> Na <a href='https://www.kali.org/get-kali/' target='_blank'>página oficial de downloads</a>, obtenha a imagem \"Installer\".",
+    method2_step2: "<strong>Crie um pendrive inicializável:</strong> Use uma ferramenta como o <a href='https://rufus.ie/' target='_blank'>Rufus</a> ou o BalenaEtcher para gravar o arquivo ISO baixado em um pendrive (pelo menos 8 GB).",
+    method2_step3: "<strong>Inicialize a partir do pendrive:</strong> Reinicie o seu computador e entre nas configurações do BIOS/UEFI para inicializar a partir do pendrive. Pode ser necessário desativar o \"Secure Boot\".",
+    method2_step4: "<strong>Siga o instalador:</strong> Escolha \"Instalação gráfica\" no menu de inicialização e siga as instruções passo a passo. Você precisará configurar idioma, localização, teclado e contas de usuário. A etapa mais crítica é o particionamento do disco, onde você pode optar por usar o disco inteiro ou particioná-lo para uma configuração de inicialização dupla.",
+    recommended_resources_title: "Recursos Recomendados",
+    recommended_resources_p1: "Para instruções mais detalhadas e aprendizado, confira estes recursos oficiais e da comunidade:",
+    resources_li1: "<strong>Documentação oficial do Kali Linux:</strong> A fonte de informação mais abrangente e precisa. <a href='https://www.kali.org/docs/' target='_blank'>Visite a documentação do Kali</a>.",
+    resources_li2: "<strong>Guia de vídeo de instalação:</strong> Um útil tutorial em vídeo passo a passo sobre a instalação do Kali Linux. <a href='https://www.youtube.com/watch?v=n8571MEqpkU' target='_blank'>Assista no YouTube</a>.",
+    resources_li3: "<strong>Tutorial do freeCodeCamp:</strong> Um curso completo sobre os fundamentos do Linux para hackers éticos usando o Kali. <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>Assista no YouTube</a>。"
+},
+ru: {
+    title: "Введение в Kali Linux",
+    select_language: "Выберите язык:",
+    what_is_kali_title: "Что такое Kali Linux?",
+    what_is_kali_p1: "Kali Linux — это дистрибутив Linux с открытым исходным кодом на базе Debian, предназначенный для решения различных задач в области информационной безопасности, таких как тестирование на проникновение, исследования в области безопасности, компьютерная криминалистика и обратная разработка.",
+    what_is_kali_p2: "По сути, Kali Linux — это набор инструментов, предустановленный с более чем 600 инструментами для тестирования на проникновение. Это позволяет специалистам по безопасности и этичным хакерам иметь полный набор инструментов, готовых к использованию сразу после установки, что значительно экономит время и усилия.",
+    why_use_kali_title: "Зачем использовать Kali Linux для взлома?",
+    why_use_kali_p1: "Kali Linux является предпочтительной операционной системой для многих специалистов по кибербезопасности по нескольким ключевым причинам:",
+    why_use_kali_li1: "<strong>Обширная коллекция инструментов:</strong> Он поставляется с огромной коллекцией предустановленных и предварительно настроенных инструментов безопасности, включая Nmap, Wireshark, Metasploit и Burp Suite.",
+    why_use_kali_li2: "<strong>Бесплатный и с открытым исходным кодом:</strong> Kali Linux полностью бесплатен в использовании, а его дерево разработки открыто для всех, кто хочет его просмотреть и изменить.",
+    why_use_kali_li3: "<strong>Безопасная среда разработки:</strong> Команда разработчиков — это небольшая, заслуживающая доверия группа, и все пакеты и репозитории подписаны GPG для обеспечения их целостности.",
+    why_use_kali_li4: "<strong>Портативность:</strong> Kali Linux можно запускать с live USB-накопителя, что обеспечивает портативность и возможность использования на любом компьютере, не оставляя следов.",
+    why_use_kali_li5: "<strong>Широкая поддержка устройств:</strong> Он поддерживает широкий спектр оборудования, включая устройства ARM, что делает его универсальным для различных сценариев тестирования.",
+    installation_methods_title: "Способы установки",
+    installation_methods_p1: "Существует два основных способа установки и использования Kali Linux, в зависимости от ваших потребностей. Новичкам настоятельно рекомендуется использовать виртуальную машину, так как это безопаснее и не влияет на вашу основную операционную систему.",
+    method1_title: "Способ 1: Установка в виртуальной машине (VirtualBox)",
+    method1_p1: "Запуск Kali Linux в виртуальной машине (ВМ) позволяет использовать его как приложение в вашей текущей операционной системе (например, Windows или macOS). Это самый безопасный и простой способ начать.",
+    method1_step1: "<strong>Загрузите и установите VirtualBox:</strong> Получите последнюю версию Oracle VM VirtualBox с их <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>официального сайта</a> и установите ее.",
+    method1_step2: "<strong>Загрузите образ Kali Linux:</strong> Перейдите на <a href='https://www.kali.org/get-kali/' target='_blank'>официальную страницу загрузки Kali Linux</a>. Для VirtualBox проще всего загрузить предварительно собранный образ \"VirtualBox\".",
+    method1_step3: "<strong>Импортируйте виртуальную машину:</strong> Откройте VirtualBox, перейдите в `Файл > Импорт конфигурации`, и выберите загруженный вами файл `.ova` Kali Linux. Следуйте инструкциям на экране, чтобы импортировать его.",
+    method1_step4: "<strong>Запустите Kali Linux:</strong> После импорта выберите машину Kali Linux из списка в VirtualBox и нажмите \"Запустить\". Учетные данные для входа по умолчанию обычно `kali` как для имени пользователя, так и для пароля.",
+    method2_title: "Способ 2: Установка в качестве основной ОС (Bare Metal/Dual Boot)",
+    method2_p1: "Этот метод включает установку Kali Linux непосредственно на жесткий диск вашего компьютера, либо заменяя вашу текущую ОС, либо устанавливая ее рядом (двойная загрузка). Это для опытных пользователей и обеспечивает лучшую производительность. <strong>Предупреждение: это может привести к потере данных, если сделать это неправильно. Всегда сначала делайте резервную копию ваших данных.</strong>",
+    method2_step1: "<strong>Загрузите ISO-образ Kali Linux:</strong> С <a href='https://www.kali.org/get-kali/' target='_blank'>официальной страницы загрузок</a> получите образ \"Installer\".",
+    method2_step2: "<strong>Создайте загрузочный USB-накопитель:</strong> Используйте такой инструмент, как <a href='https://rufus.ie/' target='_blank'>Rufus</a> или BalenaEtcher, чтобы записать загруженный ISO-файл на USB-накопитель (не менее 8 ГБ).",
+    method2_step3: "<strong>Загрузитесь с USB-накопителя:</strong> Перезагрузите компьютер и войдите в настройки BIOS/UEFI, чтобы загрузиться с USB-накопителя. Возможно, вам потребуется отключить \"Безопасную загрузку\".",
+    method2_step4: "<strong>Следуйте инструкциям установщика:</strong> Выберите \"Графическая установка\" в меню загрузки и следуйте пошаговым инструкциям. Вам нужно будет настроить язык, местоположение, клавиатуру и учетные записи пользователей. Самый важный шаг — это разметка диска, где вы можете выбрать использовать весь диск или разбить его на разделы для установки с двойной загрузкой.",
+    recommended_resources_title: "Рекомендуемые ресурсы",
+    recommended_resources_p1: "Для получения более подробных инструкций и обучения ознакомьтесь с этими официальными и общедоступными ресурсами:",
+    resources_li1: "<strong>Официальная документация Kali Linux:</strong> Самый полный и точный источник информации. <a href='https://www.kali.org/docs/' target='_blank'>Посетите Kali Docs</a>.",
+    resources_li2: "<strong>Видеоурок по установке:</strong> Полезное пошаговое видеоруководство по установке Kali Linux. <a href='https://www.youtube.com/watch?v=t1QAXq29c4c' target='_blank'>Смотреть на YouTube</a>.",
+    resources_li3: "<strong>Учебник freeCodeCamp:</strong> Полный курс по основам Linux для этичных хакеров с использованием Kali. <a href='https://www.youtube.com/watch?v=coQ5dg8wM2o' target='_blank'>Смотреть на YouTube</a>。"
+},
+ur: {
+    title: "کالی لینکس کا تعارف",
+    select_language: "زبان منتخب کریں:",
+    what_is_kali_title: "کالی لینکس کیا ہے؟",
+    what_is_kali_p1: "کالی لینکس ایک اوپن سورس، ڈیبین پر مبنی لینکس تقسیم ہے جو مختلف انفارمیشن سیکیورٹی کے کاموں، جیسے پینیٹریشن ٹیسٹنگ، سیکیورٹی ریسرچ، کمپیوٹر فارنزک، اور ریورس انجینئرنگ کے لیے تیار کی گئی ہے۔",
+    what_is_kali_p2: "بنیادی طور پر، کالی لینکس 600 سے زیادہ پینیٹریشن ٹیسٹنگ ٹولز کے ساتھ پہلے سے پیک شدہ ایک ٹول کٹ ہے۔ یہ سیکیورٹی پروفیشنلز اور اخلاقی ہیکرز کو انسٹالیشن کے فوراً بعد استعمال کے لیے تیار ٹولز کا ایک جامع سیٹ فراہم کرتا ہے، جس سے کافی وقت اور محنت کی بچت ہوتی ہے۔",
+    why_use_kali_title: "ہیکنگ کے لیے کالی لینکس کیوں استعمال کریں؟",
+    why_use_kali_p1: "کالی لینکس کئی اہم وجوہات کی بنا پر بہت سے سائبر سیکیورٹی پروفیشنلز کے لیے ترجیحی آپریٹنگ سسٹم ہے:",
+    why_use_kali_li1: "<strong>ٹولز کا وسیع مجموعہ:</strong> یہ پہلے سے نصب اور پہلے سے ترتیب شدہ سیکیورٹی ٹولز کے ایک بڑے مجموعے کے ساتھ آتا ہے، جس میں Nmap، Wireshark، Metasploit، اور Burp Suite شامل ہیں۔",
+    why_use_kali_li2: "<strong>مفت اور اوپن سورس:</strong> کالی لینکس استعمال کرنے کے لیے مکمل طور پر مفت ہے، اور اس کا ڈیولپمنٹ ٹری کسی کے بھی دیکھنے اور اس میں ترمیم کرنے کے لیے کھلا ہے۔",
+    why_use_kali_li3: "<strong>محفوظ ترقیاتی ماحول:</strong> ڈیولپمنٹ ٹیم ایک چھوٹا، قابل اعتماد گروپ ہے، اور تمام پیکجز اور ریپوزٹریز ان کی سالمیت کو یقینی بنانے کے لیے GPG دستخط شدہ ہیں۔",
+    why_use_kali_li4: "<strong>پورٹیبلٹی:</strong> کالی لینکس کو لائیو یو ایس بی ڈرائیو سے چلایا جا سکتا ہے، جس سے پورٹیبلٹی اور کسی بھی مشین پر بغیر کوئی نشان چھوڑے استعمال کیا جا سکتا ہے۔",
+    why_use_kali_li5: "<strong>وسیع ڈیوائس سپورٹ:</strong> یہ اے آر ایم ڈیوائسز سمیت وسیع اقسام کے ہارڈ ویئر کو سپورٹ کرتا ہے، جو اسے مختلف ٹیسٹنگ منظرناموں کے لیے ورسٹائل بناتا ہے۔",
+    installation_methods_title: "انسٹالیشن کے طریقے",
+    installation_methods_p1: "آپ کی ضروریات کے مطابق کالی لینکس کو انسٹال کرنے اور استعمال کرنے کے دو بنیادی طریقے ہیں۔ مبتدیوں کے لیے، ورچوئل مشین استعمال کرنے کی انتہائی سفارش کی جاتی ہے کیونکہ یہ زیادہ محفوظ ہے اور آپ کے مرکزی آپریٹنگ سسٹم کو متاثر نہیں کرتی ہے۔",
+    method1_title: "طریقہ 1: ورچوئل مشین میں انسٹال کرنا (ورچوئل باکس)",
+    method1_p1: "ورچوئل مشین (VM) میں کالی لینکس چلانے سے آپ اسے اپنے موجودہ آپریティング سسٹم (جیسے ونڈوز یا میک او ایس) کے اندر ایک ایپلیکیشن کے طور پر استعمال کر سکتے ہیں۔ یہ شروع کرنے کا سب سے محفوظ اور آسان ترین طریقہ ہے۔",
+    method1_step1: "<strong>ورچوئل باکس ڈاؤن لوڈ اور انسٹال کریں:</strong> اوریکل وی ایم ورچوئل باکس کا تازہ ترین ورژن ان کی <a href='https://www.virtualbox.org/wiki/Downloads' target='_blank'>آفیشل ویب سائٹ</a> سے حاصل کریں اور اسے انسٹال کریں۔",
+    method1_step2: "<strong>کالی لینکس امیج ڈاؤن لوڈ کریں:</strong> <a href='https://www.kali.org/get-kali/' target='_blank'>آفیشل کالی لینکس ڈاؤن لوڈز پیج</a> پر جائیں۔ ورچوئل باکس کے لیے، پہلے سے بنی ہوئی \"ورچوئل باکس\" امیج کو ڈاؤن لوڈ کرنا سب سے آسان ہے۔",
+    method1_step3: "<strong>ورچوئل مشین درآمد کریں:</strong> ورچوئل باکس کھولیں، `فائل > اپلائنس درآمد کریں` پر جائیں، اور اپنی ڈاؤن لوڈ کردہ کالی لینکس `.ova` فائل منتخب کریں۔ اسے درآمد کرنے کے لیے اسکرین پر دی گئی ہدایات پر عمل کریں۔",
+    method1_step4: "<strong>کالی لینکس شروع کریں:</strong> درآمد کرنے کے بعد، ورچوئل باکس کی فہرست سے کالی لینکس مشین منتخب کریں اور \"اسٹارٹ\" پر کلک کریں۔ ڈیفالٹ لاگ ان کی اسناد عام طور پر صارف نام اور پاس ورڈ دونوں کے لیے `kali` ہوتی ہیں۔",
+    method2_title: "طریقہ 2: مرکزی OS کے طور پر انسٹال کرنا (بیئر میٹل/ڈوئل بوٹ)",
+    method2_p1: "اس طریقے میں کالی لینکس کو براہ راست آپ کے کمپیوٹر کی ہارڈ ڈرائیو پر انسٹال کرنا شامل ہے، یا تو آپ کے موجودہ OS کو تبدیل کرنا یا اسے ساتھ ساتھ انسٹال کرنا (ڈوئل بوٹ)۔ یہ جدید صارفین کے لیے ہے اور بہترین کارکردگی پیش کرتا ہے۔ <strong>انتباہ: اگر صحیح طریقے سے نہ کیا جائے تو اس سے ڈیٹا کا نقصان ہو سکتا ہے۔ ہمیشہ پہلے اپنے ڈیٹا کا بیک اپ لیں۔</strong>",
+    method2_step1: "<strong>کالی لینکس آئی ایس او ڈاؤن لوڈ کریں:</strong> <a href='https://www.kali.org/get-kali/' target='_blank'>آفیشل ڈاؤن لوڈز پیج</a> سے، \"انسٹالر\" امیج حاصل کریں۔",
+    method2_step2: "<strong>ایک بوٹ ایبل یو ایس بی ڈرائیو بنائیں:</strong> ڈاؤن لوڈ کی گئی آئی ایس او فائل کو یو ایس بی ڈرائیو (کم از کم 8 جی بی) پر لکھنے کے لیے <a href='https://rufus.ie/' target='_blank'>روفَس</a> یا بالینا ایچر جیسا ٹول استعمال کریں۔",
+    method2_step3: "<strong>یو ایس بی ڈرائیو سے بوٹ کریں:</strong> اپنے کمپیوٹر کو دوبارہ شروع کریں اور یو ایس بی ڈرائیو سے بوٹ کرنے کے لیے BIOS/UEFI سیٹنگز میں داخل ہوں۔ آپ کو \"سیکیور بوٹ\" کو غیر فعال کرنے کی ضرورت پڑ سکتی ہے۔",
+    method2_step4: "<strong>انسٹالر پر عمل کریں:</strong> بوٹ مینو سے \"گرافیکل انسٹال\" کا انتخاب کریں اور مرحلہ وار ہدایات پر عمل کریں۔ آپ کو زبان، مقام، کی بورڈ، اور صارف اکاؤنٹس کو ترتیب دینے کی ضرورت ہوگی۔ سب سے اہم مرحلہ ڈسک پارٹیشننگ ہے، جہاں آپ پوری ڈسک استعمال کرنے یا ڈوئل بوٹ سیٹ اپ کے لیے اسے تقسیم کرنے کا انتخاب کر سکتے ہیں۔",
+    recommended_resources_title: "تجویز کردہ وسائل",
+    recommended_resources_p1: "مزید تفصیلی ہدایات اور سیکھنے کے لیے، ان سرکاری اور کمیونٹی وسائل کو دیکھیں:",
+    resources_li1: "<strong>آفیشل کالی لینکس دستاویزات:</strong> معلومات کا سب سے جامع اور درست ذریعہ۔ <a href='https://www.kali.org/docs/' target='_blank'>کالی ڈاکس پر جائیں</a>۔",
+    resources_li2: "<strong>انسٹالیشن ویڈیو گائیڈ:</strong> کالی لینکس انسٹال کرنے کے بارے میں ایک مددگار مرحلہ وار ویڈیو ٹیوٹوریل۔ <a href='https://www.youtube.com/watch?v=W6_nBr8SbPE' target='_blank'>یوٹیوب پر دیکھیں</a>۔",
+    resources_li3: "<strong>فری کوڈ کیمپ ٹیوٹوریল:</strong> کالی کا استعمال کرتے ہوئے اخلاقی ہیکرز کے لیے لینکس کی بنیادی باتوں پر ایک مکمل طوالت کا کورس۔ <a href='https://www.youtube.com/watch?v=jkvxhb-fVXc' target='_blank'>یوٹیوب پر دیکھیں</a>۔"
+}
+        
+        
+        //ADD LANG
+    };
+
+    const langSelect = document.getElementById('lang-select');
+    const elementsToTranslate = document.querySelectorAll('[data-lang-key]');
+
+    function changeLanguage(lang) {
+        elementsToTranslate.forEach(element => {
+            const key = element.getAttribute('data-lang-key');
+            if (translations[lang] && translations[lang][key]) {
+                element.innerHTML = translations[lang][key];
+            }
+        });
+        document.documentElement.lang = lang;
+        if (lang === 'ar' || lang === 'ur') {
+            document.body.style.direction = 'rtl';
+        } else {
+            document.body.style.direction = 'ltr';
+        }
+    }
+
+    langSelect.addEventListener('change', (event) => {
+        changeLanguage(event.target.value);
+    });
+
+    // Initial language setup
+    changeLanguage('en');
+    </script>
+</body>
+</html>
