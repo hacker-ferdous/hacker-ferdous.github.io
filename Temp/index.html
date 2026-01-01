@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Database | CPSCR</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0f4c75;
+            --secondary: #3282b8;
+            --accent: #bbe1fa;
+            --dark: #1b262c;
+            --light: #f8f9fa;
+            --civil-bg: #e3f2fd; --civil-text: #1565c0;
+            --mil-bg: #e8f5e9; --mil-text: #2e7d32;
+            --staff-bg: #fff3e0; --staff-text: #ef6c00;
+            --female-bg: #fce4ec; --female-text: #c2185b;
+            --male-bg: #e3f2fd; --male-text: #1976d2;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --excellent: #00c853;
+            --good: #64dd17;
+            --average: #ffd600;
+            --below-avg: #ff9100;
+            --poor: #ff3d00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 1800px; margin: 0 auto; }
+
+        /* --- Header Section --- */
+        .header-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .inst-info h1 { 
+            color: var(--primary); 
+            font-size: 2rem; 
+            font-weight: 800; 
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .inst-info p { color: #555; font-size: 1rem; margin-top: 5px; display: flex; align-items: center; gap: 8px; }
+        
+        .badges-row { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .info-pill {
+            background: var(--light); border: 1px solid #ddd;
+            padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #555;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .session-pill { background: var(--primary); color: white; border: none; }
+        .stats-pill { background: #e8f5e9; color: var(--mil-text); border-color: #c8e6c9; }
+
+        /* --- Teacher Card --- */
+        .teacher-box {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            min-width: 320px;
+            box-shadow: 0 8px 20px rgba(15, 76, 117, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .teacher-box:hover { transform: translateY(-3px); }
+        
+        .teacher-box::before {
+            content: ''; position: absolute; top: -50px; right: -50px;
+            width: 100px; height: 100px; background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .teacher-box h3 { font-size: 1.5rem; margin-bottom: 5px; }
+        .teacher-box .desig { opacity: 0.9; font-size: 0.95rem; display: block; margin-bottom: 15px; }
+        .teacher-box .contact { 
+            background: rgba(255,255,255,0.2); 
+            padding: 10px 18px; border-radius: 10px; 
+            display: inline-flex; align-items: center; gap: 12px; font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .teacher-box .contact:hover { background: rgba(255,255,255,0.3); }
+
+        /* --- Stats Dashboard --- */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover { transform: translateY(-3px); }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-male .stat-icon { background: var(--male-bg); color: var(--male-text); }
+        .stat-female .stat-icon { background: var(--female-bg); color: var(--female-text); }
+        .stat-total .stat-icon { background: var(--accent); color: var(--primary); }
+        .stat-sections .stat-icon { background: #e8f5e9; color: var(--mil-text); }
+        .stat-performance .stat-icon { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+
+        .stat-info h3 { font-size: 1.8rem; color: var(--dark); }
+        .stat-info p { color: #666; font-size: 0.9rem; }
+        
+        .performance-indicator {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .performance-good { background: var(--excellent); color: white; }
+        .performance-average { background: var(--average); color: #333; }
+        .performance-poor { background: var(--poor); color: white; }
+
+        /* --- Performance Analysis Card --- */
+        .performance-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .performance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .performance-header h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gender-performance {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .gender-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .gender-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .gender-icon-large {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .gender-icon-large.male { background: var(--male-bg); color: var(--male-text); }
+        .gender-icon-large.female { background: var(--female-bg); color: var(--female-text); }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #e9ecef;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .comparison-result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .comparison-result h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .winner-badge {
+            background: gold;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-male { background: var(--male-text); }
+        .progress-female { background: var(--female-text); }
+
+        /* Roll Distribution Chart */
+        .distribution-chart {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .chart-label {
+            width: 120px;
+            font-size: 0.85rem;
+        }
+
+        .chart-value {
+            flex: 1;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .chart-percent {
+            margin-left: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: 40px;
+        }
+
+        /* --- Enhanced Controls --- */
+        .filters-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 180px;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .styled-select, .styled-input {
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .styled-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f4c75' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .styled-select:focus, .styled-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 76, 117, 0.1);
+        }
+
+        .search-wrapper {
+            position: relative;
+            flex-grow: 1;
+            min-width: 300px;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 76, 117, 0.1);
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        /* --- Enhanced Table --- */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            padding: 20px;
+            background: var(--light);
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        
+        thead { background: var(--dark); color: white; }
+        th {
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            white-space: nowrap;
+        }
+        
+        th:hover { background: #34495e; }
+        th i { margin-left: 8px; opacity: 0.7; font-size: 0.8rem; }
+        
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+        
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background-color: #f8fafc; }
+
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .badge.civil { background: var(--civil-bg); color: var(--civil-text); }
+        .badge.military { background: var(--mil-bg); color: var(--mil-text); }
+        .badge.staff { background: var(--staff-bg); color: var(--staff-text); }
+        .badge.male { background: var(--male-bg); color: var(--male-text); }
+        .badge.female { background: var(--female-bg); color: var(--female-text); }
+
+        .std-id {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: var(--primary);
+            background: #f0f7ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .no-id { color: #ccc; }
+
+        .mobile-cell {
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+            color: #555;
+        }
+
+        /* Gender Icons */
+        .gender-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .gender-icon.male { background: var(--male-bg); color: var(--male-text); }
+        .gender-icon.female { background: var(--female-bg); color: var(--female-text); }
+
+        /* Performance Indicators in Table */
+        .roll-performance {
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        .excellent-roll { background: #e8f5e9; color: #2e7d32; }
+        .good-roll { background: #f1f8e9; color: #558b2f; }
+        .average-roll { background: #fffde7; color: #f57f17; }
+        .below-roll { background: #fff3e0; color: #ef6c00; }
+        .poor-roll { background: #ffebee; color: #c62828; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.9rem;
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: var(--light);
+            border-top: 1px solid #eee;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* ----------------------------------------------------
+           RESPONSIVE DESIGN
+        ---------------------------------------------------- */
+        
+        @media (max-width: 1200px) {
+            .performance-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .teacher-box {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .stats-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-container {
+                padding: 15px;
+            }
+            
+            .filter-group, .search-wrapper {
+                min-width: 100%;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .export-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            th, td {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header-card {
+                padding: 20px;
+            }
+            
+            .inst-info h1 {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .filter-buttons {
+                flex-direction: column;
+            }
+        }
+        @media (max-width: 768px) {
+        .teacher-box {
+            min-width: 0 !important;
+            width: 100% !important;
+        }
+        .header-card {
+            padding-left: 15px;
+            padding-right: 15px;
+            overflow: hidden;
+        }
+    }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header Info -->
+    <header class="header-card">
+        <div class="inst-info">
+            <h1><i class="fas fa-graduation-cap"></i> Cantonment Public School and Collage, Rangpur</h1>
+            <p><i class="fas fa-map-marker-alt"></i> Rangpur Cantonment, Rangpur</p>
+            <div class="badges-row">
+                <span class="info-pill session-pill"><i class="fas fa-calendar-alt"></i> Session: 2026</span>
+                <span class="info-pill"><i class="fas fa-users"></i> Class: Seven</span>
+                <span class="info-pill"><i class="fas fa-layer-group"></i> Group: General</span>
+                <span class="info-pill stats-pill" id="totalStudentsStat">Total: 0</span>
+            </div>
+        </div>
+
+        <!-- Dynamic Teacher Card -->
+        <div class="teacher-box">
+            <small style="opacity: 0.8;"><i class="fas fa-chalkboard-teacher"></i> Class Teacher</small>
+            <h3 id="tName">Loading...</h3>
+            <span class="desig" id="tDesig">Assistant Teacher</span>
+            <div class="contact">
+                <i class="fas fa-phone-alt"></i> <span id="tMobile">...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Dashboard -->
+    <div class="stats-dashboard">
+        <div class="stat-card stat-total">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="totalCount">0</h3>
+                <p>Total Students</p>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-male">
+            <div class="stat-icon">
+                <i class="fas fa-male"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="maleCount">0</h3>
+                <p>Male Students</p>
+                <p style="font-size: 0.85rem; margin-top: 5px;">Avg Roll: <span id="maleAvgRoll">0</span></p>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-female">
+            <div class="stat-icon">
+                <i class="fas fa-female"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="femaleCount">0</h3>
+                <p>Female Students</p>
+                <p style="font-size: 0.85rem; margin-top: 5px;">Avg Roll: <span id="femaleAvgRoll">0</span></p>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-performance">
+            <div class="stat-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="winnerGender">Analyzing...</h3>
+                <p>Performance Leader</p>
+                <p style="font-size: 0.85rem; margin-top: 5px;" id="performanceDifference">Difference: 0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Analysis Card -->
+    <div class="performance-card" id="performanceAnalysis">
+        <div class="performance-header">
+            <h3><i class="fas fa-chart-line"></i> Gender Performance Analysis (Based on Roll Numbers)</h3>
+            <span class="badge" style="background: var(--primary); color: white;" id="analysisRange">Section: All</span>
+        </div>
+        
+        <div class="performance-grid">
+            <div class="gender-performance">
+                <div class="gender-header">
+                    <div class="gender-title">
+                        <div class="gender-icon-large male">
+                            <i class="fas fa-male"></i>
+                        </div>
+                        <span>Male Students Performance</span>
+                    </div>
+                    <span class="performance-indicator performance-good" id="malePerformance">Good</span>
+                </div>
+                
+                <div class="performance-metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="maleAvgRollDetailed">0</div>
+                        <div class="metric-label">Average Roll</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="maleMinRoll">0</div>
+                        <div class="metric-label">Best (Lowest)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="maleMaxRoll">0</div>
+                        <div class="metric-label">Worst (Highest)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="maleTop10Avg">0</div>
+                        <div class="metric-label">Top 10 Average</div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Roll Distribution</span>
+                        <span id="maleDistribution">0% in Top 100</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-male" id="maleProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gender-performance">
+                <div class="gender-header">
+                    <div class="gender-title">
+                        <div class="gender-icon-large female">
+                            <i class="fas fa-female"></i>
+                        </div>
+                        <span>Female Students Performance</span>
+                    </div>
+                    <span class="performance-indicator performance-good" id="femalePerformance">Good</span>
+                </div>
+                
+                <div class="performance-metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="femaleAvgRollDetailed">0</div>
+                        <div class="metric-label">Average Roll</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="femaleMinRoll">0</div>
+                        <div class="metric-label">Best (Lowest)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="femaleMaxRoll">0</div>
+                        <div class="metric-label">Worst (Highest)</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="femaleTop10Avg">0</div>
+                        <div class="metric-label">Top 10 Average</div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Roll Distribution</span>
+                        <span id="femaleDistribution">0% in Top 100</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-female" id="femaleProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-result">
+            <h4><i class="fas fa-balance-scale"></i> Performance Comparison</h4>
+            <p id="comparisonText">Analysis in progress...</p>
+            <div class="winner-badge" id="winnerBadge">
+                <i class="fas fa-crown"></i> <span id="winnerText">Calculating...</span>
+            </div>
+        </div>
+        
+        <!-- Roll Distribution Chart -->
+        <div class="distribution-chart">
+            <h4 style="margin-bottom: 15px; font-size: 1rem;"><i class="fas fa-chart-bar"></i> Roll Range Distribution</h4>
+            <div id="distributionChart">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Filters -->
+    <div class="filters-container">
+        <div class="filter-group">
+            <label for="sectionSelect"><i class="fas fa-filter"></i> Section</label>
+            <select id="sectionSelect" class="styled-select" onchange="loadSection()">
+                <option value="all">All Students</option>
+                <option value="shapla">Section: Shapla</option>
+                <option value="golap">Section: Golap</option>
+                <option value="jui">Section: Jui</option>
+                <option value="belly">Section: Belly</option>
+                <option value="bokul">Section: Bokul</option>
+                <option value="shimul">Section: Shimul</option>
+                <option value="korobi">Section: Korobi</option>
+                <option value="dahlia">Section: Dahlia</option>
+                <option value="joba">Section: Joba</option>
+                <option value="padma">Section: Padma</option>
+                <option value="palash">Section: Palash</option>
+                <option value="tagor">Section: Tagor</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="genderFilter"><i class="fas fa-venus-mars"></i> Gender</label>
+            <select id="genderFilter" class="styled-select" onchange="applyFilters()">
+                <option value="all">All Genders</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="categoryFilter"><i class="fas fa-tag"></i> Category</label>
+            <select id="categoryFilter" class="styled-select" onchange="applyFilters()">
+                <option value="all">All Categories</option>
+                <option value="Civil">Civil</option>
+                <option value="Military">Military</option>
+                <option value="staff">Staff</option>
+                <option value="Defense">Defense</option>
+                <option value="Military Ret.">Military Ret.</option>
+            </select>
+        </div>
+        
+        <div class="search-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" class="styled-input" placeholder="Search Name, ID, Roll, or Mobile..." onkeyup="applyFilters()">
+        </div>
+        
+        <div class="filter-buttons">
+            <button class="btn btn-secondary" onclick="resetFilters()">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+            <button class="btn btn-primary" onclick="exportToCSV()">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3><i class="fas fa-table"></i> Student Database</h3>
+            <div class="export-buttons">
+                <span class="page-info" id="pageInfo">Showing 0 of 0</span>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table id="mainTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">SL <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(1)">Roll <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(2)">Std. ID <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(3)">Name <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(4)">Gender <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(5)">Category <i class="fas fa-sort"></i></th>
+                        <th onclick="sortTable(6)">Mobile <i class="fas fa-sort"></i></th>
+                        <th>Section</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Rows will be injected here by JS -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <!-- Will be generated by JavaScript -->
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 Cantonment Public School & College, Rangpur</p>
+        <p style="margin-top: 5px; font-size: 0.8rem; color: #aaa;">
+            <i class="fas fa-database"></i> Total Records: <span id="totalRecords">0</span> | 
+            <i class="fas fa-sync-alt"></i> Last Updated: <span id="lastUpdated">Just now</span> |
+            <i class="fas fa-info-circle"></i> <span id="performanceNote">Lower roll numbers indicate better performance</span>
+        </p>
+    </footer>
+</div>
+
+<script>
+    // --- DATABASE (Unchanged - using your exact data) ---
+    const db = {
+        "shapla": {
+            teacher: { name: "Boshir Ahmed", desig: "Assistant Teacher", mobile: "01714540682" },
+            students: [
+                {sl:1, roll:1, id:"014544", name:"Maliha Mashiat Mridula", gender:"Female", cat:"Civil", mobile:"01720436236"},
+                {sl:2, roll:24, id:"014474", name:"Most. Amanna Siddika", gender:"Female", cat:"Civil", mobile:"01717006607"},
+                {sl:3, roll:25, id:"014273", name:"Md. Farhan Tanvir", gender:"Male", cat:"Civil", mobile:"01728859994"},
+                {sl:4, roll:50, id:"019645", name:"Miftahul Jannat Jara", gender:"Female", cat:"Civil", mobile:"01717516727"},
+                {sl:5, roll:51, id:"014226", name:"Most. Sufiun Nurine", gender:"Female", cat:"staff", mobile:"01739090100"},
+                {sl:6, roll:74, id:"014520", name:"Bushra Binta Mahmud", gender:"Female", cat:"Civil", mobile:"01737088279"},
+                {sl:7, roll:75, id:"014396", name:"Evan Afnan", gender:"Male", cat:"Civil", mobile:"01717155506"},
+                {sl:8, roll:99, id:"014326", name:"Nawar Tazkiyah", gender:"Female", cat:"Civil", mobile:"01718585017"},
+                {sl:9, roll:100, id:"014494", name:"Md. Samiul Saim Sakil", gender:"Male", cat:"Civil", mobile:"01718637410"},
+                {sl:10, roll:123, id:"016257", name:"Md. Farhan Sadik", gender:"Male", cat:"Civil", mobile:"01722445233"},
+                {sl:11, roll:124, id:"019601", name:"Yamin Islam Kotha", gender:"Female", cat:"Civil", mobile:"01728200872"},
+                {sl:12, roll:150, id:"019611", name:"Md. Lasiqul Hoque", gender:"Male", cat:"Civil", mobile:"01723746338"},
+                {sl:13, roll:151, id:"019609", name:"Mst. Tanha Ashrafi", gender:"Female", cat:"staff", mobile:"01714566259"},
+                {sl:14, roll:175, id:"014205", name:"Adil Mahmud", gender:"Male", cat:"Civil", mobile:"01781991099"},
+                {sl:15, roll:176, id:"018183", name:"Afra Saiyara", gender:"Female", cat:"Civil", mobile:"01717727176"},
+                {sl:16, roll:200, id:"014655", name:"Md. Fawaz Rumi", gender:"Male", cat:"Civil", mobile:"01716100598"},
+                {sl:17, roll:201, id:"014365", name:"Md. Muntyme Mithun", gender:"Male", cat:"Civil", mobile:"01743208096"},
+                {sl:18, roll:224, id:"014519", name:"Md. Mahmudul Islam", gender:"Male", cat:"staff", mobile:"01935255087"},
+                {sl:19, roll:225, id:"019794", name:"Most. Jannatul Raiyan", gender:"Female", cat:"Civil", mobile:"01713766571"},
+                {sl:20, roll:248, id:"014331", name:"Tahsin Ahmed", gender:"Male", cat:"Civil", mobile:"01716297393"},
+                {sl:21, roll:249, id:"014257", name:"Muhammad Shadman", gender:"Male", cat:"Civil", mobile:"01726340135"},
+                {sl:22, roll:274, id:"014621", name:"Md. Taifuzzaman", gender:"Male", cat:"Civil", mobile:"01722373844"},
+                {sl:23, roll:276, id:"014264", name:"Most. Mahazabin", gender:"Female", cat:"Civil", mobile:"01717545589"},
+                {sl:24, roll:300, id:"014712", name:"M. M. Uzair Ahsan", gender:"Male", cat:"Civil", mobile:"01716373638"},
+                {sl:25, roll:301, id:"014362", name:"M Maliha", gender:"Female", cat:"Civil", mobile:"01744808366"},
+                {sl:26, roll:326, id:"014720", name:"Md. Ahnaf Habib", gender:"Male", cat:"Civil", mobile:"01773895589"},
+                {sl:27, roll:327, id:"014694", name:"Nafiz Mostafiz Arman", gender:"Male", cat:"Civil", mobile:"01792711733"},
+                {sl:28, roll:351, id:"014647", name:"Muhaiminul Islam", gender:"Male", cat:"Defense", mobile:"01743651908"},
+                {sl:29, roll:352, id:"014630", name:"Samiha Tasnim Subha", gender:"Female", cat:"Civil", mobile:"01717524592"},
+                {sl:30, roll:375, id:"016249", name:"Md. Ariyan Tajwar", gender:"Male", cat:"Civil", mobile:"01711450900"},
+                {sl:31, roll:376, id:"014471", name:"Musarat Atik", gender:"Female", cat:"Civil", mobile:"01714928855"},
+                {sl:32, roll:400, id:"014233", name:"Mst. Mohona Ashraf", gender:"Female", cat:"Military", mobile:"01701689448"},
+                {sl:33, roll:401, id:"014389", name:"Md. Mahif Tahmid", gender:"Male", cat:"Civil", mobile:"01751202347"},
+                {sl:34, roll:424, id:"014495", name:"Md. Musab", gender:"Male", cat:"Civil", mobile:"01712530026"},
+                {sl:35, roll:425, id:"014592", name:"Shah Md. Rakat Iftekhar", gender:"Male", cat:"Civil", mobile:"01717372307"},
+                {sl:36, roll:452, id:"014473", name:"Most. Tasnia Wazed Iqra", gender:"Female", cat:"Military Ret.", mobile:"01751197489"},
+                {sl:37, roll:453, id:"014696", name:"Md. Rahikum Makhtum", gender:"Male", cat:"Civil", mobile:"01770631204"},
+                {sl:38, roll:477, id:"016772", name:"Musfika Khanom Tahia", gender:"Female", cat:"Civil", mobile:"01716935817"},
+                {sl:39, roll:478, id:"014350", name:"Shoaib Mahmud Tanvir", gender:"Male", cat:"Military", mobile:"01781384435"},
+                {sl:40, roll:502, id:"018370", name:"Md. Anjam Rashid", gender:"Male", cat:"Military", mobile:"01721542248"},
+                {sl:41, roll:503, id:"014367", name:"Md. Soyaib Hasan", gender:"Male", cat:"Civil", mobile:"01706811183"}
+            ]
+        },
+        "golap": {
+            teacher: { name: "Md. Foyzar Rahaman", desig: "Assistant Teacher", mobile: "01723101923" },
+            students: [
+                {sl:1, roll:2, id:"014203", name:"Md Afnan Baset Raad", gender:"Male", cat:"Civil", mobile:"01710987478"},
+                {sl:2, roll:19, id:"014545", name:"Fariha Jahan", gender:"Female", cat:"staff", mobile:"01716990513"},
+                {sl:3, roll:23, id:"014619", name:"Farhina Jannat Muntaha", gender:"Female", cat:"Civil", mobile:"01722445047"},
+                {sl:4, roll:26, id:"014382", name:"Turfa Tabassum", gender:"Female", cat:"Civil", mobile:"01718421478"},
+                {sl:5, roll:48, id:"014583", name:"Md. Ajmain Jafir", gender:"Male", cat:"Civil", mobile:"01737112472"},
+                {sl:6, roll:52, id:"018146", name:"Md. Amor Mahmud", gender:"Male", cat:"Civil", mobile:"01792675222"},
+                {sl:7, roll:73, id:"014722", name:"Ahanaf Thamid Abir", gender:"Male", cat:"Civil", mobile:"01714926331"},
+                {sl:8, roll:76, id:"018212", name:"Md. Showaib Jaman", gender:"Male", cat:"Civil", mobile:"01750699752"},
+                {sl:9, roll:98, id:"014613", name:"Tahtihal Anhar", gender:"Female", cat:"Civil", mobile:"01711152127"},
+                {sl:10, roll:101, id:"016222", name:"Saniya Jahan Sara", gender:"Female", cat:"Civil", mobile:"01725547215"},
+                {sl:11, roll:122, id:"019600", name:"Manha Tazmin", gender:"Female", cat:"Civil", mobile:"01748917575"},
+                {sl:12, roll:125, id:"014669", name:"Lubaina Siddiquee", gender:"Female", cat:"Civil", mobile:"01715594727"},
+                {sl:13, roll:148, id:"019591", name:"Mst. Arabi Almas", gender:"Female", cat:"Military", mobile:"01718745664"},
+                {sl:14, roll:152, id:"012920", name:"Most. Safana Sayem", gender:"Female", cat:"Civil", mobile:"01716207876"},
+                {sl:15, roll:174, id:"018142", name:"Md. Sani Al Aynan", gender:"Male", cat:"Military", mobile:"01738175450"},
+                {sl:16, roll:177, id:"014370", name:"Md. Mahinur Jahan", gender:"Male", cat:"Civil", mobile:"01723654914"},
+                {sl:17, roll:199, id:"014516", name:"Mrs. Anisa Tabassum", gender:"Female", cat:"Military", mobile:"01732056715"},
+                {sl:18, roll:202, id:"019801", name:"Md. Labib Faisal", gender:"Male", cat:"Civil", mobile:"01719860059"},
+                {sl:19, roll:223, id:"014278", name:"RADWAH RAZZAK", gender:"Female", cat:"Civil", mobile:"01716404551"},
+                {sl:20, roll:226, id:"014546", name:"Most. Asfia Siddique", gender:"Female", cat:"Military", mobile:"01728719810"},
+                {sl:21, roll:247, id:"015459", name:"Sidratul Muntaha", gender:"Female", cat:"Military", mobile:"01738616106"},
+                {sl:22, roll:250, id:"014565", name:"Md. Redowan Bin", gender:"Male", cat:"staff", mobile:"01712850423"},
+                {sl:23, roll:273, id:"014554", name:"Arrisha Khan", gender:"Female", cat:"Civil", mobile:"01715650834"},
+                {sl:24, roll:277, id:"014665", name:"Raisha Azom Toha", gender:"Female", cat:"Civil", mobile:"01733742945"},
+                {sl:25, roll:299, id:"019642", name:"Nazia Saiyara Afrida", gender:"Female", cat:"Civil", mobile:"01715661014"},
+                {sl:26, roll:302, id:"014258", name:"Md. Afif Aiman Reza", gender:"Male", cat:"Civil", mobile:"01714537346"},
+                {sl:27, roll:325, id:"014338", name:"Saba Moontaha", gender:"Female", cat:"Civil", mobile:"01716504315"},
+                {sl:28, roll:328, id:"014662", name:"Afia Ibnat", gender:"Female", cat:"Civil", mobile:"01744974823"},
+                {sl:29, roll:350, id:"014452", name:"Md. Shifat Al Nishan", gender:"Male", cat:"Civil", mobile:"01721701011"},
+                {sl:30, roll:353, id:"014515", name:"Jannatun Nowmi", gender:"Female", cat:"Civil", mobile:"01716365632"},
+                {sl:31, roll:374, id:"019744", name:"Mst. Taskiya Akter", gender:"Female", cat:"Military", mobile:"01740390905"},
+                {sl:32, roll:377, id:"014678", name:"H. M Sindid Walif", gender:"Male", cat:"Civil", mobile:"01717545832"},
+                {sl:33, roll:399, id:"012963", name:"Md. Sabit ALam Raian", gender:"Male", cat:"Civil", mobile:"01738091423"},
+                {sl:34, roll:402, id:"014240", name:"Md. Sad Al Soad", gender:"Male", cat:"Civil", mobile:"01735399666"},
+                {sl:35, roll:423, id:"014728", name:"Samiha Takia Sultana", gender:"Female", cat:"Civil", mobile:"01715468855"},
+                {sl:36, roll:426, id:"018354", name:"Naziha Tasnim", gender:"Female", cat:"Civil", mobile:"01716194814"},
+                {sl:37, roll:451, id:"014484", name:"Tuasa Ira Suha", gender:"Female", cat:"Military", mobile:"01708371178"},
+                {sl:38, roll:454, id:"014526", name:"Sidratul Muntaha Tuba", gender:"Female", cat:"Civil", mobile:"01716116558"},
+                {sl:39, roll:476, id:"018247", name:"Humaira Binte Hasan", gender:"Female", cat:"Civil", mobile:"01740282671"},
+                {sl:40, roll:479, id:"014336", name:"Md. Shahdin Sadat", gender:"Male", cat:"Civil", mobile:"01742533766"},
+                {sl:41, roll:501, id:"018137", name:"Rukaiya Jannat", gender:"Female", cat:"Military", mobile:"01719516030"},
+                {sl:42, roll:504, id:"014394", name:"Md. Arham Chowdhury", gender:"Male", cat:"Military", mobile:"01715749465"}
+            ]
+        },
+        "jui": {
+            teacher: { name: "Md. Rabbakul Islam", desig: "Senior Teacher", mobile: "01721765261" },
+            students: [
+                {sl:1, roll:3, id:"014511", name:"Lanika Mahreen (Hiya)", gender:"Female", cat:"Civil", mobile:"01716225828"},
+                {sl:2, roll:22, id:"019624", name:"Apsora Ferdous", gender:"Female", cat:"Civil", mobile:"01722801319"},
+                {sl:3, roll:27, id:"018150", name:"Md. Kamrul Hasan", gender:"Male", cat:"Military", mobile:"01721613189"},
+                {sl:4, roll:31, id:"014267", name:"Purnota Karmaker", gender:"Female", cat:"Civil", mobile:"01717269046"},
+                {sl:5, roll:47, id:"019626", name:"Md. Yanur", gender:"Male", cat:"Civil", mobile:"01726937793"},
+                {sl:6, roll:53, id:"014616", name:"Mst. Afsana Islam", gender:"Female", cat:"Military", mobile:"01750764808"},
+                {sl:7, roll:72, id:"014736", name:"Most. Redaka Jannat", gender:"Female", cat:"Civil", mobile:"01712892109"},
+                {sl:8, roll:77, id:"014680", name:"Md. Ayman Siyan", gender:"Male", cat:"Civil", mobile:"01712558219"},
+                {sl:9, roll:97, id:"014597", name:"Kazi Md. Masruf Towhid", gender:"Male", cat:"Military", mobile:"01719402230"},
+                {sl:10, roll:102, id:"018147", name:"MST. SABIHA JANNAT", gender:"Female", cat:"Civil", mobile:"01780994759"},
+                {sl:11, roll:121, id:"014415", name:"Sumaiya Shafique", gender:"Female", cat:"Civil", mobile:"01728235223"},
+                {sl:12, roll:126, id:"019607", name:"Md.Tamjid Hasan", gender:"Male", cat:"Civil", mobile:"01704198321"},
+                {sl:13, roll:138, id:"014584", name:"Dipta Ghosh", gender:"Female", cat:"Civil", mobile:"01719514626"},
+                {sl:14, roll:139, id:"014617", name:"Tarasa Mahanta", gender:"Female", cat:"Civil", mobile:"01716919759"},
+                {sl:15, roll:147, id:"014487", name:"Maisha Tasmim", gender:"Female", cat:"Civil", mobile:"01712614516"},
+                {sl:16, roll:153, id:"018181", name:"Mst. Nuzhat Tahsin", gender:"Female", cat:"Civil", mobile:"01717589870"},
+                {sl:17, roll:173, id:"014218", name:"Nushrat Jahan", gender:"Female", cat:"Military", mobile:"01728338903"},
+                {sl:18, roll:178, id:"014663", name:"Raisha Tasfia", gender:"Female", cat:"Civil", mobile:"01712614516"},
+                {sl:19, roll:194, id:"014477", name:"Ankur Biswas", gender:"Male", cat:"Civil", mobile:"01722079205"},
+                {sl:20, roll:198, id:"014337", name:"Sumaiya Islam", gender:"Female", cat:"Civil", mobile:"01713006112"},
+                {sl:21, roll:203, id:"014253", name:"Ishraq Bin Mazed", gender:"Male", cat:"Defense", mobile:"01718910019"},
+                {sl:22, roll:222, id:"014650", name:"Ahmad Noor Adib", gender:"Male", cat:"Civil", mobile:"01712078474"},
+                {sl:23, roll:227, id:"021641", name:"Maliha Zannat Purnota", gender:"Female", cat:"Civil", mobile:"01712653740"},
+                {sl:24, roll:246, id:"018225", name:"Adiba Nujhan", gender:"Female", cat:"Civil", mobile:"01997373928"},
+                {sl:25, roll:251, id:"014230", name:"Md. Sayan Adib", gender:"Male", cat:"Civil", mobile:"01710526808"},
+                {sl:26, roll:259, id:"014475", name:"Dibbojyoti Roy", gender:"Male", cat:"Civil", mobile:"01710141520"},
+                {sl:27, roll:278, id:"021034", name:"Mst. Sumaiya Jahan", gender:"Female", cat:"Military", mobile:"01769099050"},
+                {sl:28, roll:279, id:"014703", name:"Shreyoshi Das", gender:"Female", cat:"Civil", mobile:"01725431393"},
+                {sl:29, roll:284, id:"018184", name:"Md. Aiman Israk", gender:"Male", cat:"Civil", mobile:"01719207855"},
+                {sl:30, roll:295, id:"014295", name:"Muktadir Anam", gender:"Male", cat:"Civil", mobile:"01555040593"},
+                {sl:31, roll:298, id:"014470", name:"Shefa Mostafa Kathrin", gender:"Female", cat:"Civil", mobile:"01716054199"},
+                {sl:32, roll:303, id:"021011", name:"Samira Tabassum Saba", gender:"Female", cat:"Military", mobile:"01718280820"},
+                {sl:33, roll:307, id:"022923", name:"Abantika Chatterjee", gender:"Female", cat:"Civil", mobile:"01717413699"},
+                {sl:34, roll:322, id:"014534", name:"Diganta Kundu", gender:"Male", cat:"staff", mobile:"01971334664"},
+                {sl:35, roll:324, id:"014581", name:"Raiyan Hossain", gender:"Male", cat:"Civil", mobile:"01744327200"},
+                {sl:36, roll:329, id:"018145", name:"Rakin Nawaz Talukdar", gender:"Male", cat:"Civil", mobile:"01718324962"},
+                {sl:37, roll:349, id:"014297", name:"Faieza Hossain", gender:"Female", cat:"Civil", mobile:"01717316286"},
+                {sl:38, roll:354, id:"014518", name:"Mostafa Tahrim Foysal", gender:"Male", cat:"Civil", mobile:"01794002142"},
+                {sl:39, roll:373, id:"014289", name:"Ahrar Faiaz", gender:"Male", cat:"Civil", mobile:"01712607007"},
+                {sl:40, roll:378, id:"014428", name:"Ashfia Marjana", gender:"Female", cat:"Civil", mobile:"01718041773"},
+                {sl:41, roll:388, id:"014304", name:"Priozit Sarker Bishal", gender:"Male", cat:"Civil", mobile:"01710141449"},
+                {sl:42, roll:398, id:"014668", name:"Abrar Lazim", gender:"Male", cat:"Civil", mobile:"01797706565"},
+                {sl:43, roll:403, id:"019846", name:"Zaima Hayat Jim", gender:"Female", cat:"staff", mobile:"01784994884"},
+                {sl:44, roll:419, id:"014671", name:"Aradhyajid Sarkar", gender:"Female", cat:"Civil", mobile:"01733968606"},
+                {sl:45, roll:448, id:"014628", name:"Parijat Barman", gender:"Male", cat:"Civil", mobile:"01315231148"},
+                {sl:46, roll:449, id:"014659", name:"Humayra Kabir Nuhi", gender:"Female", cat:"Military", mobile:"01708114441"},
+                {sl:47, roll:450, id:"014310", name:"Mst. Rawjatul Jannat", gender:"Female", cat:"Civil", mobile:"01717643699"},
+                {sl:48, roll:455, id:"014302", name:"Raisa Jannat", gender:"Female", cat:"Civil", mobile:"01738052277"},
+                {sl:49, roll:500, id:"018152", name:"Farhiz Mejba", gender:"Male", cat:"Civil", mobile:"01750994042"},
+                {sl:50, roll:505, id:"022927", name:"Md. Robayet Islam", gender:"Male", cat:"Civil", mobile:"01716532603"}
+            ]
+        },
+        "belly": {
+            teacher: { name: "Md. Zabed Ali", desig: "Assistant Teacher", mobile: "01710489999" },
+            students: [
+                {sl:1, roll:4, id:"014384", name:"Tawsif Ebne Harun", gender:"Male", cat:"Civil", mobile:"01716251552"},
+                {sl:2, roll:21, id:"018170", name:"Fatima Tasnuva", gender:"Female", cat:"Civil", mobile:"01717450848"},
+                {sl:3, roll:28, id:"014343", name:"Abdul Mohimen", gender:"Male", cat:"Civil", mobile:"01765916899"},
+                {sl:4, roll:46, id:"013077", name:"Most. Muntaha Khatun", gender:"Female", cat:"Civil", mobile:"01722026424"},
+                {sl:5, roll:54, id:"014661", name:"Nashita Nowshin Islam", gender:"Female", cat:"Civil", mobile:"01741462323"},
+                {sl:6, roll:71, id:"014729", name:"Ariba Zaman", gender:"Female", cat:"Civil", mobile:"01717878685"},
+                {sl:7, roll:78, id:"014492", name:"Md. Musfiq Alahi Abid", gender:"Male", cat:"Civil", mobile:"01704365818"},
+                {sl:8, roll:96, id:"014371", name:"Md. Suad Prodhan Sun", gender:"Male", cat:"Civil", mobile:"01773585634"},
+                {sl:9, roll:103, id:"019648", name:"Tanjim Tahosib Rohan", gender:"Male", cat:"Civil", mobile:"01719556705"},
+                {sl:10, roll:120, id:"014607", name:"Rakib Ahmed Labib", gender:"Male", cat:"Civil", mobile:"01737569788"},
+                {sl:11, roll:127, id:"019745", name:"Enan Mustakim Arni", gender:"Female", cat:"Civil", mobile:"01687482066"},
+                {sl:12, roll:146, id:"018175", name:"Md. Sadiq-Al-Muntasir", gender:"Male", cat:"Civil", mobile:"01708920005"},
+                {sl:13, roll:155, id:"014432", name:"Md. Abu Sayed", gender:"Male", cat:"Military", mobile:"01743093559"},
+                {sl:14, roll:172, id:"014298", name:"Samiya Islam", gender:"Female", cat:"Civil", mobile:"01719208578"},
+                {sl:15, roll:197, id:"014713", name:"Most. Maria Tasnim", gender:"Female", cat:"Civil", mobile:"01717288505"},
+                {sl:16, roll:204, id:"019770", name:"Md. Abdullah-Al-Wyasif", gender:"Male", cat:"Military Ret.", mobile:"01734898691"},
+                {sl:17, roll:221, id:"014749", name:"Muheeb Mahmud", gender:"Male", cat:"Civil", mobile:"01712204526"},
+                {sl:18, roll:228, id:"014481", name:"Sidratul Muntaha", gender:"Female", cat:"Civil", mobile:"01737642224"},
+                {sl:19, roll:245, id:"014368", name:"Sumaia", gender:"Female", cat:"Civil", mobile:"01753020690"},
+                {sl:20, roll:252, id:"018173", name:"Mihir Rahi", gender:"Male", cat:"Civil", mobile:"01718105311"},
+                {sl:21, roll:271, id:"014464", name:"Nikita Noman", gender:"Female", cat:"Civil", mobile:"01716736754"},
+                {sl:22, roll:280, id:"014667", name:"Marium Maimuna Heya", gender:"Female", cat:"Civil", mobile:"01711155234"},
+                {sl:23, roll:297, id:"018178", name:"Ahmed Ashhab Adro", gender:"Male", cat:"Civil", mobile:"01723421427"},
+                {sl:24, roll:304, id:"014366", name:"Md. Arham Uz Zaman", gender:"Male", cat:"Civil", mobile:"01712695311"},
+                {sl:25, roll:323, id:"014959", name:"H. M Salman Rashik", gender:"Male", cat:"Civil", mobile:"01762132222"},
+                {sl:26, roll:330, id:"018201", name:"Md. Nafis Niyaz", gender:"Male", cat:"Civil", mobile:"01736962394"},
+                {sl:27, roll:348, id:"021031", name:"Mst. Suraiya Jahan", gender:"Female", cat:"Military", mobile:"01769099050"},
+                {sl:28, roll:355, id:"018281", name:"Md. Mutasim Hasan", gender:"Male", cat:"Military", mobile:"01733553844"},
+                {sl:29, roll:372, id:"014412", name:"Khandoker Fahham", gender:"Male", cat:"Civil", mobile:"01716146775"},
+                {sl:30, roll:379, id:"014582", name:"Rayan Islam", gender:"Male", cat:"Civil", mobile:"01711020045"},
+                {sl:31, roll:397, id:"014426", name:"Mariam Subha Alam", gender:"Female", cat:"Civil", mobile:"01724722378"},
+                {sl:32, roll:404, id:"018185", name:"Most. Afiya Siddiqua", gender:"Female", cat:"Civil", mobile:"01784087277"},
+                {sl:33, roll:421, id:"019586", name:"Hafsa Jannati Mushfika", gender:"Female", cat:"Civil", mobile:"01720436460"},
+                {sl:34, roll:428, id:"014401", name:"Sadia Tasnim Suchona", gender:"Female", cat:"Civil", mobile:"01722080104"},
+                {sl:35, roll:447, id:"014333", name:"Most. Sadika Tabassum", gender:"Female", cat:"Civil", mobile:"01843803040"},
+                {sl:36, roll:456, id:"014449", name:"Nohor-A-Kawser", gender:"Female", cat:"Civil", mobile:"01728911815"},
+                {sl:37, roll:474, id:"014585", name:"A.K.M Samiul Kadir", gender:"Male", cat:"Civil", mobile:"01719710680"},
+                {sl:38, roll:482, id:"014503", name:"Ahmed lajbir Lahm", gender:"Male", cat:"Civil", mobile:"01717062303"},
+                {sl:39, roll:499, id:"014403", name:"Al Wasee Efti Khan", gender:"Male", cat:"Civil", mobile:"01744407408"},
+                {sl:40, roll:506, id:"014209", name:"Nuhan Bin Arafat", gender:"Male", cat:"Civil", mobile:"01734137018"}
+            ]
+        },
+        "bokul": {
+            teacher: { name: "Shah Abu Sayed", desig: "Assistant Teacher", mobile: "01712495034" },
+            students: [
+                {sl:1, roll:5, id:"019632", name:"Fariha Tanjim Ridita", gender:"Female", cat:"Civil", mobile:"01717496470"},
+                {sl:2, roll:20, id:"014622", name:"Rupkatha", gender:"Female", cat:"Civil", mobile:"01712764743"},
+                {sl:3, roll:29, id:"014670", name:"Mahiya Islam Mahee", gender:"Female", cat:"Military", mobile:"01735830449"},
+                {sl:4, roll:45, id:"014679", name:"Taufika Tabassum", gender:"Female", cat:"Civil", mobile:"01762964857"},
+                {sl:5, roll:55, id:"014636", name:"A K M Fatema Tuj Johra", gender:"Female", cat:"Civil", mobile:"01717006245"},
+                {sl:6, roll:70, id:"014425", name:"Mashiat Mahzabeen", gender:"Female", cat:"Civil", mobile:"01720993011"},
+                {sl:7, roll:79, id:"014618", name:"Taseen Taiyeba", gender:"Female", cat:"Civil", mobile:"01722982690"},
+                {sl:8, roll:95, id:"014529", name:"A. K. M. Mutammin Faad", gender:"Male", cat:"Civil", mobile:"01718429594"},
+                {sl:9, roll:104, id:"014225", name:"Tafseran Annha Binte", gender:"Female", cat:"Civil", mobile:"01784031868"},
+                {sl:10, roll:119, id:"021033", name:"Md. Niamul Islam Naim", gender:"Male", cat:"Military", mobile:"01769099050"},
+                {sl:11, roll:128, id:"014308", name:"Abdullah Al Rifat", gender:"Male", cat:"Civil", mobile:"01718666335"},
+                {sl:12, roll:145, id:"018191", name:"Wazin Tasnif", gender:"Male", cat:"Civil", mobile:"01737471072"},
+                {sl:13, roll:156, id:"018135", name:"Md. Rafid Ahanaf Aman", gender:"Male", cat:"Civil", mobile:"01724511586"},
+                {sl:14, roll:171, id:"014466", name:"Tawsik Marzuk Haque", gender:"Male", cat:"Civil", mobile:"01730724179"},
+                {sl:15, roll:180, id:"014204", name:"Labiba Murshid", gender:"Female", cat:"Civil", mobile:"01722774089"},
+                {sl:16, roll:196, id:"014648", name:"Ash Sharzeal", gender:"Male", cat:"Defense", mobile:"01740155347"},
+                {sl:17, roll:205, id:"014609", name:"Yousha Shahirah Anuva", gender:"Female", cat:"Civil", mobile:"01726099677"},
+                {sl:18, roll:220, id:"019589", name:"Tanzil Muztahid Snigdho", gender:"Male", cat:"Civil", mobile:"01716390522"},
+                {sl:19, roll:229, id:"014693", name:"Md. Farhan Kabir Ayan", gender:"Male", cat:"Civil", mobile:"01712567634"},
+                {sl:20, roll:244, id:"018249", name:"Md. Muhtasim Mahin", gender:"Male", cat:"Civil", mobile:"01747804069"},
+                {sl:21, roll:253, id:"018169", name:"Fatiha Jannat Safa", gender:"Female", cat:"Civil", mobile:"01722915232"},
+                {sl:22, roll:269, id:"014538", name:"Mehrak Turshin", gender:"Female", cat:"staff", mobile:"01716193388"},
+                {sl:23, roll:272, id:"014562", name:"Adiba Ulfat Arpa", gender:"Female", cat:"staff", mobile:"01712338748"},
+                {sl:24, roll:281, id:"014521", name:"Umma Mahajabin", gender:"Female", cat:"Military", mobile:"01744972369"},
+                {sl:25, roll:296, id:"014433", name:"Md. Ahasan Masuk", gender:"Male", cat:"Civil", mobile:"01723250364"},
+                {sl:26, roll:305, id:"014627", name:"Md. Adib Sani", gender:"Male", cat:"Military", mobile:"01704405057"},
+                {sl:27, roll:321, id:"014299", name:"Asfia Jannat", gender:"Female", cat:"Civil", mobile:"01710049357"},
+                {sl:28, roll:331, id:"014642", name:"Tasbiha Tasmim Biva", gender:"Female", cat:"Military", mobile:"01553737050"},
+                {sl:29, roll:347, id:"018134", name:"Md. Sefat Rahman", gender:"Male", cat:"Civil", mobile:"01722696493"},
+                {sl:30, roll:356, id:"014682", name:"Shamin Yasab Shahadat", gender:"Male", cat:"Civil", mobile:"01786949970"},
+                {sl:31, roll:371, id:"018153", name:"Sabir Ahnaf", gender:"Male", cat:"Civil", mobile:"01903628035"},
+                {sl:32, roll:380, id:"018210", name:"Nafisa Islam Nuba", gender:"Female", cat:"Civil", mobile:"01714819447"},
+                {sl:33, roll:396, id:"014360", name:"Mahanoor Sultana", gender:"Female", cat:"Civil", mobile:"01711952426"},
+                {sl:34, roll:405, id:"014285", name:"Sidratul Muntaha", gender:"Female", cat:"Civil", mobile:"01748924800"},
+                {sl:35, roll:420, id:"014332", name:"Afratojjahan Shek Inna", gender:"Female", cat:"Civil", mobile:"01741002772"},
+                {sl:36, roll:422, id:"014282", name:"Nafisa Ayman", gender:"Female", cat:"Civil", mobile:"01914929159"},
+                {sl:37, roll:427, id:"014467", name:"Nusfia", gender:"Female", cat:"Civil", mobile:"01723863337"},
+                {sl:38, roll:429, id:"014625", name:"Md. Lam Hosain", gender:"Male", cat:"Civil", mobile:"01716073731"},
+                {sl:39, roll:442, id:"014539", name:"Md. Momin Islam", gender:"Male", cat:"staff", mobile:"01762808248"},
+                {sl:40, roll:446, id:"014440", name:"Mst. Tasfia Tabassum", gender:"Female", cat:"Civil", mobile:"01750877792"},
+                {sl:41, roll:457, id:"014443", name:"Mubashsira Alam", gender:"Female", cat:"Civil", mobile:"01701919022"},
+                {sl:42, roll:473, id:"014654", name:"Abdullah Islam", gender:"Male", cat:"Civil", mobile:"01735979598"},
+                {sl:43, roll:483, id:"014556", name:"BM Masroor Mahdi", gender:"Male", cat:"Military", mobile:"01710651454"},
+                {sl:44, roll:498, id:"014672", name:"Md. Ahnaf Fayak", gender:"Male", cat:"Military", mobile:"01799510129"},
+                {sl:45, roll:507, id:"014409", name:"Md. Sakib Hasan Moon", gender:"Male", cat:"Civil", mobile:"01725043085"}
+            ]
+        },
+        "shimul": {
+            teacher: { name: "Md. Abul Kalam", desig: "Senior Teacher", mobile: "01714604893" },
+            students: [
+                {sl:1, roll:6, id:"018177", name:"Ahnaf Naser Siam", gender:"Male", cat:"Civil", mobile:"01717291588"},
+                {sl:2, roll:30, id:"019623", name:"Fiha Tahiat", gender:"Female", cat:"Civil", mobile:"01710867630"},
+                {sl:3, roll:44, id:"019885", name:"Md. Ahesan Mahmud", gender:"Male", cat:"Military", mobile:"01717971990"},
+                {sl:4, roll:56, id:"014555", name:"Wafia Yeamina Subah", gender:"Female", cat:"Civil", mobile:"01717545283"},
+                {sl:5, roll:69, id:"014405", name:"Zeenat Zafrin", gender:"Female", cat:"Civil", mobile:"01716101217"},
+                {sl:6, roll:81, id:"014395", name:"Aysha Binte Redowan", gender:"Female", cat:"Civil", mobile:"01863125733"},
+                {sl:7, roll:94, id:"019630", name:"Muhtasim Fahmid", gender:"Male", cat:"Civil", mobile:"01718483957"},
+                {sl:8, roll:105, id:"018180", name:"Md. Shuayeeb Al Wafi", gender:"Male", cat:"Civil", mobile:"01795870262"},
+                {sl:9, roll:118, id:"014284", name:"Mst. Anika Nawar", gender:"Female", cat:"Civil", mobile:"01765969373"},
+                {sl:10, roll:129, id:"014404", name:"Tasnuva Ahona", gender:"Female", cat:"Civil", mobile:"01736962829"},
+                {sl:11, roll:144, id:"014574", name:"Niyaf Islam", gender:"Male", cat:"Civil", mobile:"01716675772"},
+                {sl:12, roll:157, id:"014686", name:"Most. Afiath Akter", gender:"Female", cat:"Military", mobile:"01738238676"},
+                {sl:13, roll:170, id:"014442", name:"Md. Fiyad Rahman", gender:"Male", cat:"Civil", mobile:"01866960419"},
+                {sl:14, roll:181, id:"014656", name:"Syed Ahmad Tazwar", gender:"Male", cat:"Civil", mobile:"01718505336"},
+                {sl:15, roll:195, id:"019654", name:"Ahnaf Monim Mugdho", gender:"Male", cat:"Civil", mobile:"01712570669"},
+                {sl:16, roll:206, id:"014587", name:"Afiyah Maveen Zaara", gender:"Female", cat:"Civil", mobile:"01884863039"},
+                {sl:17, roll:219, id:"014341", name:"Subha Islam Suha", gender:"Female", cat:"Civil", mobile:"01717715972"},
+                {sl:18, roll:230, id:"014566", name:"Most. Joye Aktar", gender:"Female", cat:"Military", mobile:"01723464191"},
+                {sl:19, roll:243, id:"018186", name:"Rafsan Ayan Chowdhury", gender:"Male", cat:"Civil", mobile:"01757181917"},
+                {sl:20, roll:254, id:"014223", name:"Md. Arham Hossain", gender:"Male", cat:"Civil", mobile:"01749030051"},
+                {sl:21, roll:268, id:"014532", name:"Md. Shadakat Shayan", gender:"Male", cat:"Civil", mobile:"01721821600"},
+                {sl:22, roll:282, id:"019635", name:"Jarin Anjum Pranty", gender:"Female", cat:"Civil", mobile:"01714774948"},
+                {sl:23, roll:306, id:"014606", name:"Mashiat Afroj Soha", gender:"Female", cat:"Civil", mobile:"01716929156"},
+                {sl:24, roll:320, id:"014417", name:"Miss Fahmida Tasnim", gender:"Female", cat:"Civil", mobile:"01719245080"},
+                {sl:25, roll:332, id:"014441", name:"Md. Fahmid Hasan", gender:"Male", cat:"Civil", mobile:"01718917160"},
+                {sl:26, roll:345, id:"019643", name:"Zaisha Akter", gender:"Female", cat:"Civil", mobile:"01704248718"},
+                {sl:27, roll:357, id:"014637", name:"Most. Sidratul Muntaha", gender:"Female", cat:"Military", mobile:"01746949020"},
+                {sl:28, roll:370, id:"018129", name:"Md. Samin Almas Sajid", gender:"Male", cat:"Civil", mobile:"01750583047"},
+                {sl:29, roll:381, id:"014374", name:"Mishkatun Jannat Sara", gender:"Female", cat:"Civil", mobile:"01764979792"},
+                {sl:30, roll:395, id:"021035", name:"Golam Mostafiz", gender:"Male", cat:"Military", mobile:"01777582181"},
+                {sl:31, roll:406, id:"014723", name:"Md. Amin Islam", gender:"Male", cat:"Military", mobile:"01719915616"},
+                {sl:32, roll:418, id:"014646", name:"Sahama Sarwar", gender:"Female", cat:"Civil", mobile:"01750478649"},
+                {sl:33, roll:431, id:"018197", name:"Abdulla Al Zarir", gender:"Male", cat:"Civil", mobile:"01717268668"},
+                {sl:34, roll:445, id:"014701", name:"Marzuk Hasan", gender:"Male", cat:"Civil", mobile:"01714722823"},
+                {sl:35, roll:458, id:"014641", name:"Raian Ahmed Farabi", gender:"Male", cat:"Civil", mobile:"01713727095"},
+                {sl:36, roll:472, id:"014372", name:"Syeda Tahmida Ferdaus", gender:"Female", cat:"Civil", mobile:"01734220270"},
+                {sl:37, roll:475, id:"014673", name:"Md. Saif Hasan Sun", gender:"Male", cat:"Civil", mobile:"01725043085"},
+                {sl:38, roll:480, id:"018209", name:"Nasin Mahzabin", gender:"Female", cat:"Civil", mobile:"01717888316"},
+                {sl:39, roll:484, id:"014593", name:"Most. Sahariya Jahan", gender:"Female", cat:"Military", mobile:"01762903535"},
+                {sl:40, roll:497, id:"014478", name:"Tasnim Akhter (Mahi)", gender:"Female", cat:"Civil", mobile:"01712169387"},
+                {sl:41, roll:508, id:"014711", name:"Maliha Tasmin (Rushda)", gender:"Female", cat:"Civil", mobile:"01737389840"}
+            ]
+        },
+        "korobi": {
+            teacher: { name: "Sunil Kumar Sarker", desig: "Senior Teacher", mobile: "01718542962" },
+            students: [
+                {sl:1, roll:7, id:"019628", name:"Most. Sumaya Sarker", gender:"Female", cat:"Civil", mobile:"01707148337"},
+                {sl:2, roll:18, id:"014465", name:"Mahi Albar", gender:"Male", cat:"Civil", mobile:"01717791097"},
+                {sl:3, roll:32, id:"014238", name:"Syeda Maisha Mehzabin", gender:"Female", cat:"Civil", mobile:"01719038708"},
+                {sl:4, roll:43, id:"018182", name:"Nuyara Salsabil", gender:"Female", cat:"Civil", mobile:"01993653104"},
+                {sl:5, roll:57, id:"018220", name:"Naveen Awsaf", gender:"Male", cat:"Civil", mobile:"01716130408"},
+                {sl:6, roll:68, id:"018223", name:"Arfia Shanom", gender:"Female", cat:"Civil", mobile:"01721517917"},
+                {sl:7, roll:82, id:"018189", name:"Nahid Hasan Rahim", gender:"Male", cat:"Military", mobile:"01842613523"},
+                {sl:8, roll:93, id:"019881", name:"Sadman Shaharer", gender:"Male", cat:"Military", mobile:"01728877590"},
+                {sl:9, roll:106, id:"019637", name:"Rafaiya Rashmin", gender:"Female", cat:"Civil", mobile:"01713028244"},
+                {sl:10, roll:117, id:"019650", name:"Md. Al-Anfal", gender:"Male", cat:"Civil", mobile:"01878357451"},
+                {sl:11, roll:130, id:"014454", name:"Dhanjit Ghosh", gender:"Male", cat:"Civil", mobile:"01884740615"},
+                {sl:12, roll:143, id:"015557", name:"Rakin Reza", gender:"Male", cat:"Civil", mobile:"01759594334"},
+                {sl:13, roll:158, id:"019588", name:"Abdullah Saad", gender:"Male", cat:"Civil", mobile:"01719041773"},
+                {sl:14, roll:169, id:"014612", name:"Most. Shidratul Muntaha", gender:"Female", cat:"Military", mobile:"01621609860"},
+                {sl:15, roll:182, id:"014263", name:"Md. Rahib Ibsar", gender:"Male", cat:"Civil", mobile:"01710995333"},
+                {sl:16, roll:193, id:"014348", name:"AHNAF EHAN", gender:"Male", cat:"Civil", mobile:"01863300130"},
+                {sl:17, roll:207, id:"018202", name:"Habiba Mehjabin", gender:"Female", cat:"Civil", mobile:"01717678608"},
+                {sl:18, roll:218, id:"014726", name:"Nawshin Tabassum", gender:"Female", cat:"Civil", mobile:"01718933819"},
+                {sl:19, roll:231, id:"014215", name:"Yashna Yousuf", gender:"Female", cat:"Civil", mobile:"01719002341"},
+                {sl:20, roll:242, id:"014596", name:"Abida Lubaba", gender:"Female", cat:"Civil", mobile:"01717229949"},
+                {sl:21, roll:255, id:"019620", name:"Abrar Alam Adib", gender:"Male", cat:"Civil", mobile:"01716061452"},
+                {sl:22, roll:267, id:"014305", name:"Most. Zabiah Zarif", gender:"Female", cat:"Civil", mobile:"01719542877"},
+                {sl:23, roll:283, id:"014956", name:"Eusha Sadik Khan", gender:"Male", cat:"Civil", mobile:"01719545285"},
+                {sl:24, roll:294, id:"014571", name:"Mohammad Muttaqj", gender:"Male", cat:"Civil", mobile:"01723857300"},
+                {sl:25, roll:308, id:"014666", name:"Sadika Subah", gender:"Female", cat:"Civil", mobile:"01718634311"},
+                {sl:26, roll:319, id:"014552", name:"Md. Mahib Hasan", gender:"Male", cat:"Military", mobile:"01728491815"},
+                {sl:27, roll:333, id:"014649", name:"Shariqa Mahzuza Riniq", gender:"Female", cat:"Civil", mobile:"01712171060"},
+                {sl:28, roll:344, id:"018131", name:"Rubaba Tasnim Snigdha", gender:"Female", cat:"Military", mobile:"01726593895"},
+                {sl:29, roll:358, id:"018204", name:"Md. Irfan Sadik Simul", gender:"Male", cat:"Military", mobile:"01750650824"},
+                {sl:30, roll:369, id:"018227", name:"Mst. Tasfin Jahan Khan", gender:"Female", cat:"Civil", mobile:"01738735476"},
+                {sl:31, roll:382, id:"014486", name:"Md. Samsuddin", gender:"Male", cat:"Civil", mobile:"01971920690"},
+                {sl:32, roll:394, id:"019790", name:"Sadik Bin Atik", gender:"Male", cat:"Military", mobile:"01715949983"},
+                {sl:33, roll:407, id:"014715", name:"Maimuna Madhurjo", gender:"Female", cat:"Civil", mobile:"01725547088"},
+                {sl:34, roll:432, id:"014675", name:"Mahabi Mostofa", gender:"Male", cat:"Civil", mobile:"01784999989"},
+                {sl:35, roll:444, id:"014422", name:"Most. Hiyanta Aktar Hiya", gender:"Female", cat:"staff", mobile:"01798933253"},
+                {sl:36, roll:459, id:"019619", name:"Md. Abid Almach", gender:"Male", cat:"Military", mobile:"01314298135"},
+                {sl:37, roll:471, id:"022807", name:"Md. Rafi Bin Mahabub", gender:"Male", cat:"Military", mobile:"01744513066"},
+                {sl:38, roll:496, id:"014714", name:"Md. Mostak Mozahid", gender:"Male", cat:"Military", mobile:"01753569063"},
+                {sl:39, roll:509, id:"014221", name:"Saif Al Nahyan", gender:"Male", cat:"Civil", mobile:"01712009508"},
+                {sl:40, roll:514, id:"014387", name:"Md. Kamruzzaman", gender:"Male", cat:"Military", mobile:"01725618280"}
+            ]
+        }, // করবী সেকশন শেষ হওয়ার পর এই কমা (,) দিতে ভুলবেন না
+        "dahlia": {
+            teacher: { name: "Md. Ziaur Rahman Zia", desig: "Senior Teacher", mobile: "01713771388" },
+            students: [
+                {sl:1, roll:8, id:"019605", name:"Athar Mesbah Saad", gender:"Male", cat:"Civil", mobile:"01843172830"},
+                {sl:2, roll:17, id:"019616", name:"Shaima Jannat", gender:"Female", cat:"Civil", mobile:"01761065764"},
+                {sl:3, roll:33, id:"014313", name:"Ashfin Anan", gender:"Female", cat:"Civil", mobile:"01741204626"},
+                {sl:4, roll:42, id:"019639", name:"Afifa Rahman Shuponna", gender:"Female", cat:"Civil", mobile:"01719359014"},
+                {sl:5, roll:49, id:"014265", name:"Paromita Roy", gender:"Female", cat:"Civil", mobile:"01750684208"},
+                {sl:6, roll:58, id:"014287", name:"Md. Shadakat", gender:"Male", cat:"Civil", mobile:"01720286291"},
+                {sl:7, roll:67, id:"014528", name:"Mrs. Farvin Mohasana", gender:"Female", cat:"Civil", mobile:"01738775066"},
+                {sl:8, roll:80, id:"014239", name:"Niladri Sekhor Mondal", gender:"Male", cat:"Civil", mobile:"01715572990"},
+                {sl:9, roll:83, id:"014748", name:"Tausif Tahsin", gender:"Male", cat:"Civil", mobile:"01737392865"},
+                {sl:10, roll:92, id:"014413", name:"Umme Kaniza Tasnim", gender:"Female", cat:"Civil", mobile:"01724676580"},
+                {sl:11, roll:107, id:"016256", name:"Afia Jahin Zara", gender:"Female", cat:"Civil", mobile:"01303197018"},
+                {sl:12, roll:116, id:"018192", name:"Mst. Sadjan Hasan Saija", gender:"Female", cat:"Civil", mobile:"01724393224"},
+                {sl:13, roll:131, id:"018179", name:"Most. Fahmida Jahan", gender:"Female", cat:"Civil", mobile:"01741533864"},
+                {sl:14, roll:142, id:"014590", name:"Mawhib Alamgir Abaho", gender:"Male", cat:"Civil", mobile:"01717517188"},
+                {sl:15, roll:149, id:"014243", name:"Samadrita Roy", gender:"Female", cat:"Civil", mobile:"01712147479"},
+                {sl:16, roll:154, id:"014416", name:"Ordip Kumar Rudra", gender:"Male", cat:"Civil", mobile:"01717865634"},
+                {sl:17, roll:159, id:"014531", name:"Most. Shneha Kabir", gender:"Female", cat:"Civil", mobile:"01710358013"},
+                {sl:18, roll:168, id:"014569", name:"Jannatul Maoa Rongon", gender:"Female", cat:"Civil", mobile:"01792987819"},
+                {sl:19, roll:183, id:"018215", name:"Muntaha Islam Manha", gender:"Female", cat:"Civil", mobile:"01740189316"},
+                {sl:20, roll:192, id:"014288", name:"Shabi Juhayer Anam", gender:"Male", cat:"Civil", mobile:"01712154239"},
+                {sl:21, roll:208, id:"014242", name:"Afra Jaima Erisha", gender:"Female", cat:"Civil", mobile:"01707211222"},
+                {sl:22, roll:217, id:"014429", name:"Md. Raiyan Karim", gender:"Male", cat:"Civil", mobile:"01714424246"},
+                {sl:23, roll:232, id:"014461", name:"Nur-A-Arosh", gender:"Female", cat:"Civil", mobile:"01722304930"},
+                {sl:24, roll:241, id:"014724", name:"Elma Khanam", gender:"Female", cat:"Civil", mobile:"01751552789"},
+                {sl:25, roll:256, id:"014695", name:"Afia Adeeba Fatima", gender:"Female", cat:"Civil", mobile:"01716344393"},
+                {sl:26, roll:270, id:"014580", name:"Debopom Saha Broto", gender:"Male", cat:"Civil", mobile:"01746975848"},
+                {sl:27, roll:275, id:"014438", name:"Turjo Sarker", gender:"Male", cat:"Civil", mobile:"01737670360"},
+                {sl:28, roll:293, id:"014507", name:"Md. Tahsin Siraj", gender:"Male", cat:"Civil", mobile:"01716963418"},
+                {sl:29, roll:309, id:"014290", name:"Farhan Abrar Adib", gender:"Male", cat:"Civil", mobile:"01743465060"},
+                {sl:30, roll:318, id:"014319", name:"Md. Almas-Al-Hasin", gender:"Male", cat:"Civil", mobile:"01736619293"},
+                {sl:31, roll:346, id:"014485", name:"Tajosh Singhi", gender:"Male", cat:"Civil", mobile:"01786775009"},
+                {sl:32, roll:359, id:"014340", name:"Most. Fairuz Nawyar", gender:"Female", cat:"Military", mobile:"01715604361"},
+                {sl:33, roll:368, id:"021632", name:"Afrita Afroz Alfy", gender:"Female", cat:"Military", mobile:"01722931300"},
+                {sl:34, roll:383, id:"019780", name:"Md. Safiul Muznabin", gender:"Male", cat:"Civil", mobile:"01722907280"},
+                {sl:35, roll:393, id:"014634", name:"Saiba Taha", gender:"Female", cat:"Military", mobile:"01707426925"},
+                {sl:36, roll:408, id:"014459", name:"Md. Lamim", gender:"Male", cat:"Civil", mobile:"01721541580"},
+                {sl:37, roll:417, id:"022885", name:"Md. Khatibul Islam Joy", gender:"Male", cat:"Military", mobile:"01739535349"},
+                {sl:38, roll:430, id:"018208", name:"Ashesh Roy", gender:"Male", cat:"Civil", mobile:"01977705538"},
+                {sl:39, roll:433, id:"014453", name:"Most. Sadia Akter Sefa", gender:"Female", cat:"Civil", mobile:"01738772653"},
+                {sl:40, roll:434, id:"014339", name:"Jishnu Roy Arko", gender:"Male", cat:"Civil", mobile:"01719822589"},
+                {sl:41, roll:443, id:"014303", name:"Mst. Atqiya Mubasshira", gender:"Female", cat:"Civil", mobile:"01719256280"},
+                {sl:42, roll:460, id:"014322", name:"Md. Montasir Mahmud", gender:"Male", cat:"Military", mobile:"01710296789"},
+                {sl:43, roll:466, id:"018149", name:"Jatirmay Barman", gender:"Male", cat:"Civil", mobile:"01749675762"},
+                {sl:44, roll:470, id:"014402", name:"Md. Abidur Rahman", gender:"Male", cat:"Military", mobile:"01722664596"},
+                {sl:45, roll:481, id:"014237", name:"Roktim Sarker Him", gender:"Male", cat:"Civil", mobile:"01710605141"},
+                {sl:46, roll:486, id:"014717", name:"Jannatul Toha", gender:"Female", cat:"Civil", mobile:"01714113294"},
+                {sl:47, roll:495, id:"014697", name:"Sadman Al Abrar", gender:"Male", cat:"Civil", mobile:"01778442233"},
+                {sl:48, roll:510, id:"014469", name:"Most. Samiha Sanjid Niha", gender:"Female", cat:"Military Ret.", mobile:"01719654884"}
+            ]
+        },
+        "joba": {
+            teacher: { name: "Md. Shafiqur Rahman Sarkar", desig: "Senior Teacher", mobile: "01723073269" },
+            students: [
+                {sl:1, roll:9, id:"014727", name:"Md. Mousoon Rahman", gender:"Male", cat:"Civil", mobile:"01717384075"},
+                {sl:2, roll:16, id:"014369", name:"Rishad Jahan Nawmi", gender:"Female", cat:"Civil", mobile:"01741717039"},
+                {sl:3, roll:34, id:"018187", name:"Sidratul Muntaha", gender:"Female", cat:"Civil", mobile:"01799952323"},
+                {sl:4, roll:41, id:"014705", name:"Md. Samin Yasar Nasif", gender:"Male", cat:"Civil", mobile:"01711836265"},
+                {sl:5, roll:59, id:"014620", name:"Nashid Mahjabin Jara", gender:"Female", cat:"Civil", mobile:"01736360040"},
+                {sl:6, roll:66, id:"018139", name:"Farhat Ahmed Sahik", gender:"Male", cat:"Civil", mobile:"01712481236"},
+                {sl:7, roll:84, id:"014346", name:"Md. Bintiyaz Haque", gender:"Male", cat:"Civil", mobile:"01716872441"},
+                {sl:8, roll:91, id:"018171", name:"Md. Rakshan Hasan", gender:"Male", cat:"Civil", mobile:"01717223775"},
+                {sl:9, roll:108, id:"014448", name:"Warisa Ibnat", gender:"Female", cat:"Civil", mobile:"01719039660"},
+                {sl:10, roll:115, id:"014248", name:"Md. Safarat Islam Kobid", gender:"Male", cat:"Civil", mobile:"01730983851"},
+                {sl:11, roll:132, id:"018244", name:"Tanzim Ehesan", gender:"Male", cat:"Civil", mobile:"01722416597"},
+                {sl:12, roll:141, id:"014527", name:"Md. Tanvir Hasan", gender:"Male", cat:"Civil", mobile:"01718741272"},
+                {sl:13, roll:160, id:"016265", name:"Md. Abdul Mukit", gender:"Male", cat:"Civil", mobile:"01913435152"},
+                {sl:14, roll:167, id:"019595", name:"Abrar Bin Mahfuz", gender:"Male", cat:"Civil", mobile:"01715234812"},
+                {sl:15, roll:184, id:"014235", name:"Hasnat Sabit Shaba", gender:"Male", cat:"Civil", mobile:"01724616009"},
+                {sl:16, roll:191, id:"014300", name:"Ridita Islam", gender:"Female", cat:"Civil", mobile:"01734565001"},
+                {sl:17, roll:209, id:"014383", name:"Md. Sifat Hasan Surjo", gender:"Male", cat:"Civil", mobile:"01761626046"},
+                {sl:18, roll:216, id:"014296", name:"Sheikh Md. Sad -Al-", gender:"Male", cat:"Military", mobile:"01769026412"},
+                {sl:19, roll:233, id:"014604", name:"Zarah Mehzabin", gender:"Female", cat:"Civil", mobile:"01813927842"},
+                {sl:20, roll:240, id:"014244", name:"Lamiya Amina Annur", gender:"Female", cat:"Civil", mobile:"01712577118"},
+                {sl:21, roll:257, id:"014399", name:"Md. Mumtahin Ahmed", gender:"Male", cat:"Military", mobile:"01735434006"},
+                {sl:22, roll:265, id:"014361", name:"Md. Wafi Hasan Ehan", gender:"Male", cat:"Civil", mobile:"01713199809"},
+                {sl:23, roll:285, id:"014685", name:"Md. Arif Ahamed", gender:"Male", cat:"Military", mobile:"01738238673"},
+                {sl:24, roll:292, id:"018144", name:"Md. Huzaifa", gender:"Male", cat:"Civil", mobile:"01751316660"},
+                {sl:25, roll:310, id:"014418", name:"Amrin Rashid", gender:"Female", cat:"Civil", mobile:"01715803622"},
+                {sl:26, roll:317, id:"014456", name:"Shah Md. Abdullah Al", gender:"Male", cat:"Civil", mobile:"01721218265"},
+                {sl:27, roll:335, id:"014704", name:"Muntasin Binta Rahat", gender:"Female", cat:"Civil", mobile:"01719165713"},
+                {sl:28, roll:342, id:"022958", name:"Abdullah Bin Ahmad", gender:"Male", cat:"Civil", mobile:"01720334009"},
+                {sl:29, roll:360, id:"014236", name:"Afiya Ibnat Samiha", gender:"Female", cat:"Civil", mobile:"01718878281"},
+                {sl:30, roll:367, id:"019800", name:"Md. Mejbah Hasan", gender:"Male", cat:"Civil", mobile:"01739648602"},
+                {sl:31, roll:384, id:"014570", name:"Mst. Sania Samrin Suha", gender:"Female", cat:"Civil", mobile:"01714925983"},
+                {sl:32, roll:392, id:"019622", name:"Mst. Jarifah Rahman", gender:"Female", cat:"Civil", mobile:"01719257456"},
+                {sl:33, roll:409, id:"014436", name:"Md. Nazmush Saadah", gender:"Male", cat:"Civil", mobile:"01773893223"},
+                {sl:34, roll:416, id:"014327", name:"Wasifa Zaman Nidhi", gender:"Female", cat:"Civil", mobile:"01721541165"},
+                {sl:35, roll:435, id:"013282", name:"Md. Abdullah An Nasib", gender:"Male", cat:"Military", mobile:"01773649394"},
+                {sl:36, roll:461, id:"014644", name:"Most. Shauty Talukder", gender:"Female", cat:"Civil", mobile:"01721218559"},
+                {sl:37, roll:469, id:"014602", name:"Shanita Fairuj", gender:"Female", cat:"Civil", mobile:"01740840428"},
+                {sl:38, roll:487, id:"014423", name:"Most. Hamima Yesmin", gender:"Female", cat:"Civil", mobile:"01705873756"},
+                {sl:39, roll:494, id:"014689", name:"Md. Mahafuj Rahman", gender:"Male", cat:"Military", mobile:"01761254852"},
+                {sl:40, roll:511, id:"014229", name:"Kazi Al-Zabir Mahatab", gender:"Male", cat:"Civil", mobile:"01728173114"}
+            ]
+        }, // জবা সেকশন শেষ হওয়ার পর এই কমা (,) দিতে ভুলবেন না
+        "padma": {
+            teacher: { name: "Mst. Monira Khanam", desig: "Senior Teacher", mobile: "01763001691" },
+            students: [
+                {sl:1, roll:10, id:"014557", name:"Ayman Maliyat Snaha", gender:"Female", cat:"Civil", mobile:"01714516662"},
+                {sl:2, roll:15, id:"014214", name:"Nusin Anzum (Sarin)", gender:"Female", cat:"Civil", mobile:"01722849595"},
+                {sl:3, roll:35, id:"014541", name:"Unaisah Bari", gender:"Female", cat:"Civil", mobile:"01788266877"},
+                {sl:4, roll:40, id:"014787", name:"Md. Abdulla -Al- Nazib", gender:"Male", cat:"Civil", mobile:"01710791413"},
+                {sl:5, roll:60, id:"014700", name:"Rahnuma Kabir", gender:"Female", cat:"Civil", mobile:"01716987660"},
+                {sl:6, roll:65, id:"014347", name:"Zarir Aryan", gender:"Male", cat:"Civil", mobile:"01711317795"},
+                {sl:7, roll:85, id:"014375", name:"Md. Ahnaf Anuvab", gender:"Male", cat:"Civil", mobile:"01717425311"},
+                {sl:8, roll:90, id:"018194", name:"Saifan Ibn Nur", gender:"Male", cat:"Civil", mobile:"01719359625"},
+                {sl:9, roll:109, id:"018172", name:"Al Muntakim", gender:"Male", cat:"Civil", mobile:"01718411404"},
+                {sl:10, roll:114, id:"014943", name:"Md. Nazibuzzaman", gender:"Male", cat:"Civil", mobile:"01788800167"},
+                {sl:11, roll:133, id:"014276", name:"Nura Jannati Esha", gender:"Female", cat:"Military", mobile:"01739834082"},
+                {sl:12, roll:161, id:"014525", name:"Afseen Habib", gender:"Female", cat:"Civil", mobile:"01715361455"},
+                {sl:13, roll:185, id:"018133", name:"Md. Mubtasim Fuad", gender:"Male", cat:"Civil", mobile:"01750779383"},
+                {sl:14, roll:190, id:"014699", name:"Zarin Subah", gender:"Female", cat:"Civil", mobile:"01712912247"},
+                {sl:15, roll:210, id:"013078", name:"Maliha Mahmud Shuch", gender:"Female", cat:"Civil", mobile:"01719573615"},
+                {sl:16, roll:215, id:"014352", name:"Md. Emam Hossain", gender:"Male", cat:"Civil", mobile:"01717849675"},
+                {sl:17, roll:234, id:"014283", name:"Shekh Fatama Tuj", gender:"Female", cat:"Civil", mobile:"01718800272"},
+                {sl:18, roll:239, id:"014533", name:"Lamim Shahriar", gender:"Male", cat:"Civil", mobile:"01710605198"},
+                {sl:19, roll:258, id:"018176", name:"Anika Tasnim Mahee", gender:"Female", cat:"Civil", mobile:"01717321721"},
+                {sl:20, roll:264, id:"014277", name:"Suraya Sayor Khan", gender:"Female", cat:"Civil", mobile:"01718410120"},
+                {sl:21, roll:266, id:"014250", name:"Most. Sumaiya Binte", gender:"Female", cat:"Civil", mobile:"01719515632"},
+                {sl:22, roll:286, id:"019618", name:"Md. Tahsinul Haque", gender:"Male", cat:"Civil", mobile:"01723247600"},
+                {sl:23, roll:291, id:"014286", name:"Adiba Jannat Fariha", gender:"Female", cat:"Civil", mobile:"01722399065"},
+                {sl:24, roll:311, id:"018143", name:"Md. Meherub Hasan Shoeb", gender:"Male", cat:"Military Ret.", mobile:"01715404308"},
+                {sl:25, roll:316, id:"018221", name:"Munthaha Zaman Smita", gender:"Female", cat:"Civil", mobile:"01717591141"},
+                {sl:26, roll:336, id:"014251", name:"Most. Samiha Jannat", gender:"Female", cat:"Civil", mobile:"01709542520"},
+                {sl:27, roll:341, id:"014292", name:"Alvina Hossain Arisha", gender:"Female", cat:"Civil", mobile:"01723353189"},
+                {sl:28, roll:361, id:"014306", name:"Md. Istiaque Wasif", gender:"Male", cat:"Civil", mobile:"01917355671"},
+                {sl:29, roll:366, id:"014702", name:"Most. Nusrat Jahan", gender:"Female", cat:"Civil", mobile:"01793929522"},
+                {sl:30, roll:385, id:"014245", name:"Fatama Tul Jahura", gender:"Female", cat:"Military", mobile:"01734589850"},
+                {sl:31, roll:391, id:"014275", name:"Suhana Jannat Kheya", gender:"Female", cat:"Civil", mobile:"01794344461"},
+                {sl:32, roll:410, id:"014455", name:"Most. Afia Adnin Raha", gender:"Female", cat:"Civil", mobile:"01720417454"},
+                {sl:33, roll:415, id:"014718", name:"Zubaida Mahjabeen", gender:"Female", cat:"Civil", mobile:"01763797700"},
+                {sl:34, roll:436, id:"019764", name:"Jaima Rahman", gender:"Female", cat:"Civil", mobile:"01713764024"},
+                {sl:35, roll:441, id:"014603", name:"Atkia Jahin Roeishe", gender:"Female", cat:"Civil", mobile:"01718529600"},
+                {sl:36, roll:462, id:"014446", name:"Most. Masrifa Jannat", gender:"Female", cat:"Military", mobile:"01302997595"},
+                {sl:37, roll:468, id:"018140", name:"Md. Saiyan Sadi Ethan", gender:"Male", cat:"Civil", mobile:"01705817852"},
+                {sl:38, roll:488, id:"014506", name:"Ayesha Khorshed Fiha", gender:"Female", cat:"Civil", mobile:"01717680894"},
+                {sl:39, roll:493, id:"018138", name:"Ifaz Iftekhar Basunia", gender:"Male", cat:"Civil", mobile:"01712560399"},
+                {sl:40, roll:512, id:"014351", name:"Md. Mutasim Hossain", gender:"Male", cat:"Civil", mobile:"01925646463"},
+                {sl:41, roll:513, id:"014208", name:"Md. Rifat Rawnaq Rahim", gender:"Male", cat:"Civil", mobile:"01763098685"}
+            ]
+        },
+        "palash": {
+            teacher: { name: "Most. Parvin Akter", desig: "Senior Teacher", mobile: "01710277856" },
+            students: [
+                {sl:1, roll:11, id:"014586", name:"Naifa Siddika", gender:"Female", cat:"Civil", mobile:"01737132642"},
+                {sl:2, roll:14, id:"014472", name:"Md. Sayeb Bin Alam", gender:"Male", cat:"Civil", mobile:"01725997461"},
+                {sl:3, roll:36, id:"014317", name:"Most. Sidratul Moontaha", gender:"Female", cat:"Civil", mobile:"01913006040"},
+                {sl:4, roll:39, id:"014329", name:"Marjana Islam", gender:"Female", cat:"Civil", mobile:"01731231070"},
+                {sl:5, roll:61, id:"014605", name:"Md. Ahnaf Mujtaba", gender:"Male", cat:"Civil", mobile:"01722445048"},
+                {sl:6, roll:64, id:"014708", name:"Most. Asfia Jahan", gender:"Female", cat:"Civil", mobile:"01734644460"},
+                {sl:7, roll:86, id:"014212", name:"Md Tahabib Islam", gender:"Male", cat:"Civil", mobile:"01718898783"},
+                {sl:8, roll:89, id:"014517", name:"Rokonuzzaman Rounok", gender:"Male", cat:"Civil", mobile:"01723169769"},
+                {sl:9, roll:110, id:"014457", name:"Md. Zahid Ibna Raiyan", gender:"Male", cat:"Civil", mobile:"01720613603"},
+                {sl:10, roll:113, id:"014220", name:"Zoharin", gender:"Female", cat:"Civil", mobile:"01718057464"},
+                {sl:11, roll:134, id:"014547", name:"Md. Abdulla All Nahid", gender:"Male", cat:"Military", mobile:"01307677143"},
+                {sl:12, roll:137, id:"014753", name:"Tasfia Tabassum", gender:"Female", cat:"Civil", mobile:"01722255044"},
+                {sl:13, roll:162, id:"014567", name:"Zannatul Ferdous", gender:"Female", cat:"Civil", mobile:"01745522139"},
+                {sl:14, roll:165, id:"014406", name:"Fatimatuz Zohora", gender:"Female", cat:"Civil", mobile:"01759195386"},
+                {sl:15, roll:186, id:"014328", name:"Abrar Jayad Aiyan", gender:"Male", cat:"Civil", mobile:"01716489020"},
+                {sl:16, roll:189, id:"020943", name:"RAISA RAHNUMA", gender:"Female", cat:"Military", mobile:"01728518778"},
+                {sl:17, roll:211, id:"019596", name:"Arfa Tahrim", gender:"Female", cat:"Civil", mobile:"01716117365"},
+                {sl:18, roll:214, id:"014468", name:"Sidratul Muntaha Mrittika", gender:"Female", cat:"Civil", mobile:"01719462426"},
+                {sl:19, roll:235, id:"022871", name:"Adiba Tabassum", gender:"Female", cat:"Civil", mobile:"01728971199"},
+                {sl:20, roll:238, id:"014213", name:"H.R. Allam Sporso", gender:"Male", cat:"Civil", mobile:"01712498644"},
+                {sl:21, roll:260, id:"021635", name:"Asm Shoaib Arham", gender:"Male", cat:"Civil", mobile:"01713304816"},
+                {sl:22, roll:263, id:"014738", name:"Ahnaf Abtahi Somoy", gender:"Male", cat:"Civil", mobile:"01723535002"},
+                {sl:23, roll:287, id:"018154", name:"Most. Sharia Abrit", gender:"Female", cat:"Civil", mobile:"01721542423"},
+                {sl:24, roll:290, id:"021646", name:"Arian Ahammed Ayon", gender:"Male", cat:"Military", mobile:"01920676528"},
+                {sl:25, roll:312, id:"014588", name:"Subha Siddique", gender:"Female", cat:"Civil", mobile:"01712529892"},
+                {sl:26, roll:315, id:"014342", name:"Most. Ramia Chowdhury", gender:"Female", cat:"Military", mobile:"01828935402"},
+                {sl:27, roll:334, id:"014595", name:"Abrar Arabi Bin Ferdous", gender:"Male", cat:"Civil", mobile:"01904018151"},
+                {sl:28, roll:337, id:"014497", name:"Kazi Adnan Shabab", gender:"Male", cat:"Civil", mobile:"01716401405"},
+                {sl:29, roll:340, id:"014706", name:"Tauquar Tajammul", gender:"Male", cat:"Civil", mobile:"01750286336"},
+                {sl:30, roll:343, id:"014437", name:"Miskatun Jannat Mimi", gender:"Female", cat:"Civil", mobile:"01719086712"},
+                {sl:31, roll:362, id:"014657", name:"Shefat Sayem", gender:"Male", cat:"Civil", mobile:"01870152547"},
+                {sl:32, roll:365, id:"014316", name:"Md. Galib", gender:"Male", cat:"Civil", mobile:"01724541852"},
+                {sl:33, roll:386, id:"019621", name:"Tahiya Tabassum Disha", gender:"Female", cat:"Military", mobile:"01729342887"},
+                {sl:34, roll:390, id:"014559", name:"Bushra Aktar (Binti)", gender:"Female", cat:"Military", mobile:"01991174508"},
+                {sl:35, roll:411, id:"018226", name:"Md. Shaheer Aayan", gender:"Male", cat:"Military", mobile:"01303659635"},
+                {sl:36, roll:414, id:"014578", name:"Jahrabi Jarif", gender:"Female", cat:"Military", mobile:"01721518503"},
+                {sl:37, roll:437, id:"019587", name:"Mst. Tajnuva Rayana", gender:"Female", cat:"Civil", mobile:"01734051613"},
+                {sl:38, roll:440, id:"014410", name:"Jarif Sarker Nirjhor", gender:"Male", cat:"Civil", mobile:"01740556615"},
+                {sl:39, roll:463, id:"014733", name:"Maliha Salsabil", gender:"Female", cat:"Civil", mobile:"01719206086"},
+                {sl:40, roll:467, id:"014376", name:"Jarif Hassan Talukdar", gender:"Male", cat:"Civil", mobile:"01739862712"},
+                {sl:41, roll:489, id:"014435", name:"Abrar Zaman Sahik", gender:"Male", cat:"Civil", mobile:"01721349295"},
+                {sl:42, roll:492, id:"014513", name:"Md. Shafi Ahmed Shifat", gender:"Male", cat:"Military", mobile:"01724563643"}
+            ]
+        },
+        "tagor": {
+            teacher: { name: "Md. Shirajus Salekin", desig: "Senior Teacher", mobile: "01710381289" },
+            students: [
+                {sl:1, roll:12, id:"014572", name:"Md. Shayadat Prodhan", gender:"Male", cat:"Civil", mobile:"01773585634"},
+                {sl:2, roll:13, id:"018246", name:"Md. Tahsinul Islam", gender:"Male", cat:"Civil", mobile:"01717817918"},
+                {sl:3, roll:37, id:"014482", name:"Mst. Marsiha Rahman", gender:"Female", cat:"Civil", mobile:"01710724672"},
+                {sl:4, roll:38, id:"018216", name:"Md. Hasib Al Pran", gender:"Male", cat:"Civil", mobile:"01744746842"},
+                {sl:5, roll:62, id:"014489", name:"Rafid Al Sajid", gender:"Male", cat:"Civil", mobile:"01304646002"},
+                {sl:6, roll:63, id:"014530", name:"Tahia Islam Risha", gender:"Female", cat:"Civil", mobile:"01770346947"},
+                {sl:7, roll:87, id:"014499", name:"Anisha Islam Shaba", gender:"Female", cat:"Civil", mobile:"01712694227"},
+                {sl:8, roll:88, id:"014320", name:"Mst. Nowrin Jahan", gender:"Female", cat:"Civil", mobile:"01866922708"},
+                {sl:9, roll:111, id:"019633", name:"Dewan Lubaba Binte", gender:"Female", cat:"Civil", mobile:"017116899131"},
+                {sl:10, roll:112, id:"014323", name:"Najifa Zayidhah Sheen", gender:"Female", cat:"Civil", mobile:"01716276404"},
+                {sl:11, roll:135, id:"014709", name:"Afia Tabassum Adrita", gender:"Female", cat:"Civil", mobile:"01712536154"},
+                {sl:12, roll:136, id:"014462", name:"REESHA TASFIYAH", gender:"Female", cat:"Civil", mobile:"01716375709"},
+                {sl:13, roll:163, id:"014651", name:"Md. Abdullah Bin Shaim", gender:"Male", cat:"Military", mobile:"01315111906"},
+                {sl:14, roll:164, id:"019614", name:"Md. Adnan Abir", gender:"Male", cat:"Civil", mobile:"01716610368"},
+                {sl:15, roll:187, id:"014725", name:"Mashrur An Nafi", gender:"Male", cat:"Civil", mobile:"01712768133"},
+                {sl:16, roll:188, id:"014573", name:"Md. Tahomid Hasan", gender:"Male", cat:"Civil", mobile:"01713783533"},
+                {sl:17, roll:212, id:"014231", name:"Anisa Tahsin", gender:"Female", cat:"Civil", mobile:"01728655298"},
+                {sl:18, roll:213, id:"019651", name:"Masahatul Ardi", gender:"Female", cat:"Civil", mobile:"01832131339"},
+                {sl:19, roll:236, id:"014419", name:"Arisha Urfe Orthe", gender:"Female", cat:"Military", mobile:"01727833742"},
+                {sl:20, roll:237, id:"014563", name:"Md. Marzouq Rahman", gender:"Male", cat:"Civil", mobile:"01723992848"},
+                {sl:21, roll:261, id:"018206", name:"Enaya Aradi", gender:"Female", cat:"Civil", mobile:"01710490706"},
+                {sl:22, roll:262, id:"014386", name:"Md. Tanvir Khandoker", gender:"Male", cat:"Military", mobile:"01718580878"},
+                {sl:23, roll:288, id:"019625", name:"Tasnima Binte Tariq", gender:"Female", cat:"Civil", mobile:"01744405444"},
+                {sl:24, roll:289, id:"018132", name:"Md. Sajid Chowdhury", gender:"Male", cat:"Civil", mobile:"01716535306"},
+                {sl:25, roll:313, id:"014601", name:"Shahnila Aliha Zara", gender:"Female", cat:"Civil", mobile:"01738656976"},
+                {sl:26, roll:314, id:"014575", name:"Most. Jafiun Akter", gender:"Female", cat:"Military", mobile:"01722769656"},
+                {sl:27, roll:338, id:"014344", name:"Sanzida Sahrin Khan", gender:"Female", cat:"Civil", mobile:"01714678776"},
+                {sl:28, roll:339, id:"014692", name:"Md. Farhan Sadik", gender:"Male", cat:"Civil", mobile:"01712933446"},
+                {sl:29, roll:363, id:"014458", name:"Most. Anika Tawsin", gender:"Female", cat:"Civil", mobile:"01783777211"},
+                {sl:30, roll:364, id:"014270", name:"Afia Lubaba", gender:"Female", cat:"Civil", mobile:"01717423338"},
+                {sl:31, roll:387, id:"014505", name:"Rutba Wafi Nuhaa", gender:"Female", cat:"Civil", mobile:"01750421300"},
+                {sl:32, roll:389, id:"014576", name:"Md. Mahir Faisal Mahi", gender:"Male", cat:"Civil", mobile:"01718938284"},
+                {sl:33, roll:412, id:"022896", name:"Maliha Tabassum", gender:"Female", cat:"Civil", mobile:"01717452418"},
+                {sl:34, roll:413, id:"014476", name:"Ihtishamul Haque", gender:"Male", cat:"Civil", mobile:"01744663528"},
+                {sl:35, roll:438, id:"022826", name:"Hossain Al Nahiyan", gender:"Male", cat:"Civil", mobile:"01715949688"},
+                {sl:36, roll:439, id:"014445", name:"Shafi Chowdhury", gender:"Male", cat:"Civil", mobile:"01716823081"},
+                {sl:37, roll:464, id:"021643", name:"Md. Fardin Islam", gender:"Male", cat:"Military", mobile:"01916448074"},
+                {sl:38, roll:465, id:"014211", name:"Sakib Al Hasan", gender:"Male", cat:"Civil", mobile:"01716474083"},
+                {sl:39, roll:490, id:"014660", name:"Farhan Ahmed Abir", gender:"Male", cat:"Civil", mobile:"01924055017"}
+            ]
+        }
+    };
+
+    // --- GLOBAL VARIABLES ---
+    let currentData = [];
+    let filteredData = [];
+    let currentPage = 1;
+    const rowsPerPage = 20;
+    let currentSortColumn = null;
+    let currentSortDirection = 'asc';
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+        loadSection();
+        updateLastUpdated();
+        document.getElementById('sectionCount').innerText = Object.keys(db).length;
+    };
+
+    // --- PERFORMANCE ANALYSIS FUNCTIONS ---
+    function analyzePerformance(students) {
+        if (students.length === 0) return;
+        
+        // Separate by gender
+        const maleStudents = students.filter(s => s.gender === 'Male');
+        const femaleStudents = students.filter(s => s.gender === 'Female');
+        
+        // Calculate male statistics
+        let maleStats = {
+            count: maleStudents.length,
+            rolls: maleStudents.map(s => s.roll),
+            avgRoll: 0,
+            minRoll: 0,
+            maxRoll: 0,
+            top10Avg: 0,
+            top100Count: 0
+        };
+        
+        if (maleStats.count > 0) {
+            maleStats.avgRoll = calculateAverage(maleStats.rolls);
+            maleStats.minRoll = Math.min(...maleStats.rolls);
+            maleStats.maxRoll = Math.max(...maleStats.rolls);
+            
+            // Top 10 average (lowest rolls)
+            const sortedMaleRolls = [...maleStats.rolls].sort((a, b) => a - b);
+            const top10Male = sortedMaleRolls.slice(0, Math.min(10, maleStats.count));
+            maleStats.top10Avg = calculateAverage(top10Male);
+            
+            // Count in top 100
+            maleStats.top100Count = maleStats.rolls.filter(roll => roll <= 100).length;
+        }
+        
+        // Calculate female statistics
+        let femaleStats = {
+            count: femaleStudents.length,
+            rolls: femaleStudents.map(s => s.roll),
+            avgRoll: 0,
+            minRoll: 0,
+            maxRoll: 0,
+            top10Avg: 0,
+            top100Count: 0
+        };
+        
+        if (femaleStats.count > 0) {
+            femaleStats.avgRoll = calculateAverage(femaleStats.rolls);
+            femaleStats.minRoll = Math.min(...femaleStats.rolls);
+            femaleStats.maxRoll = Math.max(...femaleStats.rolls);
+            
+            // Top 10 average (lowest rolls)
+            const sortedFemaleRolls = [...femaleStats.rolls].sort((a, b) => a - b);
+            const top10Female = sortedFemaleRolls.slice(0, Math.min(10, femaleStats.count));
+            femaleStats.top10Avg = calculateAverage(top10Female);
+            
+            // Count in top 100
+            femaleStats.top100Count = femaleStats.rolls.filter(roll => roll <= 100).length;
+        }
+        
+        // Update UI with statistics
+        updatePerformanceUI(maleStats, femaleStats);
+        
+        // Determine winner (lower average roll is better)
+        determineWinner(maleStats, femaleStats);
+        
+        // Update distribution chart
+        updateDistributionChart(maleStats, femaleStats, students.length);
+    }
+    
+    function calculateAverage(numbers) {
+        if (numbers.length === 0) return 0;
+        const sum = numbers.reduce((a, b) => a + b, 0);
+        return Math.round(sum / numbers.length * 10) / 10; // Round to 1 decimal
+    }
+    
+    function updatePerformanceUI(maleStats, femaleStats) {
+        // Update male stats
+        document.getElementById('maleAvgRoll').textContent = maleStats.count > 0 ? maleStats.avgRoll : 'N/A';
+        document.getElementById('maleAvgRollDetailed').textContent = maleStats.count > 0 ? maleStats.avgRoll : 'N/A';
+        document.getElementById('maleMinRoll').textContent = maleStats.count > 0 ? maleStats.minRoll : 'N/A';
+        document.getElementById('maleMaxRoll').textContent = maleStats.count > 0 ? maleStats.maxRoll : 'N/A';
+        document.getElementById('maleTop10Avg').textContent = maleStats.count > 0 ? maleStats.top10Avg : 'N/A';
+        
+        // Update female stats
+        document.getElementById('femaleAvgRoll').textContent = femaleStats.count > 0 ? femaleStats.avgRoll : 'N/A';
+        document.getElementById('femaleAvgRollDetailed').textContent = femaleStats.count > 0 ? femaleStats.avgRoll : 'N/A';
+        document.getElementById('femaleMinRoll').textContent = femaleStats.count > 0 ? femaleStats.minRoll : 'N/A';
+        document.getElementById('femaleMaxRoll').textContent = femaleStats.count > 0 ? femaleStats.maxRoll : 'N/A';
+        document.getElementById('femaleTop10Avg').textContent = femaleStats.count > 0 ? femaleStats.top10Avg : 'N/A';
+        
+        // Update progress bars for top 100 distribution
+        const totalStudents = maleStats.count + femaleStats.count;
+        if (totalStudents > 0) {
+            const maleTop100Percent = Math.round((maleStats.top100Count / maleStats.count) * 100);
+            const femaleTop100Percent = Math.round((femaleStats.top100Count / femaleStats.count) * 100);
+            
+            document.getElementById('maleProgress').style.width = maleTop100Percent + '%';
+            document.getElementById('femaleProgress').style.width = femaleTop100Percent + '%';
+            
+            document.getElementById('maleDistribution').textContent = `${maleStats.top100Count} in Top 100 (${maleTop100Percent}%)`;
+            document.getElementById('femaleDistribution').textContent = `${femaleStats.top100Count} in Top 100 (${femaleTop100Percent}%)`;
+        }
+        
+        // Update performance indicators
+        updatePerformanceIndicator('malePerformance', maleStats.avgRoll);
+        updatePerformanceIndicator('femalePerformance', femaleStats.avgRoll);
+    }
+    
+    function updatePerformanceIndicator(elementId, avgRoll) {
+        const element = document.getElementById(elementId);
+        if (avgRoll === 0 || avgRoll === 'N/A') {
+            element.textContent = 'N/A';
+            element.className = 'performance-indicator';
+            return;
+        }
+        
+        if (avgRoll <= 100) {
+            element.textContent = 'Excellent';
+            element.className = 'performance-indicator performance-good';
+        } else if (avgRoll <= 200) {
+            element.textContent = 'Good';
+            element.className = 'performance-indicator performance-good';
+        } else if (avgRoll <= 300) {
+            element.textContent = 'Average';
+            element.className = 'performance-indicator performance-average';
+        } else if (avgRoll <= 400) {
+            element.textContent = 'Below Avg';
+            element.className = 'performance-indicator performance-average';
+        } else {
+            element.textContent = 'Poor';
+            element.className = 'performance-indicator performance-poor';
+        }
+    }
+    
+    function determineWinner(maleStats, femaleStats) {
+        const section = document.getElementById('sectionSelect').value;
+        const sectionName = section === 'all' ? 'All Sections' : `Section: ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+        
+        document.getElementById('analysisRange').textContent = sectionName;
+        
+        if (maleStats.count === 0 && femaleStats.count === 0) {
+            document.getElementById('winnerGender').textContent = 'No Data';
+            document.getElementById('winnerText').textContent = 'No students found';
+            document.getElementById('comparisonText').textContent = 'No data available for comparison';
+            document.getElementById('performanceDifference').textContent = 'Difference: N/A';
+            return;
+        }
+        
+        if (maleStats.count === 0) {
+            document.getElementById('winnerGender').textContent = 'Female';
+            document.getElementById('winnerText').textContent = 'Females are performing better';
+            document.getElementById('comparisonText').textContent = 'Only female students in this dataset';
+            document.getElementById('performanceDifference').textContent = 'Difference: N/A';
+            return;
+        }
+        
+        if (femaleStats.count === 0) {
+            document.getElementById('winnerGender').textContent = 'Male';
+            document.getElementById('winnerText').textContent = 'Males are performing better';
+            document.getElementById('comparisonText').textContent = 'Only male students in this dataset';
+            document.getElementById('performanceDifference').textContent = 'Difference: N/A';
+            return;
+        }
+        
+        // Determine winner based on average roll (lower is better)
+        const diff = Math.abs(maleStats.avgRoll - femaleStats.avgRoll);
+        const diffPercent = Math.round((diff / Math.min(maleStats.avgRoll, femaleStats.avgRoll)) * 100);
+        
+        if (maleStats.avgRoll < femaleStats.avgRoll) {
+            document.getElementById('winnerGender').textContent = 'Male';
+            document.getElementById('winnerText').textContent = 'Males are performing better';
+            document.getElementById('comparisonText').textContent = `Males have lower average roll (${maleStats.avgRoll} vs ${femaleStats.avgRoll})`;
+            document.getElementById('performanceDifference').textContent = `Better by ${diff.toFixed(1)} rolls (${diffPercent}%)`;
+        } else if (femaleStats.avgRoll < maleStats.avgRoll) {
+            document.getElementById('winnerGender').textContent = 'Female';
+            document.getElementById('winnerText').textContent = 'Females are performing better';
+            document.getElementById('comparisonText').textContent = `Females have lower average roll (${femaleStats.avgRoll} vs ${maleStats.avgRoll})`;
+            document.getElementById('performanceDifference').textContent = `Better by ${diff.toFixed(1)} rolls (${diffPercent}%)`;
+        } else {
+            document.getElementById('winnerGender').textContent = 'Tie';
+            document.getElementById('winnerText').textContent = 'Equal Performance';
+            document.getElementById('comparisonText').textContent = `Both genders have equal average roll (${maleStats.avgRoll})`;
+            document.getElementById('performanceDifference').textContent = `Difference: 0 rolls (0%)`;
+        }
+    }
+    function updateDistributionChart(maleStats, femaleStats, totalStudents) {
+        const chartContainer = document.getElementById('distributionChart');
+        chartContainer.innerHTML = '';
+        
+        // Define roll ranges
+        const ranges = [
+            { label: 'Top 50 (1-50)', max: 50 },
+            { label: 'Good (51-100)', max: 100 },
+            { label: 'Average (101-200)', max: 200 },
+            { label: 'Below Avg (201-300)', max: 300 },
+            { label: 'Poor (301+)', max: Infinity }
+        ];
+        
+        // Calculate distribution for each gender
+        ranges.forEach((range, index) => {
+            const prevMax = index > 0 ? ranges[index - 1].max : 0;
+            
+            // Male Calculation
+            const maleInRange = maleStats.rolls.filter(roll => roll > prevMax && roll <= range.max).length;
+            const malePercent = maleStats.count > 0 ? Math.round((maleInRange / maleStats.count) * 100) : 0;
+            
+            // Female Calculation
+            const femaleInRange = femaleStats.rolls.filter(roll => roll > prevMax && roll <= range.max).length;
+            const femalePercent = femaleStats.count > 0 ? Math.round((femaleInRange / femaleStats.count) * 100) : 0;
+            
+            const bar = document.createElement('div');
+            bar.className = 'chart-bar';
+          
+            bar.innerHTML = `
+                <div class="chart-label">${range.label}</div>
+                <div class="chart-value" style="display: flex; flex-direction: column; justify-content: center; gap: 4px; height: 30px; background: #f0f0f0;">
+                    
+                    <!-- ছেলেদের বার -->
+                    <div class="chart-fill progress-male" 
+                         style="width: ${malePercent}%; height: 100%; flex: 1; border-radius: 0 4px 4px 0; transition: width 0.5s;">
+                    </div>
+                    
+                    <!-- মেয়েদের বার -->
+                    <div class="chart-fill progress-female" 
+                         style="width: ${femalePercent}%; height: 100%; flex: 1; border-radius: 0 4px 4px 0; transition: width 0.5s;">
+                    </div>
+                    
+                </div>
+                <div class="chart-percent" style="font-size: 0.7rem; line-height: 1.4; display: flex; flex-direction: column; justify-content: center; margin-left: 10px;">
+                    <span style="color: var(--male-text)">M: ${malePercent}%</span>
+                    <span style="color: var(--female-text)">F: ${femalePercent}%</span>
+                </div>
+            `;
+            chartContainer.appendChild(bar);
+        });
+    }
+    
+    
+    function getPerformanceClass(roll) {
+        if (roll <= 50) return 'excellent-roll';
+        if (roll <= 100) return 'good-roll';
+        if (roll <= 200) return 'average-roll';
+        if (roll <= 300) return 'below-roll';
+        return 'poor-roll';
+    }
+    
+    function getPerformanceText(roll) {
+        if (roll <= 50) return 'Excellent';
+        if (roll <= 100) return 'Good';
+        if (roll <= 200) return 'Average';
+        if (roll <= 300) return 'Below Avg';
+        return 'Poor';
+    }
+
+    // --- MAIN FUNCTIONS ---
+    function loadSection() {
+        const section = document.getElementById('sectionSelect').value;
+        let allStudents = [];
+        let teacher = { name: "Multiple Teachers", desig: "Various", mobile: "N/A" };
+        
+        if (section === "all") {
+            // Combine all students from all sections
+            Object.keys(db).forEach(sec => {
+                db[sec].students.forEach(student => {
+                    allStudents.push({
+                        ...student,
+                        section: sec.charAt(0).toUpperCase() + sec.slice(1)
+                    });
+                });
+            });
+            document.getElementById('totalRecords').innerText = allStudents.length;
+        } else {
+            // Load specific section
+            const data = db[section];
+            teacher = data.teacher;
+            allStudents = data.students.map(student => ({
+                ...student,
+                section: section.charAt(0).toUpperCase() + section.slice(1)
+            }));
+            document.getElementById('totalRecords').innerText = allStudents.length;
+        }
+        
+        // Update Teacher Info
+        document.getElementById('tName').innerText = teacher.name;
+        document.getElementById('tDesig').innerText = teacher.desig;
+        document.getElementById('tMobile').innerText = teacher.mobile;
+        
+        currentData = allStudents;
+        currentPage = 1;
+        applyFilters();
+        
+        // Analyze performance
+        analyzePerformance(allStudents);
+    }
+
+    function applyFilters() {
+        const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+        const genderFilter = document.getElementById('genderFilter').value;
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        
+        filteredData = currentData.filter(student => {
+            // Search filter
+            const searchMatch = searchQuery === '' || 
+                student.name.toLowerCase().includes(searchQuery) ||
+                student.roll.toString().includes(searchQuery) ||
+                student.id.toLowerCase().includes(searchQuery) ||
+                student.mobile.includes(searchQuery);
+            
+            // Gender filter
+            const genderMatch = genderFilter === 'all' || student.gender === genderFilter;
+            
+            // Category filter
+            const categoryMatch = categoryFilter === 'all' || student.cat === categoryFilter;
+            
+            return searchMatch && genderMatch && categoryMatch;
+        });
+        
+        updateStatistics();
+        analyzePerformance(filteredData);
+        renderTable();
+        updatePagination();
+    }
+
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('genderFilter').value = 'all';
+        document.getElementById('categoryFilter').value = 'all';
+        applyFilters();
+    }
+
+    function updateStatistics() {
+        const total = filteredData.length;
+        const maleCount = filteredData.filter(s => s.gender === 'Male').length;
+        const femaleCount = filteredData.filter(s => s.gender === 'Female').length;
+        const malePercentage = total > 0 ? ((maleCount / total) * 100).toFixed(1) : 0;
+        const femalePercentage = total > 0 ? ((femaleCount / total) * 100).toFixed(1) : 0;
+        
+        document.getElementById('totalCount').innerText = total;
+        document.getElementById('maleCount').innerText = maleCount;
+        document.getElementById('femaleCount').innerText = femaleCount;
+        document.getElementById('totalStudentsStat').innerHTML = `<i class="fas fa-users"></i> Total: ${total}`;
+        document.getElementById('pageInfo').innerText = `Showing ${Math.min(filteredData.length, rowsPerPage)} of ${filteredData.length} students`;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        if (filteredData.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" style="text-align:center; padding:40px; color:#888;">
+                        <i class="fas fa-search" style="font-size:2rem; margin-bottom:15px; display:block;"></i>
+                        No students found matching your criteria
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        // Calculate pagination
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = Math.min(startIndex + rowsPerPage, filteredData.length);
+        const pageData = filteredData.slice(startIndex, endIndex);
+        
+        pageData.forEach((std, index) => {
+            // Determine Badge Classes
+            let catBadgeClass = "civil";
+            let catLower = std.cat.toLowerCase();
+            if(catLower.includes("military") || catLower.includes("defense")) catBadgeClass = "military";
+            if(catLower.includes("staff")) catBadgeClass = "staff";
+            
+            const performanceClass = getPerformanceClass(std.roll);
+            const performanceText = getPerformanceText(std.roll);
+            
+            const row = `
+                <tr>
+                    <td>${startIndex + index + 1}</td>
+                    <td><b>${std.roll}</b></td>
+                    <td class="${std.id === '-' ? 'no-id' : 'std-id'}">${std.id}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="gender-icon ${std.gender.toLowerCase()}">
+                                <i class="fas fa-${std.gender.toLowerCase()}"></i>
+                            </span>
+                            ${std.name}
+                        </div>
+                    </td>
+                    <td><span class="badge ${std.gender.toLowerCase()}">${std.gender}</span></td>
+                    <td><span class="badge ${catBadgeClass}">${std.cat}</span></td>
+                    <td class="mobile-cell">${std.mobile}</td>
+                    <td><span class="badge" style="background:#f0f0f0; color:#666;">${std.section}</span></td>
+                    <td><span class="roll-performance ${performanceClass}">${performanceText}</span></td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function updatePagination() {
+        const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+        const paginationDiv = document.getElementById('pagination');
+        paginationDiv.innerHTML = '';
+        
+        if (totalPages <= 1) return;
+        
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'page-btn';
+        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                updatePagination();
+            }
+        };
+        paginationDiv.appendChild(prevBtn);
+        
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.innerText = i;
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    renderTable();
+                    updatePagination();
+                };
+                paginationDiv.appendChild(pageBtn);
+            } else if (i === currentPage - 3 || i === currentPage + 3) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'page-info';
+                ellipsis.innerText = '...';
+                paginationDiv.appendChild(ellipsis);
+            }
+        }
+        
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'page-btn';
+        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                updatePagination();
+            }
+        };
+        paginationDiv.appendChild(nextBtn);
+    }
+
+    // --- SORT FUNCTION ---
+    function sortTable(columnIndex) {
+        if (currentSortColumn === columnIndex) {
+            currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSortColumn = columnIndex;
+            currentSortDirection = 'asc';
+        }
+        
+        filteredData.sort((a, b) => {
+            let aVal, bVal;
+            
+            switch(columnIndex) {
+                case 0: // SL (use original index)
+                    aVal = filteredData.indexOf(a);
+                    bVal = filteredData.indexOf(b);
+                    break;
+                case 1: // Roll
+                    aVal = parseInt(a.roll);
+                    bVal = parseInt(b.roll);
+                    break;
+                case 2: // ID
+                    aVal = a.id;
+                    bVal = b.id;
+                    break;
+                case 3: // Name
+                    aVal = a.name.toLowerCase();
+                    bVal = b.name.toLowerCase();
+                    break;
+                case 4: // Gender
+                    aVal = a.gender;
+                    bVal = b.gender;
+                    break;
+                case 5: // Category
+                    aVal = a.cat;
+                    bVal = b.cat;
+                    break;
+                case 6: // Mobile
+                    aVal = a.mobile;
+                    bVal = b.mobile;
+                    break;
+                default:
+                    aVal = aVal;
+                    bVal = bVal;
+            }
+            
+            if (currentSortDirection === 'asc') {
+                return aVal > bVal ? 1 : -1;
+            } else {
+                return aVal < bVal ? 1 : -1;
+            }
+        });
+        
+        currentPage = 1;
+        renderTable();
+        updatePagination();
+        
+        // Update sort indicators
+        document.querySelectorAll('th i').forEach(icon => {
+            icon.className = 'fas fa-sort';
+        });
+        
+        const currentHeader = document.querySelectorAll('th')[columnIndex];
+        const icon = currentHeader.querySelector('i');
+        if (icon) {
+            icon.className = currentSortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+        }
+    }
+
+    // --- EXPORT FUNCTION ---
+    function exportToCSV() {
+        if (filteredData.length === 0) {
+            alert('No data to export!');
+            return;
+        }
+        
+        const section = document.getElementById('sectionSelect').value;
+        const headers = ['SL', 'Roll', 'Student ID', 'Name', 'Gender', 'Category', 'Mobile', 'Section', 'Performance'];
+        const csvData = filteredData.map((student, index) => [
+            index + 1,
+            student.roll,
+            student.id,
+            student.name,
+            student.gender,
+            student.cat,
+            student.mobile,
+            student.section || section.charAt(0).toUpperCase() + section.slice(1),
+            getPerformanceText(student.roll)
+        ]);
+        
+        const csvContent = [
+            headers.join(','),
+            ...csvData.map(row => row.join(','))
+        ].join('\n');
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `CPSC_Students_${section}_${new Date().toISOString().slice(0,10)}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // --- UTILITY FUNCTIONS ---
+    function updateLastUpdated() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+        });
+        document.getElementById('lastUpdated').innerText = `${now.toLocaleDateString()} ${timeString}`;
+    }
+
+    // Initialize
+    loadSection();
+</script>
+
+</body>
+</html>
