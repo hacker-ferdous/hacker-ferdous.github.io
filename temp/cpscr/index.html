@@ -751,6 +751,32 @@
             overflow: hidden;
         }
     }
+    /* Copy Button Style */
+.btn-copy {
+    background: #e0f2f1;
+    color: #00695c;
+    border: 1px solid #80cbc4;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-copy:hover {
+    background: #00695c;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-copy:active {
+    transform: translateY(0);
+}
     </style>
     
 </head>
@@ -1027,6 +1053,7 @@
                         <th onclick="sortTable(6)">Mobile <i class="fas fa-sort"></i></th>
                         <th>Section</th>
                         <th>Performance</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -2065,23 +2092,28 @@
             
             const row = `
                 <tr>
-                    <td>${startIndex + index + 1}</td>
-                    <td><b>${std.roll}</b></td>
-                    <td class="${std.id === '-' ? 'no-id' : 'std-id'}">${std.id}</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span class="gender-icon ${std.gender.toLowerCase()}">
-                                <i class="fas fa-${std.gender.toLowerCase()}"></i>
-                            </span>
-                            ${std.name}
-                        </div>
-                    </td>
-                    <td><span class="badge ${std.gender.toLowerCase()}">${std.gender}</span></td>
-                    <td><span class="badge ${catBadgeClass}">${std.cat}</span></td>
-                    <td class="mobile-cell">${std.mobile}</td>
-                    <td><span class="badge" style="background:#f0f0f0; color:#666;">${std.section}</span></td>
-                    <td><span class="roll-performance ${performanceClass}">${performanceText}</span></td>
-                </tr>
+        <td>${startIndex + index + 1}</td>
+        <td><b>${std.roll}</b></td>
+        <td class="${std.id === '-' ? 'no-id' : 'std-id'}">${std.id}</td>
+        <td>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="gender-icon ${std.gender.toLowerCase()}">
+                    <i class="fas fa-${std.gender.toLowerCase()}"></i>
+                </span>
+                ${std.name}
+            </div>
+        </td>
+        <td><span class="badge ${std.gender.toLowerCase()}">${std.gender}</span></td>
+        <td><span class="badge ${catBadgeClass}">${std.cat}</span></td>
+        <td class="mobile-cell">${std.mobile}</td>
+        <td><span class="badge" style="background:#f0f0f0; color:#666;">${std.section}</span></td>
+        <td><span class="roll-performance ${performanceClass}">${performanceText}</span></td>
+        <td>
+            <button class="btn-copy" onclick="copyStudentInfo('${std.section}', ${std.roll})">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </td>
+    </tr>
             `;
             tbody.innerHTML += row;
         });
@@ -2261,9 +2293,9 @@
             head: headers,
             body: data,
             startY: 40, // Header এর নিচে থেকে শুরু হবে
-            theme: 'grid', // সুন্দর গ্রিড ভিউ
+            theme: 'grid', 
             styles: { 
-                fontSize: 8, // ফন্ট ছোট রাখা হলো যাতে ৫০ জন এক পেজে ধরে
+                fontSize: 8, 
                 cellPadding: 2, 
                 valign: 'middle',
                 halign: 'left'
@@ -2280,7 +2312,7 @@
                 2: { halign: 'center', cellWidth: 20 }, // ID
                 6: { font: 'courier' } // Mobile number monospace font
             },
-            // প্রতি পেজে ফুটার যোগ করা (Page Number)
+            // Page Number
             didDrawPage: function (data) {
                 // Page Number logic
                 let str = 'Page ' + doc.internal.getNumberOfPages();
@@ -2307,7 +2339,56 @@
         });
         document.getElementById('lastUpdated').innerText = `${now.toLocaleDateString()} ${timeString}`;
     }
+   // --- COPY FUNCTION ---
+    function copyStudentInfo(sectionName, roll) {
+	    // সেকশন নাম ছোট হাতের অক্ষরে কনভার্ট করা (ডাটাবেসের key এর সাথে মিলানোর জন্য)
+	    const sectionKey = sectionName.toLowerCase();
+	    
+	    // ডাটাবেস থেকে সঠিক তথ্য খুঁজে বের করা
+	    const sectionData = db[sectionKey];
+	    const student = sectionData.students.find(s => s.roll == roll);
+	    const teacher = sectionData.teacher;
 
+	    if (!student) {
+		alert("Error: Student data not found!");
+		return;
+	    }
+
+    // তথ্যগুলো সাজানো
+    const textToCopy = `Name: ${student.name}
+	ID: ${student.id}
+	Class: Seven
+	Roll: ${student.roll}
+	Section: ${sectionName}
+	Section Position: ${student.sl}
+	Gender: ${student.gender}
+	Category: ${student.cat}
+	Phone Number: ${student.mobile}
+	Class Teacher: ${teacher.name}
+	Class Teacher's Number: ${teacher.mobile}`;
+
+	    
+	    navigator.clipboard.writeText(textToCopy).then(() => {
+		
+		const btn = event.currentTarget; 
+		const originalText = btn.innerHTML;
+		
+		
+		btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+		btn.style.background = '#00695c';
+		btn.style.color = 'white';
+
+		setTimeout(() => {
+		    btn.innerHTML = originalText;
+		    btn.style.background = ''; 
+		    btn.style.color = '';
+		}, 1500);
+
+	    }).catch(err => {
+		console.error('Failed to copy: ', err);
+		alert("Failed to copy text. Please try manually.");
+	    });
+	}
     // Initialize
     loadSection();
 </script>
