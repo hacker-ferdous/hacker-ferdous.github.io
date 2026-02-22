@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>স্মার্ট হাদিস</title>
+    <script src="theme.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --accent-color: #4c51bf;
+            --accent-glow: rgba(76, 81, 191, 0.3);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+        body.dark-mode {
+            --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+            --glass-bg: rgba(17, 25, 40, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --accent-color: #63b3ed;
+            --accent-glow: transparent;
+            --card-bg: rgba(45, 55, 72, 0.8);
+            --nav-bg: rgba(26, 32, 44, 0.9);
+        }
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: var(--primary-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0 50px rgba(0,0,0,0.2);
+        }
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 140px;
+            scrollbar-width: none;
+        }
+        .scroll-content::-webkit-scrollbar { display: none; }
+        
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .header .back-button, .header .theme-toggle { cursor: pointer; font-size: 1.2rem; width: 30px; color: var(--accent-color); }
+        .header .back-button { text-align: left; }
+        .header .theme-toggle { text-align: right; }
+        .header .main-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            flex: 1;
+            text-align: center;
+        }
+        .search-box {
+            margin: 15px 20px 20px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+        }
+        .search-box i { color: var(--accent-color); margin-right: 10px; }
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 0.95rem;
+            font-family: 'Hind Siliguri', sans-serif;
+            color: var(--text-primary);
+        }
+        .search-box input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+        
+        .collection-list, .hadith-list { padding: 0 20px; padding-top: 16px; }
+        .collection-item, .hadith-item {
+            background: var(--card-bg);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .collection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .collection-item:active { transform: scale(0.98); }
+        .collection-info { display: flex; align-items: center; gap: 15px; }
+        .collection-icon {
+            width: 40px; height: 40px;
+            background: var(--accent-color);
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px var(--accent-glow);
+            flex-shrink: 0;
+        }
+        .collection-name h3 { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
+        .collection-name p { font-family: 'Amiri'; font-size: 1rem; color: var(--accent-color); margin-top: 2px; }
+        .collection-detail { color: var(--accent-color); display: flex; align-items: center; gap: 6px; }
+        
+        .hadith-item {
+            flex-direction: column;
+            cursor: default;
+            position: relative;
+        }
+        .hadith-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .hadith-number {
+            background: var(--accent-glow);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .hadith-arabic {
+            font-family: 'Scheherazade New', serif;
+            font-size: 1.6rem;
+            text-align: right;
+            direction: rtl;
+            line-height: 2.2;
+            margin-bottom: 12px;
+            width: 100%;
+            word-break: break-word;
+        }
+        .hadith-translation {
+            font-size: 1.05rem;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 12px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            width: 100%;
+        }
+        .hadith-grade {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-style: italic;
+        }
+        .loading { text-align: center; padding: 20px; font-weight: 600; color: var(--text-secondary); }
+        .hidden { display: none; }
+
+        /* প্যাজিনেশন - নতুন ডিজাইন */
+        .pagination-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 25px 0 30px;
+            gap: 10px;
+        }
+        .pagination-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .pagination-buttons button {
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            font-size: 1rem;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 600;
+            box-shadow: 0 4px 10px var(--accent-glow);
+            transition: 0.2s;
+            min-width: 110px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .pagination-buttons button:disabled {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .page-indicator {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: transparent;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: none;
+            font-weight: normal;
+            opacity: 0.8;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 30px;
+            margin-bottom: env(safe-area-inset-bottom);
+            left: 20px;
+            right: 20px;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+            background: var(--nav-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            height: 75px;
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            transition: color 0.3s ease;
+            background: transparent;
+        }
+        .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+            transition: transform 0.3s;
+        }
+        .nav-item.active {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        .nav-item.active i { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div id="backButton" class="back-button hidden"><i class="fas fa-arrow-left"></i></div>
+        <span id="mainTitle" class="main-title">হাদিসের বই</span>
+        <div id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></div>
+    </div>
+
+    <div class="scroll-content" id="scrollArea">
+        <div class="search-box" id="searchBox">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="বই খুঁজুন...">
+        </div>
+
+        <div id="collectionListContainer" class="collection-list"></div>
+        <div id="hadithListContainer" class="hadith-list hidden"></div>
+        <div style="height: 20px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item" data-nav="home"><i class="fas fa-house"></i><span>হোম</span></div>
+        <div class="nav-item" data-nav="waqt"><i class="fas fa-clock"></i><span>ওয়াক্ত</span></div>
+        <div class="nav-item" data-nav="quran"><i class="fas fa-quran"></i><span>কুরআন</span></div>
+        <div class="nav-item active" data-nav="hadith"><i class="fas fa-book-open"></i><span>হাদিস</span></div>
+        <div class="nav-item" data-nav="dua"><i class="fas fa-hands-praying"></i><span>দোয়া</span></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- DOM এলিমেন্ট ----------
+        const backButton = document.getElementById('backButton');
+        const mainTitle = document.getElementById('mainTitle');
+        const searchInput = document.getElementById('searchInput');
+        const collectionContainer = document.getElementById('collectionListContainer');
+        const hadithContainer = document.getElementById('hadithListContainer');
+        const body = document.body;
+        const scrollArea = document.getElementById('scrollArea');
+
+        // ---------- ৬টি প্রধান কিতাবের তালিকা ----------
+        const books = [
+            { id: 'bukhari', bn: 'সহীহ বুখারী', ar: 'صحيح البخاري' },
+            { id: 'muslim', bn: 'সহীহ মুসলিম', ar: 'صحيح مسلم' },
+            { id: 'abudawud', bn: 'সুনানে আবু দাউদ', ar: 'سنن أبي داود' },
+            { id: 'tirmidhi', bn: 'সুনানে তিরমিযী', ar: 'سنن الترمذي' },
+            { id: 'nasai', bn: 'সুনানে নাসাঈ', ar: 'سنن النسائي' },
+            { id: 'ibnmajah', bn: 'সুনানে ইবনে মাজাহ', ar: 'سنن ابن ماجه' }
+        ];
+        let collections = books;
+
+        // ---------- স্টেট ----------
+        let currentCollectionId = null;
+        let currentCollectionName = '';
+        let currentHadiths = [];               // সব হাদিস (শুধু অনুবাদ থাকা)
+        let filteredHadiths = [];               // সার্চের পর ফিল্টার
+        let currentPage = 1;
+        const PAGE_SIZE = 50;
+        const CACHE_NAME = 'hadith-api-v1';
+
+        // ---------- ক্যাশ হেল্পার ফাংশন ----------
+        async function fetchWithCache(url) {
+            const cache = await caches.open(CACHE_NAME);
+            const cachedResponse = await cache.match(url);
+            
+            if (cachedResponse) {
+                return await cachedResponse.json();
+            } else {
+                const response = await fetch(url);
+                // ক্যাশে সংরক্ষণ করো (response.clone() কারণ response একবার ব্যবহার করা যায়)
+                cache.put(url, response.clone());
+                return await response.json();
+            }
+        }
+
+        // ---------- কালেকশন রেন্ডার ----------
+        function renderCollections(filterText = '') {
+            const term = filterText.toLowerCase().trim();
+            let filtered = collections;
+            if (term !== '') {
+                filtered = collections.filter(c => 
+                    c.bn.toLowerCase().includes(term) || 
+                    c.ar.toLowerCase().includes(term)
+                );
+            }
+            collectionContainer.innerHTML = '';
+            if (filtered.length === 0) {
+                collectionContainer.innerHTML = '<div class="loading">এরকম কোনো বই নেই রে ভাই!</div>';
+                return;
+            }
+            filtered.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'collection-item';
+                div.innerHTML = `
+                    <div class="collection-info">
+                        <span class="collection-icon"><i class="fas fa-book-open"></i></span>
+                        <div class="collection-name">
+                            <h3>${c.bn}</h3>
+                            <p>${c.ar}</p>
+                        </div>
+                    </div>
+                    <div class="collection-detail">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                `;
+                div.addEventListener('click', () => openCollection(c.id, c.bn));
+                collectionContainer.appendChild(div);
+            });
+        }
+
+        // ---------- হাদিস ওপেন করা (ক্যাশসহ) ----------
+        async function openCollection(colId, titleBn, targetPage = 1) {
+            currentCollectionId = colId;
+            currentCollectionName = titleBn;
+            currentPage = targetPage;
+            backButton.classList.remove('hidden');
+            collectionContainer.classList.add('hidden');
+            hadithContainer.classList.remove('hidden');
+            hadithContainer.innerHTML = '<div class="loading">হাদিসের ভাণ্ডার খুলছে...</div>';
+            mainTitle.innerText = titleBn;
+            searchInput.placeholder = 'নতুন নাম্বার বা বাংলা লেখা দিয়ে সার্চ কর...';
+            searchInput.value = '';
+
+            try {
+                const arabicUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-${colId}.json`;
+                const bengaliUrl = `https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ben-${colId}.json`;
+
+                // ক্যাশ থেকে বা নেটওয়ার্ক থেকে ডেটা আনো
+                const [arData, bnData] = await Promise.all([
+                    fetchWithCache(arabicUrl),
+                    fetchWithCache(bengaliUrl)
+                ]);
+
+                const arHadiths = arData.hadiths || arData;
+                const bnHadiths = bnData.hadiths || bnData;
+
+                const combined = [];
+                const len = Math.min(arHadiths.length, bnHadiths.length);
+                
+                for (let i = 0; i < len; i++) {
+                    const bengaliText = bnHadiths[i].text || '';
+                    if (bengaliText.trim() !== '') {
+                        combined.push({
+                            originalNumber: bnHadiths[i].hadithnumber || bnHadiths[i].number || (i + 1),
+                            arabic: arHadiths[i].text || '',
+                            bengali: bengaliText,
+                            grade: arHadiths[i].grade || bnHadiths[i].grade || ''
+                        });
+                    }
+                }
+
+                currentHadiths = combined.map((h, index) => ({
+                    ...h,
+                    number: index + 1
+                }));
+
+                filteredHadiths = currentHadiths;
+                renderHadithsPage();
+                scrollArea.scrollTop = 0;
+                saveState(colId, currentPage, titleBn);
+            } catch (e) {
+                hadithContainer.innerHTML = '<div class="loading">হাদিস আনতে পারলাম না। নেটওয়ার্ক চেক কর!</div>';
+            }
+        }
+
+        // ---------- পৃষ্ঠা অনুযায়ী হাদিস দেখানো ----------
+        function renderHadithsPage() {
+            if (filteredHadiths.length === 0) {
+                hadithContainer.innerHTML = '<div class="loading">কিছুই তো নাই! ঠিকঠাক টাইপ কর।</div>';
+                return;
+            }
+
+            const totalPages = Math.ceil(filteredHadiths.length / PAGE_SIZE);
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const end = start + PAGE_SIZE;
+            const pageItems = filteredHadiths.slice(start, end);
+
+            hadithContainer.innerHTML = '';
+            pageItems.forEach(h => {
+                const div = document.createElement('div');
+                div.className = 'hadith-item';
+                div.innerHTML = `
+                    <div class="hadith-header">
+                        <span class="hadith-number">হাদিস: ${h.number}</span>
+                        ${h.grade ? `<span class="hadith-grade">${h.grade}</span>` : ''}
+                    </div>
+                    <div class="hadith-arabic">${h.arabic}</div>
+                    <div class="hadith-translation">${h.bengali}</div>
+                `;
+                hadithContainer.appendChild(div);
+            });
+
+            const paginationDiv = document.createElement('div');
+            paginationDiv.className = 'pagination-container';
+            paginationDiv.innerHTML = `
+                <div class="pagination-buttons">
+                    <button id="prevPageBtn" ${currentPage === 1 ? 'disabled' : ''}>আগের পাতা</button>
+                    <button id="nextPageBtn" ${currentPage === totalPages ? 'disabled' : ''}>পরের পাতা</button>
+                </div>
+                <div class="page-indicator">পৃষ্ঠা ${currentPage} / ${totalPages}</div>
+            `;
+            hadithContainer.appendChild(paginationDiv);
+
+            document.getElementById('prevPageBtn')?.addEventListener('click', () => {
+                currentPage--;
+                renderHadithsPage();
+                scrollArea.scrollTop = 0;
+                saveState(currentCollectionId, currentPage, currentCollectionName);
+            });
+            document.getElementById('nextPageBtn')?.addEventListener('click', () => {
+                currentPage++;
+                renderHadithsPage();
+                scrollArea.scrollTop = 0;
+                saveState(currentCollectionId, currentPage, currentCollectionName);
+            });
+        }
+
+        // ---------- ব্যাক বাটন ----------
+        backButton.addEventListener('click', () => {
+            currentCollectionId = null;
+            backButton.classList.add('hidden');
+            collectionContainer.classList.remove('hidden');
+            hadithContainer.classList.add('hidden');
+            mainTitle.innerText = 'হাদিসের বই';
+            searchInput.placeholder = 'বইয়ের নাম লেখ...';
+            searchInput.value = '';
+            renderCollections('');
+        });
+
+        // ---------- সার্চ ইভেন্ট ----------
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            if (currentCollectionId === null) {
+                renderCollections(term);
+            } else {
+                filteredHadiths = currentHadiths.filter(h => 
+                    h.number.toString().includes(term) || 
+                    h.bengali.toLowerCase().includes(term)
+                );
+                currentPage = 1;
+                renderHadithsPage();
+            }
+        });
+
+        // ---------- নিচের নেভিগেশন ----------
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    if (index === 3) return;
+                    const pages = ['index.html', 'salat.html', 'quran.html', '', 'dua.html'];
+                    if (pages[index]) window.location.href = pages[index];
+                });
+            });
+        }
+
+        // ---------- সেশন স্টেট ----------
+        const HADITH_STATE = 'hadithState';
+        function saveState(collectionId, page, collectionName) {
+            sessionStorage.setItem(HADITH_STATE, JSON.stringify({
+                collectionId: collectionId,
+                page: page,
+                collectionName: collectionName
+            }));
+        }
+        function loadState() {
+            const saved = sessionStorage.getItem(HADITH_STATE);
+            return saved ? JSON.parse(saved) : null;
+        }
+
+        // ---------- প্রাথমিক লোড ----------
+        window.addEventListener('load', async () => {
+            renderCollections('');
+            setupNavigation();
+
+            const saved = loadState();
+            if (saved && books.find(b => b.id === saved.collectionId)) {
+                await openCollection(saved.collectionId, saved.collectionName, saved.page);
+            }
+        });
+    })();
+</script>
+
+
+
+</body>
+</html>

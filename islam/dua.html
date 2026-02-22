@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>দোয়া ও যিকির</title>
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --primary-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --accent-color: #4c51bf;
+            --accent-glow: rgba(76, 81, 191, 0.3);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+        body.dark-mode {
+            --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+            --glass-bg: rgba(17, 25, 40, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f7fafc;
+            --text-secondary: #a0aec0;
+            --accent-color: #63b3ed;
+            --accent-glow: transparent;
+            --card-bg: rgba(45, 55, 72, 0.8);
+            --nav-bg: rgba(26, 32, 44, 0.9);
+        }
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: var(--primary-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 0 50px rgba(0,0,0,0.2);
+        }
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 140px;
+            scrollbar-width: none;
+        }
+        .scroll-content::-webkit-scrollbar { display: none; }
+        
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .header .back-button, .header .theme-toggle { cursor: pointer; font-size: 1.2rem; width: 30px; color: var(--accent-color); }
+        .header .back-button { text-align: left; }
+        .header .theme-toggle { text-align: right; }
+        .header .main-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            flex: 1;
+            text-align: center;
+        }
+        .search-box {
+            margin: 15px 20px 20px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
+        }
+        .search-box i { color: var(--accent-color); margin-right: 10px; }
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 0.95rem;
+            font-family: 'Hind Siliguri', sans-serif;
+            color: var(--text-primary);
+        }
+        .search-box input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+        
+        .chapter-list, .dua-list { padding: 0 20px; padding-top: 16px; }
+        .chapter-item, .dua-item {
+            background: var(--card-bg);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .chapter-item:active { transform: scale(0.98); }
+        .chapter-info { display: flex; align-items: center; gap: 15px; }
+        .chapter-icon {
+            width: 40px; height: 40px;
+            background: var(--accent-color);
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px var(--accent-glow);
+            flex-shrink: 0;
+        }
+        .chapter-name h3 { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
+        .chapter-detail { color: var(--accent-color); display: flex; align-items: center; gap: 6px; }
+        
+        .dua-item {
+            flex-direction: column;
+            cursor: default;
+            position: relative;
+        }
+        .dua-header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .dua-number {
+            background: var(--accent-glow);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .dua-translation {
+            font-size: 1.05rem;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 12px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            width: 100%;
+        }
+        .loading { text-align: center; padding: 20px; font-weight: 600; color: var(--text-secondary); }
+        .hidden { display: none; }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 30px;
+            margin-bottom: env(safe-area-inset-bottom);
+            left: 20px;
+            right: 20px;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+            background: var(--nav-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            height: 75px;
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            transition: color 0.3s ease;
+            background: transparent;
+        }
+        .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+            transition: transform 0.3s;
+        }
+        .nav-item.active {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        .nav-item.active i { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div id="backButton" class="back-button hidden"><i class="fas fa-arrow-left"></i></div>
+        <span id="mainTitle" class="main-title">দোয়া ও যিকির</span>
+        <div id="themeToggle" class="theme-toggle"><i class="fas fa-moon"></i></div>
+    </div>
+
+    <div class="scroll-content" id="scrollArea">
+        <div class="search-box" id="searchBox">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="চ্যাপ্টার খুঁজুন...">
+        </div>
+
+        <div id="chapterListContainer" class="chapter-list"></div>
+        <div id="duaListContainer" class="dua-list hidden"></div>
+        <div style="height: 20px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item" data-nav="home"><i class="fas fa-house"></i><span>হোম</span></div>
+        <div class="nav-item" data-nav="waqt"><i class="fas fa-clock"></i><span>ওয়াক্ত</span></div>
+        <div class="nav-item" data-nav="quran"><i class="fas fa-quran"></i><span>কুরআন</span></div>
+        <div class="nav-item" data-nav="hadith"><i class="fas fa-book-open"></i><span>হাদিস</span></div>
+        <div class="nav-item active" data-nav="dua"><i class="fas fa-hands-praying"></i><span>দোয়া</span></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- DOM এলিমেন্ট ----------
+        const backButton = document.getElementById('backButton');
+        const mainTitle = document.getElementById('mainTitle');
+        const searchInput = document.getElementById('searchInput');
+        const chapterContainer = document.getElementById('chapterListContainer');
+        const duaContainer = document.getElementById('duaListContainer');
+        const scrollArea = document.getElementById('scrollArea');
+
+        // ---------- স্টেট ----------
+        let categories = [];               // পুরো ক্যাটাগরি ডেটা (JSON অ্যারে)
+        let currentCategory = null;         // বর্তমান ক্যাটাগরির নাম
+        let currentDuas = [];               // বর্তমান ক্যাটাগরির দু‘আগুলো
+        let filteredDuas = [];
+
+        // ---------- JSON লোড ----------
+        async function loadCategories() {
+            chapterContainer.innerHTML = '<div class="loading">দোয়ার বই খুলছে...</div>';
+            try {
+                const res = await fetch('dua.json');
+                const data = await res.json();
+                categories = data;  // data সরাসরি অ্যারে
+                renderCategories('');
+            } catch (e) {
+                console.error(e);
+                chapterContainer.innerHTML = '<div class="loading">দোয়া লোড হয়নি! নেট চেক কর।</div>';
+            }
+        }
+
+        // ক্যাটাগরি তালিকা রেন্ডার (অধ্যায়)
+        function renderCategories(filterText = '') {
+            const term = filterText.toLowerCase().trim();
+            let filtered = categories;
+            if (term !== '') {
+                filtered = categories.filter(cat => 
+                    cat.category.toLowerCase().includes(term)
+                );
+            }
+            chapterContainer.innerHTML = '';
+            if (filtered.length === 0) {
+                chapterContainer.innerHTML = '<div class="loading">কোনো অধ্যায় পাওয়া যায়নি</div>';
+                return;
+            }
+            filtered.forEach((cat, index) => {
+                const div = document.createElement('div');
+                div.className = 'chapter-item';
+                div.innerHTML = `
+                    <div class="chapter-info">
+                        <span class="chapter-icon"><i class="fas fa-book-open"></i></span>
+                        <div class="chapter-name">
+                            <h3>${cat.category}</h3>
+                        </div>
+                    </div>
+                    <div class="chapter-detail">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                `;
+                div.addEventListener('click', () => openCategory(cat.category));
+                chapterContainer.appendChild(div);
+            });
+        }
+
+        // ক্যাটাগরি ওপেন করে দু‘আ দেখানো
+        function openCategory(categoryName) {
+            currentCategory = categoryName;
+            backButton.classList.remove('hidden');
+            chapterContainer.classList.add('hidden');
+            duaContainer.classList.remove('hidden');
+            duaContainer.innerHTML = '<div class="loading">দোয়া আসছে...</div>';
+            mainTitle.innerText = categoryName;
+            searchInput.placeholder = 'দোয়ার মধ্যে খুঁজুন...';
+            searchInput.value = '';
+
+            const cat = categories.find(c => c.category === categoryName);
+            if (cat) {
+                currentDuas = cat.duas || [];
+                filteredDuas = currentDuas;
+                renderDuas();
+            } else {
+                duaContainer.innerHTML = '<div class="loading">দোয়া পাওয়া যায়নি</div>';
+            }
+            scrollArea.scrollTop = 0;
+        }
+
+        // দু‘আ লিস্ট রেন্ডার (টাইটেল + আরবি + উচ্চারণ + অর্থ + রেফারেন্স)
+        function renderDuas() {
+            if (filteredDuas.length === 0) {
+                duaContainer.innerHTML = '<div class="loading">কোনো দোয়া নেই</div>';
+                return;
+            }
+
+            duaContainer.innerHTML = '';
+            filteredDuas.forEach((dua, idx) => {
+                const div = document.createElement('div');
+                div.className = 'dua-item';
+                
+                // টাইটেল
+                let html = `
+                    <div class="dua-header">
+                        <span class="dua-number">দোয়া নং ${idx + 1}</span>
+                    </div>
+                    <div style="font-weight:700; font-size:1.2rem; color:var(--accent-color); margin:5px 0; width:100%;">${dua.title}</div>
+                `;
+
+                // আরবি (array হলে আলাদাভাবে দেখাব, না হলে সরাসরি)
+                if (Array.isArray(dua.arabic)) {
+                    html += `<div style="margin:10px 0; width:100%;">`;
+                    dua.arabic.forEach(item => {
+                        html += `<div style="font-size:1.3rem; font-family:'Amiri', serif; direction:rtl; text-align:right; margin-bottom:8px;">${item.verse} <span style="font-size:0.9rem; color:var(--accent-color);">(${item.reference})</span></div>`;
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<div style="font-size:1.3rem; font-family:'Amiri', serif; direction:rtl; text-align:right; margin:10px 0; width:100%;">${dua.arabic}</div>`;
+                }
+
+                // উচ্চারণ (array হলে আলাদাভাবে)
+                if (Array.isArray(dua.pronunciation)) {
+                    html += `<div style="font-weight:600; color:var(--accent-color); margin-bottom:5px; width:100%;">উচ্চারণ:</div>`;
+                    html += `<div style="margin-bottom:10px;">`;
+                    dua.pronunciation.forEach(item => {
+                        html += `<div style="margin-bottom:5px;">${item.text} <span style="font-size:0.85rem; color:var(--text-secondary);">(${item.reference})</span></div>`;
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<div style="font-weight:600; color:var(--accent-color); margin-bottom:5px; width:100%;">উচ্চারণ: ${dua.pronunciation}</div>`;
+                }
+
+                // অর্থ (array হলে আলাদাভাবে)
+                if (Array.isArray(dua.meaning)) {
+                    html += `<div class="dua-translation" style="margin-bottom:8px;">অর্থ:</div>`;
+                    html += `<div style="margin-bottom:10px;">`;
+                    dua.meaning.forEach(item => {
+                        html += `<div style="margin-bottom:5px;">${item.text} <span style="font-size:0.85rem; color:var(--text-secondary);">(${item.reference})</span></div>`;
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<div class="dua-translation">অর্থ: ${dua.meaning}</div>`;
+                }
+
+                // রেফারেন্স (সাধারণত স্ট্রিং, যদি থাকে)
+                if (dua.reference) {
+                    html += `<div style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px; font-style:italic;">রেফারেন্স: ${dua.reference}</div>`;
+                }
+
+                div.innerHTML = html;
+                duaContainer.appendChild(div);
+            });
+        }
+
+        // ব্যাক বাটন
+        backButton.addEventListener('click', () => {
+            currentCategory = null;
+            backButton.classList.add('hidden');
+            chapterContainer.classList.remove('hidden');
+            duaContainer.classList.add('hidden');
+            mainTitle.innerText = 'দোয়া ও যিকির';
+            searchInput.placeholder = 'অধ্যায় খুঁজুন...';
+            searchInput.value = '';
+            renderCategories('');
+        });
+
+        // সার্চ ইভেন্ট
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            if (currentCategory === null) {
+                // ক্যাটাগরি লেভেলে সার্চ
+                renderCategories(term);
+            } else {
+                // দু‘আর ভিতরে সার্চ (শিরোনাম, অর্থ, উচ্চারণে)
+                filteredDuas = currentDuas.filter(d => 
+                    (d.title && d.title.toLowerCase().includes(term)) ||
+                    (d.meaning && typeof d.meaning === 'string' && d.meaning.toLowerCase().includes(term)) ||
+                    (d.pronunciation && typeof d.pronunciation === 'string' && d.pronunciation.toLowerCase().includes(term)) ||
+                    (d.arabic && typeof d.arabic === 'string' && d.arabic.toLowerCase().includes(term)) ||
+                    // Array হলে স্ট্রিং কনভার্ট করে খুঁজি (আনুমানিক)
+                    (Array.isArray(d.meaning) && JSON.stringify(d.meaning).toLowerCase().includes(term)) ||
+                    (Array.isArray(d.pronunciation) && JSON.stringify(d.pronunciation).toLowerCase().includes(term)) ||
+                    (Array.isArray(d.arabic) && JSON.stringify(d.arabic).toLowerCase().includes(term))
+                );
+                renderDuas();
+            }
+        });
+
+        // ---------- নেভিগেশন ----------
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    if (index === 4) return; // দোয়া পেইজ, কিছু না
+                    const pages = ['index.html', 'salat.html', 'quran.html', 'hadith.html', ''];
+                    if (pages[index]) window.location.href = pages[index];
+                });
+            });
+        }
+
+        // লোড হওয়া মাত্র আরম্ভ
+        window.addEventListener('load', () => {
+            loadCategories();
+            setupNavigation();
+        });
+
+        // স্টেট সেশন-এ সংরক্ষণ (যাতে রিফ্রেশে শেষ ক্যাটাগরি চলে আসে)
+        const DUA_STATE = 'duaState';
+        function saveState(categoryName) {
+            sessionStorage.setItem(DUA_STATE, JSON.stringify({
+                category: categoryName
+            }));
+        }
+        function loadState() {
+            return JSON.parse(sessionStorage.getItem(DUA_STATE));
+        }
+
+        // ওপেন ক্যাটাগরি ওভাররাইড করে স্টেট সেভ
+        const originalOpen = window.openCategory;
+        window.openCategory = function(categoryName) {
+            saveState(categoryName);
+            if (originalOpen) originalOpen(categoryName);
+        };
+
+        // পৃষ্ঠা লোডে আগের অবস্থা পুনরুদ্ধার
+        const saved = loadState();
+        if (saved && saved.category) {
+            const checkInterval = setInterval(() => {
+                if (categories.length > 0) {
+                    clearInterval(checkInterval);
+                    openCategory(saved.category);
+                }
+            }, 50);
+        }
+
+        // theme.js এর সাথে সামঞ্জস্য রাখতে (থেম টগল ইতিমধ্যে theme.js হ্যান্ডেল করে)
+    })();
+</script>
+
+</body>
+</html>

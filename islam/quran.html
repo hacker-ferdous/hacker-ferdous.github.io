@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>স্মার্ট কুরআন</title>
+    <script src="theme.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+        --primary-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(255, 255, 255, 0.6);
+        --text-primary: #1a202c;
+        --text-secondary: #4a5568;
+        --accent-color: #4c51bf;
+        --accent-glow: rgba(76, 81, 191, 0.3);
+        --card-bg: rgba(255, 255, 255, 0.9);
+        --nav-bg: rgba(255, 255, 255, 0.9);
+    }
+    body.dark-mode {
+        --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+        --glass-bg: rgba(17, 25, 40, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-primary: #f7fafc;
+        --text-secondary: #a0aec0;
+        --accent-color: #63b3ed;
+        --accent-glow: transparent;
+        --card-bg: rgba(45, 55, 72, 0.8);
+        --nav-bg: rgba(26, 32, 44, 0.9);
+    }
+    body {
+        font-family: 'Hind Siliguri', sans-serif;
+        background: var(--primary-gradient);
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--text-primary);
+        overflow: hidden; 
+    }
+    .app-container {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        max-width: 600px;
+        margin: 0 auto;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 0 50px rgba(0,0,0,0.2);
+    }
+    .scroll-content {
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 140px; 
+        scrollbar-width: none;
+    }
+    .scroll-content::-webkit-scrollbar { display: none; }
+    
+    /* হেডার এখন হাদীসের মতো */
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .header .back-button, .header .theme-toggle { 
+        cursor: pointer; 
+        font-size: 1.2rem; 
+        width: 30px; 
+        color: var(--accent-color);
+        background: transparent;
+        border: none;
+        display: flex;
+        align-items: center;
+    }
+    .header .back-button { text-align: left; }
+    .header .theme-toggle { text-align: right; }
+    .header .main-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--accent-color);
+        flex: 1;
+        text-align: center;
+    }
+
+    /* সার্চ বক্স */
+    .search-box {
+        margin: 15px 20px 20px;
+        background: var(--card-bg);
+        border-radius: 30px;
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(5px);
+    }
+    .search-box i { color: var(--accent-color); margin-right: 10px; }
+    .search-box input {
+        background: transparent;
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 0.95rem;
+        font-family: 'Hind Siliguri', sans-serif;
+        color: var(--text-primary);
+    }
+    
+    /* সূরা তালিকা – হাদীসের কালেকশন তালিকার মতো */
+    .surah-list, .verse-list { padding: 0 20px; padding-top: 16px; }
+    .surah-item, .verse-item {
+        background: var(--card-bg);
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+    }
+    .surah-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    .surah-item:active { transform: scale(0.98); }
+    .surah-info { display: flex; align-items: center; gap: 15px; }
+    /* সূরা নাম্বার – হাদীসের আইকনের মতো */
+    .surah-number {
+        width: 40px; height: 40px;
+        background: var(--accent-color);
+        color: #fff;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 8px var(--accent-glow);
+        flex-shrink: 0;
+    }
+    .surah-name h3 { 
+        font-size: 1.2rem; 
+        font-weight: 600; 
+        color: var(--text-primary); 
+    }
+    .surah-name p { 
+        font-family: 'Amiri'; 
+        font-size: 1rem; 
+        color: var(--accent-color); 
+        margin-top: 2px; 
+    }
+    .surah-detail { 
+        color: var(--accent-color); 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+    }
+    
+    /* আয়াত আইটেম – হাদীস আইটেমের মতো */
+    .verse-item {
+        flex-direction: column;
+        display: flex;
+        position: relative;
+    }
+    .verse-header {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;   /* নাম্বার বামে */
+        font-size: 0.9rem;
+        color: var(--accent-color);
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+    .verse-header span {
+        background: var(--accent-glow);
+        padding: 4px 12px;            /* হাদীসের নাম্বারের মতো প্যাডিং */
+        border-radius: 20px;
+    }
+    .verse-arabic {
+        font-family: 'Scheherazade New', serif;
+        font-size: 1.6rem;             /* হাদীসের আরবির সাইজ */
+        text-align: right;
+        direction: rtl;
+        line-height: 2.2;
+        margin-bottom: 12px;
+        width: 100%;
+        color: var(--text-primary);
+        word-break: break-word;
+    }
+    .verse-translation {
+        font-size: 1.05rem;
+        border-top: 1px solid var(--glass-border);
+        padding-top: 12px;
+        line-height: 1.6;
+        color: var(--text-primary);
+        width: 100%;
+    }
+    
+    .loading { text-align: center; padding: 20px; font-weight: 600; color: var(--text-secondary); }
+    .hidden { display: none !important; }
+    
+    /* নিচের নেভিগেশন বার – হাদীসের মতো */
+    .bottom-nav {
+        position: fixed;
+        bottom: 30px;
+        margin-bottom: env(safe-area-inset-bottom);
+        left: 20px;
+        right: 20px;
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+        background: var(--nav-bg);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        height: 75px;
+        border-radius: 25px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        border: 1px solid var(--glass-border);
+        z-index: 1000;
+    }
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        cursor: pointer;
+        width: 60px;
+        height: 60px;
+        transition: color 0.3s ease;
+        background: transparent;
+        border: none;
+    }
+    .nav-item i { font-size: 1.4rem; margin-bottom: 4px; transition: transform 0.3s; }
+    .nav-item.active { color: var(--accent-color); font-weight: 600; }
+    .nav-item.active i { transform: translateY(-2px); }
+</style>
+
+</head>
+<body>
+<div class="app-container">
+    <!-- এখন হেডারে class="header" ব্যবহার করা হয়েছে (আগে ছিল home-header) -->
+    <div class="header">
+        <div id="backButton" class="back-button hidden"><i class="fas fa-arrow-left"></i></div>
+        <span id="mainTitle" class="main-title">সূরা সমূহ</span>
+        <div class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></div>
+    </div>
+
+    <div class="scroll-content" id="scrollArea">
+        <div class="search-box" id="searchBox">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="সূরা খুঁজুন...">
+        </div>
+
+        <div id="surahListContainer" class="surah-list"></div>
+        <div id="verseListContainer" class="verse-list hidden"></div>
+
+        <div style="height: 90px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item" data-nav="home"><i class="fas fa-house"></i><span>হোম</span></div>
+        <div class="nav-item" data-nav="waqt"><i class="fas fa-clock"></i><span>ওয়াক্ত</span></div>
+        <div class="nav-item active" data-nav="quran"><i class="fas fa-quran"></i><span>কুরআন</span></div>
+        <div class="nav-item" data-nav="hadith"><i class="fas fa-book-open"></i><span>হাদিস</span></div>
+        <div class="nav-item" data-nav="dua"><i class="fas fa-hands-praying"></i><span>দোয়া</span></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const surahNamesBn = [
+    "আল-ফাতিহা", "আল-বাকারা", "আলে ইমরান", "আন-নিসা", "আল-মায়িদাহ", "আল-আন'আম", "আল-আ'রাফ", "আল-আনফাল", "আত-তাওবাহ", "ইউনুস",
+    "হুদ", "ইউসুফ", "আর-রাদ", "ইব্রাহিম", "আল-হিজর", "আন-নাহল", "আল-ইসরা", "আল-কাহফ", "মারইয়াম", "ত্বোয়া-হা",
+    "আল-আম্বিয়া", "আল-হাজ্জ", "আল-মুমিনুন", "আন-নূর", "আল-ফুরকান", "আশ-শুয়ারা", "আন-নামল", "আল-কাসাস", "আল-আনকাবুত", "আর-রূম",
+    "লুকমান", "আস-সাজদাহ", "আল-আহযাব", "সাবা", "ফাতির", "ইয়াসিন", "আস-সাফফাত", "সোয়াদ", "আয-যুমার", "গাফির",
+    "ফুসসিলাত", "আশ-শূরা", "আয-যুখরুফ", "আদ-দুখান", "আল-জাসিয়াহ", "আল-আহকাফ", "মুহাম্মদ", "আল-ফাতহ", "আল-হুজুরাত", "ক্বাফ",
+    "আয-যারিয়াত", "আত্ব-তূর", "আন-নাজম", "আল-কামার", "আর-রাহমান", "আল-ওয়াক্বিয়াহ", "আল-হাদীদ", "আল-মুজাদালাহ", "আল-হাশর", "আল-মুমতাহিনাহ",
+    "আস-সাফ", "আল-জুমুআহ", "আল-মুনাফিকুন", "আত-তাগাবুন", "আত-তালাক", "আত-তাহরীম", "আল-মুলক", "আল-কলম", "আল-হাক্কাহ", "আল-মাআরিজ",
+    "নূহ", "আল-জীন", "আল-মুযযাম্মিল", "আল-মুদ্দাসসির", "আল-ক্বিয়ামাহ", "আল-ইনসান", "আল-মুরসালাত", "আন-নাবা", "আন-নাযিয়াত", "আবাসা",
+    "আত-তাকবীর", "আল-ইনফিতার", "আল-মুতাফফিফীন", "আল-ইনশিকাক", "আল-বুরুজ", "আত-তারিক", "আল-আলা", "আল-গাশিয়াহ", "আল-ফাজর", "আল-বালাদ",
+    "আশ-শামস", "আল-লাইল", "আদ-দুহা", "আশ-শারহ", "আত্ব-তীন", "আল-আলাক", "আল-কদর", "আল-বাইয়্যিনাহ", "আয-যিলযাল", "আল-আদিয়াত",
+    "আল-ক্বারিয়াহ", "আত-তাকাসুর", "আল-আসর", "আল-হুমাযাহ", "আল-ফীল", "কুরাইশ", "আল-মাউন", "আল-কাওসার", "আল-কাফিরুন", "আন-নাসর",
+    "আল-লাহাব", "আল-ইখলাস", "আল-ফালাক", "আন-নাস"
+];
+
+        const backButton = document.getElementById('backButton');
+        const mainTitle = document.getElementById('mainTitle');
+        const searchBox = document.getElementById('searchBox');
+        const searchInput = document.getElementById('searchInput');
+        const surahListContainer = document.getElementById('surahListContainer');
+        const verseListContainer = document.getElementById('verseListContainer');
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const scrollArea = document.getElementById('scrollArea');
+
+        let allSurahs = [];
+        let currentSurahId = null;
+
+        async function loadSurahs() {
+            surahListContainer.innerHTML = '<div class="loading">লোড হচ্ছে...</div>';
+            try {
+                const res = await fetch('https://api.quran.com/api/v4/chapters?language=en');
+                const data = await res.json();
+                allSurahs = data.chapters;
+                renderSurahs(allSurahs);
+            } catch (e) {
+                surahListContainer.innerHTML = '<div class="loading">নেটওয়ার্ক সমস্যা! পুনরায় চেষ্টা করুন।</div>';
+            }
+        }
+
+        function renderSurahs(surahs) {
+            surahListContainer.innerHTML = '';
+            surahs.forEach(s => {
+                const bnName = surahNamesBn[s.id - 1] || s.name_simple;
+                const div = document.createElement('div');
+                div.className = 'surah-item';
+                div.innerHTML = `
+                    <div class="surah-info">
+                        <span class="surah-number">${s.id}</span>
+                        <div class="surah-name">
+                            <h3>সূরা ${bnName}</h3>
+                            <p>${s.name_arabic}</p>
+                        </div>
+                    </div>
+                    <div class="surah-detail">
+                        <span>${s.verses_count}</span>
+                        <i class="fas fa-arrow-left" style="transform: scaleX(-1);"></i>
+                    </div>
+                `;
+                div.addEventListener('click', () => openSurah(s.id, `সূরা ${bnName}`));
+                surahListContainer.appendChild(div);
+            });
+        }
+
+        async function openSurah(id, titleText) {
+            currentSurahId = id;
+            backButton.classList.remove('hidden');
+            backButton.style.display = 'flex'; 
+            searchBox.classList.add('hidden');
+            surahListContainer.classList.add('hidden');
+            verseListContainer.classList.remove('hidden');
+            verseListContainer.innerHTML = '<div class="loading">আয়াত লোড হচ্ছে...</div>';
+            mainTitle.innerText = titleText;
+
+            try {
+                const [arRes, bnRes] = await Promise.all([
+                    fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${id}`),
+                    fetch(`https://api.quran.com/api/v4/quran/translations/161?chapter_number=${id}`)
+                ]);
+
+                if (!arRes.ok || !bnRes.ok) throw new Error('API response failed');
+
+                const arData = await arRes.json();
+                const bnData = await bnRes.json();
+
+                const arabicVerses = arData.verses;
+                const translations = bnData.translations;
+
+                if (!arabicVerses || !translations) throw new Error('Data format invalid');
+
+                verseListContainer.innerHTML = '';
+                for (let i = 0; i < arabicVerses.length; i++) {
+                    const ayah = arabicVerses[i];
+                    const translation = translations[i];
+                    const verseNum = ayah.verse_number || (i + 1);
+                    const arabicText = ayah.text_uthmani || '';
+                    const translationText = translation ? translation.text : 'অনুবাদ পাওয়া যায়নি';
+
+                    const div = document.createElement('div');
+                    div.className = 'verse-item';
+                    div.innerHTML = `
+                        <div class="verse-header"><span>${verseNum}</span></div>
+                        <div class="verse-arabic">${arabicText}</div>
+                        <div class="verse-translation">${translationText}</div>
+                    `;
+                    verseListContainer.appendChild(div);
+                }
+                scrollArea.scrollTop = 0;
+            } catch (e) {
+                console.error(e);
+                verseListContainer.innerHTML = '<div class="loading">আয়াত লোড করতে সমস্যা! নেটওয়ার্ক চেক করুন।</div>';
+            }
+        }
+
+        backButton.addEventListener('click', () => {
+            currentSurahId = null;
+            backButton.classList.add('hidden');
+            searchBox.classList.remove('hidden');
+            surahListContainer.classList.remove('hidden');
+            verseListContainer.classList.add('hidden');
+            mainTitle.innerText = 'সূরা সমূহ';
+            const term = searchInput.value.toLowerCase().trim();
+            if (term === '') {
+                renderSurahs(allSurahs);
+            } else {
+                const filtered = allSurahs.filter(s => 
+                    s.name_arabic.includes(term) || 
+                    surahNamesBn[s.id-1]?.toLowerCase().includes(term)
+                );
+                renderSurahs(filtered);
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            if (term === '') {
+                renderSurahs(allSurahs);
+            } else {
+                const filtered = allSurahs.filter(s => 
+                    s.name_arabic.includes(term) || 
+                    (surahNamesBn[s.id-1] && surahNamesBn[s.id-1].toLowerCase().includes(term))
+                );
+                renderSurahs(filtered);
+            }
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        loadSurahs();
+    })();
+
+function setupNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+            if (index === 2) return;
+            const pages = ['index.html', 'salat.html', '', 'hadith.html', 'dua.html'];
+            if (pages[index]) window.location.href = pages[index];
+        });
+    });
+}
+
+window.onload = () => {
+    if (typeof loadSurahs === 'function') loadSurahs(); 
+    setupNavigation();
+};
+
+(function() {
+    const QURAN_STATE = 'quranState';
+    
+    function saveState(surahId, surahName, verseNum) {
+        sessionStorage.setItem(QURAN_STATE, JSON.stringify({
+            surahId: surahId,
+            surahName: surahName,
+            verseNum: verseNum || 1
+        }));
+    }
+    
+    function loadState() {
+        const saved = sessionStorage.getItem(QURAN_STATE);
+        return saved ? JSON.parse(saved) : null;
+    }
+    
+    window.openSurah = async function(id, titleText, targetVerse = 1) {
+        currentSurahId = id;
+        if (typeof saveState === 'function') saveState(id, titleText, targetVerse);
+        await openSurah(id, titleText);
+        setTimeout(() => {
+            const verses = document.querySelectorAll('.verse-item');
+            if (verses[targetVerse - 1]) {
+                verses[targetVerse - 1].scrollIntoView({ block: 'center' });
+            }
+        }, 300);
+    };
+
+    window.addEventListener('load', async function() {
+        const saved = loadState();
+        if (saved) {
+            await loadSurahs();
+            openSurah(saved.surahId, saved.surahName, saved.verseNum);
+        }
+    });
+})();
+
+function showSurahList() {
+    backButton.classList.add('hidden');
+    backButton.style.display = 'none';
+    searchBox.classList.remove('hidden');
+    surahListContainer.classList.remove('hidden');
+    verseListContainer.classList.add('hidden');
+    mainTitle.innerText = 'স্মার্ট কুরআন';
+    sessionStorage.removeItem('quranState');
+}
+</script>
+</body>
+</html>
