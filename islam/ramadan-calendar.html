@@ -245,8 +245,6 @@ body.dark-mode .disclaimer {
 }
 </style>
 
-
-
 </head>
 <body>
 <div class="app-container">
@@ -314,21 +312,20 @@ body.dark-mode .disclaimer {
     (function() {
         // ----- কনফিগারেশন -----
         const CONFIG = {
-            API_BASE: "https://api.aladhan.com/v1",
-            CACHE_KEY_LOC: "smartHomeCache_v11_strict_location" // index.html এর সাথে মিল রেখে
+            API_BASE: "https://api.aladhan.com/v1"
         };
 
-        // ----- স্টেট (ডিফল্ট কিছু নেই) -----
+        // ----- স্টেট -----
         const state = {
             lat: null,
             lon: null,
-            areaNameEn: "",
-            areaNameBn: "",
+            areaNameBn: "অজানা স্থান",
+            areaNameEn: "Bangladesh",
             hijriYear: "",
             ramadanDataRaw: []
         };
 
-        // ----- ইউটিলিটি ফাংশন -----
+        // ----- ইউটিলিটি ফাংশন (index.html থেকে নেওয়া) -----
         const utils = {
             banglaMonths: ['জানু', 'ফেব্রু', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুল', 'আগস্ট', 'সেপ্টে', 'অক্টো', 'নভে', 'ডিসে'],
             weekDaysBn: {
@@ -367,73 +364,82 @@ body.dark-mode .disclaimer {
             tableWrapper: document.getElementById('tableWrapper')
         };
 
-        // ----- লোকেশন ক্যাশ থেকে লোড -----
-        const loadLocationFromStorage = async () => {
-            const cached = localStorage.getItem(CONFIG.CACHE_KEY_LOC);
-            if (!cached) throw new Error("লোকেশন ডেটা পাওয়া যায়নি!");
-            
-            const parsed = JSON.parse(cached);
-            if (!parsed.location || !parsed.location.lat || !parsed.location.lon) {
-                throw new Error("সঠিক লোকেশন ডেটা নেই!");
-            }
-            
-            state.lat = parsed.location.lat;
-            state.lon = parsed.location.lon;
-            state.areaNameBn = parsed.area || "অজানা স্থান";
+        // ----- জিওলোকেশন ফাংশন (index.html-এর মতো) -----
+        const getPosition = () => {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error('Geolocation not supported'));
+                } else {
+                    navigator.geolocation.getCurrentPosition(
+                        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+                        err => reject(err),
+                        { timeout: 10000, maximumAge: 0 }
+                    );
+                }
+            });
+        };
 
+        // ----- এলাকার নাম বাংলায় আনার ফাংশন (রিভার্স জিওকোড) -----
+        const fetchAreaNameBn = async (lat, lon) => {
             try {
-                // এলাকার ইংরেজি নাম (পিডিএফের জন্য) রিভার্স জিওকোডিং থেকে আনি
-                const geoUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${state.lat}&lon=${state.lon}&zoom=10&accept-language=en`;
-                const resGeo = await fetch(geoUrl);
-                const dataGeo = await resGeo.json();
-                state.areaNameEn = dataGeo.address.city || dataGeo.address.town || dataGeo.address.state || "Bangladesh";
-            } catch (err) {
-                console.warn("Reverse geocoding failed, using fallback.", err);
-                state.areaNameEn = "Bangladesh";
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&accept-language=bn`, {
+                    headers: { 'User-Agent': 'IslamicHome/1.0' }
+                });
+                if (!res.ok) throw new Error("Location fetch failed");
+                const data = await res.json();
+                const addr = data.address;
+                return addr.suburb || addr.neighbourhood || addr.village || addr.residential || addr.town || addr.city || addr.district || 'অজানা স্থান';
+            } catch {
+                return 'অজানা স্থান';
             }
         };
 
-        // ----- রমজানের মূল ডাটা আনা -----
-        const fetchCoreData = async () => {
+        // ----- এলাকার নাম ইংরেজিতে আনার ফাংশন (পিডিএফ-এর জন্য) -----
+        const fetchAreaNameEn = async (lat, lon) => {
             try {
-                // ১. চলতি হিজরি বছর বের করি
-                const todayDate = new Date();
-                const hijriTargetUrl = `${CONFIG.API_BASE}/timings/${todayDate.getDate()}-${todayDate.getMonth()+1}-${todayDate.getFullYear()}?latitude=${state.lat}&longitude=${state.lon}&method=1`;
-                const resHijri = await fetch(hijriTargetUrl);
-                if (!resHijri.ok) throw new Error("API response not OK for Hijri timings");
-                const hijriJson = await resHijri.json();
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=en`, {
+                    headers: { 'User-Agent': 'IslamicHome/1.0' }
+                });
+                if (!res.ok) throw new Error("Location fetch failed");
+                const data = await res.json();
+                const addr = data.address;
+                return addr.city || addr.town || addr.state || 'Bangladesh';
+            } catch {
+                return 'Bangladesh';
+            }
+        };
+
+        // ----- রমজানের মূল ডাটা আনা (হিজরি বছর ও ক্যালেন্ডার) -----
+        const fetchRamadanData = async (lat, lon) => {
+            try {
+                // ১. আজকের তারিখ থেকে হিজরি বছর বের করি
+                const today = new Date();
+                const hijriUrl = `${CONFIG.API_BASE}/timings/${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}?latitude=${lat}&longitude=${lon}&method=1`;
+                const hijriRes = await fetch(hijriUrl);
+                if (!hijriRes.ok) throw new Error("Hijri year fetch failed");
+                const hijriJson = await hijriRes.json();
                 state.hijriYear = hijriJson.data.date.hijri.year;
 
                 // ২. রমজান (মাস ৯) ও শাওয়াল (মাস ১০) এর ক্যালেন্ডার কল
-                const reqMonth9 = fetch(`${CONFIG.API_BASE}/hijriCalendar/${state.hijriYear}/9?latitude=${state.lat}&longitude=${state.lon}&method=1&school=1`);
-                const reqMonth10 = fetch(`${CONFIG.API_BASE}/hijriCalendar/${state.hijriYear}/10?latitude=${state.lat}&longitude=${state.lon}&method=1&school=1`);
+                const [res9, res10] = await Promise.all([
+                    fetch(`${CONFIG.API_BASE}/hijriCalendar/${state.hijriYear}/9?latitude=${lat}&longitude=${lon}&method=1&school=1`),
+                    fetch(`${CONFIG.API_BASE}/hijriCalendar/${state.hijriYear}/10?latitude=${lat}&longitude=${lon}&method=1&school=1`)
+                ]);
 
-                const [res9, res10] = await Promise.all([reqMonth9, reqMonth10]);
-                if (!res9.ok || !res10.ok) throw new Error("API response not OK for Calendar");
+                if (!res9.ok || !res10.ok) throw new Error("Calendar fetch failed");
 
                 const json9 = await res9.json();
                 const json10 = await res10.json();
 
                 // ৩. রমজানের ২ তারিখ থেকে শুরু করে শাওয়ালের ১ তারিখ যোগ করে ৩০ দিনের তালিকা বানানো
-                let adjustedRamadanDays = json9.data.slice(1);          // ২ রমজান থেকে
+                let adjusted = json9.data.slice(1);          // ২ রমজান থেকে
                 if (json10.data && json10.data.length > 0) {
-                    adjustedRamadanDays.push(json10.data[0]);          // ১ শাওয়াল যোগ
+                    adjusted.push(json10.data[0]);           // ১ শাওয়াল যোগ
                 }
-
-                state.ramadanDataRaw = adjustedRamadanDays;
-                injectDOM();
-
+                state.ramadanDataRaw = adjusted;
             } catch (err) {
                 console.error(err);
-                ui.skeletonLoader.style.display = 'none';
-                ui.tableWrapper.style.display = 'none';
-                ui.mainContent.innerHTML += `
-                    <div class="error-msg" style="margin-top: 20px;">
-                        <i class="fas fa-wifi" style="font-size: 2.5rem; margin-bottom: 15px; color: var(--accent-color);"></i>
-                        <h3 style="margin-bottom: 10px; color: var(--text-primary);">ডাটা লোড ব্যর্থ</h3>
-                        <p style="font-size: 0.95rem; color: var(--text-secondary);">সার্ভার থেকে ডাটা আনতে সমস্যা হয়েছে। আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন।</p>
-                    </div>
-                `;
+                throw err; // উপরের হ্যান্ডলারে যাবে
             }
         };
 
@@ -479,8 +485,8 @@ body.dark-mode .disclaimer {
             ui.pdfBtn.style.display = 'flex';   // পিডিএফ বাটন দেখাও
         };
 
-        // ----- পিডিএফ জেনারেট ফাংশন -----
-        const executePdfGeneration = async () => {
+        // ----- পিডিএফ জেনারেট ফাংশন (আগের মতো) -----
+        const generatePDF = async () => {
             if (state.ramadanDataRaw.length === 0) return;
 
             const btnIcon = ui.pdfBtn.querySelector('i');
@@ -492,7 +498,6 @@ body.dark-mode .disclaimer {
                 const doc = new jsPDF('p', 'mm', 'a4');
                 const pageWidth = doc.internal.pageSize.width;
 
-                // টেবিলের ডাটা তৈরি (ইংরেজিতে)
                 const matrixData = state.ramadanDataRaw.map((dayData, idx) => {
                     const timings = dayData.timings;
                     const sehriClean = utils.cleanTimeStr(timings.Fajr);
@@ -539,26 +544,42 @@ body.dark-mode .disclaimer {
             }
         };
 
-        // ----- বুট সিকোয়েন্স (মেইন) -----
+        // ----- মেইন বুট সিকোয়েন্স -----
         const bootSequence = async () => {
-            ui.pdfBtn.addEventListener('click', executePdfGeneration);
+            // PDF বাটনে ক্লিক ইভেন্ট
+            ui.pdfBtn.addEventListener('click', generatePDF);
 
             try {
-                // লোকেশন লোড (ক্যাশ থেকে)
-                await loadLocationFromStorage();
-                // রমজানের ডাটা লোড
-                await fetchCoreData();
+                // ১. লোকেশন নেওয়া
+                const pos = await getPosition();
+                state.lat = pos.lat;
+                state.lon = pos.lon;
+
+                // ২. এলাকার নাম বাংলা ও ইংরেজিতে আনা (সমান্তরালে)
+                const [bnName, enName] = await Promise.all([
+                    fetchAreaNameBn(state.lat, state.lon),
+                    fetchAreaNameEn(state.lat, state.lon)
+                ]);
+                state.areaNameBn = bnName;
+                state.areaNameEn = enName;
+
+                // ৩. রমজানের ডাটা আনা
+                await fetchRamadanData(state.lat, state.lon);
+
+                // ৪. ডিওএম আপডেট
+                injectDOM();
+
             } catch (err) {
                 console.error(err);
-                // ডিফল্ট লোকেশন না থাকায় যদি ক্যাশ থেকে লোকেশন না পাওয়া যায়
+                // লোকেশন বা ডাটা লোড ব্যর্থ হলে ত্রুটি বার্তা দেখাও
                 ui.skeletonLoader.style.display = 'none';
                 ui.tableWrapper.style.display = 'none';
                 ui.mainContent.innerHTML += `
                     <div class="error-msg" style="margin-top: 20px;">
-                        <i class="fas fa-map-marker-alt" style="font-size: 2.5rem; margin-bottom: 15px; color: #e53e3e;"></i>
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; margin-bottom: 15px; color: #e53e3e;"></i>
                         <h3 style="margin-bottom: 10px; color: var(--text-primary);">লোকেশন পাওয়া যায়নি</h3>
-                        <p style="font-size: 0.95rem; color: var(--text-secondary);">দয়া করে হোম পেজে ফিরে গিয়ে আপনার লোকেশন নিশ্চিত করুন। কোনো ডিফল্ট লোকেশন সেট করা নেই।</p>
-                        <a href="index.html" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: var(--accent-color); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">হোম পেজে যান</a>
+                        <p style="font-size: 0.95rem; color: var(--text-secondary);">আপনার অবস্থান শনাক্ত করা সম্ভব হয়নি। দয়া করে লোকেশন অনুমতি দিন অথবা আবার চেষ্টা করুন।</p>
+                        <button onclick="location.reload()" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: var(--accent-color); color: white; text-decoration: none; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">পুনরায় চেষ্টা করুন</button>
                     </div>
                 `;
             }
