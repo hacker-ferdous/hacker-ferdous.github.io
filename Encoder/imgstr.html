@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base91 Image Converter | Pro Tool</title>
+    <title>Base91 Image Converter</title>
     <style>
         :root {
             --bg-body: #0b0f19;
@@ -681,13 +681,15 @@
 
     // ---------- Configuration ----------
     const qualityPresets =[
-        { key: 'smart', label: 'Smart (Auto Small)', maxHeight: 800 }, // New ultra-efficient default
+        { key: 'smart', label: 'Auto', maxHeight: 800 }, // New ultra-efficient default
         { key: 'ultraLow', label: 'Ultra Low (144p)', maxHeight: 144 },
         { key: 'low', label: 'Low (240p)', maxHeight: 240 },
         { key: 'balanced', label: 'Balanced (360p)', maxHeight: 360 },
         { key: 'standard', label: 'SD (480p)', maxHeight: 480 },
         { key: 'high', label: 'HD (720p)', maxHeight: 720 },
         { key: 'fullHD', label: 'Full HD (1080p)', maxHeight: 1080 },
+        { key: 'towk', label: '2K', maxHeight: 2000 },
+        { key: 'fourk', label: '4k', maxHeight: 4000 },
         { key: 'original', label: 'Original', maxHeight: Infinity }
     ];
 
