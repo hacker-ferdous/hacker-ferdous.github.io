@@ -446,6 +446,17 @@ function saveMessage(msg) {
     tx.objectStore(STORE_NAME).put(msgCopy); 
 }
 
+// Utility to generate unique name
+function makeUniqueName(baseName, existingNames) {
+    let name = baseName;
+    let counter = 1;
+    while (existingNames.has(name)) {
+        name = `${baseName} (${counter})`;
+        counter++;
+    }
+    return name;
+}
+
 // Network Logic - Random Backoff & Fast Resync
 function connectToNetwork() {
     if (isConnectingToNetwork) return;
@@ -555,7 +566,8 @@ function setupClientConnection(conn) {
         lastHeartbeat = Date.now();
         if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
         heartbeatCheckInterval = setInterval(() => {
-            if (Date.now() - lastHeartbeat > 12000) { 
+            // If no heartbeat for 15 seconds, assume host dead
+            if (Date.now() - lastHeartbeat > 15000) { 
                 conn.close(); 
             }
         }, 3000);
@@ -608,6 +620,17 @@ function sendPendingMessages() {
 function handleNetworkData(data, conn) {
     if (data.type === 'handshake') {
         if (isHost) {
+            // Ensure unique name
+            const existingNames = new Set([myName, ...Object.values(activeConnections).map(p => p.name)]);
+            const uniqueName = makeUniqueName(data.name, existingNames);
+            
+            if (uniqueName !== data.name) {
+                // Send name assignment back to client
+                conn.send({ type: 'system', action: 'name-assign', newName: uniqueName });
+                // Update client's name in our records
+                data.name = uniqueName;
+            }
+
             if (activeConnections[data.deviceId] && activeConnections[data.deviceId].peerId !== conn.peer) {
                 activeConnections[data.deviceId].conn.close(); 
             }
@@ -618,6 +641,15 @@ function handleNetworkData(data, conn) {
         }
     } else if (data.type === 'system') {
         if (data.action === 'heartbeat') { lastHeartbeat = Date.now(); return; }
+        if (data.action === 'name-assign') {
+            // Client receives new unique name from host
+            myName = data.newName;
+            localStorage.setItem('messenger_name', myName);
+            // Update UI if needed
+            document.getElementById('info-name').textContent = myName;
+            showStatus(`Your name changed to ${myName}`);
+            return;
+        }
         if (data.action === 'join') showStatus(`${data.name} joined`);
         if (data.action === 'leave') showStatus(`${data.name} left`);
         if (data.action === 'name-change') {
