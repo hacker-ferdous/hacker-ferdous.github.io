@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Messenger P2P Pro - Global</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+<style>
+    :root {
+    --bg-black: #000000;
+    --receiver-bubble: #242526;
+    --sender-bubble: #0084ff;
+    --sub-bubble: #333333;
+    --icon-color: #0084ff;
+    --text-white: #e4e6eb;
+    --text-gray-dim: #b0b3b8;
+    --text-replied: #aaaaaa;
+    --main-font: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-sm: 12px;
+    --font-md: 15px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+
+body { 
+    background-color: var(--bg-black); font-family: var(--main-font); color: var(--text-white); 
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; display: flex; 
+}
+
+.modal-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; 
+    z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; 
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-box { 
+    background: var(--receiver-bubble); padding: 24px; border-radius: 16px; width: 90%; max-width: 380px; 
+    text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; max-height: 80vh; 
+    transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-overlay.active .modal-box { transform: scale(1); }
+.modal-box h2 { margin-bottom: 16px; font-size: 1.2em; }
+.modal-box input { width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; border: 1px solid var(--sub-bubble); background: #3A3B3C; color: #fff; font-size: 16px; }
+.modal-btn { width: 100%; padding: 12px; background: var(--sender-bubble); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+.modal-btn:hover { background: #0073e6; }
+.modal-btn.cancel { background: #444; }
+.modal-btn.cancel:hover { background: #555; }
+
+.info-content { text-align: left; font-size: 14px; color: var(--text-white); overflow-y: auto; margin-bottom: 15px; }
+.info-content p { margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; word-break: break-word; }
+.info-content p span { font-weight: bold; color: var(--icon-color); }
+.peer-list { margin-top: 10px; border-top: 1px solid #444; padding-top: 10px; }
+.edit-icon { margin-left: 8px; cursor: pointer; color: var(--icon-color); transition: 0.2s; }
+.edit-icon:active { transform: scale(1.2); }
+
+#camera-video { width: 100%; border-radius: 8px; background: #000; margin-bottom: 10px; }
+
+.chat-container { width: 100%; height: 100%; display: flex; flex-direction: column; background-color: var(--bg-black); position: relative; }
+
+.chat-header { display: flex; flex-direction: column; padding: 10px 20px; border-bottom: 1px solid #222; background-color: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+.header-main-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.header-left { display: flex; align-items: center; min-width: 0; }
+.profile-pic { width: 40px; height: 40px; border-radius: 50%; background: url('https://picsum.photos/id/1011/100/100') no-repeat center center/cover; margin-right: 12px; position: relative; flex-shrink: 0; }
+.status-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; background: #ff453a; border: 2px solid var(--bg-black); transition: 0.3s; }
+.status-dot.connected { background: #32d74b; box-shadow: 0 0 5px #32d74b; }
+.user-info { min-width: 0; }
+.user-info h4 { margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+
+#live-status-text { 
+    font-size: 12px; color: var(--text-gray-dim); font-style: italic; white-space: nowrap; 
+    overflow: hidden; text-overflow: ellipsis; display: block; width: 220px; 
+    transition: color 0.3s, transform 0.3s; margin-top: 2px;
+}
+
+.header-icons { display: flex; gap: 20px; color: var(--icon-color); font-size: 18px; }
+.header-icons i { cursor: pointer; transition: color 0.2s; }
+.header-icons i:hover { color: #fff; }
+
+.chat-content { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 14px; scroll-behavior: smooth; position: relative; }
+.chat-content::-webkit-scrollbar { width: 6px; }
+.chat-content::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+.message-row { display: flex; align-items: flex-end; width: 100%; position: relative; }
+.sender { justify-content: flex-end; }
+.receiver { justify-content: flex-start; }
+.mini-profile { width: 28px; height: 28px; border-radius: 50%; background: url('https://picsum.photos/id/1011/100/100') no-repeat center center/cover; margin-right: 8px; flex-shrink: 0; }
+
+.message-column { display: flex; flex-direction: column; max-width: 70%; }
+.receiver-stack { align-items: flex-start; }
+.sender-stack { align-items: flex-end; }
+
+.bubble-wrapper { position: relative; display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; width: fit-content; max-width: 100%; }
+.sender-stack .bubble-wrapper { align-items: flex-end; }
+
+.bubble { 
+    padding: 10px 16px; border-radius: 18px; font-size: var(--font-md); line-height: 1.4; 
+    white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; display: inline-block;
+}
+.receiver .bubble { background-color: var(--receiver-bubble); color: var(--text-white); border-bottom-left-radius: 4px; }
+.sender .bubble { background-color: var(--sender-bubble); color: white; border-bottom-right-radius: 4px; }
+.deleted-bubble { font-style: italic; color: #888 !important; background: transparent !important; border: 1px solid #444 !important; padding: 8px 14px; }
+
+.chat-media { max-width: 250px; border-radius: 15px; margin: 5px 0; cursor: pointer; outline: none; }
+.file-box { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; color: #fff; text-decoration: none; font-size: 14px; word-break: break-all; }
+.file-box i { font-size: 24px; color: #fff; }
+
+.msg-meta { font-size: 11px; color: var(--text-gray-dim); margin-top: 4px; white-space: nowrap; transition: 0.2s; }
+.sender-stack .msg-meta { text-align: right; margin-right: 4px; }
+.receiver-stack .msg-meta { text-align: left; margin-left: 4px; }
+
+.reply-info-text { font-size: var(--font-sm); color: var(--text-gray-dim); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.previous-bubble { background-color: var(--sub-bubble) !important; color: var(--text-replied) !important; margin-bottom: 4px; max-width: 100%; opacity: 0.8; font-size: 13px; border-radius: 14px !important; }
+
+.bubble-wrapper.has-reactions { margin-bottom: 12px; }
+.reactions-display { 
+    position: absolute; bottom: -12px; right: 5px; background: var(--sub-bubble); padding: 2px 6px; 
+    border-radius: 12px; font-size: 11px; display: none; gap: 4px; border: 1px solid var(--bg-black); 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 2; white-space: nowrap; 
+}
+.reactions-display.active { display: flex; }
+.sender .reactions-display { left: 5px; right: auto; }
+
+.msg-actions { 
+    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(36, 37, 38, 0.95); padding: 8px 16px; border-radius: 30px; 
+    box-shadow: 0 8px 32px rgba(0,0,0,0.8); z-index: 2000; white-space: nowrap; 
+    border: 1px solid #444; backdrop-filter: blur(10px);
+    display: none; opacity: 0; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.message-row.show-actions .msg-actions { 
+    display: flex; gap: 12px; opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1);
+}
+
+.action-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4); z-index: 1500; 
+    display: none; pointer-events: auto;
+}
+.message-row.show-actions ~ .action-overlay,
+.chat-container:has(.show-actions) .action-overlay { 
+    display: block; 
+}
+
+.action-btn { background: transparent; border: none; font-size: 22px; cursor: pointer; transition: transform 0.2s; }
+.action-btn:active { transform: scale(1.4); }
+
+.reply-preview-bar { display: none; align-items: center; justify-content: space-between; background-color: var(--bg-black); padding: 10px 25px; border-top: 1px solid #222; font-size: var(--font-sm); color: var(--text-gray-dim); animation: fadeIn 0.3s; }
+.cancel-reply { cursor: pointer; color: var(--icon-color); font-size: 16px; transition: color 0.2s; }
+.cancel-reply:hover { color: #ff453a; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.input-area { 
+    display: flex; align-items: center; gap: 10px; 
+    padding: 10px 15px calc(15px + env(safe-area-inset-bottom)) 15px; 
+    background-color: var(--bg-black); border-top: 1px solid #222; 
+    flex-shrink: 0; width: 100%; min-height: 60px; z-index: 100;
+}
+
+.input-actions { 
+    display: flex; align-items: center; gap: 15px; overflow: visible;
+    transition: max-width 0.3s ease, opacity 0.3s; max-width: 200px; opacity: 1; 
+    padding-bottom: 4px; flex-shrink: 0;
+}
+.input-actions.collapsed { max-width: 0; opacity: 0; gap: 0; pointer-events: none; }
+
+.expand-toggle { 
+    display: none; align-items: center; justify-content: center; width: 24px; color: var(--icon-color); 
+    font-size: 20px; cursor: pointer; transition: transform 0.2s; padding-bottom: 4px; 
+}
+.expand-toggle.visible { display: flex; }
+
+.input-icons { color: var(--icon-color); font-size: 20px; cursor: pointer; transition: color 0.2s; }
+.input-icons:hover { color: #fff; }
+
+.text-box-container { 
+    flex-grow: 1; background-color: var(--receiver-bubble); border-radius: 20px; 
+    padding: 10px 14px; display: flex; align-items: center; transition: 0.3s; min-height: 40px; 
+}
+.text-box-container textarea { 
+    background: none; border: none; color: var(--text-white); width: 100%; 
+    font-size: var(--font-md); font-family: inherit; resize: none; overflow-y: hidden; 
+    height: 20px; line-height: 20px; padding: 0; margin: 0; outline: none; 
+}
+.emoji-icon { color: var(--icon-color); font-size: 20px; margin-left: 10px; cursor: pointer; }
+
+.dynamic-right-icon { 
+    width: 30px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; 
+}
+.svg-send-icon { fill: var(--icon-color); width: 24px; height: 24px; }
+.thumbs-up-icon { color: var(--icon-color); font-size: 22px; }
+</style>
+
+    </head>
+<body>
+
+<!-- Name Setup Modal -->
+<div id="name-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h2>Enter Display Name</h2>
+        <input type="text" id="my-name-input" placeholder="e.g. John Doe" autocomplete="off">
+        <button class="modal-btn" id="save-name-btn">Continue</button>
+    </div>
+</div>
+
+<!-- Info Modal -->
+<div id="info-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h2><i class="fas fa-info-circle"></i> Connection Info</h2>
+        <div class="info-content">
+            <p><span>Your Name:</span> <span id="info-name" style="color:var(--text-white); font-weight:normal;"></span> <i class="fas fa-edit edit-icon" id="edit-name-btn" title="Change Name"></i></p>
+            <p style="font-size: 11px; opacity: 0.7;">This is a global self-healing P2P chat room. No IDs required.</p>
+            <div class="peer-list">
+                <span>Active Users Here:</span>
+                <ul id="info-peers-list" style="list-style:none; padding:10px 0 0 0; margin:0; color:#ddd; max-height: 120px; overflow-y:auto;">
+                    <li>Loading connections...</li>
+                </ul>
+            </div>
+        </div>
+        <button class="modal-btn cancel" id="close-info-btn">Close</button>
+    </div>
+</div>
+
+<!-- Camera Modal -->
+<div id="camera-modal" class="modal-overlay">
+    <div class="modal-box" style="padding: 15px;">
+        <video id="camera-video" autoplay playsinline></video>
+        <button class="modal-btn" id="capture-photo-btn"><i class="fas fa-camera"></i> Capture & Send</button>
+        <button class="modal-btn cancel" id="close-camera-btn">Cancel</button>
+    </div>
+</div>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="header-main-row">
+            <div class="header-left">
+                <div class="profile-pic"><div class="status-dot" id="dot"></div></div>
+                <div class="user-info">
+                    <h4>Global Room <span id="conn-count">(0)</span></h4>
+                    <span id="live-status-text">Connecting...</span>
+                </div>
+            </div>
+            <div class="header-icons">
+                <i class="fas fa-info-circle" id="open-info-btn" title="Information"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-content" id="chatContent"></div>
+
+    <div class="reply-preview-bar" id="reply-preview">
+        <div id="reply-preview-text">Replying to...</div>
+        <i class="fas fa-times cancel-reply" id="cancel-reply-btn"></i>
+    </div>
+
+    <div class="input-area">
+        <div class="expand-toggle" id="expand-btn"><i class="fas fa-chevron-right"></i></div>
+        
+        <div class="input-actions" id="input-actions">
+            <i class="fas fa-plus-circle input-icons" id="file-any-btn" title="Send File"></i>
+            <i class="fas fa-camera input-icons" id="camera-btn" title="Take Photo"></i>
+            <i class="fas fa-image input-icons" id="file-media-btn" title="Send Gallery"></i>
+        </div>
+        
+        <input type="file" id="file-any-input" style="display:none">
+        <input type="file" id="file-media-input" accept="image/*,video/*" style="display:none">
+        
+        <div class="text-box-container">
+            <textarea id="messageInput" placeholder="Message" rows="1"></textarea>
+            <i class="far fa-smile emoji-icon"></i>
+        </div>
+        
+        <div class="dynamic-right-icon" id="dynamicIconContainer">
+            <i class="fas fa-thumbs-up thumbs-up-icon"></i>
+        </div>
+    </div>
+</div>
+<script>
+const DB_NAME = 'P2PMessengerDB_v7'; // 6: Version bumped for seamless schema update
+const STORE_NAME = 'messages';
+const CHUNK_SIZE = 16384; 
+const GLOBAL_ROOM_ID = 'messenger-global-p2p-chat-v1';
+
+let db, peer;
+let myName = localStorage.getItem('messenger_name') || '';
+// 2, 8: Using crypto.randomUUID for absolute uniqueness and identity
+let myDeviceId = localStorage.getItem('messenger_device_id');
+if (!myDeviceId) {
+    myDeviceId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'dev-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('messenger_device_id', myDeviceId);
+}
+
+// Network Status
+let isHost = false;
+let hostConn = null;
+let isConnectingToNetwork = false;
+let activeConnections = {}; // Key will now be deviceId instead of peerId
+let globalPeerList =[];
+let incomingChunks = {};
+let activeReplyContext = null;
+let cameraStream = null;
+let myIpInfo = { ip: 'Hidden', loc: 'Loading...' };
+
+const UI = {
+    chat: document.getElementById('chatContent'),
+    msgInput: document.getElementById('messageInput'),
+    replyPreview: document.getElementById('reply-preview'),
+    replyText: document.getElementById('reply-preview-text'),
+    dot: document.getElementById('dot'),
+    connCount: document.getElementById('conn-count'),
+    dynamicIcon: document.getElementById('dynamicIconContainer'),
+    inputActions: document.getElementById('input-actions'),
+    expandBtn: document.getElementById('expand-btn')
+};
+
+const sendIcon = `<svg viewBox="0 0 24 24" class="svg-send-icon"><path d="M3.4 20.4l17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.06-.87.49-.87.99l.01 4.61c0 .71.73 1.2 1.39.92z"></path></svg>`;
+const thumbsUpIcon = `<i class="fas fa-thumbs-up thumbs-up-icon"></i>`;
+let isSendMode = false;
+let isInputExpanded = false;
+let explicitlyCollapsed = false;
+
+// Helpers
+function escapeHTML(str) { 
+    if(typeof str !== 'string') return '';
+    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); 
+}
+function formatTime(timestamp) {
+    const d = new Date(timestamp);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+// 8: Solved msgId collision
+function generateMsgId() { return typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).substr(2, 9); }
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// 7: Helper to convert Base64 to Blob
+function base64ToBlob(base64, mimeType) {
+    try {
+        const b64Data = base64.split(',')[1];
+        if (!b64Data) return base64;
+        const byteCharacters = atob(b64Data);
+        const byteArrays =[];
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) { byteNumbers[i] = slice.charCodeAt(i); }
+            byteArrays.push(new Uint8Array(byteNumbers));
+        }
+        return new Blob(byteArrays, { type: mimeType });
+    } catch(e) { console.error("Blob conversion failed:", e); return base64; }
+}
+function getMimeType(base64) {
+    const match = base64.match(/data:([^;]+);/);
+    return match ? match[1] : '';
+}
+
+// 5: Memory Leak protection for unfinished chunks
+setInterval(() => {
+    const now = Date.now();
+    for (const id in incomingChunks) {
+        if (now - incomingChunks[id].timestamp > 60000) { // Keep alive for max 60 seconds
+            delete incomingChunks[id];
+        }
+    }
+}, 30000);
+
+// Live Status Engine
+function showStatus(msgText) {
+    const st = document.getElementById('live-status-text');
+    st.textContent = msgText;
+    st.style.color = '#fff';
+    st.style.transform = 'scale(1.02)';
+    setTimeout(() => { 
+        st.style.color = 'var(--text-gray-dim)'; 
+        st.style.transform = 'scale(1)';
+    }, 500);
+}
+
+// 12. Cleanup Connections on Unload
+window.addEventListener('beforeunload', () => {
+    if (hostConn) hostConn.close();
+    if (peer) peer.destroy();
+});
+
+// 1. Initialization Core
+window.onload = () => { if (myName) { startApp(); } else { openModal('name-modal'); } };
+
+document.getElementById('save-name-btn').onclick = () => {
+    const inputName = document.getElementById('my-name-input').value.trim();
+    if (inputName) {
+        const oldName = myName;
+        myName = inputName; 
+        localStorage.setItem('messenger_name', myName);
+        
+        if (oldName && oldName !== myName) {
+            // 3: Send deviceId with name change
+            sendToNetwork({ type: 'system', action: 'name-change', oldName: oldName, newName: myName, deviceId: myDeviceId });
+            showStatus("You changed your name");
+        }
+        
+        closeModal('name-modal');
+        if (!isConnectingToNetwork && !isHost && !hostConn) startApp();
+    }
+};
+
+function startApp() {
+    if("Notification" in window && Notification.permission !== "granted") Notification.requestPermission();
+    initDB().then(connectToNetwork);
+    fetchIPInfo();
+}
+
+function fetchIPInfo() {
+    fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => {
+        myIpInfo.loc = `${data.city || 'Unknown'}, ${data.country || 'Unknown'}`;
+    }).catch(() => { myIpInfo.loc = 'Unavailable'; });
+}
+
+// 2. Database (6 & 11: Error handling & non-destructive upgrade)
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, 2);
+        req.onupgradeneeded = e => {
+            db = e.target.result;
+            // 6: Create new object store ONLY if not exists. Do NOT delete old data!
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'msgId' });
+            }
+        };
+        req.onsuccess = e => { db = e.target.result; loadMessages(); resolve(); };
+        req.onerror = e => { console.error("DB Open Error:", e.target.error); reject(e); };
+    });
+}
+function loadMessages() { 
+    const req = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll();
+    req.onsuccess = e => e.target.result.forEach(renderMessage); 
+    req.onerror = e => console.error("DB Load Error:", e.target.error);
+}
+function saveMessage(msg) { 
+    // 7: Save as Blob instead of Base64 to save space
+    let msgCopy = { ...msg };
+    if (['image', 'video', 'file'].includes(msgCopy.type) && typeof msgCopy.content === 'string' && msgCopy.content.startsWith('data:')) {
+        msgCopy.content = base64ToBlob(msgCopy.content, getMimeType(msgCopy.content));
+    }
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    // 11: Display warning if quota exceeded
+    tx.onerror = e => {
+        console.error("DB Save Error:", e.target.error);
+        if (e.target.error.name === 'QuotaExceededError') alert("Storage is full! Please delete some messages.");
+    };
+    tx.objectStore(STORE_NAME).put(msgCopy); 
+}
+
+// 1. Host Migration Logic
+function determineNextHost() {
+    const allPeers = [...globalPeerList];
+    if (!allPeers.find(p => p.deviceId === myDeviceId)) allPeers.push({ deviceId: myDeviceId, name: myName });
+    allPeers.sort((a, b) => a.deviceId.localeCompare(b.deviceId)); // Rank-based election
+    return allPeers[0].deviceId === myDeviceId;
+}
+
+// 3. Smart Mesh Network Logic
+function connectToNetwork() {
+    if (isConnectingToNetwork) return;
+    isConnectingToNetwork = true;
+    showStatus("Joining global room...");
+    
+    if (peer) peer.destroy();
+    peer = new Peer(GLOBAL_ROOM_ID);
+    
+    peer.on('open', () => {
+        isConnectingToNetwork = false; isHost = true;
+        activeConnections = {};
+        showStatus("Connected as Host");
+        UI.dot.classList.add('connected');
+        broadcastPeerList();
+        updateSyncCount();
+        peer.on('connection', setupHostConnection);
+    });
+    
+    peer.on('error', (err) => {
+        if (err.type === 'unavailable-id') {
+            peer.destroy();
+            peer = new Peer(); 
+            peer.on('open', () => {
+                isHost = false;
+                hostConn = peer.connect(GLOBAL_ROOM_ID);
+                setupClientConnection(hostConn);
+            });
+            peer.on('error', () => {
+                isConnectingToNetwork = false; UI.dot.classList.remove('connected');
+                showStatus("Network glitch. Retrying..."); setTimeout(connectToNetwork, 2000);
+            });
+        } else {
+            isConnectingToNetwork = false; UI.dot.classList.remove('connected');
+            showStatus("Connection error. Retrying..."); setTimeout(connectToNetwork, 2000);
+        }
+    });
+}
+
+function updateSyncCount() {
+    const count = Object.keys(activeConnections).length + 1;
+    UI.connCount.textContent = `(${count})`;
+    if (isHost) relay({ type: 'system', action: 'sync-count', count: count }, null);
+}
+
+function broadcastPeerList() {
+    if (!isHost) return;
+    const peers = Object.entries(activeConnections).map(([dId, p]) => ({ deviceId: dId, name: p.name, ipInfo: p.ipInfo, isHost: false }));
+    peers.push({ deviceId: myDeviceId, name: myName + ' (Host)', ipInfo: myIpInfo, isHost: true });
+    globalPeerList = peers; // Host sets it locally
+    relay({ type: 'system', action: 'peer-list', peers: peers }, null);
+}
+
+function setupHostConnection(conn) {
+    conn.on('data', data => handleNetworkData(data, conn));
+    conn.on('close', () => {
+        // 2: Mapping by deviceId to avoid duplicates
+        const disconnectedDeviceId = Object.keys(activeConnections).find(dId => activeConnections[dId].peerId === conn.peer);
+        if (disconnectedDeviceId) {
+            const peerName = activeConnections[disconnectedDeviceId].name;
+            delete activeConnections[disconnectedDeviceId];
+            updateSyncCount(); broadcastPeerList();
+            relay({ type: 'system', action: 'leave', name: peerName }, null);
+            showStatus(`${peerName} left`);
+        }
+    });
+}
+
+function setupClientConnection(conn) {
+    let connectTimeout = setTimeout(() => { if (!conn.open) { conn.close(); connectToNetwork(); } }, 8000);
+    
+    conn.on('open', () => {
+        clearTimeout(connectTimeout);
+        isConnectingToNetwork = false; UI.dot.classList.add('connected');
+        showStatus("Joined Global Room");
+        conn.send({ type: 'handshake', deviceId: myDeviceId, name: myName, ipInfo: myIpInfo });
+    });
+    conn.on('data', data => handleNetworkData(data, conn));
+    
+    conn.on('close', () => {
+        hostConn = null; UI.dot.classList.remove('connected');
+        showStatus("Host dropped. Electing new host...");
+        
+        // Remove dead host from list to elect properly
+        globalPeerList = globalPeerList.filter(p => !p.isHost); 
+        
+        const isNewHost = determineNextHost();
+        // 1: Proper timed re-election prevents race conditions
+        if (isNewHost) setTimeout(connectToNetwork, 500); 
+        else setTimeout(connectToNetwork, 3000); 
+    });
+    conn.on('error', () => {
+        hostConn = null; UI.dot.classList.remove('connected');
+        showStatus("Connection dropped..."); setTimeout(connectToNetwork, 2000);
+    });
+}
+
+function handleNetworkData(data, conn) {
+    if (data.type === 'handshake') {
+        if (isHost) {
+            // 2: Identity mapped by permanent UUID
+            if (activeConnections[data.deviceId] && activeConnections[data.deviceId].peerId !== conn.peer) {
+                activeConnections[data.deviceId].conn.close(); // Clean old ghost connection
+            }
+            activeConnections[data.deviceId] = { conn: conn, name: data.name, ipInfo: data.ipInfo || {}, peerId: conn.peer };
+            updateSyncCount(); showStatus(`${data.name} joined`);
+            relay({ type: 'system', action: 'join', name: data.name }, data.deviceId);
+            broadcastPeerList();
+        }
+    } else if (data.type === 'system') {
+        if (data.action === 'join') showStatus(`${data.name} joined`);
+        if (data.action === 'leave') showStatus(`${data.name} left`);
+        if (data.action === 'name-change') {
+            showStatus(`${data.oldName} changed name to ${data.newName}`);
+            // 3: Host updates specific user without ghosting
+            if (isHost && activeConnections[data.deviceId]) {
+                activeConnections[data.deviceId].name = data.newName;
+                broadcastPeerList();
+            }
+        }
+        if (data.action === 'sync-count') UI.connCount.textContent = `(${data.count})`;
+        // 4: Rely entirely on peer-list for perfect sync
+        if (data.action === 'peer-list') globalPeerList = data.peers;
+        
+        if (isHost) relay(data, data.senderDeviceId || (conn ? activeConnections[Object.keys(activeConnections).find(dId => activeConnections[dId].peerId === conn.peer)]?.deviceId : null));
+    } else {
+        const senderId = data.senderDeviceId;
+        if (data.type === 'media-chunk') {
+            processMediaChunk(data);
+            if (isHost) relay(data, senderId);
+        } else if (data.type === 'react') {
+            updateReactionLocally(data.msgId, data.emoji, data.senderDeviceId);
+            if (isHost) relay(data, senderId);
+        } else if (data.type === 'delete') {
+            updateMsgAsDeletedLocally(data.msgId);
+            if (isHost) relay(data, senderId);
+        } else {
+            // Normal Chat Msgs
+            if (!document.getElementById('msg-' + data.msgId)) {
+                const incomingMsg = { ...data };
+                incomingMsg.sender = (incomingMsg.senderDeviceId === myDeviceId) ? 'me' : 'them';
+                saveMessage(incomingMsg); renderMessage(incomingMsg);
+                if (incomingMsg.sender === 'them' && document.hidden) {
+                    new Notification(incomingMsg.senderName, { body: incomingMsg.type === 'text' ? incomingMsg.content : 'Sent an attachment' });
+                }
+            }
+            if (isHost) relay(data, senderId);
+        }
+    }
+}
+
+function relay(data, excludeDeviceId) {
+    Object.keys(activeConnections).forEach(dId => {
+        if (dId !== excludeDeviceId) {
+            const p = activeConnections[dId];
+            if (p.conn && p.conn.open) p.conn.send(data);
+        }
+    });
+}
+
+function sendToNetwork(data) {
+    if (!data.senderDeviceId) data.senderDeviceId = myDeviceId;
+    if (isHost) relay(data, myDeviceId);
+    else if (hostConn && hostConn.open) hostConn.send(data);
+}
+
+// 4. Send & UI Logic
+function resetInputBox() {
+    UI.msgInput.value = ''; UI.msgInput.style.height = '20px'; UI.msgInput.style.overflowY = 'hidden';
+    UI.dynamicIcon.innerHTML = thumbsUpIcon; isSendMode = false;
+    collapseInput(true); cancelReply();
+}
+
+function sendMessageAction() {
+    const text = UI.msgInput.value.trim();
+    if (!text) return;
+    const msg = { 
+        msgId: generateMsgId(), type: 'text', content: text, senderName: myName, 
+        senderDeviceId: myDeviceId, replyTo: activeReplyContext, timestamp: Date.now() 
+    };
+    sendToNetwork(msg); msg.sender = 'me'; saveMessage(msg); renderMessage(msg); resetInputBox();
+}
+
+function sendThumbsUp() {
+    const msg = { 
+        msgId: generateMsgId(), type: 'thumb', content: '👍', senderName: myName, 
+        senderDeviceId: myDeviceId, replyTo: activeReplyContext, timestamp: Date.now() 
+    };
+    sendToNetwork(msg); msg.sender = 'me'; saveMessage(msg); renderMessage(msg); cancelReply();
+}
+
+function sendMediaFile(base64, msgType, fileName = '') {
+    const msgId = generateMsgId(), id = Date.now().toString(), total = Math.ceil(base64.length / CHUNK_SIZE);
+    const ts = Date.now();
+    for (let i = 0; i < total; i++) {
+        sendToNetwork({ type: 'media-chunk', id, msgId, index: i, total, data: base64.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE), msgType, fileName, replyTo: activeReplyContext, senderDeviceId: myDeviceId, senderName: myName, timestamp: ts });
+    }
+    const msg = { msgId, type: msgType, content: base64, fileName, sender: 'me', senderName: myName, senderDeviceId: myDeviceId, timestamp: ts, replyTo: activeReplyContext };
+    saveMessage(msg); renderMessage(msg); cancelReply();
+}
+
+function processMediaChunk(data) {
+    // 5: Store chunk with timestamp to detect memory leaks
+    if (!incomingChunks[data.id]) incomingChunks[data.id] = { chunks: new Array(data.total), count: 0, timestamp: Date.now() };
+    incomingChunks[data.id].timestamp = Date.now();
+    
+    if (!incomingChunks[data.id].chunks[data.index]) {
+        incomingChunks[data.id].chunks[data.index] = data.data; incomingChunks[data.id].count++;
+    }
+    if (incomingChunks[data.id].count === data.total) {
+        const reconstructed = incomingChunks[data.id].chunks.join('');
+        const msg = { type: data.msgType, msgId: data.msgId, content: reconstructed, fileName: data.fileName, senderName: data.senderName, senderDeviceId: data.senderDeviceId, replyTo: data.replyTo, timestamp: data.timestamp };
+        if (!document.getElementById('msg-' + msg.msgId)) {
+            msg.sender = (msg.senderDeviceId === myDeviceId) ? 'me' : 'them';
+            saveMessage(msg); renderMessage(msg);
+            if (msg.sender === 'them' && document.hidden) new Notification(msg.senderName, { body: 'Sent a file' });
+        }
+        delete incomingChunks[data.id];
+    }
+}
+
+// Fixed Reaction engine
+function sendReaction(msgId, emoji) { 
+    sendToNetwork({ type: 'react', msgId, emoji, senderDeviceId: myDeviceId }); 
+    updateReactionLocally(msgId, emoji, myDeviceId); 
+}
+function updateReactionLocally(msgId, emoji, deviceId) {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.onerror = e => console.error("DB Reaction Error:", e.target.error);
+    const req = tx.objectStore(STORE_NAME).get(msgId);
+    req.onsuccess = () => {
+        let msg = req.result;
+        if (msg) {
+            if(!msg.reactions || Array.isArray(msg.reactions)) msg.reactions = {};
+            if(msg.reactions[deviceId] === emoji) delete msg.reactions[deviceId];
+            else msg.reactions[deviceId] = emoji;
+            saveMessage(msg); renderReactionsDOM(msgId, msg.reactions);
+        }
+    };
+}
+function renderReactionsDOM(msgId, reactionsObj) {
+    const wrapper = document.getElementById('msg-' + msgId);
+    if (!wrapper) return;
+    
+    let rDisplay = wrapper.querySelector('.reactions-display');
+    const bubbleWrap = wrapper.querySelector('.bubble-wrapper');
+    if (!rDisplay && bubbleWrap) { 
+        rDisplay = document.createElement('div'); 
+        rDisplay.className = 'reactions-display'; 
+        
+        // 9: JS Flexbox Override for preventing overlapping reactions!
+        bubbleWrap.style.display = 'flex';
+        bubbleWrap.style.flexDirection = 'column';
+        bubbleWrap.style.alignItems = wrapper.classList.contains('sender') ? 'flex-end' : 'flex-start';
+        rDisplay.style.position = 'relative';
+        rDisplay.style.marginTop = '4px';
+        rDisplay.style.bottom = 'auto';
+        
+        bubbleWrap.appendChild(rDisplay); 
+    }
+    
+    if (!reactionsObj || Object.keys(reactionsObj).length === 0) {
+        if(rDisplay) rDisplay.classList.remove('active');
+        if(bubbleWrap) bubbleWrap.classList.remove('has-reactions');
+        return;
+    }
+    const counts = {};
+    Object.values(reactionsObj).forEach(e => { counts[e] = (counts[e] || 0) + 1; });
+    const emojis = Object.keys(counts).map(e => counts[e] > 1 ? `${e} <span style="font-size:10px;opacity:0.8">${counts[e]}</span>` : e).join(' ');
+    
+    rDisplay.innerHTML = emojis; rDisplay.classList.add('active');
+    if(bubbleWrap) bubbleWrap.classList.add('has-reactions');
+}
+
+// Secure Delete Engine + Reply Fixes
+function deleteMessageAction(msgId) { sendToNetwork({ type: 'delete', msgId }); updateMsgAsDeletedLocally(msgId); }
+function updateMsgAsDeletedLocally(msgId) {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.onerror = e => console.error("DB Delete Error:", e.target.error);
+    const req = tx.objectStore(STORE_NAME).get(msgId);
+    req.onsuccess = () => {
+        let msg = req.result;
+        if (msg) { 
+            msg.isDeleted = true; 
+            saveMessage(msg); 
+            markMessageDeletedDOM(msgId); 
+            // 10: Clear Compose Context immediately if replying to a deleted message
+            if (activeReplyContext && activeReplyContext.msgId === msgId) cancelReply();
+        }
+    };
+}
+function markMessageDeletedDOM(msgId) {
+    const wrapper = document.getElementById('msg-' + msgId);
+    if (!wrapper) return;
+    
+    // মূল কন্টেন্ট খুঁজে বের কর (bubble-wrapper-এর ভেতরে)
+    const bubbleWrap = wrapper.querySelector('.bubble-wrapper');
+    if (bubbleWrap) {
+        const contentArea = bubbleWrap.querySelector('.bubble') || bubbleWrap.querySelector('.chat-media') || bubbleWrap.querySelector('.file-box');
+        if (contentArea) {
+            const delBubble = document.createElement('div'); delBubble.className = 'bubble deleted-bubble';
+            delBubble.innerHTML = '<i class="fas fa-ban"></i> This message was deleted';
+            contentArea.replaceWith(delBubble);
+        }
+        // অ্যাকশন ও রিঅ্যাকশন সরিয়ে দাও
+        const actions = bubbleWrap.querySelector('.msg-actions'); if(actions) actions.remove();
+        const reactions = bubbleWrap.querySelector('.reactions-display'); 
+        if(reactions) { reactions.remove(); bubbleWrap.classList.remove('has-reactions'); }
+    }
+    
+    // যে সব মেসেজ এই মেসেজটিকে রিপ্লাই করেছে, তাদের প্রিভিউ আপডেট কর
+    document.querySelectorAll(`[data-reply-target="${CSS.escape(msgId)}"]`).forEach(el => {
+        el.innerHTML = '<i class="fas fa-ban" style="margin-right:4px;"></i> <i>This message was deleted</i>';
+        el.style.backgroundColor = 'transparent'; el.style.border = '1px solid #444'; el.style.color = '#888';
+    });
+}
+
+// 5. Dynamic Elements Creation
+function renderMessage(msg) {
+    if(document.getElementById('msg-' + msg.msgId)) return;
+
+    const wrapper = document.createElement('div');
+    const isMe = msg.sender === 'me';
+    wrapper.className = `message-row ${isMe ? 'sender' : 'receiver'}`;
+    wrapper.id = 'msg-' + msg.msgId;
+
+    if (!isMe) {
+        const prof = document.createElement('div');
+        prof.className = 'mini-profile'; prof.title = msg.senderName;
+        wrapper.appendChild(prof);
+    }
+
+    const col = document.createElement('div');
+    col.className = `message-column ${isMe ? 'sender-stack' : 'receiver-stack'}`;
+    wrapper.appendChild(col);
+
+    // রিপ্লাই ইনফো ও প্রিভিউ (শুধু যদি মেসেজ ডিলিটেড না হয়)
+    if (msg.replyTo && !msg.isDeleted) {
+        const repInfo = document.createElement('div'); repInfo.className = 'reply-info-text';
+        let replyTxt = isMe ? ((msg.replyTo.name === myName) ? 'You replied to yourself' : `You replied to ${msg.replyTo.name}`) 
+                            : ((msg.replyTo.name === msg.senderName) ? `${msg.senderName} replied to themselves` : ((msg.replyTo.name === myName) ? `${msg.senderName} replied to you` : `${msg.senderName} replied to ${msg.replyTo.name}`));
+        repInfo.innerHTML = `<i class="fas fa-reply"></i> ${escapeHTML(replyTxt)}`;
+        col.appendChild(repInfo);
+
+        const prevBubble = document.createElement('div');
+        prevBubble.className = 'bubble previous-bubble';
+        prevBubble.dataset.replyTarget = msg.replyTo.msgId;
+        prevBubble.textContent = msg.replyTo.content || 'Original message';
+        col.appendChild(prevBubble);
+
+        // অরিজিনাল মেসেজ ডিলিটেড কিনা চেক করে প্রিভিউ আপডেট
+        db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).get(msg.replyTo.msgId).onsuccess = (e) => {
+            const original = e.target.result;
+            if (original && original.isDeleted) {
+                prevBubble.innerHTML = '<i class="fas fa-ban" style="margin-right:4px;"></i> <i>This message was deleted</i>';
+                prevBubble.style.backgroundColor = 'transparent'; prevBubble.style.border = '1px solid #444'; prevBubble.style.color = '#888';
+            }
+        };
+    }
+
+    const bubbleWrap = document.createElement('div'); bubbleWrap.className = 'bubble-wrapper';
+    col.appendChild(bubbleWrap);
+
+    if (msg.isDeleted) {
+        // ডিলিটেড মেসেজ: শুধু ডিলিট বাবল দেখাও, কোনো রিপ্লাই ইনফো থাকলে আগেই সরিয়ে ফেলা হয়েছে
+        const delBubble = document.createElement('div'); delBubble.className = 'bubble deleted-bubble';
+        delBubble.innerHTML = '<i class="fas fa-ban"></i> This message was deleted';
+        bubbleWrap.appendChild(delBubble);
+    } else {
+        // নরমাল মেসেজ
+        let bubbleContent;
+        let contentSrc = msg.content;
+        if (msg.content instanceof Blob) {
+            contentSrc = URL.createObjectURL(msg.content);
+        }
+
+        if (msg.type === 'text' || msg.type === 'thumb') {
+            bubbleContent = document.createElement('div'); bubbleContent.className = 'bubble';
+            if(msg.type === 'thumb') {
+                bubbleContent.textContent = '👍'; bubbleContent.style.background = 'none'; bubbleContent.style.fontSize = '40px'; bubbleContent.style.padding = '0';
+            } else { bubbleContent.textContent = msg.content; }
+        } else if (msg.type === 'image') {
+            bubbleContent = document.createElement('img'); bubbleContent.src = contentSrc; bubbleContent.className = 'chat-media';
+        } else if (msg.type === 'video') {
+            bubbleContent = document.createElement('video'); bubbleContent.src = contentSrc; bubbleContent.className = 'chat-media'; bubbleContent.controls = true;
+        } else if (msg.type === 'file') {
+            bubbleContent = document.createElement('a'); bubbleContent.href = contentSrc; bubbleContent.download = msg.fileName; bubbleContent.className = 'file-box';
+            bubbleContent.innerHTML = `<i class="fas fa-file-alt"></i> <span style="margin-left:8px;">${escapeHTML(msg.fileName)}</span>`;
+        }
+        bubbleWrap.appendChild(bubbleContent);
+
+        // অ্যাকশন মেনু
+        const actionMenu = document.createElement('div'); actionMenu.className = 'msg-actions';
+        ['👍', '❤️', '😂', '😮', '😢'].forEach(e => {
+            const btn = document.createElement('button'); btn.className = 'action-btn'; btn.textContent = e;
+            btn.onclick = (ev) => { ev.stopPropagation(); sendReaction(msg.msgId, e); wrapper.classList.remove('show-actions'); };
+            actionMenu.appendChild(btn);
+        });
+        const replyBtn = document.createElement('button'); replyBtn.className = 'action-btn'; replyBtn.textContent = '↩️';
+        replyBtn.onclick = (ev) => { 
+            ev.stopPropagation(); 
+            let previewContent = msg.type === 'text' ? msg.content : (msg.type==='thumb'?'👍':`📄 ${msg.type}`);
+            setReplyContext(msg.msgId, msg.senderName, previewContent); 
+            wrapper.classList.remove('show-actions'); 
+        };
+        actionMenu.appendChild(replyBtn); 
+        
+        if (isMe) {
+            const delBtn = document.createElement('button'); delBtn.className = 'action-btn'; delBtn.innerHTML = '🗑️'; delBtn.title = "Delete Message";
+            delBtn.onclick = (ev) => { ev.stopPropagation(); deleteMessageAction(msg.msgId); wrapper.classList.remove('show-actions'); };
+            actionMenu.appendChild(delBtn);
+        }
+        bubbleWrap.appendChild(actionMenu);
+
+        // অ্যাকশন টগল
+        if(msg.type !== 'video' && msg.type !== 'file') {
+            bubbleContent.onclick = (e) => { e.stopPropagation(); document.querySelectorAll('.message-row').forEach(w => w !== wrapper && w.classList.remove('show-actions')); wrapper.classList.toggle('show-actions'); };
+        } else {
+            bubbleWrap.oncontextmenu = (e) => { e.preventDefault(); wrapper.classList.toggle('show-actions'); };
+        }
+        
+        // রিঅ্যাকশন ডিসপ্লে
+        if(msg.reactions && !Array.isArray(msg.reactions) && Object.keys(msg.reactions).length > 0) {
+            let rDisplay = bubbleWrap.querySelector('.reactions-display');
+            if (!rDisplay) {
+                rDisplay = document.createElement('div'); rDisplay.className = 'reactions-display';
+                bubbleWrap.appendChild(rDisplay);
+            }
+            renderReactionsDOM(msg.msgId, msg.reactions);
+        }
+    }
+
+    const metaInfo = document.createElement('div'); metaInfo.className = 'msg-meta';
+    metaInfo.textContent = `${msg.senderName} • ${formatTime(msg.timestamp)}`;
+    col.appendChild(metaInfo);
+
+    UI.chat.appendChild(wrapper); UI.chat.scrollTop = UI.chat.scrollHeight;
+}
+
+function markMessageDeletedDOM(msgId) {
+    const wrapper = document.getElementById('msg-' + msgId);
+    if (!wrapper) return;
+
+    // 1. রিপ্লাই ইনফো ও প্রিভিউ পুরোপুরি সরিয়ে ফেলো (যদি থাকে)
+    const col = wrapper.querySelector('.message-column');
+    if (col) {
+        const info = col.querySelector('.reply-info-text');
+        if (info) info.remove();
+        const prev = col.querySelector('.previous-bubble');
+        if (prev) prev.remove();
+    }
+
+    // 2. বাবল র‍্যাপার খুঁজে বের কর
+    const bubbleWrap = wrapper.querySelector('.bubble-wrapper');
+    if (!bubbleWrap) return;
+
+    // 3. মূল কন্টেন্ট সরিয়ে ডিলিটেড বাবল বসাও
+    const contentArea = bubbleWrap.querySelector('.bubble, .chat-media, .file-box');
+    if (contentArea) {
+        const delBubble = document.createElement('div'); 
+        delBubble.className = 'bubble deleted-bubble';
+        delBubble.innerHTML = '<i class="fas fa-ban"></i> This message was deleted';
+        contentArea.replaceWith(delBubble);
+    }
+
+    // 4. অ্যাকশন মেনু ও রিঅ্যাকশন সরাও
+    const actions = bubbleWrap.querySelector('.msg-actions');
+    if (actions) actions.remove();
+    const reactions = bubbleWrap.querySelector('.reactions-display');
+    if (reactions) {
+        reactions.remove();
+        bubbleWrap.classList.remove('has-reactions');
+    }
+
+    // 5. অন্য মেসেজের রিপ্লাই প্রিভিউ আপডেট কর যারা এই মেসেজকে রিপ্লাই করেছিল
+    document.querySelectorAll(`[data-reply-target="${CSS.escape(msgId)}"]`).forEach(el => {
+        el.innerHTML = '<i class="fas fa-ban" style="margin-right:4px;"></i> <i>This message was deleted</i>';
+        el.style.backgroundColor = 'transparent'; 
+        el.style.border = '1px solid #444'; 
+        el.style.color = '#888';
+    });
+}
+
+// 6. UI Handlers
+function setReplyContext(msgId, name, content) { activeReplyContext = { msgId, name, content }; UI.replyPreview.style.display = 'flex'; UI.replyText.innerHTML = `Replying to: <strong>${escapeHTML(name)}</strong> - <span style="opacity:0.7">${escapeHTML(content)}</span>`; UI.msgInput.focus(); }
+function cancelReply() { activeReplyContext = null; UI.replyPreview.style.display = 'none'; }
+document.getElementById('cancel-reply-btn').onclick = cancelReply;
+
+document.getElementById('edit-name-btn').onclick = () => { closeModal('info-modal'); document.getElementById('my-name-input').value = myName; openModal('name-modal'); };
+
+document.getElementById('open-info-btn').onclick = () => {
+    document.getElementById('info-name').textContent = myName;
+    const peersList = document.getElementById('info-peers-list'); peersList.innerHTML = '';
+    
+    // 4: Perfectly synchronized client/host visualization based ONLY on UUID 
+    let listToRender = globalPeerList.filter(p => p.deviceId !== myDeviceId);
+    
+    if (listToRender.length === 0) peersList.innerHTML = `<li>${isHost ? 'Only you are in the room.' : 'Syncing room users...'}</li>`;
+    else { 
+        listToRender.forEach(p => { 
+            const li = document.createElement('li'); li.style.marginBottom = '12px';
+            li.innerHTML = `<div style="font-weight:bold;"><i class="fas fa-circle" style="color:#32d74b; font-size:10px; margin-right:5px;"></i> ${escapeHTML(p.name)}</div><div style="font-size:11px; color:#aaa; margin-left:15px; margin-top:2px;">Loc: ${escapeHTML(p.ipInfo?.loc || 'Unknown')}</div>`;
+            peersList.appendChild(li); 
+        }); 
+    }
+    openModal('info-modal');
+};
+document.getElementById('close-info-btn').onclick = () => closeModal('info-modal');
+
+// Media Handlers
+function handleFileInput(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        let msgType = 'file'; if (file.type.startsWith('image/')) msgType = 'image'; else if (file.type.startsWith('video/')) msgType = 'video';
+        sendMediaFile(reader.result, msgType, file.name);
+    };
+    reader.readAsDataURL(file); e.target.value = ''; 
+}
+document.getElementById('file-any-btn').onclick = () => document.getElementById('file-any-input').click();
+document.getElementById('file-any-input').onchange = handleFileInput;
+document.getElementById('file-media-btn').onclick = () => document.getElementById('file-media-input').click();
+document.getElementById('file-media-input').onchange = handleFileInput;
+
+document.getElementById('camera-btn').onclick = async () => {
+    try { cameraStream = await navigator.mediaDevices.getUserMedia({video: true, audio: false}); document.getElementById('camera-video').srcObject = cameraStream; openModal('camera-modal'); } catch(err) { alert("Camera permission denied."); }
+};
+document.getElementById('close-camera-btn').onclick = () => { closeModal('camera-modal'); if(cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; } };
+document.getElementById('capture-photo-btn').onclick = () => {
+    const video = document.getElementById('camera-video'); const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight; canvas.getContext('2d').drawImage(video, 0, 0);
+    sendMediaFile(canvas.toDataURL('image/jpeg'), 'image', 'photo.jpg'); document.getElementById('close-camera-btn').click();
+};
+
+// Input Aesthetics
+function expandInput() { UI.inputActions.classList.add('collapsed'); UI.expandBtn.classList.add('visible'); isInputExpanded = true; }
+function collapseInput(force = false) { 
+    if(force || UI.msgInput.value.length === 0) { UI.inputActions.classList.remove('collapsed'); UI.expandBtn.classList.remove('visible'); isInputExpanded = false; explicitlyCollapsed = false; } else { UI.inputActions.classList.remove('collapsed'); UI.expandBtn.classList.remove('visible'); isInputExpanded = false; explicitlyCollapsed = true; }
+}
+UI.expandBtn.onclick = () => collapseInput(false);
+
+UI.msgInput.addEventListener('input', function() {
+    this.style.height = '20px'; const newHeight = this.scrollHeight;
+    if (newHeight > 80) { this.style.height = '80px'; this.style.overflowY = 'auto'; } else { this.style.height = newHeight + 'px'; this.style.overflowY = 'hidden'; }
+
+    const hasValue = this.value.trim().length > 0;
+    if (hasValue && !isSendMode) { UI.dynamicIcon.innerHTML = sendIcon; isSendMode = true; } else if (!hasValue && isSendMode) { UI.dynamicIcon.innerHTML = thumbsUpIcon; isSendMode = false; }
+
+    if (hasValue && !isInputExpanded && !explicitlyCollapsed) expandInput(); else if (!hasValue && isInputExpanded) collapseInput(true); else if (hasValue && explicitlyCollapsed) { expandInput(); explicitlyCollapsed = false; }
+});
+UI.msgInput.addEventListener('keydown', function(e) {
+    if (!(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent))) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (isSendMode) sendMessageAction(); } }
+});
+
+UI.dynamicIcon.addEventListener('click', () => { if (isSendMode) sendMessageAction(); else sendThumbsUp(); });
+UI.chat.onclick = (e) => { if(e.target === UI.chat) document.querySelectorAll('.message-row').forEach(w => w.classList.remove('show-actions')); };
+</script>
+</body>
+</html>
