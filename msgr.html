@@ -293,6 +293,18 @@ if (!myDeviceId) {
     localStorage.setItem('messenger_device_id', myDeviceId); 
 } 
 
+// STUN Server Config (এটা ছাড়া গ্লোবাল কাজ করবে না বেকুব)
+const peerOptions = {
+    config: {
+        'iceServers': [
+            { url: 'stun:stun.l.google.com:19302' },
+            { url: 'stun:stun1.l.google.com:19302' },
+            { url: 'stun:stun2.l.google.com:19302' }
+        ],
+        'iceCandidatePoolSize': 10
+    }
+};
+
 // Network Status 
 let isHost = false; 
 let hostConn = null; 
@@ -397,11 +409,11 @@ function showStatus(msgText) {
     }, 500); 
 } 
 
-// Unique Name Generator (Host controls this)
+// Unique Name Generator 
 function getUniqueNameForNetwork(desiredName, excludeDeviceId) {
     let allNames = [];
     if (excludeDeviceId !== myDeviceId) {
-        allNames.push(myName); // Add host's name
+        allNames.push(myName); 
     }
     for (let dId in activeConnections) {
         if (dId !== excludeDeviceId) {
@@ -513,15 +525,24 @@ function saveMessage(msg) {
 function connectToNetwork() { 
     if (isConnectingToNetwork) return; 
     isConnectingToNetwork = true; 
-    showStatus("Joining global room..."); 
+    showStatus("Checking room status..."); 
     attemptToBecomeHost(); 
 } 
 
 function attemptToBecomeHost() { 
     if (peer) peer.destroy(); 
-    peer = new Peer(GLOBAL_ROOM_ID); 
+    peer = new Peer(GLOBAL_ROOM_ID, peerOptions); 
+    
+    // ৫ সেকেন্ডের ডেডলাইন, না পারলে ক্লায়েন্ট মোডে যাবে
+    let hostTimeout = setTimeout(() => {
+        if (peer && !peer.open && !isHost) {
+            console.log("Host try timed out, jumping as client...");
+            joinAsClient();
+        }
+    }, 5000);
     
     peer.on('open', () => { 
+        clearTimeout(hostTimeout);
         isConnectingToNetwork = false; 
         isHost = true; 
         activeConnections = {}; 
@@ -540,6 +561,7 @@ function attemptToBecomeHost() {
     }); 
     
     peer.on('error', (err) => { 
+        clearTimeout(hostTimeout);
         if (err.type === 'unavailable-id') { 
             joinAsClient(); 
         } else { 
@@ -553,7 +575,7 @@ function attemptToBecomeHost() {
 
 function joinAsClient() { 
     if (peer) peer.destroy(); 
-    peer = new Peer(); 
+    peer = new Peer(undefined, peerOptions); 
     
     peer.on('open', () => { 
         isHost = false; 
@@ -1293,6 +1315,6 @@ UI.chat.onclick = (e) => {
     if(e.target === UI.chat) document.querySelectorAll('.message-row').forEach(w => w.classList.remove('show-actions')); 
 };
 
-  </script>
+</script>
 </body>
 </html>
