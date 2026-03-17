@@ -279,9 +279,12 @@ body {
     </div>
 </div>
 <script>
-const DB_NAME = 'P2PMessengerDB_v7'; 
+// P2P Messenger — fixed reconnects, unique-name normalization, and stability improvements
+// Preserves original logic where possible; changes marked and grouped.
+
+const DB_NAME = 'P2PMessengerDB_v7';
 const STORE_NAME = 'messages';
-const CHUNK_SIZE = 16384; 
+const CHUNK_SIZE = 16384;
 const GLOBAL_ROOM_ID = 'messenger-global-p2p-chat-v1';
 
 let db, peer;
@@ -296,17 +299,18 @@ if (!myDeviceId) {
 let isHost = false;
 let hostConn = null;
 let isConnectingToNetwork = false;
-let activeConnections = {}; 
-let globalPeerList =[];
+let activeConnections = {}; // deviceId -> { conn, name, ipInfo, peerId }
+let globalPeerList = [];
 let incomingChunks = {};
 let activeReplyContext = null;
 let cameraStream = null;
 let myIpInfo = { ip: 'Hidden', loc: 'Loading...' };
 
-// Heartbeat & Sync Status
+// Heartbeat & Reconnect
 let heartbeatInterval = null;
 let lastHeartbeat = Date.now();
 let heartbeatCheckInterval = null;
+let reconnectAttempts = 0;
 
 const UI = {
     chat: document.getElementById('chatContent'),
@@ -320,16 +324,16 @@ const UI = {
     expandBtn: document.getElementById('expand-btn')
 };
 
-const sendIcon = `<svg viewBox="0 0 24 24" class="svg-send-icon"><path d="M3.4 20.4l17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.06-.87.49-.87.99l.01 4.61c0 .71.73 1.2 1.39.92z"></path></svg>`;
-const thumbsUpIcon = `<i class="fas fa-thumbs-up thumbs-up-icon"></i>`;
+const sendIcon = `<svg viewBox=\"0 0 24 24\" class=\"svg-send-icon\"><path d=\"M3.4 20.4l17.45-7.48c.81-.35.81-1.49 0-1.84L3.4 3.6c-.66-.29-1.39.2-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.06-.87.49-.87.99l.01 4.61c0 .71.73 1.2 1.39.92z\"></path></svg>`;
+const thumbsUpIcon = `<i class=\"fas fa-thumbs-up thumbs-up-icon\"></i>`;
 let isSendMode = false;
 let isInputExpanded = false;
 let explicitlyCollapsed = false;
 
 // Helpers
-function escapeHTML(str) { 
+function escapeHTML(str) {
     if(typeof str !== 'string') return '';
-    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); 
+    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
 }
 function formatTime(timestamp) {
     const d = new Date(timestamp);
@@ -366,22 +370,68 @@ setInterval(() => {
     }
 }, 30000);
 
-// Live Status Engine
+// -------------------- Unique name normalization --------------------
+// When multiple peers share the same base name, host will assign numbered suffixes: (1), (2), ...
+function stripNumericSuffix(name) {
+    // Removes trailing space and (n) if present
+    return name.replace(/\s*\d+$/, '');
+}
+
+function normalizePeerNames(peers) {
+    const groups = {};
+    peers.forEach(p => {
+        const base = stripNumericSuffix(p.name || '');
+        if (!groups[base]) groups[base] = [];
+        groups[base].push(p);
+    });
+
+    const normalized = [];
+    Object.keys(groups).forEach(base => {
+        const list = groups[base];
+        if (list.length === 1) {
+            normalized.push(Object.assign({}, list[0], { name: base }));
+        } else {
+            // assign (1), (2), ... consistently
+            list.forEach((p, idx) => {
+                normalized.push(Object.assign({}, p, { name: `${base} (${idx+1})` }));
+            });
+        }
+    });
+    return normalized;
+}
+
+function ensureLocalNameMatchesAssigned(peers) {
+    const me = peers.find(p => p.deviceId === myDeviceId);
+    if (me && me.name && me.name !== myName) {
+        myName = me.name;
+        localStorage.setItem('messenger_name', myName);
+        document.getElementById('info-name').textContent = myName;
+    }
+}
+
+// -------------------- Network Stability Helpers --------------------
+function resetReconnectState() { reconnectAttempts = 0; }
+function scheduleReconnect() {
+    reconnectAttempts++;
+    const delay = Math.min(30000, 500 + Math.pow(1.6, reconnectAttempts) * 200); // exponential backoff capped at 30s
+    setTimeout(() => { if (!isHost && !isConnectingToNetwork) connectToNetwork(); }, delay);
+}
+
 function showStatus(msgText) {
     const st = document.getElementById('live-status-text');
     st.textContent = msgText;
     st.style.color = '#fff';
     st.style.transform = 'scale(1.02)';
-    setTimeout(() => { 
-        st.style.color = 'var(--text-gray-dim)'; 
+    setTimeout(() => {
+        st.style.color = 'var(--text-gray-dim)';
         st.style.transform = 'scale(1)';
     }, 500);
 }
 
 // Cleanup Connections on Unload
 window.addEventListener('beforeunload', () => {
-    if (hostConn) hostConn.close();
-    if (peer) peer.destroy();
+    try { if (hostConn) hostConn.close(); } catch(e){}
+    try { if (peer && peer.destroy) peer.destroy(); } catch(e){}
 });
 
 // Initialization Core
@@ -391,23 +441,25 @@ document.getElementById('save-name-btn').onclick = () => {
     const inputName = document.getElementById('my-name-input').value.trim();
     if (inputName) {
         const oldName = myName;
-        myName = inputName; 
+        myName = inputName;
         localStorage.setItem('messenger_name', myName);
-        
+
         if (oldName && oldName !== myName) {
             sendToNetwork({ type: 'system', action: 'name-change', oldName: oldName, newName: myName, deviceId: myDeviceId });
             showStatus("You changed your name");
         }
-        
+
         closeModal('name-modal');
         if (!isConnectingToNetwork && !isHost && !hostConn) startApp();
     }
 };
 
 function startApp() {
-    if("Notification" in window && Notification.permission !== "granted") Notification.requestPermission();
-    initDB().then(connectToNetwork);
-    fetchIPInfo();
+    if ("Notification" in window && Notification.permission !== "granted") Notification.requestPermission();
+    initDB().then(() => {
+        fetchIPInfo();
+        connectToNetwork();
+    });
 }
 
 function fetchIPInfo() {
@@ -416,7 +468,7 @@ function fetchIPInfo() {
     }).catch(() => { myIpInfo.loc = 'Unavailable'; });
 }
 
-// Database Integration
+// Database Integration (unchanged logic)
 function initDB() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open(DB_NAME, 2);
@@ -430,34 +482,23 @@ function initDB() {
         req.onerror = e => { console.error("DB Open Error:", e.target.error); reject(e); };
     });
 }
-function loadMessages() { 
+function loadMessages() {
     const req = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll();
-    req.onsuccess = e => e.target.result.forEach(renderMessage); 
+    req.onsuccess = e => e.target.result.forEach(renderMessage);
 }
-function saveMessage(msg) { 
+function saveMessage(msg) {
     let msgCopy = { ...msg };
     if (['image', 'video', 'file'].includes(msgCopy.type) && typeof msgCopy.content === 'string' && msgCopy.content.startsWith('data:')) {
         msgCopy.content = base64ToBlob(msgCopy.content, getMimeType(msgCopy.content));
     }
     const tx = db.transaction(STORE_NAME, 'readwrite');
     tx.onerror = e => {
-        if (e.target.error.name === 'QuotaExceededError') alert("Storage is full! Please delete some messages.");
+        if (e.target.error && e.target.error.name === 'QuotaExceededError') alert("Storage is full! Please delete some messages.");
     };
-    tx.objectStore(STORE_NAME).put(msgCopy); 
+    tx.objectStore(STORE_NAME).put(msgCopy);
 }
 
-// Utility to generate unique name
-function makeUniqueName(baseName, existingNames) {
-    let name = baseName;
-    let counter = 1;
-    while (existingNames.has(name)) {
-        name = `${baseName} (${counter})`;
-        counter++;
-    }
-    return name;
-}
-
-// Network Logic - Random Backoff & Fast Resync
+// -------------------- Network Logic (improved) --------------------
 function connectToNetwork() {
     if (isConnectingToNetwork) return;
     isConnectingToNetwork = true;
@@ -466,76 +507,134 @@ function connectToNetwork() {
 }
 
 function attemptToBecomeHost() {
-    if (peer) peer.destroy();
-    peer = new Peer(GLOBAL_ROOM_ID);
-    
-    peer.on('open', () => {
-        isConnectingToNetwork = false; 
+    // try to be host first; if the id is taken we'll fall back to client
+    try { if (peer && peer.destroy) peer.destroy(); } catch(e){}
+
+    // Provide ICE servers to improve peer stability where possible
+    const peerOptions = {
+        host: undefined,
+        port: undefined,
+        path: undefined,
+        config: { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] },
+        debug: 1
+    };
+
+    peer = new Peer(GLOBAL_ROOM_ID, peerOptions);
+
+    peer.on('open', id => {
+        isConnectingToNetwork = false;
         isHost = true;
         activeConnections = {};
         showStatus("Connected as Host");
         UI.dot.classList.add('connected');
-        broadcastPeerList();
-        updateSyncCount();
-        
         peer.on('connection', setupHostConnection);
-        
+
         // Host Heartbeat
         if (heartbeatInterval) clearInterval(heartbeatInterval);
         heartbeatInterval = setInterval(() => {
             if (isHost) relay({ type: 'system', action: 'heartbeat' }, null);
         }, 3000);
 
+        // Broadcast current peer list (enforce unique names)
+        broadcastPeerList();
+        updateSyncCount();
+        resetReconnectState();
+
         sendPendingMessages();
     });
-    
+
     peer.on('error', (err) => {
-        if (err.type === 'unavailable-id') {
+        // If the global id is already taken, join as client instead
+        isConnectingToNetwork = false;
+        UI.dot.classList.remove('connected');
+        if (err && err.type === 'unavailable-id') {
+            // become client
             joinAsClient();
         } else {
-            isConnectingToNetwork = false; 
-            UI.dot.classList.remove('connected');
-            showStatus("Network error. Retrying..."); 
-            setTimeout(connectToNetwork, 2000 + Math.random() * 2000);
+            console.warn('Peer host error', err);
+            showStatus("Network error. Retrying...");
+            scheduleReconnect();
         }
+    });
+
+    peer.on('disconnected', () => {
+        // try to recover if possible
+        console.warn('Peer disconnected event');
+        isConnectingToNetwork = false;
+        UI.dot.classList.remove('connected');
+        isHost = false;
+        scheduleReconnect();
+    });
+
+    peer.on('close', () => {
+        console.warn('Peer closed');
+        isConnectingToNetwork = false;
+        UI.dot.classList.remove('connected');
+        isHost = false;
+        scheduleReconnect();
     });
 }
 
 function joinAsClient() {
-    if (peer) peer.destroy();
-    peer = new Peer(); 
-    
+    try { if (peer && peer.destroy) peer.destroy(); } catch(e){}
+
+    const peerOptions = { config: { iceServers: [ { urls: 'stun:stun.l.google.com:19302' } ] }, debug: 1 };
+    peer = new Peer(undefined, peerOptions);
+
     peer.on('open', () => {
         isHost = false;
         hostConn = peer.connect(GLOBAL_ROOM_ID, { reliable: true });
         setupClientConnection(hostConn);
     });
-    
-    peer.on('error', () => {
-        isConnectingToNetwork = false; 
+
+    peer.on('error', (err) => {
+        console.warn('Peer client error', err);
+        isConnectingToNetwork = false;
         UI.dot.classList.remove('connected');
-        showStatus("Network glitch. Retrying..."); 
-        setTimeout(connectToNetwork, 1000 + Math.random() * 2000);
+        showStatus("Network glitch. Retrying...");
+        scheduleReconnect();
+    });
+
+    peer.on('disconnected', () => {
+        console.warn('Client peer disconnected');
+        isConnectingToNetwork = false;
+        UI.dot.classList.remove('connected');
+        scheduleReconnect();
     });
 }
 
 function updateSyncCount() {
-    const count = Object.keys(activeConnections).length + 1;
+    const count = Object.keys(activeConnections).length + (isHost ? 1 : 0);
     UI.connCount.textContent = `(${count})`;
     if (isHost) relay({ type: 'system', action: 'sync-count', count: count }, null);
 }
 
 function broadcastPeerList() {
     if (!isHost) return;
-    const peers = Object.entries(activeConnections).map(([dId, p]) => ({ deviceId: dId, name: p.name, ipInfo: p.ipInfo, isHost: false }));
-    peers.push({ deviceId: myDeviceId, name: myName + ' (Host)', ipInfo: myIpInfo, isHost: true });
-    globalPeerList = peers; 
-    relay({ type: 'system', action: 'peer-list', peers: peers }, null);
+
+    // Build peers array from activeConnections plus host itself
+    const peers = Object.entries(activeConnections).map(([dId, p]) => ({ deviceId: dId, name: p.name || '', ipInfo: p.ipInfo || {}, isHost: false }));
+    peers.push({ deviceId: myDeviceId, name: myName || '', ipInfo: myIpInfo, isHost: true });
+
+    const normalized = normalizePeerNames(peers);
+    globalPeerList = normalized;
+
+    // If this host has assigned a new name to itself, update local storage
+    ensureLocalNameMatchesAssigned(globalPeerList);
+
+    relay({ type: 'system', action: 'peer-list', peers: normalized }, null);
 }
 
 function setupHostConnection(conn) {
+    // Accept only one connection per deviceId; handshake will later validate
+    conn.on('open', () => {
+        // nothing — wait for handshake
+    });
+
     conn.on('data', data => handleNetworkData(data, conn));
+
     conn.on('close', () => {
+        // find deviceId and cleanup
         const disconnectedDeviceId = Object.keys(activeConnections).find(dId => activeConnections[dId].peerId === conn.peer);
         if (disconnectedDeviceId) {
             const peerName = activeConnections[disconnectedDeviceId].name;
@@ -545,56 +644,61 @@ function setupHostConnection(conn) {
             showStatus(`${peerName} left`);
         }
     });
+
+    conn.on('error', err => {
+        console.warn('Host connection error', err);
+    });
 }
 
 function setupClientConnection(conn) {
-    let connectTimeout = setTimeout(() => { 
-        if (!conn.open) { 
-            conn.close(); 
+    let connectTimeout = setTimeout(() => {
+        if (!conn.open) {
+            try { conn.close(); } catch(e){}
             isConnectingToNetwork = false;
-            setTimeout(connectToNetwork, 1000 + Math.random() * 2000);
-        } 
+            scheduleReconnect();
+        }
     }, 5000);
-    
+
     conn.on('open', () => {
         clearTimeout(connectTimeout);
-        isConnectingToNetwork = false; 
+        isConnectingToNetwork = false;
         UI.dot.classList.add('connected');
         showStatus("Joined Global Room");
         conn.send({ type: 'handshake', deviceId: myDeviceId, name: myName, ipInfo: myIpInfo });
-        
+
         lastHeartbeat = Date.now();
         if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
         heartbeatCheckInterval = setInterval(() => {
-            // If no heartbeat for 15 seconds, assume host dead
-            if (Date.now() - lastHeartbeat > 15000) { 
-                conn.close(); 
+            if (Date.now() - lastHeartbeat > 12000) {
+                // assume host down
+                try { conn.close(); } catch(e){}
             }
         }, 3000);
 
         sendPendingMessages();
     });
-    
+
     conn.on('data', data => handleNetworkData(data, conn));
-    
+
     conn.on('close', () => {
         hostConn = null; UI.dot.classList.remove('connected');
         if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
         showStatus("Host dropped. Reconnecting...");
         isConnectingToNetwork = false;
-        setTimeout(connectToNetwork, 500 + Math.random() * 3000); 
+        scheduleReconnect();
     });
-    
-    conn.on('error', () => {
+
+    conn.on('error', (err) => {
         hostConn = null; UI.dot.classList.remove('connected');
         if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
-        showStatus("Connection dropped..."); 
+        console.warn('Client conn error', err);
+        showStatus("Connection dropped...");
         isConnectingToNetwork = false;
-        setTimeout(connectToNetwork, 1000 + Math.random() * 2000);
+        scheduleReconnect();
     });
 }
 
-// Handling Offline/Pending Queue
+// -------------------- Handling Offline/Pending Queue --------------------
 function sendPendingMessages() {
     const tx = db.transaction(STORE_NAME, 'readonly');
     tx.objectStore(STORE_NAME).getAll().onsuccess = e => {
@@ -618,21 +722,12 @@ function sendPendingMessages() {
 }
 
 function handleNetworkData(data, conn) {
+    if (!data) return;
     if (data.type === 'handshake') {
         if (isHost) {
-            // Ensure unique name
-            const existingNames = new Set([myName, ...Object.values(activeConnections).map(p => p.name)]);
-            const uniqueName = makeUniqueName(data.name, existingNames);
-            
-            if (uniqueName !== data.name) {
-                // Send name assignment back to client
-                conn.send({ type: 'system', action: 'name-assign', newName: uniqueName });
-                // Update client's name in our records
-                data.name = uniqueName;
-            }
-
+            // If same deviceId already connected from another peer, close the earlier connection
             if (activeConnections[data.deviceId] && activeConnections[data.deviceId].peerId !== conn.peer) {
-                activeConnections[data.deviceId].conn.close(); 
+                try { activeConnections[data.deviceId].conn.close(); } catch(e){}
             }
             activeConnections[data.deviceId] = { conn: conn, name: data.name, ipInfo: data.ipInfo || {}, peerId: conn.peer };
             updateSyncCount(); showStatus(`${data.name} joined`);
@@ -641,15 +736,6 @@ function handleNetworkData(data, conn) {
         }
     } else if (data.type === 'system') {
         if (data.action === 'heartbeat') { lastHeartbeat = Date.now(); return; }
-        if (data.action === 'name-assign') {
-            // Client receives new unique name from host
-            myName = data.newName;
-            localStorage.setItem('messenger_name', myName);
-            // Update UI if needed
-            document.getElementById('info-name').textContent = myName;
-            showStatus(`Your name changed to ${myName}`);
-            return;
-        }
         if (data.action === 'join') showStatus(`${data.name} joined`);
         if (data.action === 'leave') showStatus(`${data.name} left`);
         if (data.action === 'name-change') {
@@ -660,8 +746,14 @@ function handleNetworkData(data, conn) {
             }
         }
         if (data.action === 'sync-count') UI.connCount.textContent = `(${data.count})`;
-        if (data.action === 'peer-list') globalPeerList = data.peers;
-        
+        if (data.action === 'peer-list') {
+            // Host assigns normalized unique names; accept them
+            if (Array.isArray(data.peers)) {
+                globalPeerList = data.peers;
+                ensureLocalNameMatchesAssigned(globalPeerList);
+            }
+        }
+
         if (isHost) relay(data, data.senderDeviceId || (conn ? activeConnections[Object.keys(activeConnections).find(dId => activeConnections[dId].peerId === conn.peer)]?.deviceId : null));
     } else if (data.type === 'ack') {
         markMessageSentLocally(data.msgId);
@@ -683,12 +775,12 @@ function handleNetworkData(data, conn) {
                 if(incomingMsg.sender === 'them') incomingMsg.status = 'sent';
                 saveMessage(incomingMsg); renderMessage(incomingMsg);
                 if (incomingMsg.sender === 'them' && document.hidden) {
-                    new Notification(incomingMsg.senderName, { body: incomingMsg.type === 'text' ? incomingMsg.content : 'Sent an attachment' });
+                    try { new Notification(incomingMsg.senderName, { body: incomingMsg.type === 'text' ? incomingMsg.content : 'Sent an attachment' }); } catch(e){}
                 }
             }
             if (isHost) {
                 if (senderId && activeConnections[senderId] && activeConnections[senderId].conn) {
-                    activeConnections[senderId].conn.send({ type: 'ack', msgId: data.msgId });
+                    try { activeConnections[senderId].conn.send({ type: 'ack', msgId: data.msgId }); } catch(e){}
                 }
                 relay(data, senderId);
             }
@@ -700,7 +792,9 @@ function relay(data, excludeDeviceId) {
     Object.keys(activeConnections).forEach(dId => {
         if (dId !== excludeDeviceId) {
             const p = activeConnections[dId];
-            if (p.conn && p.conn.open) p.conn.send(data);
+            if (p.conn && p.conn.open) {
+                try { p.conn.send(data); } catch(e) { console.warn('Relay send failed', e); }
+            }
         }
     });
 }
@@ -709,9 +803,11 @@ function sendToNetwork(data) {
     if (!data.senderDeviceId) data.senderDeviceId = myDeviceId;
     if (isHost) {
         relay(data, myDeviceId);
-        if (data.msgId) markMessageSentLocally(data.msgId); 
+        if (data.msgId) markMessageSentLocally(data.msgId);
     } else if (hostConn && hostConn.open) {
-        hostConn.send(data);
+        try { hostConn.send(data); } catch(e) { console.warn('hostConn send failed', e); }
+    } else {
+        // no connection; keep in DB as sending and rely on sendPendingMessages when reconnected
     }
 }
 
@@ -729,7 +825,7 @@ function markMessageSentLocally(msgId) {
     };
 }
 
-// UI Send Functions
+// -------------------- UI Send Functions --------------------
 function resetInputBox() {
     UI.msgInput.value = ''; UI.msgInput.style.height = '20px'; UI.msgInput.style.overflowY = 'hidden';
     UI.dynamicIcon.innerHTML = thumbsUpIcon; isSendMode = false;
@@ -739,20 +835,20 @@ function resetInputBox() {
 function sendMessageAction() {
     const text = UI.msgInput.value.trim();
     if (!text) return;
-    const msg = { 
-        msgId: generateMsgId(), type: 'text', content: text, senderName: myName, 
+    const msg = {
+        msgId: generateMsgId(), type: 'text', content: text, senderName: myName,
         senderDeviceId: myDeviceId, replyTo: activeReplyContext, timestamp: Date.now(), status: 'sending'
     };
-    msg.sender = 'me'; saveMessage(msg); renderMessage(msg); 
+    msg.sender = 'me'; saveMessage(msg); renderMessage(msg);
     sendToNetwork(msg); resetInputBox();
 }
 
 function sendThumbsUp() {
-    const msg = { 
-        msgId: generateMsgId(), type: 'thumb', content: '👍', senderName: myName, 
+    const msg = {
+        msgId: generateMsgId(), type: 'thumb', content: '👍', senderName: myName,
         senderDeviceId: myDeviceId, replyTo: activeReplyContext, timestamp: Date.now(), status: 'sending'
     };
-    msg.sender = 'me'; saveMessage(msg); renderMessage(msg); 
+    msg.sender = 'me'; saveMessage(msg); renderMessage(msg);
     sendToNetwork(msg); cancelReply();
 }
 
@@ -760,13 +856,13 @@ function sendMediaFile(base64, msgType, fileName = '') {
     const msgId = generateMsgId();
     const ts = Date.now();
     const msg = { msgId, type: msgType, content: base64, fileName, sender: 'me', senderName: myName, senderDeviceId: myDeviceId, timestamp: ts, replyTo: activeReplyContext, status: 'sending' };
-    saveMessage(msg); renderMessage(msg); 
+    saveMessage(msg); renderMessage(msg);
     sendMediaFileChunks(base64, msgType, fileName, msgId, ts, activeReplyContext);
     cancelReply();
 }
 
 function sendMediaFileChunks(base64, msgType, fileName, msgId, ts, replyToContext) {
-    const id = Date.now().toString(), total = Math.ceil(base64.length / CHUNK_SIZE);
+    const id = Date.now().toString() + '-' + Math.random().toString(36).substr(2,6), total = Math.ceil(base64.length / CHUNK_SIZE);
     for (let i = 0; i < total; i++) {
         sendToNetwork({ type: 'media-chunk', id, msgId, index: i, total, data: base64.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE), msgType, fileName, replyTo: replyToContext, senderDeviceId: myDeviceId, senderName: myName, timestamp: ts });
     }
@@ -775,7 +871,7 @@ function sendMediaFileChunks(base64, msgType, fileName, msgId, ts, replyToContex
 function processMediaChunk(data) {
     if (!incomingChunks[data.id]) incomingChunks[data.id] = { chunks: new Array(data.total), count: 0, timestamp: Date.now() };
     incomingChunks[data.id].timestamp = Date.now();
-    
+
     if (!incomingChunks[data.id].chunks[data.index]) {
         incomingChunks[data.id].chunks[data.index] = data.data; incomingChunks[data.id].count++;
     }
@@ -785,22 +881,22 @@ function processMediaChunk(data) {
         if (!document.getElementById('msg-' + msg.msgId)) {
             msg.sender = (msg.senderDeviceId === myDeviceId) ? 'me' : 'them';
             saveMessage(msg); renderMessage(msg);
-            if (msg.sender === 'them' && document.hidden) new Notification(msg.senderName, { body: 'Sent a file' });
+            if (msg.sender === 'them' && document.hidden) try { new Notification(msg.senderName, { body: 'Sent a file' }); } catch(e){}
         }
         delete incomingChunks[data.id];
 
         if (isHost) {
             if (data.senderDeviceId && activeConnections[data.senderDeviceId] && activeConnections[data.senderDeviceId].conn) {
-                activeConnections[data.senderDeviceId].conn.send({ type: 'ack', msgId: data.msgId });
+                try { activeConnections[data.senderDeviceId].conn.send({ type: 'ack', msgId: data.msgId }); } catch(e){}
             }
         }
     }
 }
 
-// Reactions & Delete Functions
-function sendReaction(msgId, emoji) { 
-    sendToNetwork({ type: 'react', msgId, emoji, senderDeviceId: myDeviceId }); 
-    updateReactionLocally(msgId, emoji, myDeviceId); 
+// Reactions & Delete Functions (unchanged)
+function sendReaction(msgId, emoji) {
+    sendToNetwork({ type: 'react', msgId, emoji, senderDeviceId: myDeviceId });
+    updateReactionLocally(msgId, emoji, myDeviceId);
 }
 function updateReactionLocally(msgId, emoji, deviceId) {
     const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -821,14 +917,14 @@ function renderReactionsDOM(msgId, reactionsObj) {
     if (!wrapper) return;
     let rDisplay = wrapper.querySelector('.reactions-display');
     const bubbleWrap = wrapper.querySelector('.bubble-wrapper');
-    if (!rDisplay && bubbleWrap) { 
-        rDisplay = document.createElement('div'); rDisplay.className = 'reactions-display'; 
+    if (!rDisplay && bubbleWrap) {
+        rDisplay = document.createElement('div'); rDisplay.className = 'reactions-display';
         bubbleWrap.style.display = 'flex'; bubbleWrap.style.flexDirection = 'column';
         bubbleWrap.style.alignItems = wrapper.classList.contains('sender') ? 'flex-end' : 'flex-start';
         rDisplay.style.position = 'relative'; rDisplay.style.marginTop = '4px'; rDisplay.style.bottom = 'auto';
-        bubbleWrap.appendChild(rDisplay); 
+        bubbleWrap.appendChild(rDisplay);
     }
-    
+
     if (!reactionsObj || Object.keys(reactionsObj).length === 0) {
         if(rDisplay) rDisplay.classList.remove('active');
         if(bubbleWrap) bubbleWrap.classList.remove('has-reactions');
@@ -836,8 +932,8 @@ function renderReactionsDOM(msgId, reactionsObj) {
     }
     const counts = {};
     Object.values(reactionsObj).forEach(e => { counts[e] = (counts[e] || 0) + 1; });
-    const emojis = Object.keys(counts).map(e => counts[e] > 1 ? `${e} <span style="font-size:10px;opacity:0.8">${counts[e]}</span>` : e).join(' ');
-    
+    const emojis = Object.keys(counts).map(e => counts[e] > 1 ? `${e} <span style=\"font-size:10px;opacity:0.8\">${counts[e]}</span>` : e).join(' ');
+
     rDisplay.innerHTML = emojis; rDisplay.classList.add('active');
     if(bubbleWrap) bubbleWrap.classList.add('has-reactions');
 }
@@ -848,8 +944,8 @@ function updateMsgAsDeletedLocally(msgId) {
     const req = tx.objectStore(STORE_NAME).get(msgId);
     req.onsuccess = () => {
         let msg = req.result;
-        if (msg) { 
-            msg.isDeleted = true; saveMessage(msg); markMessageDeletedDOM(msgId); 
+        if (msg) {
+            msg.isDeleted = true; saveMessage(msg); markMessageDeletedDOM(msgId);
             if (activeReplyContext && activeReplyContext.msgId === msgId) cancelReply();
         }
     };
@@ -881,7 +977,7 @@ function markMessageDeletedDOM(msgId) {
     });
 }
 
-// Rendering UI
+// Rendering UI (preserve behavior, minor improvements)
 function renderMessage(msg) {
     if(document.getElementById('msg-' + msg.msgId)) return;
 
@@ -902,9 +998,9 @@ function renderMessage(msg) {
 
     if (msg.replyTo && !msg.isDeleted) {
         const repInfo = document.createElement('div'); repInfo.className = 'reply-info-text';
-        let replyTxt = isMe ? ((msg.replyTo.name === myName) ? 'You replied to yourself' : `You replied to ${msg.replyTo.name}`) 
+        let replyTxt = isMe ? ((msg.replyTo.name === myName) ? 'You replied to yourself' : `You replied to ${msg.replyTo.name}`)
                             : ((msg.replyTo.name === msg.senderName) ? `${msg.senderName} replied to themselves` : ((msg.replyTo.name === myName) ? `${msg.senderName} replied to you` : `${msg.senderName} replied to ${msg.replyTo.name}`));
-        repInfo.innerHTML = `<i class="fas fa-reply"></i> ${escapeHTML(replyTxt)}`;
+        repInfo.innerHTML = `<i class=\"fas fa-reply\"></i> ${escapeHTML(replyTxt)}`;
         col.appendChild(repInfo);
 
         const prevBubble = document.createElement('div');
@@ -916,7 +1012,7 @@ function renderMessage(msg) {
         db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).get(msg.replyTo.msgId).onsuccess = (e) => {
             const original = e.target.result;
             if (original && original.isDeleted) {
-                prevBubble.innerHTML = '<i class="fas fa-ban" style="margin-right:4px;"></i> <i>This message was deleted</i>';
+                prevBubble.innerHTML = '<i class=\"fas fa-ban\" style=\"margin-right:4px;\"></i> <i>This message was deleted</i>';
                 prevBubble.style.backgroundColor = 'transparent'; prevBubble.style.border = '1px solid #444'; prevBubble.style.color = '#888';
             }
         };
@@ -945,7 +1041,7 @@ function renderMessage(msg) {
             bubbleContent = document.createElement('video'); bubbleContent.src = contentSrc; bubbleContent.className = 'chat-media'; bubbleContent.controls = true;
         } else if (msg.type === 'file') {
             bubbleContent = document.createElement('a'); bubbleContent.href = contentSrc; bubbleContent.download = msg.fileName; bubbleContent.className = 'file-box';
-            bubbleContent.innerHTML = `<i class="fas fa-file-alt"></i> <span style="margin-left:8px;">${escapeHTML(msg.fileName)}</span>`;
+            bubbleContent.innerHTML = `<i class=\"fas fa-file-alt\"></i> <span style=\"margin-left:8px;\">${escapeHTML(msg.fileName)}</span>`;
         }
         bubbleWrap.appendChild(bubbleContent);
 
@@ -955,14 +1051,14 @@ function renderMessage(msg) {
             actionMenu.appendChild(btn);
         });
         const replyBtn = document.createElement('button'); replyBtn.className = 'action-btn'; replyBtn.textContent = '↩️';
-        replyBtn.onclick = (ev) => { 
-            ev.stopPropagation(); 
+        replyBtn.onclick = (ev) => {
+            ev.stopPropagation();
             let previewContent = msg.type === 'text' ? msg.content : (msg.type==='thumb'?'👍':`📄 ${msg.type}`);
-            setReplyContext(msg.msgId, msg.senderName, previewContent); 
-            wrapper.classList.remove('show-actions'); 
+            setReplyContext(msg.msgId, msg.senderName, previewContent);
+            wrapper.classList.remove('show-actions');
         };
-        actionMenu.appendChild(replyBtn); 
-        
+        actionMenu.appendChild(replyBtn);
+
         if (isMe) {
             const delBtn = document.createElement('button'); delBtn.className = 'action-btn'; delBtn.innerHTML = '🗑️'; delBtn.title = "Delete Message";
             delBtn.onclick = (ev) => { ev.stopPropagation(); deleteMessageAction(msg.msgId); wrapper.classList.remove('show-actions'); };
@@ -975,13 +1071,13 @@ function renderMessage(msg) {
         } else {
             bubbleWrap.oncontextmenu = (e) => { e.preventDefault(); wrapper.classList.toggle('show-actions'); };
         }
-        
+
         if(msg.reactions && !Array.isArray(msg.reactions) && Object.keys(msg.reactions).length > 0) {
             renderReactionsDOM(msg.msgId, msg.reactions);
         }
     }
 
-    const metaInfo = document.createElement('div'); 
+    const metaInfo = document.createElement('div');
     metaInfo.className = 'msg-meta';
     metaInfo.id = 'meta-' + msg.msgId;
 
@@ -989,7 +1085,7 @@ function renderMessage(msg) {
     if (isMe && msg.status === 'sending') {
         statusHtml = '<span style="color: #f39c12; font-size: 11px; margin-right: 4px;"><i class="fas fa-clock"></i> Sending...</span> ';
     }
-    
+
     metaInfo.innerHTML = `${statusHtml}${msg.senderName} • ${formatTime(msg.timestamp)}`;
     col.appendChild(metaInfo);
 
@@ -1001,26 +1097,27 @@ function setReplyContext(msgId, name, content) { activeReplyContext = { msgId, n
 function cancelReply() { activeReplyContext = null; UI.replyPreview.style.display = 'none'; }
 document.getElementById('cancel-reply-btn').onclick = cancelReply;
 
+// Info modal: render normalized names
 document.getElementById('edit-name-btn').onclick = () => { closeModal('info-modal'); document.getElementById('my-name-input').value = myName; openModal('name-modal'); };
 
 document.getElementById('open-info-btn').onclick = () => {
     document.getElementById('info-name').textContent = myName;
     const peersList = document.getElementById('info-peers-list'); peersList.innerHTML = '';
-    
+
     let listToRender = globalPeerList.filter(p => p.deviceId !== myDeviceId);
     if (listToRender.length === 0) peersList.innerHTML = `<li>${isHost ? 'Only you are in the room.' : 'Syncing room users...'}</li>`;
-    else { 
-        listToRender.forEach(p => { 
+    else {
+        listToRender.forEach(p => {
             const li = document.createElement('li'); li.style.marginBottom = '12px';
             li.innerHTML = `<div style="font-weight:bold;"><i class="fas fa-circle" style="color:#32d74b; font-size:10px; margin-right:5px;"></i> ${escapeHTML(p.name)}</div><div style="font-size:11px; color:#aaa; margin-left:15px; margin-top:2px;">Loc: ${escapeHTML(p.ipInfo?.loc || 'Unknown')}</div>`;
-            peersList.appendChild(li); 
-        }); 
+            peersList.appendChild(li);
+        });
     }
     openModal('info-modal');
 };
 document.getElementById('close-info-btn').onclick = () => closeModal('info-modal');
 
-// Media Handlers
+// Media Handlers (unchanged)
 function handleFileInput(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -1029,7 +1126,7 @@ function handleFileInput(e) {
         let msgType = 'file'; if (file.type.startsWith('image/')) msgType = 'image'; else if (file.type.startsWith('video/')) msgType = 'video';
         sendMediaFile(reader.result, msgType, file.name);
     };
-    reader.readAsDataURL(file); e.target.value = ''; 
+    reader.readAsDataURL(file); e.target.value = '';
 }
 document.getElementById('file-any-btn').onclick = () => document.getElementById('file-any-input').click();
 document.getElementById('file-any-input').onchange = handleFileInput;
@@ -1046,9 +1143,9 @@ document.getElementById('capture-photo-btn').onclick = () => {
     sendMediaFile(canvas.toDataURL('image/jpeg'), 'image', 'photo.jpg'); document.getElementById('close-camera-btn').click();
 };
 
-// Input Control
+// Input Control (unchanged)
 function expandInput() { UI.inputActions.classList.add('collapsed'); UI.expandBtn.classList.add('visible'); isInputExpanded = true; }
-function collapseInput(force = false) { 
+function collapseInput(force = false) {
     if(force || UI.msgInput.value.length === 0) { UI.inputActions.classList.remove('collapsed'); UI.expandBtn.classList.remove('visible'); isInputExpanded = false; explicitlyCollapsed = false; } else { UI.inputActions.classList.remove('collapsed'); UI.expandBtn.classList.remove('visible'); isInputExpanded = false; explicitlyCollapsed = true; }
 }
 UI.expandBtn.onclick = () => collapseInput(false);
@@ -1068,6 +1165,7 @@ UI.msgInput.addEventListener('keydown', function(e) {
 
 UI.dynamicIcon.addEventListener('click', () => { if (isSendMode) sendMessageAction(); else sendThumbsUp(); });
 UI.chat.onclick = (e) => { if(e.target === UI.chat) document.querySelectorAll('.message-row').forEach(w => w.classList.remove('show-actions')); };
+
 </script>
 </body>
 </html>
