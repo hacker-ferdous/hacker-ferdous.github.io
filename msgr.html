@@ -263,6 +263,7 @@ body {
     <div class="loader-text" id="loader-text">Loading...</div>
 </div>
 
+<!-- Auth Modal -->
 <div id="auth-modal" class="modal-overlay">
     <div class="modal-box">
         <h2><i class="fas fa-shield-alt" style="color:var(--icon-color)"></i> Chat Room</h2>
@@ -277,9 +278,11 @@ body {
         </div>
         <button class="modal-btn" id="auth-create-btn"><i class="fas fa-plus-circle"></i> Create Room</button>
         <button class="modal-btn cancel" id="auth-join-btn"><i class="fas fa-sign-in-alt"></i> Join Room</button>
+        <!-- QR/Link Device button removed -->
     </div>
 </div>
 
+<!-- Name Setup Modal -->
 <div id="setup-name-modal" class="modal-overlay">
     <div class="modal-box">
         <h2><i class="fas fa-user-circle" style="color:var(--icon-color)"></i> Your Profile</h2>
@@ -292,6 +295,7 @@ body {
     </div>
 </div>
 
+<!-- Change Name Modal -->
 <div id="name-modal" class="modal-overlay">
     <div class="modal-box">
         <h2>Change display name</h2>
@@ -301,9 +305,11 @@ body {
     </div>
 </div>
 
+<!-- Info Modal -->
 <div id="info-modal" class="modal-overlay">
     <div class="modal-box">
         <h2><i class="fas fa-info-circle"></i> Room info</h2>
+        <!-- Invite/Backup/Restore buttons removed (require external libs) -->
         <div class="info-content">
             <p><span>Room ID:</span> <span id="info-room-id" style="color:#fff;"></span></p>
             <p><span>Your name:</span> <span id="info-name" style="color:#fff;"></span> <i class="fas fa-edit edit-icon" id="edit-name-btn" title="Change name"></i></p>
@@ -319,6 +325,7 @@ body {
     </div>
 </div>
 
+<!-- Camera Modal -->
 <div id="camera-modal" class="modal-overlay">
     <div class="modal-box" style="padding: 15px;">
         <video id="camera-video" autoplay playsinline></video>
@@ -327,6 +334,7 @@ body {
     </div>
 </div>
 
+<!-- Reactions Detail Modal -->
 <div id="reaction-modal" class="modal-overlay">
     <div class="modal-box">
         <h2 style="margin-bottom: 15px;">Reactions</h2>
@@ -335,23 +343,30 @@ body {
     </div>
 </div>
 
+<!-- Fullscreen Media Modal -->
 <div id="fullscreen-modal">
     <div id="fullscreen-close"><i class="fas fa-times"></i></div>
     <img id="fullscreen-img" class="fullscreen-content" style="display:none;" />
     <video id="fullscreen-vid" class="fullscreen-content" controls style="display:none;"></video>
 </div>
 
+<!-- Main Chat UI -->
 <div class="chat-container" id="chatContainer" style="display: none;">
     <div class="chat-header">
         <div class="header-main-row">
             <div class="header-left">
-                <div class="profile-pic"><div class="status-dot" id="dot"></div></div>
+                <!-- App logo icon (messaging app style) -->
+                <div class="profile-pic" style="display: flex; align-items: center; justify-content: center; background: #18191a; border: 1px solid #333; color: var(--icon-color); font-size: 20px; background-image: none !important;">
+                    <i class="fas fa-comment-dots"></i>
+                    <div class="status-dot" id="dot"></div>
+                </div>
                 <div class="user-info">
                     <h4 id="room-display">Room</h4>
                     <span id="live-status-text">—</span>
                 </div>
             </div>
             <div class="header-icons">
+                <!-- Search and sync icons removed, only info remains -->
                 <i class="fas fa-info-circle" id="open-info-btn" title="Room info"></i>
             </div>
         </div>
@@ -394,6 +409,8 @@ body {
         </div>
     </div>
 </div>
+
+<!-- The script block is exactly as you provided (with original host‑based logic) -->
 <script>
 (function() {
     const DB_NAME = 'P2PMessengerDB_v11'; 
@@ -410,7 +427,7 @@ body {
         localStorage.setItem('messenger_device_id', myDeviceId); 
     }
 
-    let hostConn = null, activeConnections = {}, globalPeerList = [], incomingChunks = {}, activeReplyContext = null, cameraStream = null;
+    let hostConn = null, activeConnections = {}, globalPeerList =[], incomingChunks = {}, activeReplyContext = null, cameraStream = null;
     let myIpInfo = { ip: 'Hidden', loc: 'Loading...' };
     let heartbeatInterval = null, lastHeartbeat = Date.now(), heartbeatCheckInterval = null;
     let typingTimer = null;
@@ -429,7 +446,7 @@ body {
 
     const peerOptions = {
         config: {
-            iceServers: [
+            iceServers:[
                 { urls: 'stun:stun.l.google.com:19302' },
                 { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }
             ]
@@ -525,7 +542,7 @@ body {
     function base64ToBlob(base64, mimeType) { 
         try { 
             const b64Data = base64.split(',')[1]; if (!b64Data) return base64; 
-            const byteCharacters = atob(b64Data), byteArrays = []; 
+            const byteCharacters = atob(b64Data), byteArrays =[]; 
             for (let offset = 0; offset < byteCharacters.length; offset += 512) { 
                 const slice = byteCharacters.slice(offset, offset + 512), byteNumbers = new Array(slice.length); 
                 for (let i = 0; i < slice.length; i++) byteNumbers[i] = slice.charCodeAt(i); 
@@ -557,7 +574,7 @@ body {
     function updateRoomDisplay() { if (UI.roomDisplay) UI.roomDisplay.textContent = roomId ? roomId : 'Room'; }
 
     function getUniqueNameForNetwork(desiredName, excludeDeviceId) {
-        let allNames = []; if (excludeDeviceId !== myDeviceId) allNames.push(myName); 
+        let allNames =[]; if (excludeDeviceId !== myDeviceId) allNames.push(myName); 
         for (let dId in activeConnections) if (dId !== excludeDeviceId) allNames.push(activeConnections[dId].name);
         let uniqueName = desiredName, counter = 1;
         while (allNames.includes(uniqueName)) { uniqueName = `${desiredName} (${counter})`; counter++; }
@@ -591,7 +608,7 @@ body {
         if (peer) peer.destroy(); peer = new Peer(targetId, peerOptions);
         peer.on('open', () => {
             isHost = true; roomId = targetId; roomPassword = targetPass; activeConnections = {};
-            globalPeerList = [{ deviceId: myDeviceId, name: myName + ' (Host)', ipInfo: myIpInfo, isHost: true, joinedAt: Date.now() }];
+            globalPeerList =[{ deviceId: myDeviceId, name: myName + ' (Host)', ipInfo: myIpInfo, isHost: true, joinedAt: Date.now() }];
             if (!isAutoReconnecting) { hideLoader(); promptNameAndEnter(); } else { document.getElementById('chatContainer').style.display = 'flex'; updateSyncCount(); hideLoader(); }
             UI.dot.classList.add('connected'); showStatus(`You are host`); updateRoomDisplay(); peer.on('connection', setupHostConnection);
             if (heartbeatInterval) clearInterval(heartbeatInterval);
@@ -652,7 +669,7 @@ body {
     }
 
     function resetConnection() {
-        hideLoader(); if (peer) peer.destroy(); peer = null; isHost = false; hostConn = null; activeConnections = {}; globalPeerList = []; UI.dot.classList.remove('connected');
+        hideLoader(); if (peer) peer.destroy(); peer = null; isHost = false; hostConn = null; activeConnections = {}; globalPeerList =[]; UI.dot.classList.remove('connected');
         if (heartbeatInterval) clearInterval(heartbeatInterval); if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
         document.getElementById('chatContainer').style.display = 'none'; openModal('auth-modal'); document.getElementById('chatContent').innerHTML = ''; updateRoomStatusPermanent();
     }
@@ -855,7 +872,20 @@ body {
         if(document.getElementById('msg-' + msg.msgId)) return; 
         const wrapper = document.createElement('div'), isMe = msg.sender === 'me'; 
         wrapper.className = `message-row ${isMe ? 'sender' : 'receiver'}`; wrapper.id = 'msg-' + msg.msgId; 
-        if (!isMe) { const prof = document.createElement('div'); prof.className = 'mini-profile'; prof.title = msg.senderName; wrapper.appendChild(prof); } 
+        if (!isMe) { 
+            // ডামি ইমেজের পরিবর্তে ইউজারের আইকন যুক্ত করা হয়েছে
+            const prof = document.createElement('div'); 
+            prof.className = 'mini-profile'; 
+            prof.title = msg.senderName; 
+            prof.innerHTML = '<i class="fas fa-user"></i>';
+            prof.style.display = 'flex';
+            prof.style.alignItems = 'center';
+            prof.style.justifyContent = 'center';
+            prof.style.backgroundColor = '#333';
+            prof.style.color = '#fff';
+            prof.style.backgroundImage = 'none';
+            wrapper.appendChild(prof); 
+        } 
         const col = document.createElement('div'); col.className = `message-column ${isMe ? 'sender-stack' : 'receiver-stack'}`; wrapper.appendChild(col); 
         
         if (msg.replyTo && !msg.isDeleted) { 
@@ -897,8 +927,7 @@ body {
             
             if(isMedia) bubbleWrap.appendChild(mediaWrapper); else bubbleWrap.appendChild(bubbleContent);
             
-            const actionMenu = document.createElement('div'); actionMenu.className = 'msg-actions';
-            ['👍', '❤️', '😂', '😮', '😢'].forEach(e => { const btn = document.createElement('button'); btn.className = 'action-btn'; btn.textContent = e; btn.onclick = (ev) => { ev.stopPropagation(); sendReaction(msg.msgId, e); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(btn); }); 
+            const actionMenu = document.createElement('div'); actionMenu.className = 'msg-actions';['👍', '❤️', '😂', '😮', '😢'].forEach(e => { const btn = document.createElement('button'); btn.className = 'action-btn'; btn.textContent = e; btn.onclick = (ev) => { ev.stopPropagation(); sendReaction(msg.msgId, e); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(btn); }); 
             const replyBtn = document.createElement('button'); replyBtn.className = 'action-btn'; replyBtn.textContent = '↩️'; replyBtn.onclick = (ev) => { ev.stopPropagation(); setReplyContext(msg.msgId, msg.senderName, msg.type === 'text' ? msg.content : (msg.type==='thumb'?msg.content:`📄 ${msg.type}`)); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(replyBtn); 
             if(isMedia) { const dlBtn = document.createElement('button'); dlBtn.className = 'action-btn'; dlBtn.textContent = '⬇️'; dlBtn.onclick = (ev) => { ev.stopPropagation(); downloadMedia(contentSrc, msg.fileName || 'download'); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(dlBtn); }
             if (isMe) { const delBtn = document.createElement('button'); delBtn.className = 'action-btn'; delBtn.innerHTML = '🗑️'; delBtn.onclick = (ev) => { ev.stopPropagation(); deleteMessageAction(msg.msgId); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(delBtn); } 
