@@ -267,13 +267,11 @@ body {
 </style>
 </head>
 <body>
-
 <div id="global-loader" class="loader-overlay">
     <div class="spinner"></div>
     <div class="loader-text" id="loader-text">Loading...</div>
 </div>
 
-<!-- Auth Modal -->
 <div id="auth-modal" class="modal-overlay">
     <div class="modal-box">
         <h2><i class="fas fa-comment" style="color:var(--icon-color)"></i> Chat Room</h2>
@@ -291,7 +289,6 @@ body {
     </div>
 </div>
 
-<!-- Name Setup Modal -->
 <div id="setup-name-modal" class="modal-overlay">
     <div class="modal-box">
         <h2><i class="fas fa-user-circle" style="color:var(--icon-color)"></i> Your Profile</h2>
@@ -304,7 +301,6 @@ body {
     </div>
 </div>
 
-<!-- Change Name Modal -->
 <div id="name-modal" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-close" id="name-modal-close"><i class="fas fa-times"></i></div>
@@ -314,7 +310,6 @@ body {
     </div>
 </div>
 
-<!-- Info Modal (added a container for pending requests) -->
 <div id="info-modal" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-close" id="info-modal-close"><i class="fas fa-times"></i></div>
@@ -328,17 +323,11 @@ body {
                     <li>Loading...</li>
                 </ul>
             </div>
-            <!-- New section for pending join requests (host only) -->
-            <div id="pending-requests-container" style="margin-top:15px; border-top:1px solid #444; padding-top:10px; display:none;">
-                <span>Pending requests:</span>
-                <ul id="pending-requests-list" style="list-style:none; padding:10px 0 0 0; margin:0; color:#ddd; max-height:100px; overflow-y:auto;"></ul>
-            </div>
         </div>
         <button class="modal-btn" id="leave-room-btn"><i class="fas fa-sign-out-alt"></i> Leave room</button>
     </div>
 </div>
 
-<!-- Camera Modal -->
 <div id="camera-modal" class="modal-overlay">
     <div class="modal-box" style="padding: 15px;">
         <div class="modal-close" id="camera-modal-close"><i class="fas fa-times"></i></div>
@@ -347,7 +336,6 @@ body {
     </div>
 </div>
 
-<!-- Reactions Detail Modal (reused for readers list) -->
 <div id="reaction-modal" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-close" onclick="closeModal('reaction-modal')"><i class="fas fa-times"></i></div>
@@ -356,14 +344,12 @@ body {
     </div>
 </div>
 
-<!-- Fullscreen Media Modal -->
 <div id="fullscreen-modal">
     <div id="fullscreen-close"><i class="fas fa-times"></i></div>
     <img id="fullscreen-img" class="fullscreen-content" style="display:none;" />
     <video id="fullscreen-vid" class="fullscreen-content" controls style="display:none;"></video>
 </div>
 
-<!-- Main Chat UI -->
 <div class="chat-container" id="chatContainer" style="display: none;">
     <div class="chat-header">
         <div class="header-main-row">
@@ -444,7 +430,6 @@ body {
     let heartbeatInterval = null, lastHeartbeat = Date.now(), heartbeatCheckInterval = null;
     let typingTimer = null;
 
-    let pendingConnections = []; 
     let messageRetryQueue = {}; 
 
     const UI = { 
@@ -468,185 +453,6 @@ body {
         }, debug: 0
     };
 
-    function updatePendingUI() {
-        const container = document.getElementById('pending-requests-container');
-        const list = document.getElementById('pending-requests-list');
-        if (!isHost || pendingConnections.length === 0) {
-            container.style.display = 'none';
-            return;
-        }
-        container.style.display = 'block';
-        list.innerHTML = '';
-        pendingConnections.forEach(p => {
-            const li = document.createElement('li');
-            li.style.marginBottom = '10px';
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.style.alignItems = 'center';
-            li.innerHTML = `
-                <div>
-                    <div><i class="fas fa-user-clock"></i> ${escapeHTML(p.name)}</div>
-                    <div style="font-size:11px; color:#aaa;">${escapeHTML(p.ipInfo?.loc || 'Unknown')}</div>
-                </div>
-                <div style="display:flex; gap:5px;">
-                    <button class="approve-btn" data-device="${p.deviceId}" style="background:#0084ff; color:#fff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer;">✓</button>
-                    <button class="deny-btn" data-device="${p.deviceId}" style="background:#d32f2f; color:#fff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer;">✗</button>
-                </div>
-            `;
-            list.appendChild(li);
-        });
-        document.querySelectorAll('.approve-btn').forEach(btn => { btn.onclick = () => approveJoin(btn.dataset.device); });
-        document.querySelectorAll('.deny-btn').forEach(btn => { btn.onclick = () => denyJoin(btn.dataset.device); });
-    }
-
-    function approveJoin(deviceId) {
-        const idx = pendingConnections.findIndex(p => p.deviceId === deviceId);
-        if (idx === -1) return;
-        const pending = pendingConnections[idx];
-        pendingConnections.splice(idx, 1);
-        
-        let assignedName = getUniqueNameForNetwork(pending.name, deviceId);
-        activeConnections[deviceId] = { 
-            conn: pending.conn, name: assignedName, ipInfo: pending.ipInfo, peerId: pending.conn.peer, joinedAt: Date.now() 
-        };
-        pending.conn.send({ type: 'system', action: 'join-approved', newName: assignedName, deviceId });
-        sendHistoryToClient(deviceId);
-        broadcastPeerList();
-        relay({ type: 'system', action: 'join', name: assignedName }, deviceId);
-        showStatus(`${assignedName} joined`);
-        updatePendingUI();
-    }
-
-    function denyJoin(deviceId) {
-        const idx = pendingConnections.findIndex(p => p.deviceId === deviceId);
-        if (idx === -1) return;
-        const pending = pendingConnections[idx];
-        pending.conn.send({ type: 'system', action: 'join-denied' });
-        setTimeout(() => pending.conn.close(), 500);
-        pendingConnections.splice(idx, 1);
-        updatePendingUI();
-    }
-
-    function sendHistoryToClient(deviceId) {
-        if (!isHost) return;
-        db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll().onsuccess = e => {
-            const allMessages = e.target.result;
-            const recent = allMessages.sort((a,b) => a.timestamp - b.timestamp).slice(-50);
-            const conn = activeConnections[deviceId]?.conn;
-            if (conn && conn.open) {
-                conn.send({ type: 'system', action: 'history-batch', messages: recent });
-            }
-        };
-    }
-
-    function scheduleRetry(msgId, message) {
-        if (!messageRetryQueue[msgId]) messageRetryQueue[msgId] = { retryCount: 0, timeout: null, message };
-        const retry = messageRetryQueue[msgId];
-        if (retry.retryCount >= MAX_RETRIES) {
-            delete messageRetryQueue[msgId];
-            return;
-        }
-        retry.retryCount++;
-        retry.timeout = setTimeout(() => { sendToNetwork(message, true); }, RETRY_DELAY);
-    }
-
-    async function sendToNetwork(data, isRetry = false) {
-        if (!data.senderDeviceId) data.senderDeviceId = myDeviceId;
-        let payload = {...data};
-        if(payload.type === 'text' || payload.type === 'thumb') {
-            payload.content = await encryptPayload(payload.content);
-        }
-        
-        if (isHost) { 
-            relay(payload, myDeviceId); 
-            if (payload.msgId) markMessageSentLocally(payload.msgId);
-        } else if (hostConn && hostConn.open) {
-            hostConn.send(payload);
-            if (!isRetry && (payload.type === 'text' || payload.type === 'thumb' || payload.type === 'media-chunk')) {
-                if (payload.msgId) scheduleRetry(payload.msgId, payload);
-            }
-        }
-    }
-
-    function injectDynamicUI() {
-        const infoModal = document.querySelector('#info-modal .modal-box');
-        const actionDiv = document.createElement('div');
-        actionDiv.style.display = 'flex'; actionDiv.style.gap = '10px'; actionDiv.style.marginBottom = '10px';
-        actionDiv.innerHTML = `
-            <button class="modal-btn" id="invite-btn" style="font-size:13px; padding:8px;"><i class="fas fa-link"></i> Invite</button>
-            <button class="modal-btn" id="backup-btn" style="font-size:13px; padding:8px; background:#4CAF50;"><i class="fas fa-download"></i> Backup</button>
-            <label class="modal-btn" style="font-size:13px; padding:8px; background:#f39c12; cursor:pointer; margin-top:8px;">
-                <i class="fas fa-upload"></i> Restore <input type="file" id="restore-input" accept=".json" style="display:none;">
-            </label>
-        `;
-        infoModal.insertBefore(actionDiv, document.getElementById('leave-room-btn'));
-
-        const inputArea = document.querySelector('.input-area');
-        const typingDiv = document.createElement('div');
-        typingDiv.id = 'typing-indicator';
-        typingDiv.style.cssText = 'position:absolute; top:-25px; left:20px; font-size:12px; color:#0084ff; font-style:italic; display:none;';
-        inputArea.appendChild(typingDiv);
-
-        const progressDiv = document.createElement('div');
-        progressDiv.id = 'upload-progress';
-        progressDiv.style.cssText = 'position:absolute; top:0; left:0; height:3px; background:#0084ff; width:0%; transition:width 0.2s; z-index:200;';
-        inputArea.appendChild(progressDiv);
-
-        document.getElementById('invite-btn').onclick = () => {
-            const url = `${window.location.origin}${window.location.pathname}?room=${roomId}&pass=${roomPassword || ''}`;
-            navigator.clipboard.writeText(url).then(() => alert('Invite Link Copied!'));
-        };
-
-        document.getElementById('backup-btn').onclick = () => {
-            db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll().onsuccess = (e) => {
-                const blob = new Blob([JSON.stringify(e.target.result)], {type: 'application/json'});
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Backup_${roomId}.json`;
-                a.click();
-            };
-        };
-
-        document.getElementById('restore-input').onchange = (e) => {
-            const file = e.target.files[0]; if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const data = JSON.parse(ev.target.result);
-                    const tx = db.transaction(STORE_NAME, 'readwrite');
-                    data.forEach(msg => tx.objectStore(STORE_NAME).put(msg));
-                    tx.oncomplete = () => { UI.chat.innerHTML = ''; loadMessages(); alert('Restored successfully!'); closeModal('info-modal'); };
-                } catch(err) { alert('Invalid Backup File'); }
-            };
-            reader.readAsText(file); e.target.value = '';
-        };
-    }
-
-    async function generateE2EEKey(pass) {
-        if(!crypto.subtle) return;
-        const enc = new TextEncoder();
-        const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(pass || roomId || "default"), {name: "PBKDF2"}, false, ["deriveKey"]);
-        aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt: enc.encode(roomId || "salt"), iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["encrypt", "decrypt"]);
-    }
-
-    async function encryptPayload(text) {
-        if(!aesKey) return text;
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const cipher = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, new TextEncoder().encode(text));
-        return `E2EE::${btoa(String.fromCharCode(...iv))}::${btoa(String.fromCharCode(...new Uint8Array(cipher)))}`;
-    }
-
-    async function decryptPayload(cipherText) {
-        if(!aesKey || typeof cipherText !== 'string' || !cipherText.startsWith('E2EE::')) return cipherText;
-        try {
-            const parts = cipherText.split('::');
-            const iv = Uint8Array.from(atob(parts[1]), c => c.charCodeAt(0));
-            const cipherBytes = Uint8Array.from(atob(parts[2]), c => c.charCodeAt(0));
-            const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, cipherBytes);
-            return new TextDecoder().decode(decrypted);
-        } catch(e) { return "🔒 [Decryption Failed]"; }
-    }
-
-    function showLoader(text = 'Loading...') { document.getElementById('loader-text').textContent = text; document.getElementById('global-loader').classList.add('active'); }
-    function hideLoader() { document.getElementById('global-loader').classList.remove('active'); }
     function escapeHTML(str) { return typeof str !== 'string' ? '' : str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); } 
     function formatTime(timestamp) { return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } 
     function generateMsgId() { return (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).substr(2, 9); } 
@@ -713,18 +519,36 @@ body {
     } 
 
     function loadMessages() { 
+        UI.chat.innerHTML = ''; 
+        if (!roomId) return; 
         db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll().onsuccess = e => {
-            e.target.result.forEach(renderMessage);
+            e.target.result.forEach(msg => {
+                if (msg.roomId === roomId) {
+                    renderMessage(msg);
+                }
+            });
         };
     } 
 
     function saveMessage(msg) {
         let msgCopy = { ...msg }; 
+        msgCopy.roomId = roomId; 
         if (!msgCopy.readBy) msgCopy.readBy = [];
         if (['image', 'video', 'file'].includes(msgCopy.type) && typeof msgCopy.content === 'string' && msgCopy.content.startsWith('data:')) msgCopy.content = base64ToBlob(msgCopy.content, getMimeType(msgCopy.content)); 
         const tx = db.transaction(STORE_NAME, 'readwrite'); 
         tx.onerror = e => { if (e.target.error.name === 'QuotaExceededError') alert("Storage full! Delete old messages."); }; 
         tx.objectStore(STORE_NAME).put(msgCopy); 
+    }
+
+    function removePeer(deviceId, notifyName = null) {
+        if (!activeConnections[deviceId]) return;
+        const peerName = notifyName || activeConnections[deviceId].name;
+        delete activeConnections[deviceId];
+        broadcastPeerList();
+        if (notifyName !== null) {
+            showStatus(`${peerName} disconnected`);
+            relay({ type: 'system', action: 'leave', name: peerName }, deviceId);
+        }
     }
 
     async function createRoom(targetId, targetPass, isAutoReconnecting = false) {
@@ -734,7 +558,9 @@ body {
         peer.on('open', () => {
             isHost = true; roomId = targetId; roomPassword = targetPass; activeConnections = {};
             globalPeerList =[{ deviceId: myDeviceId, name: myName + ' (Host)', ipInfo: myIpInfo, isHost: true, joinedAt: Date.now() }];
-            pendingConnections = []; 
+            
+            loadMessages(); 
+            
             if (!isAutoReconnecting) { hideLoader(); promptNameAndEnter(); } else { document.getElementById('chatContainer').style.display = 'flex'; updateSyncCount(); hideLoader(); }
             UI.dot.classList.add('connected'); showStatus(`You are host`); updateRoomDisplay(); peer.on('connection', setupHostConnection);
             if (heartbeatInterval) clearInterval(heartbeatInterval);
@@ -749,11 +575,37 @@ body {
     async function joinRoom(targetId, targetPass, isAutoReconnecting = false) {
         showLoader('Connecting Securely...');
         await generateE2EEKey(targetPass || targetId);
-        if (peer) peer.destroy(); peer = new Peer(peerOptions); 
+        if (peer) peer.destroy(); peer = new Peer(peerOptions);
         peer.on('open', () => {
-            isHost = false; roomId = targetId; roomPassword = targetPass;
-            hostConn = peer.connect(targetId, { reliable: true, metadata: { password: targetPass } });
-            setupClientConnection(hostConn, isAutoReconnecting); UI.dot.classList.add('connected');
+            closeModal('auth-modal');
+            isHost = false;
+            roomId = targetId;
+            roomPassword = targetPass;
+            
+            loadMessages(); 
+
+            if (isAutoReconnecting) {
+                hostConn = peer.connect(targetId, { reliable: true, metadata: { password: targetPass } });
+                setupClientConnection(hostConn, true);
+                UI.dot.classList.add('connected');
+            } else {
+                hideLoader();
+                document.getElementById('setup-name-input').value = myName;
+                const originalHandler = document.getElementById('setup-name-btn').onclick;
+                document.getElementById('setup-name-btn').onclick = function() {
+                    const name = document.getElementById('setup-name-input').value.trim();
+                    if (!name) return alert('Name required.');
+                    myName = name;
+                    localStorage.setItem('messenger_name', myName);
+                    showLoader('Requesting approval...');
+                    hostConn = peer.connect(targetId, { reliable: true, metadata: { password: targetPass } });
+                    setupClientConnection(hostConn, false);
+                    closeModal('setup-name-modal');
+                    UI.dot.classList.add('connected');
+                    document.getElementById('setup-name-btn').onclick = originalHandler;
+                };
+                openModal('setup-name-modal');
+            }
         });
         peer.on('error', () => { showStatus('Connection error. Returning...'); setTimeout(resetConnection, 1500); });
     }
@@ -765,25 +617,226 @@ body {
             conn.on('open', () => { conn.send({ type: 'system', action: 'auth-fail', message: 'Wrong password.' }); setTimeout(() => conn.close(), 500); }); 
             return; 
         }
+
+        let deviceId = null;
+        let peerName = null;
+
         conn.on('data', data => {
             if (data.type === 'system' && data.action === 'join-request') {
-                const deviceId = data.deviceId;
-                if (activeConnections[deviceId] || pendingConnections.some(p => p.deviceId === deviceId)) {
+                deviceId = data.deviceId;
+                peerName = data.name;
+                if (activeConnections[deviceId]) {
                     conn.send({ type: 'system', action: 'join-denied', reason: 'already exists' });
                     conn.close();
                     return;
                 }
-                pendingConnections.push({ conn, deviceId, name: data.name, ipInfo: data.ipInfo || {}, timestamp: Date.now() });
-                showStatus(`Pending request from ${data.name}`);
-                updatePendingUI();
+                let assignedName = getUniqueNameForNetwork(peerName, deviceId);
+                activeConnections[deviceId] = { 
+                    conn: conn, 
+                    name: assignedName, 
+                    ipInfo: data.ipInfo || {}, 
+                    peerId: conn.peer, 
+                    joinedAt: Date.now() 
+                };
+                conn.send({ type: 'system', action: 'join-approved', newName: assignedName, deviceId });
+                sendHistoryToClient(deviceId);
+                broadcastPeerList();
+                relay({ type: 'system', action: 'join', name: assignedName }, deviceId);
+                showStatus(`${assignedName} joined`);
+            } else {
+                handleNetworkData(data, conn);
             }
         });
+
         conn.on('close', () => {
-            const idx = pendingConnections.findIndex(p => p.conn.peer === conn.peer);
-            if (idx !== -1) pendingConnections.splice(idx, 1);
-            updatePendingUI();
+            if (deviceId && activeConnections[deviceId]) {
+                removePeer(deviceId, activeConnections[deviceId].name);
+            }
         });
     }
+
+    function sendHistoryToClient(deviceId) {
+        if (!isHost) return;
+        db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll().onsuccess = e => {
+            const allMessages = e.target.result;
+            const roomMessages = allMessages.filter(m => m.roomId === roomId); 
+            const recent = roomMessages.sort((a,b) => a.timestamp - b.timestamp).slice(-50);
+            const conn = activeConnections[deviceId]?.conn;
+            if (conn && conn.open) {
+                conn.send({ type: 'system', action: 'history-batch', messages: recent });
+            }
+        };
+    }
+
+    function scheduleRetry(msgId, message) {
+        if (!messageRetryQueue[msgId]) messageRetryQueue[msgId] = { retryCount: 0, timeout: null, message };
+        const retry = messageRetryQueue[msgId];
+        if (retry.retryCount >= MAX_RETRIES) {
+            delete messageRetryQueue[msgId];
+            return;
+        }
+        retry.retryCount++;
+        retry.timeout = setTimeout(() => { sendToNetwork(message, true); }, RETRY_DELAY);
+    }
+
+    async function sendToNetwork(data, isRetry = false) {
+        if (!data.senderDeviceId) data.senderDeviceId = myDeviceId;
+        let payload = {...data};
+        if(payload.type === 'text' || payload.type === 'thumb') {
+            payload.content = await encryptPayload(payload.content);
+        }
+        
+        if (isHost) { 
+            relay(payload, myDeviceId); 
+            if (payload.msgId) markMessageSentLocally(payload.msgId);
+        } else if (hostConn && hostConn.open) {
+            hostConn.send(payload);
+            if (!isRetry && (payload.type === 'text' || payload.type === 'thumb' || payload.type === 'media-chunk')) {
+                if (payload.msgId) scheduleRetry(payload.msgId, payload);
+            }
+        }
+    }
+
+    function injectDynamicUI() {
+    const infoModal = document.querySelector('#info-modal .modal-box');
+    const actionDiv = document.createElement('div');
+    actionDiv.style.display = 'flex'; actionDiv.style.gap = '10px'; actionDiv.style.marginBottom = '10px';
+    actionDiv.innerHTML = `
+        <button class="modal-btn" id="invite-btn" style="font-size:13px; padding:8px;"><i class="fas fa-link"></i> Invite</button>
+        <button class="modal-btn" id="backup-btn" style="font-size:13px; padding:8px; background:#4CAF50;"><i class="fas fa-download"></i> Backup</button>
+        <label class="modal-btn" style="font-size:13px; padding:8px; background:#4312f3; cursor:pointer; margin-top:8px;">
+            <i class="fas fa-upload"></i> Restore <input type="file" id="restore-input" accept=".json" style="display:none;">
+        </label>
+    `;
+    infoModal.insertBefore(actionDiv, document.getElementById('leave-room-btn'));
+
+    const inputArea = document.querySelector('.input-area');
+
+    // Professional typing indicator CSS
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .typing-container {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
+            display: none;
+            z-index: 1000;
+            pointer-events: none;
+            animation: fadeIn 0.2s;
+        }
+        .typing-bubble {
+            background: var(--receiver-bubble);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+        }
+        .typing-bubble span {
+            font-size: 13px;
+            color: var(--text-gray-dim);
+            white-space: nowrap;
+        }
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-gray-dim);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing-indicator';
+    typingDiv.className = 'typing-container';
+    typingDiv.innerHTML = `
+        <div class="typing-bubble">
+            <span id="typing-name-display">Someone</span>
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+    `;
+    inputArea.appendChild(typingDiv);
+
+    const progressDiv = document.createElement('div');
+    progressDiv.id = 'upload-progress';
+    progressDiv.style.cssText = 'position:absolute; top:0; left:0; height:3px; background:#0084ff; width:0%; transition:width 0.2s; z-index:200;';
+    inputArea.appendChild(progressDiv);
+
+    document.getElementById('invite-btn').onclick = () => {
+        const url = `${window.location.origin}${window.location.pathname}?room=${roomId}&pass=${roomPassword || ''}`;
+        navigator.clipboard.writeText(url).then(() => alert('Invite Link Copied!'));
+    };
+
+    document.getElementById('backup-btn').onclick = () => {
+        db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll().onsuccess = (e) => {
+            const blob = new Blob([JSON.stringify(e.target.result)], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Backup_${roomId}.json`;
+            a.click();
+        };
+    };
+
+    document.getElementById('restore-input').onchange = (e) => {
+        const file = e.target.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const data = JSON.parse(ev.target.result);
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                data.forEach(msg => tx.objectStore(STORE_NAME).put(msg));
+                tx.oncomplete = () => { UI.chat.innerHTML = ''; loadMessages(); alert('Restored successfully!'); closeModal('info-modal'); };
+            } catch(err) { alert('Invalid Backup File'); }
+        };
+        reader.readAsText(file); e.target.value = '';
+    };
+}
+
+    async function generateE2EEKey(pass) {
+        if(!crypto.subtle) return;
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(pass || roomId || "default"), {name: "PBKDF2"}, false, ["deriveKey"]);
+        aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt: enc.encode(roomId || "salt"), iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["encrypt", "decrypt"]);
+    }
+
+    async function encryptPayload(text) {
+        if(!aesKey) return text;
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const cipher = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, new TextEncoder().encode(text));
+        return `E2EE::${btoa(String.fromCharCode(...iv))}::${btoa(String.fromCharCode(...new Uint8Array(cipher)))}`;
+    }
+
+    async function decryptPayload(cipherText) {
+        if(!aesKey || typeof cipherText !== 'string' || !cipherText.startsWith('E2EE::')) return cipherText;
+        try {
+            const parts = cipherText.split('::');
+            const iv = Uint8Array.from(atob(parts[1]), c => c.charCodeAt(0));
+            const cipherBytes = Uint8Array.from(atob(parts[2]), c => c.charCodeAt(0));
+            const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, cipherBytes);
+            return new TextDecoder().decode(decrypted);
+        } catch(e) { return "🔒 [Decryption Failed]"; }
+    }
+
+    function showLoader(text = 'Loading...') { document.getElementById('loader-text').textContent = text; document.getElementById('global-loader').classList.add('active'); }
+    function hideLoader() { document.getElementById('global-loader').classList.remove('active'); }
 
     function setupClientConnection(conn, isAutoReconnecting) {
         let connectTimeout = setTimeout(() => { if (!conn.open) { alert('Could not connect.'); resetConnection(); } }, 8000);
@@ -828,7 +881,7 @@ body {
     }
 
     function resetConnection() {
-        hideLoader(); if (peer) peer.destroy(); peer = null; isHost = false; hostConn = null; activeConnections = {}; globalPeerList =[]; pendingConnections = [];
+        hideLoader(); if (peer) peer.destroy(); peer = null; isHost = false; hostConn = null; activeConnections = {}; globalPeerList =[];
         UI.dot.classList.remove('connected');
         if (heartbeatInterval) clearInterval(heartbeatInterval); if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
         document.getElementById('chatContainer').style.display = 'none'; openModal('auth-modal'); document.getElementById('chatContent').innerHTML = ''; updateRoomStatusPermanent();
@@ -858,8 +911,13 @@ body {
     async function handleNetworkData(data, conn) {
         if (data.type === 'system') {
             if (data.action === 'heartbeat') return lastHeartbeat = Date.now();
-            if (data.action === 'typing' && data.deviceId !== myDeviceId) { document.getElementById('typing-indicator').textContent = `${data.name} is typing...`; document.getElementById('typing-indicator').style.display = 'block'; }
-            if (data.action === 'stop-typing' && data.deviceId !== myDeviceId) document.getElementById('typing-indicator').style.display = 'none';
+            // Updated typing handler
+            if (data.action === 'typing' && data.deviceId !== myDeviceId) { 
+                document.getElementById('typing-name-display').textContent = data.name; 
+                document.getElementById('typing-indicator').style.display = 'flex'; 
+            }
+            if (data.action === 'stop-typing' && data.deviceId !== myDeviceId) 
+                document.getElementById('typing-indicator').style.display = 'none';
             if (data.action === 'read') {
                 markMessageReadLocally(data.msgId, data.readerName, data.readerDeviceId);
                 if (isHost) relay(data, data.senderDeviceId); 
@@ -1224,7 +1282,6 @@ body {
     function handleFileInput(e) { const file = e.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = () => { let msgType = 'file'; if (file.type.startsWith('image/')) msgType = 'image'; else if (file.type.startsWith('video/')) msgType = 'video'; sendMediaFile(reader.result, msgType, file.name); }; reader.readAsDataURL(file); e.target.value = ''; }
 
     document.getElementById('camera-btn').onclick = async () => { try { cameraStream = await navigator.mediaDevices.getUserMedia({video: true, audio: false}); document.getElementById('camera-video').srcObject = cameraStream; openModal('camera-modal'); } catch(err) { alert("Camera denied."); } }; 
-    // Close camera modal with X
     document.getElementById('camera-modal-close').onclick = () => { closeModal('camera-modal'); if(cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; } }; 
     document.getElementById('capture-photo-btn').onclick = () => { const video = document.getElementById('camera-video'), canvas = document.createElement('canvas'); canvas.width = video.videoWidth; canvas.height = video.videoHeight; canvas.getContext('2d').drawImage(video, 0, 0); sendMediaFile(canvas.toDataURL('image/jpeg'), 'image', 'photo.jpg'); document.getElementById('camera-modal-close').click(); }; 
 
@@ -1242,7 +1299,7 @@ body {
         if (isHost) { 
             leaveBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete room'; leaveBtn.style.background = '#d32f2f'; leaveBtn.onclick = () => { if (confirm("Delete room for everyone?")) { relay({ type: 'system', action: 'room-deleted' }, null); clearRoomStorage(); resetConnection(); closeModal('info-modal'); } }; 
         } else { 
-            leaveBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Leave room'; leaveBtn.style.background = '#ff9800'; leaveBtn.onclick = () => { if (hostConn && hostConn.open) hostConn.send({ type: 'system', action: 'leave', name: myName, deviceId: myDeviceId }); clearRoomStorage(); resetConnection(); closeModal('info-modal'); }; 
+            leaveBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Leave room'; leaveBtn.style.background = 'rgb(211, 47, 47)'; leaveBtn.onclick = () => { if (hostConn && hostConn.open) hostConn.send({ type: 'system', action: 'leave', name: myName, deviceId: myDeviceId }); clearRoomStorage(); resetConnection(); closeModal('info-modal'); }; 
         }
         const peersList = document.getElementById('info-peers-list'); peersList.innerHTML = ''; 
         let listToRender = globalPeerList.filter(p => p.deviceId !== myDeviceId); 
@@ -1252,10 +1309,9 @@ body {
             let adminHtml = (isHost && !p.isHost) ? `<div style="display:flex; gap:6px;"><button onclick="makeHostAction('${p.deviceId}')" style="background:#0084ff; color:#fff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px;">Host</button><button onclick="kickAction('${p.deviceId}')" style="background:#d32f2f; color:#fff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px;">Kick</button></div>` : '';
             li.innerHTML = `<div><div style="font-weight:bold;"><i class="fas fa-circle" style="color:#32d74b; font-size:10px; margin-right:5px;"></i> ${escapeHTML(p.name)}</div><div style="font-size:11px; color:#aaa; margin-left:15px; margin-top:2px;">${escapeHTML(p.ipInfo?.loc || 'Unknown')}</div></div>${adminHtml}`; peersList.appendChild(li); 
         }); } 
-        updatePendingUI();
         openModal('info-modal'); 
     }; 
-    // Close info modal with X
+    
     document.getElementById('info-modal-close').onclick = () => closeModal('info-modal'); 
     document.getElementById('edit-name-btn').onclick = () => { closeModal('info-modal'); document.getElementById('my-name-input').value = myName; openModal('name-modal'); }; 
     document.getElementById('save-name-btn').onclick = () => { 
@@ -1266,7 +1322,7 @@ body {
             else { myName = newName; localStorage.setItem('messenger_name', myName); }
         } closeModal('name-modal'); 
     };
-    // Close name modal with X
+    
     document.getElementById('name-modal-close').onclick = () => closeModal('name-modal');
     document.getElementById('auth-create-btn').onclick = () => { const id = document.getElementById('auth-room-id').value.trim(), pass = document.getElementById('auth-room-pass').value.trim(); if (!id) return alert('Room ID is required'); createRoom(id, pass); };
     document.getElementById('auth-join-btn').onclick = () => { const id = document.getElementById('auth-room-id').value.trim(), pass = document.getElementById('auth-room-pass').value.trim(); if (!id) return alert('Room ID is required to join'); joinRoom(id, pass); };
@@ -1287,6 +1343,5 @@ body {
     };
 })();
 </script>
-
 </body>
 </html>
