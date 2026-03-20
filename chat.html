@@ -57,14 +57,39 @@ body {
     position: relative;
 }
 .modal-overlay.active .modal-box { transform: scale(1); }
+
 .modal-close {
-    position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
-    background: rgba(0,0,0,0.5); border-radius: 50%; display: flex;
-    align-items: center; justify-content: center; color: #fff;
-    font-size: 18px; cursor: pointer; transition: 0.2s; border: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border: none;
     z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
-.modal-close:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.15) rotate(90deg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.modal-close:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .modal-box h2 { margin-bottom: 8px; font-size: 1.4em; }
 .modal-box p.subtitle { font-size: 13px; color: #aaa; margin-bottom: 20px; }
 
@@ -97,8 +122,35 @@ body {
 .header-main-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 .header-left { display: flex; align-items: center; min-width: 0; }
 .profile-pic { width: 40px; height: 40px; border-radius: 50%; background: url('https://picsum.photos/id/1011/100/100') no-repeat center center/cover; margin-right: 12px; position: relative; flex-shrink: 0; }
-.status-dot { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-radius: 50%; background: #ff453a; border: 2px solid var(--bg-black); transition: 0.3s; }
-.status-dot.connected { background: #32d74b; box-shadow: 0 0 5px #32d74b; }
+.status-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff453a;
+    border: 2px solid var(--bg-black);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 0 0 rgba(50, 215, 75, 0);
+    will-change: transform;
+}
+.status-dot.connected {
+    background: #32d74b;
+    box-shadow: 0 0 8px #32d74b, 0 0 4px #32d74b;
+    animation: pulse-glow 1.5s infinite;
+}
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(50, 215, 75, 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(50, 215, 75, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(50, 215, 75, 0);
+    }
+}
 .user-info { min-width: 0; }
 .user-info h4 { margin: 0; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
 
@@ -452,24 +504,26 @@ body {
         }, debug: 0
     };
 
-    // ================= নতুন ফাংশন: সমস্ত স্টোরেজ মুছে পৃষ্ঠা রিলোড =================
+  
     function cleanUpAndReload() {
-        // IndexedDB সংযোগ বন্ধ করি
-        if (db) {
-            db.close();
-        }
-        // সমস্ত localStorage মুছে ফেলি
-        localStorage.clear();
-        // sessionStorage মুছে ফেলি (যদি থাকে)
-        sessionStorage.clear();
-
-        // IndexedDB ডাটাবেজ ডিলিট করি
-        const deleteRequest = indexedDB.deleteDatabase(DB_NAME);
-        deleteRequest.onsuccess = deleteRequest.onerror = () => {
-            // ডিলিট করার পর পৃষ্ঠা রিলোড (সফল বা ব্যর্থ উভয় ক্ষেত্রেই)
-            location.reload();
-        };
+    if (db) db.close();
+    localStorage.clear();
+    sessionStorage.clear();
+    document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/");
+    });
+    if ('caches' in window) {
+        caches.keys().then(function(names) {
+            names.forEach(function(name) {
+                caches.delete(name);
+            });
+        });
     }
+    const deleteRequest = indexedDB.deleteDatabase(DB_NAME);
+    deleteRequest.onsuccess = deleteRequest.onerror = function() {
+        location.reload();
+    };
+}
 
     function escapeHTML(str) { return typeof str !== 'string' ? '' : str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); } 
     function formatTime(timestamp) { return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } 
@@ -559,15 +613,15 @@ body {
     }
 
     function removePeer(deviceId, notifyName = null) {
-        if (!activeConnections[deviceId]) return;
-        const peerName = notifyName || activeConnections[deviceId].name;
-        delete activeConnections[deviceId];
-        broadcastPeerList();
-        if (notifyName !== null) {
-            showStatus(`${peerName} disconnected`);
-            relay({ type: 'system', action: 'leave', name: peerName }, deviceId);
-        }
+    if (!activeConnections[deviceId]) return;
+    const peerName = notifyName || activeConnections[deviceId].name;
+    delete activeConnections[deviceId];
+    broadcastPeerList();
+    if (notifyName !== null) {
+        showStatus(`${peerName} disconnected`);
+        relay({ type: 'system', action: 'leave', name: peerName }, deviceId);
     }
+}
 
     async function createRoom(targetId, targetPass, isAutoReconnecting = false) {
         showLoader('Creating Secure Room...');
@@ -591,87 +645,199 @@ body {
     }
 
     async function joinRoom(targetId, targetPass, isAutoReconnecting = false) {
-        showLoader('Connecting Securely...');
-        await generateE2EEKey(targetPass || targetId);
-        if (peer) peer.destroy(); peer = new Peer(peerOptions);
-        peer.on('open', () => {
-            closeModal('auth-modal');
-            isHost = false;
-            roomId = targetId;
-            roomPassword = targetPass;
-            
-            loadMessages(); 
+    showLoader('Connecting Securely...');
+    await generateE2EEKey(targetPass || targetId);
+    if (peer) peer.destroy();
+    peer = new Peer(peerOptions);
+    peer.on('open', () => {
+        closeModal('auth-modal');
+        isHost = false;
+        roomId = targetId;
+        roomPassword = targetPass;
+        loadMessages();
 
-            if (isAutoReconnecting) {
-                hostConn = peer.connect(targetId, { reliable: true, metadata: { password: targetPass } });
-                setupClientConnection(hostConn, true);
-                UI.dot.classList.add('connected');
-            } else {
+        if (isAutoReconnecting) {
+            hostConn = peer.connect(targetId, { reliable: true, metadata: { password: targetPass } });
+            setupClientConnection(hostConn, true);
+            UI.dot.classList.add('connected');
+        } else {
+            hideLoader();
+            showLoader('Verifying password...');
+            hostConn = peer.connect(targetId, { reliable: true, metadata: { password: targetPass } });
+            setupClientConnection(hostConn, false, true);
+        }
+    });
+    peer.on('error', () => {
+        showStatus('Connection error. Returning...');
+        setTimeout(resetConnection, 1500);
+    });
+}
+
+function setupClientConnection(conn, isAutoReconnecting, isPasswordCheckMode = false) {
+    let connectTimeout = setTimeout(() => {
+        if (!conn.open) {
+            alert('Could not connect.');
+            resetConnection();
+        }
+    }, 8000);
+
+    conn.on('open', () => {
+        clearTimeout(connectTimeout);
+        document.getElementById('loader-text').textContent = 'Requesting approval...';
+        const dummyName = isPasswordCheckMode ? 'temp' : myName;
+        conn.send({ type: 'system', action: 'join-request', deviceId: myDeviceId, name: dummyName, ipInfo: myIpInfo });
+    });
+
+    conn.on('data', data => {
+        if (data.type === 'system' && data.action === 'auth-fail') {
+            alert(data.message);
+            clearRoomStorage();
+            if (conn && conn.open) conn.close();
+            if (hostConn) hostConn = null;
+            if (peer) peer.destroy();
+            peer = null;
+            hideLoader();
+            openModal('auth-modal');
+            closeModal('setup-name-modal');
+            return;
+        } else if (data.type === 'system' && data.action === 'join-approved') {
+            if (isPasswordCheckMode) {
+                const tempName = data.newName;
                 hideLoader();
-                document.getElementById('setup-name-input').value = myName;
-                const originalHandler = document.getElementById('setup-name-btn').onclick;
-                document.getElementById('setup-name-btn').onclick = function() {
-                    const name = document.getElementById('setup-name-input').value.trim();
-                    if (!name) return alert('Name required.');
-                    myName = name;
+                const modal = document.getElementById('setup-name-modal');
+                const input = document.getElementById('setup-name-input');
+                input.value = myName;
+                const btn = document.getElementById('setup-name-btn');
+                const originalHandler = btn.onclick;
+                btn.onclick = () => {
+                    const chosenName = input.value.trim();
+                    if (!chosenName) return alert('Name required.');
+                    myName = chosenName;
                     localStorage.setItem('messenger_name', myName);
-                    showLoader('Requesting approval...');
-                    hostConn = peer.connect(targetId, { reliable: true, metadata: { password: targetPass } });
-                    setupClientConnection(hostConn, false);
+                    showLoader('Setting name...');
+                    conn.send({ type: 'system', action: 'request-name-change', desiredName: chosenName, deviceId: myDeviceId });
+                    btn.onclick = originalHandler;
                     closeModal('setup-name-modal');
-                    UI.dot.classList.add('connected');
-                    document.getElementById('setup-name-btn').onclick = originalHandler;
                 };
                 openModal('setup-name-modal');
+            } else {
+                myName = data.newName;
+                localStorage.setItem('messenger_name', myName);
+                if (!isAutoReconnecting) {
+                    hideLoader();
+                    finalizeRoomEntry();
+                } else {
+                    finalizeRoomEntry();
+                }
             }
-        });
-        peer.on('error', () => { showStatus('Connection error. Returning...'); setTimeout(resetConnection, 1500); });
-    }
+        } else if (data.type === 'system' && data.action === 'name-assigned') {
+            myName = data.newName;
+            localStorage.setItem('messenger_name', myName);
+            finalizeRoomEntry();
+        } else if (data.type === 'system' && data.action === 'join-denied') {
+            alert('Join request denied by host.');
+            resetConnection();
+        } else if (data.type === 'system' && data.action === 'history-batch') {
+            data.messages.forEach(msg => {
+                if (!document.getElementById('msg-' + msg.msgId)) {
+                    msg.sender = msg.senderDeviceId === myDeviceId ? 'me' : 'them';
+                    saveMessage(msg);
+                    renderMessage(msg);
+                }
+            });
+        } else {
+            handleNetworkData(data, conn);
+        }
+    });
+
+    conn.on('close', () => {
+        hostConn = null;
+        UI.dot.classList.remove('connected');
+        if (!roomId || isTransferringHost) return;
+        showLoader('Host disconnected. Auto-migrating...');
+        setTimeout(() => {
+            const activeClients = globalPeerList.filter(p => !p.isHost).sort((a, b) => a.joinedAt - b.joinedAt);
+            if (activeClients.length > 0 && activeClients[0].deviceId === myDeviceId) {
+                document.getElementById('loader-text').textContent = 'You are the new host...';
+                becomeHost();
+            } else {
+                document.getElementById('loader-text').textContent = 'Waiting for new host...';
+                setTimeout(() => joinRoom(roomId, roomPassword, true), 4000);
+            }
+        }, 500);
+    });
+
+    conn.on('error', () => {
+        if (roomId) {
+            showLoader('Connection lost. Reconnecting...');
+            setTimeout(() => joinRoom(roomId, roomPassword, true), 3000);
+        }
+    });
+}
 
     function becomeHost() { saveRoomStorage(roomId, roomPassword, true); createRoom(roomId, roomPassword, true); }
 
-    function setupHostConnection(conn) {
-        if (roomPassword && (conn.metadata?.password || '') !== roomPassword) { 
-            conn.on('open', () => { conn.send({ type: 'system', action: 'auth-fail', message: 'Wrong password.' }); setTimeout(() => conn.close(), 500); }); 
-            return; 
-        }
+   function setupHostConnection(conn) {
+    if (roomPassword !== (conn.metadata?.password || '')) {
+        conn.on('open', () => {
+            conn.send({ type: 'system', action: 'auth-fail', message: 'Wrong password.' });
+            setTimeout(() => conn.close(), 500);
+        });
+        return;
+    }
 
-        let deviceId = null;
-        let peerName = null;
+    let deviceId = null;
+    let peerName = null;
 
-        conn.on('data', data => {
-            if (data.type === 'system' && data.action === 'join-request') {
-                deviceId = data.deviceId;
-                peerName = data.name;
-                if (activeConnections[deviceId]) {
-                    conn.send({ type: 'system', action: 'join-denied', reason: 'already exists' });
-                    conn.close();
-                    return;
-                }
-                let assignedName = getUniqueNameForNetwork(peerName, deviceId);
-                activeConnections[deviceId] = { 
-                    conn: conn, 
-                    name: assignedName, 
-                    ipInfo: data.ipInfo || {}, 
-                    peerId: conn.peer, 
-                    joinedAt: Date.now() 
-                };
-                conn.send({ type: 'system', action: 'join-approved', newName: assignedName, deviceId });
-                sendHistoryToClient(deviceId);
+    conn.on('data', data => {
+        if (data.type === 'system' && data.action === 'join-request') {
+            deviceId = data.deviceId;
+            peerName = data.name;
+            if (activeConnections[deviceId]) {
+                conn.send({ type: 'system', action: 'join-denied', reason: 'already exists' });
+                conn.close();
+                return;
+            }
+            let assignedName = getUniqueNameForNetwork(peerName, deviceId);
+            let isTemp = (peerName === 'temp');
+            activeConnections[deviceId] = {
+                conn: conn,
+                name: assignedName,
+                ipInfo: data.ipInfo || {},
+                peerId: conn.peer,
+                joinedAt: Date.now(),
+                isTemp: isTemp
+            };
+            conn.send({ type: 'system', action: 'join-approved', newName: assignedName, deviceId });
+            sendHistoryToClient(deviceId);
+
+            if (!isTemp) {
                 broadcastPeerList();
                 relay({ type: 'system', action: 'join', name: assignedName }, deviceId);
                 showStatus(`${assignedName} joined`);
             } else {
-                handleNetworkData(data, conn);
+                // Send current peer list to the temp client so they see others
+                const peersList = Object.keys(activeConnections).map(dId => ({
+                    deviceId: dId,
+                    name: activeConnections[dId].name,
+                    ipInfo: activeConnections[dId].ipInfo,
+                    isHost: false,
+                    joinedAt: activeConnections[dId].joinedAt
+                }));
+                peersList.push({ deviceId: myDeviceId, name: myName + ' (Host)', ipInfo: myIpInfo, isHost: true, joinedAt: 0 });
+                conn.send({ type: 'system', action: 'peer-list', peers: peersList });
             }
-        });
+        } else {
+            handleNetworkData(data, conn);
+        }
+    });
 
-        conn.on('close', () => {
-            if (deviceId && activeConnections[deviceId]) {
-                removePeer(deviceId, activeConnections[deviceId].name);
-            }
-        });
-    }
+    conn.on('close', () => {
+        if (deviceId && activeConnections[deviceId]) {
+            removePeer(deviceId, activeConnections[deviceId].name);
+        }
+    });
+}
 
     function sendHistoryToClient(deviceId) {
         if (!isHost) return;
@@ -718,7 +884,9 @@ body {
     function injectDynamicUI() {
     const infoModal = document.querySelector('#info-modal .modal-box');
     const actionDiv = document.createElement('div');
-    actionDiv.style.display = 'flex'; actionDiv.style.gap = '10px'; actionDiv.style.marginBottom = '10px';
+    actionDiv.style.display = 'flex';
+    actionDiv.style.gap = '10px';
+    actionDiv.style.marginBottom = '10px';
     actionDiv.innerHTML = `
         <button class="modal-btn" id="invite-btn" style="font-size:13px; padding:8px;"><i class="fas fa-link"></i> Invite</button>
         <button class="modal-btn" id="backup-btn" style="font-size:13px; padding:8px; background:#4CAF50;"><i class="fas fa-download"></i> Backup</button>
@@ -730,52 +898,83 @@ body {
 
     const inputArea = document.querySelector('.input-area');
 
-    // Professional typing indicator CSS
     const style = document.createElement('style');
     style.innerHTML = `
         .typing-container {
             position: absolute;
-            bottom: 100%;
+            bottom: calc(100% + 8px);
             left: 50%;
             transform: translateX(-50%);
-            margin-bottom: 8px;
             display: none;
             z-index: 1000;
             pointer-events: none;
-            animation: fadeIn 0.2s;
+            animation: typingFadeIn 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        @keyframes typingFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         }
         .typing-bubble {
-            background: var(--receiver-bubble);
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--receiver-bubble), #2c2d2f);
+            border-radius: 20px;
+            border-bottom-left-radius: 6px;
+            padding: 10px 18px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            border: 1px solid #333;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border: none;
         }
         .typing-bubble span {
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 500;
             color: var(--text-gray-dim);
             white-space: nowrap;
+            letter-spacing: 0.3px;
         }
         .typing-dots {
             display: flex;
-            gap: 4px;
+            gap: 6px;
+            align-items: center;
         }
         .typing-dot {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             background: var(--text-gray-dim);
             border-radius: 50%;
-            animation: typingBounce 1.4s infinite ease-in-out both;
+            animation: typingWave 1.4s infinite ease-in-out both;
+            box-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
         }
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typingBounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+        .typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+            background: #b0b3b8;
+        }
+        .typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+            background: #c0c3c8;
+        }
+        .typing-dot:nth-child(3) {
+            background: #d0d3d8;
+        }
+        @keyframes typingWave {
+            0%, 80%, 100% {
+                transform: scale(0.6);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+        .typing-container.active .typing-bubble {
+            box-shadow: 0 4px 16px rgba(0, 132, 255, 0.2), 0 0 0 1px rgba(0, 132, 255, 0.3);
         }
     `;
     document.head.appendChild(style);
@@ -801,59 +1000,70 @@ body {
     inputArea.appendChild(progressDiv);
 
     document.getElementById('invite-btn').onclick = () => {
-    const encodedPass = roomPassword ? btoa(roomPassword) : '';
-    const url = `${window.location.origin}${window.location.pathname}?room=${roomId}&pass=${encodedPass}`;
-    
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url)
-            .then(() => alert('Invite Link Copied!'))
-            .catch(err => {
-                console.error('Clipboard write failed:', err);
-                fallbackCopy(url);
-            });
-    } else {
-        fallbackCopy(url);
-    }
-};
+        const encodedPass = roomPassword ? btoa(roomPassword) : '';
+        const url = `${window.location.origin}${window.location.pathname}?room=${roomId}&pass=${encodedPass}`;
 
-function fallbackCopy(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-        const success = document.execCommand('copy');
-        if (success) alert('Invite Link Copied!');
-        else alert('Copy failed. Please copy manually.');
-    } catch (err) {
-        console.error('Fallback copy error:', err);
-        alert('Copy failed. Please copy manually.');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url)
+                .then(() => alert('Invite Link Copied!'))
+                .catch(err => {
+                    console.error('Clipboard write failed:', err);
+                    fallbackCopy(url);
+                });
+        } else {
+            fallbackCopy(url);
+        }
+    };
+
+    function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            const success = document.execCommand('copy');
+            if (success) alert('Invite Link Copied!');
+            else alert('Copy failed. Please copy manually.');
+        } catch (err) {
+            console.error('Fallback copy error:', err);
+            alert('Copy failed. Please copy manually.');
+        }
+        document.body.removeChild(textarea);
     }
-    document.body.removeChild(textarea);
-}
 
     document.getElementById('backup-btn').onclick = () => {
         db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll().onsuccess = (e) => {
-            const blob = new Blob([JSON.stringify(e.target.result)], {type: 'application/json'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Backup_${roomId}.json`;
+            const blob = new Blob([JSON.stringify(e.target.result)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Backup_${roomId}.json`;
             a.click();
         };
     };
 
     document.getElementById('restore-input').onchange = (e) => {
-        const file = e.target.files[0]; if(!file) return;
+        const file = e.target.files[0];
+        if (!file) return;
         const reader = new FileReader();
         reader.onload = (ev) => {
             try {
                 const data = JSON.parse(ev.target.result);
                 const tx = db.transaction(STORE_NAME, 'readwrite');
                 data.forEach(msg => tx.objectStore(STORE_NAME).put(msg));
-                tx.oncomplete = () => { UI.chat.innerHTML = ''; loadMessages(); alert('Restored successfully!'); closeModal('info-modal'); };
-            } catch(err) { alert('Invalid Backup File'); }
+                tx.oncomplete = () => {
+                    UI.chat.innerHTML = '';
+                    loadMessages();
+                    alert('Restored successfully!');
+                    closeModal('info-modal');
+                };
+            } catch (err) {
+                alert('Invalid Backup File');
+            }
         };
-        reader.readAsText(file); e.target.value = '';
+        reader.readAsText(file);
+        e.target.value = '';
     };
 }
 
@@ -885,54 +1095,25 @@ function fallbackCopy(text) {
     function showLoader(text = 'Loading...') { document.getElementById('loader-text').textContent = text; document.getElementById('global-loader').classList.add('active'); }
     function hideLoader() { document.getElementById('global-loader').classList.remove('active'); }
 
-    function setupClientConnection(conn, isAutoReconnecting) {
-        let connectTimeout = setTimeout(() => { if (!conn.open) { alert('Could not connect.'); resetConnection(); } }, 8000);
-        conn.on('open', () => { 
-            clearTimeout(connectTimeout); 
-            document.getElementById('loader-text').textContent = 'Requesting approval...';
-            conn.send({ type: 'system', action: 'join-request', deviceId: myDeviceId, name: myName, ipInfo: myIpInfo });
-        });
-        conn.on('data', data => {
-            if (data.type === 'system' && data.action === 'auth-fail') { alert(data.message); clearRoomStorage(); resetConnection(); } 
-            else if (data.type === 'system' && data.action === 'join-approved') {
-                myName = data.newName; 
-                localStorage.setItem('messenger_name', myName);
-                if (!isAutoReconnecting) { hideLoader(); finalizeRoomEntry(); } 
-                else finalizeRoomEntry();
-            } else if (data.type === 'system' && data.action === 'join-denied') {
-                alert('Join request denied by host.');
-                resetConnection();
-            } else if (data.type === 'system' && data.action === 'history-batch') {
-                data.messages.forEach(msg => {
-                    if (!document.getElementById('msg-' + msg.msgId)) {
-                        msg.sender = msg.senderDeviceId === myDeviceId ? 'me' : 'them';
-                        saveMessage(msg);
-                        renderMessage(msg);
-                    }
-                });
-            } else {
-                handleNetworkData(data, conn);
-            }
-        });
-        conn.on('close', () => {
-            hostConn = null; UI.dot.classList.remove('connected');
-            if (!roomId || isTransferringHost) return; 
-            showLoader('Host disconnected. Auto-migrating...');
-            setTimeout(() => {
-                const activeClients = globalPeerList.filter(p => !p.isHost).sort((a,b) => a.joinedAt - b.joinedAt);
-                if (activeClients.length > 0 && activeClients[0].deviceId === myDeviceId) { document.getElementById('loader-text').textContent = 'You are the new host...'; becomeHost(); } 
-                else { document.getElementById('loader-text').textContent = 'Waiting for new host...'; setTimeout(() => joinRoom(roomId, roomPassword, true), 4000); }
-            }, 500);
-        });
-        conn.on('error', () => { if(roomId) { showLoader('Connection lost. Reconnecting...'); setTimeout(() => joinRoom(roomId, roomPassword, true), 3000); } });
-    }
-
     function resetConnection() {
-        hideLoader(); if (peer) peer.destroy(); peer = null; isHost = false; hostConn = null; activeConnections = {}; globalPeerList =[];
-        UI.dot.classList.remove('connected');
-        if (heartbeatInterval) clearInterval(heartbeatInterval); if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
-        document.getElementById('chatContainer').style.display = 'none'; openModal('auth-modal'); document.getElementById('chatContent').innerHTML = ''; updateRoomStatusPermanent();
-    }
+    hideLoader();
+    if (peer) peer.destroy();
+    peer = null;
+    isHost = false;
+    hostConn = null;
+    activeConnections = {};
+    globalPeerList = [];
+    UI.dot.classList.remove('connected');
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
+    document.getElementById('chatContainer').style.display = 'none';
+    openModal('auth-modal');
+    document.getElementById('chatContent').innerHTML = '';
+    updateRoomStatusPermanent();
+    document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/");
+    });
+}
 
     function promptNameAndEnter() { closeModal('auth-modal'); document.getElementById('setup-name-input').value = myName; openModal('setup-name-modal'); }
 
@@ -943,92 +1124,135 @@ function fallbackCopy(text) {
     };
 
     function finalizeRoomEntry() {
-        saveRoomStorage(roomId, roomPassword, isHost); closeModal('setup-name-modal');
-        document.getElementById('chatContainer').style.display = 'flex'; updateRoomDisplay(); updateSyncCount(); hideLoader();
-        if (!isHost && hostConn && hostConn.open) {
-            lastHeartbeat = Date.now();
-            if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
-            heartbeatCheckInterval = setInterval(() => { if (Date.now() - lastHeartbeat > 15000) hostConn.close(); }, 3000);
-            sendPendingMessages();
-        }
+    saveRoomStorage(roomId, roomPassword, isHost);
+    closeModal('setup-name-modal');
+    document.getElementById('chatContainer').style.display = 'flex';
+    updateRoomDisplay();
+    updateSyncCount();
+    hideLoader();
+    UI.dot.classList.add('connected');
+    if (!isHost && hostConn && hostConn.open) {
+        lastHeartbeat = Date.now();
+        if (heartbeatCheckInterval) clearInterval(heartbeatCheckInterval);
+        heartbeatCheckInterval = setInterval(() => {
+            if (Date.now() - lastHeartbeat > 15000) hostConn.close();
+        }, 3000);
+        sendPendingMessages();
     }
+}
 
     function relay(data, excludeDeviceId) { Object.keys(activeConnections).forEach(dId => { if (dId !== excludeDeviceId) { const p = activeConnections[dId]; if (p.conn && p.conn.open) p.conn.send(data); } }); }
 
-    async function handleNetworkData(data, conn) {
-        if (data.type === 'system') {
-            if (data.action === 'heartbeat') return lastHeartbeat = Date.now();
-            // Updated typing handler
-            if (data.action === 'typing' && data.deviceId !== myDeviceId) { 
-                document.getElementById('typing-name-display').textContent = data.name; 
-                document.getElementById('typing-indicator').style.display = 'flex'; 
-            }
-            if (data.action === 'stop-typing' && data.deviceId !== myDeviceId) 
-                document.getElementById('typing-indicator').style.display = 'none';
-            if (data.action === 'read') {
-                markMessageReadLocally(data.msgId, data.readerName, data.readerDeviceId);
-                if (isHost) relay(data, data.senderDeviceId); 
-            }
-            if (data.action === 'name-assigned' && !isHost && myName !== data.newName) { myName = data.newName; localStorage.setItem('messenger_name', myName); showStatus(`Name updated: ${myName}`); }
-            if (data.action === 'request-name-change' && isHost && activeConnections[data.deviceId]) {
-                let oldName = activeConnections[data.deviceId].name, assignedName = getUniqueNameForNetwork(data.desiredName, data.deviceId);
-                activeConnections[data.deviceId].name = assignedName; activeConnections[data.deviceId].conn.send({ type: 'system', action: 'name-assigned', newName: assignedName });
-                broadcastPeerList(); relay({ type: 'system', action: 'name-change-broadcast', oldName, newName: assignedName }, null); showStatus(`${oldName} changed to ${assignedName}`);
-            }
-            if (data.action === 'peer-list') { globalPeerList = data.peers; updateSyncCount(); }
-            if (data.action === 'kick' && data.targetDeviceId === myDeviceId) { alert("Kicked by admin."); clearRoomStorage(); resetConnection(); }
-            // ========== পরিবর্তিত অংশ: room-deleted ==========
-            if (data.action === 'room-deleted') {
-                alert("Room deleted by admin.");
-                setTimeout(() => {
-                    cleanUpAndReload();
-                }, 1000);
-                return; // পরবর্তী কোনো প্রক্রিয়া বন্ধ
-            }
-            if (data.action === 'transfer-host') {
-                if (data.newHostDeviceId === myDeviceId) { showLoader("You are host now!"); isTransferringHost = true; if (hostConn) hostConn.close(); setTimeout(() => { isTransferringHost = false; becomeHost(); }, 1000); } 
-                else if (!isHost) { showLoader("Host transferring..."); isTransferringHost = true; if (hostConn) hostConn.close(); setTimeout(() => { isTransferringHost = false; joinRoom(roomId, roomPassword, true); }, 4000); }
-            }
-            if (data.action === 'leave' && data.name) showStatus(`${data.name} left`);
-            if (data.action === 'join' && data.name) showStatus(`${data.name} joined`);
-            if (data.action === 'name-change-broadcast') showStatus(`${data.oldName} changed to ${data.newName}`);
-            
-            if (isHost && !['kick','transfer-host','room-deleted','read','join-request','join-approved','join-denied','history-batch'].includes(data.action)) {
-                relay(data, data.senderDeviceId || (conn ? activeConnections[Object.keys(activeConnections).find(dId => activeConnections[dId].peerId === conn.peer)]?.deviceId : null));
-            }
-        } else if (data.type === 'ack') {
-            if (messageRetryQueue[data.msgId]) {
-                clearTimeout(messageRetryQueue[data.msgId].timeout);
-                delete messageRetryQueue[data.msgId];
-            }
-            markMessageSentLocally(data.msgId);
-        } else if (data.type === 'media-chunk') { 
-            processMediaChunk(data); 
+   async function handleNetworkData(data, conn) {
+    if (data.type === 'system') {
+        if (data.action === 'heartbeat') return lastHeartbeat = Date.now();
+        if (data.action === 'typing' && data.deviceId !== myDeviceId) { 
+            document.getElementById('typing-name-display').textContent = data.name; 
+            document.getElementById('typing-indicator').style.display = 'flex'; 
+        }
+        if (data.action === 'stop-typing' && data.deviceId !== myDeviceId) 
+            document.getElementById('typing-indicator').style.display = 'none';
+        if (data.action === 'read') {
+            markMessageReadLocally(data.msgId, data.readerName, data.readerDeviceId);
             if (isHost) relay(data, data.senderDeviceId); 
-        } else if (data.type === 'react') { 
-            updateReactionLocally(data.msgId, data.emoji, data.senderDeviceId, data.senderName); 
-            if (isHost) relay(data, data.senderDeviceId); 
-        } else if (data.type === 'delete') { 
-            updateMsgAsDeletedLocally(data.msgId); 
-            if (isHost) relay(data, data.senderDeviceId); 
-        } else {
-            if(data.type === 'text' || data.type === 'thumb') data.content = await decryptPayload(data.content);
-            if (!document.getElementById('msg-' + data.msgId)) {
-                const incomingMsg = { ...data }; incomingMsg.sender = (incomingMsg.senderDeviceId === myDeviceId) ? 'me' : 'them';
-                if (!incomingMsg.readBy) incomingMsg.readBy = [];
-                if(incomingMsg.sender === 'them') incomingMsg.status = 'sent';
-                saveMessage(incomingMsg); renderMessage(incomingMsg);
-                if (incomingMsg.sender === 'them' && document.hidden) new Notification(incomingMsg.senderName, { body: incomingMsg.type === 'text' ? incomingMsg.content : 'Attachment' });
-            }
-            if (isHost) {
-                if (data.senderDeviceId && activeConnections[data.senderDeviceId]?.conn) {
-                    activeConnections[data.senderDeviceId].conn.send({ type: 'ack', msgId: data.msgId });
-                }
-                let relayData = {...data}; if(data.type==='text' || data.type==='thumb') relayData.content = await encryptPayload(data.content);
-                relay(relayData, data.senderDeviceId);
+        }
+        if (data.action === 'name-assigned' && !isHost && myName !== data.newName) { 
+            myName = data.newName; 
+            localStorage.setItem('messenger_name', myName); 
+            showStatus(`Name updated: ${myName}`); 
+        }
+        if (data.action === 'request-name-change' && isHost && activeConnections[data.deviceId]) {
+            let oldName = activeConnections[data.deviceId].name;
+            let assignedName = getUniqueNameForNetwork(data.desiredName, data.deviceId);
+            activeConnections[data.deviceId].name = assignedName;
+            activeConnections[data.deviceId].conn.send({ type: 'system', action: 'name-assigned', newName: assignedName });
+
+            if (activeConnections[data.deviceId].isTemp) {
+                delete activeConnections[data.deviceId].isTemp;
+                broadcastPeerList();
+                relay({ type: 'system', action: 'join', name: assignedName }, data.deviceId);
+                showStatus(`${assignedName} joined`);
+            } else {
+                broadcastPeerList();
+                relay({ type: 'system', action: 'name-change-broadcast', oldName, newName: assignedName }, null);
+                showStatus(`${oldName} changed to ${assignedName}`);
             }
         }
+        if (data.action === 'peer-list') { globalPeerList = data.peers; updateSyncCount(); }
+        if (data.action === 'kick' && data.targetDeviceId === myDeviceId) {
+            alert("Kicked by admin.");
+            cleanUpAndReload();
+            return;
+        }
+        if (data.action === 'room-deleted') {
+            alert("Room deleted by admin.");
+            setTimeout(() => {
+                cleanUpAndReload();
+            }, 1000);
+            return;
+        }
+        if (data.action === 'transfer-host') {
+            if (data.newHostDeviceId === myDeviceId) { 
+                showLoader("You are host now!"); 
+                isTransferringHost = true; 
+                if (hostConn) hostConn.close(); 
+                setTimeout(() => { 
+                    isTransferringHost = false; 
+                    becomeHost(); 
+                }, 1000); 
+            } else if (!isHost) { 
+                showLoader("Host transferring..."); 
+                isTransferringHost = true; 
+                if (hostConn) hostConn.close(); 
+                setTimeout(() => { 
+                    isTransferringHost = false; 
+                    joinRoom(roomId, roomPassword, true); 
+                }, 4000); 
+            }
+        }
+        if (data.action === 'leave' && data.name) showStatus(`${data.name} left`);
+        if (data.action === 'join' && data.name) showStatus(`${data.name} joined`);
+        if (data.action === 'name-change-broadcast') showStatus(`${data.oldName} changed to ${data.newName}`);
+        
+        if (isHost && !['kick','transfer-host','room-deleted','read','join-request','join-approved','join-denied','history-batch'].includes(data.action)) {
+            relay(data, data.senderDeviceId || (conn ? activeConnections[Object.keys(activeConnections).find(dId => activeConnections[dId].peerId === conn.peer)]?.deviceId : null));
+        }
+    } else if (data.type === 'ack') {
+        if (messageRetryQueue[data.msgId]) {
+            clearTimeout(messageRetryQueue[data.msgId].timeout);
+            delete messageRetryQueue[data.msgId];
+        }
+        markMessageSentLocally(data.msgId);
+    } else if (data.type === 'media-chunk') { 
+        processMediaChunk(data); 
+        if (isHost) relay(data, data.senderDeviceId); 
+    } else if (data.type === 'react') { 
+        updateReactionLocally(data.msgId, data.emoji, data.senderDeviceId, data.senderName); 
+        if (isHost) relay(data, data.senderDeviceId); 
+    } else if (data.type === 'delete') { 
+        updateMsgAsDeletedLocally(data.msgId); 
+        if (isHost) relay(data, data.senderDeviceId); 
+    } else {
+        if(data.type === 'text' || data.type === 'thumb') data.content = await decryptPayload(data.content);
+        if (!document.getElementById('msg-' + data.msgId)) {
+            const incomingMsg = { ...data }; 
+            incomingMsg.sender = (incomingMsg.senderDeviceId === myDeviceId) ? 'me' : 'them';
+            if (!incomingMsg.readBy) incomingMsg.readBy = [];
+            if(incomingMsg.sender === 'them') incomingMsg.status = 'sent';
+            saveMessage(incomingMsg); 
+            renderMessage(incomingMsg);
+            if (incomingMsg.sender === 'them' && document.hidden) new Notification(incomingMsg.senderName, { body: incomingMsg.type === 'text' ? incomingMsg.content : 'Attachment' });
+        }
+        if (isHost) {
+            if (data.senderDeviceId && activeConnections[data.senderDeviceId]?.conn) {
+                activeConnections[data.senderDeviceId].conn.send({ type: 'ack', msgId: data.msgId });
+            }
+            let relayData = {...data}; 
+            if(data.type==='text' || data.type==='thumb') relayData.content = await encryptPayload(data.content);
+            relay(relayData, data.senderDeviceId);
+        }
     }
+}
 
     function broadcastPeerList() {
         if (!isHost) return;
@@ -1345,39 +1569,61 @@ function fallbackCopy(text) {
     document.querySelectorAll('.emoji-btn').forEach(btn => { btn.onclick = () => sendEmojiMsg(btn.textContent); });
 
     window.makeHostAction = (targetDeviceId) => { if (confirm("Transfer host rights?")) { relay({ type: 'system', action: 'transfer-host', newHostDeviceId: targetDeviceId }, null); isTransferringHost = true; setTimeout(() => { isTransferringHost = false; saveRoomStorage(roomId, roomPassword, false); joinRoom(roomId, roomPassword, true); }, 1000); closeModal('info-modal'); } };
-    window.kickAction = (targetDeviceId) => { if (confirm("Kick user?")) { showStatus(`You kicked ${activeConnections[targetDeviceId].name}`); relay({ type: 'system', action: 'kick', targetDeviceId }, null); if (activeConnections[targetDeviceId]) activeConnections[targetDeviceId].conn.close(); } };
-
-    document.getElementById('open-info-btn').onclick = () => { 
-        document.getElementById('info-room-id').textContent = roomId || '—'; document.getElementById('info-name').textContent = myName;
-        const leaveBtn = document.getElementById('leave-room-btn');
-        if (isHost) { 
-            leaveBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete room';
-            leaveBtn.style.background = '#d32f2f';
-            // ========== হোস্টের জন্য পরিবর্তিত অংশ ==========
-            leaveBtn.onclick = () => {
-                if (confirm("Delete room for everyone?")) {
-                    relay({ type: 'system', action: 'room-deleted' }, null);
-                    // সবাইকে জানানোর পর নিজের ডাটা মুছে রিলোড করতে ৫০০ms অপেক্ষা
-                    setTimeout(() => {
-                        cleanUpAndReload();
-                    }, 500);
-                }
-            };
-        } else { 
-            leaveBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Leave room';
-            leaveBtn.style.background = 'rgb(211, 47, 47)';
-            leaveBtn.onclick = () => { if (hostConn && hostConn.open) hostConn.send({ type: 'system', action: 'leave', name: myName, deviceId: myDeviceId }); clearRoomStorage(); resetConnection(); closeModal('info-modal'); };
+    window.kickAction = (targetDeviceId) => {
+    if (confirm("Kick user?")) {
+        showStatus(`You kicked ${activeConnections[targetDeviceId].name}`);
+        relay({ type: 'system', action: 'kick', targetDeviceId }, null);
+        if (activeConnections[targetDeviceId]) {
+            activeConnections[targetDeviceId].conn.close();
         }
-        const peersList = document.getElementById('info-peers-list'); peersList.innerHTML = ''; 
-        let listToRender = globalPeerList.filter(p => p.deviceId !== myDeviceId); 
-        if (listToRender.length === 0) peersList.innerHTML = `<li>${isHost ? 'Only you in room' : 'Loading...'}</li>`; 
-        else { listToRender.forEach(p => { 
-            const li = document.createElement('li'); li.style.marginBottom = '12px'; li.style.display = 'flex'; li.style.justifyContent = 'space-between'; li.style.alignItems = 'center';
+
+    }
+};
+
+    document.getElementById('open-info-btn').onclick = () => {
+    document.getElementById('info-room-id').textContent = roomId || '—';
+    document.getElementById('info-name').textContent = myName;
+    const leaveBtn = document.getElementById('leave-room-btn');
+    if (isHost) {
+        leaveBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete room';
+        leaveBtn.style.background = '#d32f2f';
+        leaveBtn.onclick = () => {
+            if (confirm("Delete room for everyone?")) {
+                relay({ type: 'system', action: 'room-deleted' }, null);
+                setTimeout(() => {
+                    cleanUpAndReload();
+                }, 500);
+            }
+        };
+    } else {
+        leaveBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Leave room';
+        leaveBtn.style.background = 'rgb(211, 47, 47)';
+        leaveBtn.onclick = () => {
+            if (hostConn && hostConn.open) {
+                hostConn.send({ type: 'system', action: 'leave', name: myName, deviceId: myDeviceId });
+            }
+            cleanUpAndReload();
+        };
+    }
+    const peersList = document.getElementById('info-peers-list');
+    peersList.innerHTML = '';
+    let listToRender = globalPeerList.filter(p => p.deviceId !== myDeviceId);
+    if (listToRender.length === 0) {
+        peersList.innerHTML = `<li>${isHost ? 'Only you in room' : 'Loading...'}</li>`;
+    } else {
+        listToRender.forEach(p => {
+            const li = document.createElement('li');
+            li.style.marginBottom = '12px';
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.style.alignItems = 'center';
             let adminHtml = (isHost && !p.isHost) ? `<div style="display:flex; gap:6px;"><button onclick="makeHostAction('${p.deviceId}')" style="background:#0084ff; color:#fff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px;">Host</button><button onclick="kickAction('${p.deviceId}')" style="background:#d32f2f; color:#fff; border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px;">Kick</button></div>` : '';
-            li.innerHTML = `<div><div style="font-weight:bold;"><i class="fas fa-circle" style="color:#32d74b; font-size:10px; margin-right:5px;"></i> ${escapeHTML(p.name)}</div><div style="font-size:11px; color:#aaa; margin-left:15px; margin-top:2px;">${escapeHTML(p.ipInfo?.loc || 'Unknown')}</div></div>${adminHtml}`; peersList.appendChild(li); 
-        }); } 
-        openModal('info-modal'); 
-    }; 
+            li.innerHTML = `<div><div style="font-weight:bold;"><i class="fas fa-circle" style="color:#32d74b; font-size:10px; margin-right:5px;"></i> ${escapeHTML(p.name)}</div><div style="font-size:11px; color:#aaa; margin-left:15px; margin-top:2px;">${escapeHTML(p.ipInfo?.loc || 'Unknown')}</div></div>${adminHtml}`;
+            peersList.appendChild(li);
+        });
+    }
+    openModal('info-modal');
+};
     
     document.getElementById('info-modal-close').onclick = () => closeModal('info-modal'); 
     document.getElementById('edit-name-btn').onclick = () => { closeModal('info-modal'); document.getElementById('my-name-input').value = myName; openModal('name-modal'); }; 
