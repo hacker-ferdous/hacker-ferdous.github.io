@@ -452,6 +452,25 @@ body {
         }, debug: 0
     };
 
+    // ================= নতুন ফাংশন: সমস্ত স্টোরেজ মুছে পৃষ্ঠা রিলোড =================
+    function cleanUpAndReload() {
+        // IndexedDB সংযোগ বন্ধ করি
+        if (db) {
+            db.close();
+        }
+        // সমস্ত localStorage মুছে ফেলি
+        localStorage.clear();
+        // sessionStorage মুছে ফেলি (যদি থাকে)
+        sessionStorage.clear();
+
+        // IndexedDB ডাটাবেজ ডিলিট করি
+        const deleteRequest = indexedDB.deleteDatabase(DB_NAME);
+        deleteRequest.onsuccess = deleteRequest.onerror = () => {
+            // ডিলিট করার পর পৃষ্ঠা রিলোড (সফল বা ব্যর্থ উভয় ক্ষেত্রেই)
+            location.reload();
+        };
+    }
+
     function escapeHTML(str) { return typeof str !== 'string' ? '' : str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); } 
     function formatTime(timestamp) { return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } 
     function generateMsgId() { return (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).substr(2, 9); } 
@@ -782,9 +801,38 @@ body {
     inputArea.appendChild(progressDiv);
 
     document.getElementById('invite-btn').onclick = () => {
-        const url = `${window.location.origin}${window.location.pathname}?room=${roomId}&pass=${roomPassword || ''}`;
-        navigator.clipboard.writeText(url).then(() => alert('Invite Link Copied!'));
-    };
+    const encodedPass = roomPassword ? btoa(roomPassword) : '';
+    const url = `${window.location.origin}${window.location.pathname}?room=${roomId}&pass=${encodedPass}`;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+            .then(() => alert('Invite Link Copied!'))
+            .catch(err => {
+                console.error('Clipboard write failed:', err);
+                fallbackCopy(url);
+            });
+    } else {
+        fallbackCopy(url);
+    }
+};
+
+function fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        const success = document.execCommand('copy');
+        if (success) alert('Invite Link Copied!');
+        else alert('Copy failed. Please copy manually.');
+    } catch (err) {
+        console.error('Fallback copy error:', err);
+        alert('Copy failed. Please copy manually.');
+    }
+    document.body.removeChild(textarea);
+}
 
     document.getElementById('backup-btn').onclick = () => {
         db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll().onsuccess = (e) => {
@@ -929,7 +977,14 @@ body {
             }
             if (data.action === 'peer-list') { globalPeerList = data.peers; updateSyncCount(); }
             if (data.action === 'kick' && data.targetDeviceId === myDeviceId) { alert("Kicked by admin."); clearRoomStorage(); resetConnection(); }
-            if (data.action === 'room-deleted') { alert("Room deleted by admin."); clearRoomStorage(); resetConnection(); }
+            // ========== পরিবর্তিত অংশ: room-deleted ==========
+            if (data.action === 'room-deleted') {
+                alert("Room deleted by admin.");
+                setTimeout(() => {
+                    cleanUpAndReload();
+                }, 1000);
+                return; // পরবর্তী কোনো প্রক্রিয়া বন্ধ
+            }
             if (data.action === 'transfer-host') {
                 if (data.newHostDeviceId === myDeviceId) { showLoader("You are host now!"); isTransferringHost = true; if (hostConn) hostConn.close(); setTimeout(() => { isTransferringHost = false; becomeHost(); }, 1000); } 
                 else if (!isHost) { showLoader("Host transferring..."); isTransferringHost = true; if (hostConn) hostConn.close(); setTimeout(() => { isTransferringHost = false; joinRoom(roomId, roomPassword, true); }, 4000); }
@@ -1296,9 +1351,22 @@ body {
         document.getElementById('info-room-id').textContent = roomId || '—'; document.getElementById('info-name').textContent = myName;
         const leaveBtn = document.getElementById('leave-room-btn');
         if (isHost) { 
-            leaveBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete room'; leaveBtn.style.background = '#d32f2f'; leaveBtn.onclick = () => { if (confirm("Delete room for everyone?")) { relay({ type: 'system', action: 'room-deleted' }, null); clearRoomStorage(); resetConnection(); closeModal('info-modal'); } }; 
+            leaveBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete room';
+            leaveBtn.style.background = '#d32f2f';
+            // ========== হোস্টের জন্য পরিবর্তিত অংশ ==========
+            leaveBtn.onclick = () => {
+                if (confirm("Delete room for everyone?")) {
+                    relay({ type: 'system', action: 'room-deleted' }, null);
+                    // সবাইকে জানানোর পর নিজের ডাটা মুছে রিলোড করতে ৫০০ms অপেক্ষা
+                    setTimeout(() => {
+                        cleanUpAndReload();
+                    }, 500);
+                }
+            };
         } else { 
-            leaveBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Leave room'; leaveBtn.style.background = 'rgb(211, 47, 47)'; leaveBtn.onclick = () => { if (hostConn && hostConn.open) hostConn.send({ type: 'system', action: 'leave', name: myName, deviceId: myDeviceId }); clearRoomStorage(); resetConnection(); closeModal('info-modal'); }; 
+            leaveBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Leave room';
+            leaveBtn.style.background = 'rgb(211, 47, 47)';
+            leaveBtn.onclick = () => { if (hostConn && hostConn.open) hostConn.send({ type: 'system', action: 'leave', name: myName, deviceId: myDeviceId }); clearRoomStorage(); resetConnection(); closeModal('info-modal'); };
         }
         const peersList = document.getElementById('info-peers-list'); peersList.innerHTML = ''; 
         let listToRender = globalPeerList.filter(p => p.deviceId !== myDeviceId); 
@@ -1327,19 +1395,27 @@ body {
     document.getElementById('auth-join-btn').onclick = () => { const id = document.getElementById('auth-room-id').value.trim(), pass = document.getElementById('auth-room-pass').value.trim(); if (!id) return alert('Room ID is required to join'); joinRoom(id, pass); };
 
     window.onload = () => {
-        injectDynamicUI(); initDB().catch(console.warn);
-        fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => { myIpInfo.loc = `${data.city || 'Unknown'}, ${data.country || 'Unknown'}`; }).catch(() => { myIpInfo.loc = 'Unavailable'; }); 
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const invRoom = urlParams.get('room'), invPass = urlParams.get('pass');
-        if (invRoom) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-            setTimeout(() => joinRoom(invRoom, invPass || ''), 500); return;
+    injectDynamicUI(); initDB().catch(console.warn);
+    fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => { myIpInfo.loc = `${data.city || 'Unknown'}, ${data.country || 'Unknown'}`; }).catch(() => { myIpInfo.loc = 'Unavailable'; }); 
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const invRoom = urlParams.get('room');
+    let invPass = urlParams.get('pass');
+    if (invPass) {
+        try {
+            invPass = atob(invPass);
+        } catch (e) {
+            invPass = '';
         }
+    }
+    if (invRoom) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setTimeout(() => joinRoom(invRoom, invPass || ''), 500); return;
+    }
 
-        const savedRoom = localStorage.getItem('messenger_room_id'), savedPass = localStorage.getItem('messenger_room_password'), savedHost = localStorage.getItem('messenger_is_host') === 'true';
-        if (savedRoom) { showLoader('Restoring session...'); if (savedHost) createRoom(savedRoom, savedPass || '', true); else joinRoom(savedRoom, savedPass || '', true); } else openModal('auth-modal');
-    };
+    const savedRoom = localStorage.getItem('messenger_room_id'), savedPass = localStorage.getItem('messenger_room_password'), savedHost = localStorage.getItem('messenger_is_host') === 'true';
+    if (savedRoom) { showLoader('Restoring session...'); if (savedHost) createRoom(savedRoom, savedPass || '', true); else joinRoom(savedRoom, savedPass || '', true); } else openModal('auth-modal');
+};
 })();
 </script>
 </body>
