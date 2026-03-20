@@ -1343,7 +1343,7 @@ function setupClientConnection(conn, isAutoReconnecting, isPasswordCheckMode = f
         let rDisplay = wrapper.querySelector('.reactions-display'), bubbleWrap = wrapper.querySelector('.bubble-wrapper'); 
         if (!rDisplay && bubbleWrap) { 
             rDisplay = document.createElement('div'); rDisplay.className = 'reactions-display'; bubbleWrap.style.display = 'flex'; bubbleWrap.style.flexDirection = 'column'; bubbleWrap.style.alignItems = wrapper.classList.contains('sender') ? 'flex-end' : 'flex-start'; 
-            rDisplay.style.position = 'relative'; rDisplay.style.marginTop = '4px'; rDisplay.style.bottom = 'auto'; bubbleWrap.appendChild(rDisplay); 
+            rDisplay.style.position = 'relative'; rDisplay.style.marginTop = '-5px'; rDisplay.style.bottom = 'auto'; bubbleWrap.appendChild(rDisplay); 
         } 
         if (!reactionsObj || Object.keys(reactionsObj).length === 0) { if(rDisplay) rDisplay.classList.remove('active'); if(bubbleWrap) bubbleWrap.classList.remove('has-reactions'); return; } 
         const counts = {}; Object.values(reactionsObj).forEach(r => { let e = typeof r === 'string' ? r : r.emoji; counts[e] = (counts[e] || 0) + 1; }); 
