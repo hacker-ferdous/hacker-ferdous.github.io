@@ -1417,94 +1417,281 @@ function setupClientConnection(conn, isAutoReconnecting, isPasswordCheckMode = f
         };
     };
 
-    function renderMessage(msg) {
-        if(document.getElementById('msg-' + msg.msgId)) return; 
-        const wrapper = document.createElement('div'), isMe = msg.sender === 'me'; 
-        wrapper.className = `message-row ${isMe ? 'sender' : 'receiver'}`; wrapper.id = 'msg-' + msg.msgId; 
-        if (!isMe) { 
-            const prof = document.createElement('div'); 
-            prof.className = 'mini-profile'; 
-            prof.title = msg.senderName; 
-            prof.innerHTML = '<i class="fas fa-user"></i>';
-            prof.style.display = 'flex';
-            prof.style.alignItems = 'center';
-            prof.style.justifyContent = 'center';
-            prof.style.backgroundColor = '#333';
-            prof.style.color = '#fff';
-            prof.style.backgroundImage = 'none';
-            wrapper.appendChild(prof); 
-        } 
-        const col = document.createElement('div'); col.className = `message-column ${isMe ? 'sender-stack' : 'receiver-stack'}`; wrapper.appendChild(col); 
-        
-        if (msg.replyTo && !msg.isDeleted) { 
-            const repInfo = document.createElement('div'); repInfo.className = 'reply-info-text'; 
-            let replyTxt = isMe ? ((msg.replyTo.name === myName) ? 'You replied to yourself' : `You replied to ${msg.replyTo.name}`) : ((msg.replyTo.name === msg.senderName) ? `${msg.senderName} replied to themselves` : ((msg.replyTo.name === myName) ? `${msg.senderName} replied to you` : `${msg.senderName} replied to ${msg.replyTo.name}`)); 
-            repInfo.innerHTML = `<i class="fas fa-reply"></i> ${escapeHTML(replyTxt)}`; col.appendChild(repInfo); 
-            const prevBubble = document.createElement('div'); prevBubble.className = 'bubble previous-bubble'; prevBubble.dataset.replyTarget = msg.replyTo.msgId; prevBubble.textContent = msg.replyTo.content || 'Original message'; col.appendChild(prevBubble); 
-            db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).get(msg.replyTo.msgId).onsuccess = (e) => { const original = e.target.result; if (original && original.isDeleted) { prevBubble.innerHTML = '<i class="fas fa-ban" style="margin-right:4px;"></i> <i>This message was deleted</i>'; prevBubble.style.backgroundColor = 'transparent'; prevBubble.style.border = '1px solid #444'; prevBubble.style.color = '#888'; } }; 
-        } 
-        
-        const bubbleWrap = document.createElement('div'); bubbleWrap.className = 'bubble-wrapper'; col.appendChild(bubbleWrap); 
-        
-        if (msg.isDeleted) { 
-            const delBubble = document.createElement('div'); delBubble.className = 'bubble deleted-bubble'; delBubble.innerHTML = '<i class="fas fa-ban"></i> This message was deleted'; bubbleWrap.appendChild(delBubble); 
-        } else { 
-            let bubbleContent, contentSrc = msg.content; if (msg.content instanceof Blob) contentSrc = URL.createObjectURL(msg.content); 
-            let isMedia = msg.type === 'image' || msg.type === 'video' || msg.type === 'file'; let mediaWrapper;
+function isInAppBrowser() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const patterns = [
+        "FBAN", "FBAV", "Instagram", "Line", "LinkedIn", "messenger",
+        "WhatsApp", "Twitter", "Snapchat", "TikTok", "WeChat", "KakaoTalk",
+        "Pinterest", "Reddit", "Slack", "Discord", "Telegram"
+    ];
+    return patterns.some(pattern => ua.indexOf(pattern) > -1);
+}
 
-            if (isMedia) {
-                mediaWrapper = document.createElement('div'); mediaWrapper.className = 'media-wrapper';
-                const menuBtn = document.createElement('div'); menuBtn.className = 'media-menu-icon'; menuBtn.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
-                menuBtn.onclick = (e) => { e.stopPropagation(); document.querySelectorAll('.message-row').forEach(w => w !== wrapper && w.classList.remove('show-actions')); wrapper.classList.toggle('show-actions'); };
-                mediaWrapper.appendChild(menuBtn);
-            }
+function showFallbackUI(url) {
+    if (document.getElementById('in-app-blocker-ui')) return;
+    const ua = navigator.userAgent.toLowerCase();
+    const platform = (ua.includes("iphone") || ua.includes("ipad")) ? "Safari" : "Browser (Chrome/Opera/Firefox)";
+    const overlay = document.createElement('div');
+    overlay.id = 'in-app-blocker-ui';
+    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2147483647; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); font-family: sans-serif;";
+    overlay.innerHTML = `
+        <div style="background: white; padding: 25px; border-radius: 12px; text-align: center; max-width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <h2 style="color: #e74c3c; margin-top: 0;">Action Required!</h2>
+            <p style="font-size: 16px; color: #333; line-height: 1.5;">
+                This environment doesn't support our features.<br><br>
+                Tap the <strong>3 dots (⋮)</strong> or <strong>Share icon</strong> and select <br><br>
+                <span style="background: #f1f2f6; padding: 8px 12px; border-radius: 6px; font-weight: bold; color: #2980b9;">"Open in ${platform}"</span>
+            </p>
+            <button onclick="this.closest('#in-app-blocker-ui').remove()" style="margin-top: 15px; padding: 10px 24px; background: #2980b9; color: #fff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">Got it!</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
 
-            if (msg.type === 'text' || msg.type === 'thumb') { 
-                bubbleContent = document.createElement('div'); bubbleContent.className = 'bubble'; 
-                if(msg.type === 'thumb') { bubbleContent.textContent = msg.content; bubbleContent.style.background = 'none'; bubbleContent.style.fontSize = '40px'; bubbleContent.style.padding = '0'; } else { bubbleContent.textContent = msg.content; } 
-            } else if (msg.type === 'image') { 
-                bubbleContent = document.createElement('img'); bubbleContent.src = contentSrc; bubbleContent.className = 'chat-media'; 
-                bubbleContent.onclick = () => openFullscreen(contentSrc, 'image'); mediaWrapper.insertBefore(bubbleContent, mediaWrapper.firstChild);
-            } else if (msg.type === 'video') { 
-                bubbleContent = document.createElement('video'); bubbleContent.src = contentSrc; bubbleContent.className = 'chat-media'; bubbleContent.controls = true; 
-                bubbleContent.onplay = (e) => { e.preventDefault(); bubbleContent.pause(); openFullscreen(contentSrc, 'video'); }; bubbleContent.onclick = (e) => { e.preventDefault(); openFullscreen(contentSrc, 'video'); }; mediaWrapper.insertBefore(bubbleContent, mediaWrapper.firstChild);
-            } else if (msg.type === 'file') { 
-                bubbleContent = document.createElement('a'); bubbleContent.href = contentSrc; bubbleContent.download = msg.fileName; bubbleContent.className = 'file-box'; 
-                bubbleContent.innerHTML = `<i class="fas fa-file-alt"></i> <span style="margin-left:8px;">${escapeHTML(msg.fileName)}</span>`; mediaWrapper.insertBefore(bubbleContent, mediaWrapper.firstChild);
-            } 
-            
-            if(isMedia) bubbleWrap.appendChild(mediaWrapper); else bubbleWrap.appendChild(bubbleContent);
-            
-            const actionMenu = document.createElement('div'); actionMenu.className = 'msg-actions';['👍', '❤️', '😂', '😮', '😢'].forEach(e => { const btn = document.createElement('button'); btn.className = 'action-btn'; btn.textContent = e; btn.onclick = (ev) => { ev.stopPropagation(); sendReaction(msg.msgId, e); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(btn); }); 
-            const replyBtn = document.createElement('button'); replyBtn.className = 'action-btn'; replyBtn.textContent = '↩️'; replyBtn.onclick = (ev) => { ev.stopPropagation(); setReplyContext(msg.msgId, msg.senderName, msg.type === 'text' ? msg.content : (msg.type==='thumb'?msg.content:`📄 ${msg.type}`)); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(replyBtn); 
-            if(isMedia) { const dlBtn = document.createElement('button'); dlBtn.className = 'action-btn'; dlBtn.textContent = '⬇️'; dlBtn.onclick = (ev) => { ev.stopPropagation(); downloadMedia(contentSrc, msg.fileName || 'download'); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(dlBtn); }
-            if (isMe) { const delBtn = document.createElement('button'); delBtn.className = 'action-btn'; delBtn.innerHTML = '🗑️'; delBtn.onclick = (ev) => { ev.stopPropagation(); deleteMessageAction(msg.msgId); wrapper.classList.remove('show-actions'); }; actionMenu.appendChild(delBtn); } 
-            
-            bubbleWrap.appendChild(actionMenu); 
-            if(!isMedia) bubbleContent.onclick = (e) => { e.stopPropagation(); document.querySelectorAll('.message-row').forEach(w => w !== wrapper && w.classList.remove('show-actions')); wrapper.classList.toggle('show-actions'); }; 
-            if(msg.reactions && !Array.isArray(msg.reactions) && Object.keys(msg.reactions).length > 0) renderReactionsDOM(msg.msgId, msg.reactions); 
-        } 
-        
-        const metaInfo = document.createElement('div'); metaInfo.className = 'msg-meta'; metaInfo.id = 'meta-' + msg.msgId; let statusHtml = ''; 
-        if (isMe && msg.status === 'sending') statusHtml = `<span id="send-status-${msg.msgId}" style="color: #f39c12; font-size: 11px; margin-right: 4px;"><i class="fas fa-clock"></i> Sending... 0%</span> `; 
-        let seenHtml = '';
-        if (!isMe && msg.readBy && msg.readBy.length > 0) {
-            seenHtml = `<span style="color:#32d74b; font-size:10px; cursor:pointer;" onclick="showReadersListForMsg('${msg.msgId}')"><i class="fas fa-check-double"></i> Seen by ${msg.readBy.length}</span> `;
-        } else if (isMe && msg.readBy && msg.readBy.length > 0) {
-            seenHtml = `<span style="color:#32d74b; font-size:10px; cursor:pointer;" onclick="showReadersListForMsg('${msg.msgId}')"><i class="fas fa-check-double"></i> Seen by ${msg.readBy.length}</span> `;
+function forceDefaultBrowser() {
+    if (!isInAppBrowser()) return;
+
+    const targetUrl = window.location.href;
+    const parsedUrl = new URL(targetUrl);
+    const scheme = parsedUrl.protocol.replace(':', '');
+    const urlWithoutHttp = targetUrl.replace(/^https?:\/\//, '');
+    const ua = navigator.userAgent.toLowerCase();
+
+    let redirectAttempted = false;
+    
+    const checkRedirect = setTimeout(() => {
+        if (!redirectAttempted && window.location.href === targetUrl) {
+            showFallbackUI(targetUrl);
         }
-        metaInfo.innerHTML = `${statusHtml}${msg.senderName} • ${formatTime(msg.timestamp)} ${seenHtml}`; col.appendChild(metaInfo); UI.chat.appendChild(wrapper); UI.chat.scrollTop = UI.chat.scrollHeight; 
+    }, 2500);
 
-        if(!isMe) {
-            const observer = new IntersectionObserver((entries) => {
-                if(entries[0].isIntersecting) { 
-                    sendToNetwork({ type: 'system', action: 'read', msgId: msg.msgId, readerName: myName, readerDeviceId: myDeviceId }); 
-                    observer.disconnect();
-                }
-            }, { root: UI.chat, threshold: 0.1 });
-            observer.observe(wrapper);
+    if (ua.includes("android")) {
+        redirectAttempted = true;
+        window.location.href = `intent://${urlWithoutHttp}#Intent;scheme=${scheme};action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;S.browser_fallback_url=${encodeURIComponent(targetUrl)};end;`;
+    } else if (ua.includes("iphone") || ua.includes("ipad") || ua.includes("ipod")) {
+        redirectAttempted = true;
+        window.location.href = `googlechrome://${urlWithoutHttp}`;
+    } else {
+
+        clearTimeout(checkRedirect);
+        showFallbackUI(targetUrl);
+    }
+}
+    
+    function renderMessage(msg) {
+    if (document.getElementById('msg-' + msg.msgId)) return;
+    const wrapper = document.createElement('div'),
+        isMe = msg.sender === 'me';
+    wrapper.className = `message-row ${isMe ? 'sender' : 'receiver'}`;
+    wrapper.id = 'msg-' + msg.msgId;
+    if (!isMe) {
+        const prof = document.createElement('div');
+        prof.className = 'mini-profile';
+        prof.title = msg.senderName;
+        prof.innerHTML = '<i class="fas fa-user"></i>';
+        prof.style.display = 'flex';
+        prof.style.alignItems = 'center';
+        prof.style.justifyContent = 'center';
+        prof.style.backgroundColor = '#333';
+        prof.style.color = '#fff';
+        prof.style.backgroundImage = 'none';
+        wrapper.appendChild(prof);
+    }
+    const col = document.createElement('div');
+    col.className = `message-column ${isMe ? 'sender-stack' : 'receiver-stack'}`;
+    wrapper.appendChild(col);
+
+    if (msg.replyTo && !msg.isDeleted) {
+        const repInfo = document.createElement('div');
+        repInfo.className = 'reply-info-text';
+        let replyTxt = isMe ? ((msg.replyTo.name === myName) ? 'You replied to yourself' : `You replied to ${msg.replyTo.name}`) : ((msg.replyTo.name === msg.senderName) ? `${msg.senderName} replied to themselves` : ((msg.replyTo.name === myName) ? `${msg.senderName} replied to you` : `${msg.senderName} replied to ${msg.replyTo.name}`));
+        repInfo.innerHTML = `<i class="fas fa-reply"></i> ${escapeHTML(replyTxt)}`;
+        col.appendChild(repInfo);
+        const prevBubble = document.createElement('div');
+        prevBubble.className = 'bubble previous-bubble';
+        prevBubble.dataset.replyTarget = msg.replyTo.msgId;
+        prevBubble.textContent = msg.replyTo.content || 'Original message';
+        col.appendChild(prevBubble);
+        db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).get(msg.replyTo.msgId).onsuccess = (e) => {
+            const original = e.target.result;
+            if (original && original.isDeleted) {
+                prevBubble.innerHTML = '<i class="fas fa-ban" style="margin-right:4px;"></i> <i>This message was deleted</i>';
+                prevBubble.style.backgroundColor = 'transparent';
+                prevBubble.style.border = '1px solid #444';
+                prevBubble.style.color = '#888';
+            }
+        };
+    }
+
+    const bubbleWrap = document.createElement('div');
+    bubbleWrap.className = 'bubble-wrapper';
+    col.appendChild(bubbleWrap);
+
+    if (msg.isDeleted) {
+        const delBubble = document.createElement('div');
+        delBubble.className = 'bubble deleted-bubble';
+        delBubble.innerHTML = '<i class="fas fa-ban"></i> This message was deleted';
+        bubbleWrap.appendChild(delBubble);
+    } else {
+        let bubbleContent,
+            contentSrc = msg.content;
+        if (msg.content instanceof Blob) contentSrc = URL.createObjectURL(msg.content);
+        let isMedia = msg.type === 'image' || msg.type === 'video' || msg.type === 'file';
+        let mediaWrapper;
+
+        if (isMedia) {
+            mediaWrapper = document.createElement('div');
+            mediaWrapper.className = 'media-wrapper';
+            const menuBtn = document.createElement('div');
+            menuBtn.className = 'media-menu-icon';
+            menuBtn.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
+            menuBtn.onclick = (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.message-row').forEach(w => w !== wrapper && w.classList.remove('show-actions'));
+                wrapper.classList.toggle('show-actions');
+            };
+            mediaWrapper.appendChild(menuBtn);
+        }
+
+        if (msg.type === 'text' || msg.type === 'thumb') {
+            bubbleContent = document.createElement('div');
+            bubbleContent.className = 'bubble';
+            if (msg.type === 'thumb') {
+                bubbleContent.textContent = msg.content;
+                bubbleContent.style.background = 'none';
+                bubbleContent.style.fontSize = '40px';
+                bubbleContent.style.padding = '0';
+            } else {
+                bubbleContent.textContent = msg.content;
+            }
+        } else if (msg.type === 'image') {
+            bubbleContent = document.createElement('img');
+            bubbleContent.src = contentSrc;
+            bubbleContent.className = 'chat-media';
+            bubbleContent.onclick = () => openFullscreen(contentSrc, 'image');
+            mediaWrapper.insertBefore(bubbleContent, mediaWrapper.firstChild);
+        } else if (msg.type === 'video') {
+            bubbleContent = document.createElement('video');
+            bubbleContent.src = contentSrc;
+            bubbleContent.className = 'chat-media';
+            bubbleContent.controls = true;
+            bubbleContent.onplay = (e) => {
+                e.preventDefault();
+                bubbleContent.pause();
+                openFullscreen(contentSrc, 'video');
+            };
+            bubbleContent.onclick = (e) => {
+                e.preventDefault();
+                openFullscreen(contentSrc, 'video');
+            };
+            mediaWrapper.insertBefore(bubbleContent, mediaWrapper.firstChild);
+        } else if (msg.type === 'file') {
+            bubbleContent = document.createElement('a');
+            bubbleContent.href = contentSrc;
+            bubbleContent.download = msg.fileName;
+            bubbleContent.className = 'file-box';
+            bubbleContent.innerHTML = `<i class="fas fa-file-alt"></i> <span style="margin-left:8px;">${escapeHTML(msg.fileName)}</span>`;
+            mediaWrapper.insertBefore(bubbleContent, mediaWrapper.firstChild);
+        }
+
+        if (isMedia) bubbleWrap.appendChild(mediaWrapper);
+        else bubbleWrap.appendChild(bubbleContent);
+
+        const actionMenu = document.createElement('div');
+        actionMenu.className = 'msg-actions';
+        ['👍', '❤️', '😂', '😮', '😢'].forEach(e => {
+            const btn = document.createElement('button');
+            btn.className = 'action-btn';
+            btn.textContent = e;
+            btn.onclick = (ev) => {
+                ev.stopPropagation();
+                sendReaction(msg.msgId, e);
+                wrapper.classList.remove('show-actions');
+            };
+            actionMenu.appendChild(btn);
+        });
+        const replyBtn = document.createElement('button');
+        replyBtn.className = 'action-btn';
+        replyBtn.textContent = '↩️';
+        replyBtn.onclick = (ev) => {
+            ev.stopPropagation();
+            setReplyContext(msg.msgId, msg.senderName, msg.type === 'text' ? msg.content : (msg.type === 'thumb' ? msg.content : `📄 ${msg.type}`));
+            wrapper.classList.remove('show-actions');
+        };
+        actionMenu.appendChild(replyBtn);
+        if (isMedia) {
+            const dlBtn = document.createElement('button');
+            dlBtn.className = 'action-btn';
+            dlBtn.textContent = '⬇️';
+            dlBtn.onclick = (ev) => {
+                ev.stopPropagation();
+                downloadMedia(contentSrc, msg.fileName || 'download');
+                wrapper.classList.remove('show-actions');
+            };
+            actionMenu.appendChild(dlBtn);
+        }
+        if (isMe) {
+            const delBtn = document.createElement('button');
+            delBtn.className = 'action-btn';
+            delBtn.innerHTML = '🗑️';
+            delBtn.onclick = (ev) => {
+                ev.stopPropagation();
+                deleteMessageAction(msg.msgId);
+                wrapper.classList.remove('show-actions');
+            };
+            actionMenu.appendChild(delBtn);
+        }
+
+        bubbleWrap.appendChild(actionMenu);
+        if (!isMedia) {
+            bubbleContent.onclick = (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.message-row').forEach(w => w !== wrapper && w.classList.remove('show-actions'));
+                wrapper.classList.toggle('show-actions');
+            };
         }
     }
+
+    const metaInfo = document.createElement('div');
+    metaInfo.className = 'msg-meta';
+    metaInfo.id = 'meta-' + msg.msgId;
+    let statusHtml = '';
+    if (isMe && msg.status === 'sending') statusHtml = `<span id="send-status-${msg.msgId}" style="color: #f39c12; font-size: 11px; margin-right: 4px;"><i class="fas fa-clock"></i> Sending... 0%</span> `;
+    let seenHtml = '';
+    if (!isMe && msg.readBy && msg.readBy.length > 0) {
+        seenHtml = `<span style="color:#32d74b; font-size:10px; cursor:pointer;" onclick="showReadersListForMsg('${msg.msgId}')"><i class="fas fa-check-double"></i> Seen by ${msg.readBy.length}</span> `;
+    } else if (isMe && msg.readBy && msg.readBy.length > 0) {
+        seenHtml = `<span style="color:#32d74b; font-size:10px; cursor:pointer;" onclick="showReadersListForMsg('${msg.msgId}')"><i class="fas fa-check-double"></i> Seen by ${msg.readBy.length}</span> `;
+    }
+    metaInfo.innerHTML = `${statusHtml}${msg.senderName} • ${formatTime(msg.timestamp)} ${seenHtml}`;
+    col.appendChild(metaInfo);
+
+    UI.chat.appendChild(wrapper);
+    UI.chat.scrollTop = UI.chat.scrollHeight;
+
+    if (!msg.isDeleted && msg.reactions && !Array.isArray(msg.reactions) && Object.keys(msg.reactions).length > 0) {
+        renderReactionsDOM(msg.msgId, msg.reactions);
+    }
+
+    if (!isMe) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                sendToNetwork({
+                    type: 'system',
+                    action: 'read',
+                    msgId: msg.msgId,
+                    readerName: myName,
+                    readerDeviceId: myDeviceId
+                });
+                observer.disconnect();
+            }
+        }, {
+            root: UI.chat,
+            threshold: 0.1
+        });
+        observer.observe(wrapper);
+    }
+}
 
     function resetInputBox() { UI.msgInput.value = ''; UI.msgInput.style.height = '20px'; UI.msgInput.style.overflowY = 'hidden'; UI.dynamicIcon.innerHTML = thumbsUpIcon; isSendMode = false; collapseInput(true); cancelReply(); } 
     function setReplyContext(msgId, name, content) { activeReplyContext = { msgId, name, content }; UI.replyPreview.style.display = 'flex'; UI.replyText.innerHTML = `Replying to: <strong>${escapeHTML(name)}</strong> - <span style="opacity:0.7">${escapeHTML(content)}</span>`; UI.msgInput.focus(); } 
@@ -1641,7 +1828,9 @@ function setupClientConnection(conn, isAutoReconnecting, isPasswordCheckMode = f
     document.getElementById('auth-join-btn').onclick = () => { const id = document.getElementById('auth-room-id').value.trim(), pass = document.getElementById('auth-room-pass').value.trim(); if (!id) return alert('Room ID is required to join'); joinRoom(id, pass); };
 
     window.onload = () => {
-    injectDynamicUI(); initDB().catch(console.warn);
+    forceDefaultBrowser();
+    injectDynamicUI();
+    initDB().catch(console.warn);
     fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => { myIpInfo.loc = `${data.city || 'Unknown'}, ${data.country || 'Unknown'}`; }).catch(() => { myIpInfo.loc = 'Unavailable'; }); 
     
     const urlParams = new URLSearchParams(window.location.search);
