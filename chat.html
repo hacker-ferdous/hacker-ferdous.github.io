@@ -495,16 +495,18 @@ body {
     const thumbsUpIcon = `<i class="fas fa-thumbs-up thumbs-up-icon"></i>`; 
     let isSendMode = false, isInputExpanded = false, explicitlyCollapsed = false; 
 
-    const peerOptions = {
+   const peerOptions = {
         config: {
             iceServers:[
                 { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
                 { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }
             ]
         }, debug: 0
     };
 
-  
     function cleanUpAndReload() {
     if (db) db.close();
     localStorage.clear();
@@ -679,7 +681,7 @@ function setupClientConnection(conn, isAutoReconnecting, isPasswordCheckMode = f
             alert('Could not connect.');
             resetConnection();
         }
-    }, 8000);
+    }, 10000);
 
     conn.on('open', () => {
         clearTimeout(connectTimeout);
