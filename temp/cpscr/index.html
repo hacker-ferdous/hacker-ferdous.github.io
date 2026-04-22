@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPSCR Student Database</title>
+    <title>CPSCR Student Database · Professional</title>
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -28,8 +28,10 @@
             --table-hover: #f8fafc;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
             --radius-md: 6px;
             --radius-lg: 8px;
+            --floating-bg: rgba(255, 255, 255, 0.85);
         }
 
         body.dark-mode {
@@ -48,6 +50,8 @@
             --table-hover: #334155;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+            --floating-bg: rgba(30, 41, 59, 0.9);
         }
 
         * {
@@ -228,15 +232,15 @@
             background-color: var(--danger-hover);
         }
 
-        /* --- Info Bar (UPDATED: added margin-top and increased margin-bottom) --- */
+        /* --- Info Bar --- */
         .info-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.875rem;
             color: var(--text-muted);
-            margin-top: 12px;    /* Added space above */
-            margin-bottom: 12px;  /* Increased for better spacing below */
+            margin-top: 12px;
+            margin-bottom: 12px;
         }
 
         /* --- Table Styling --- */
@@ -246,7 +250,6 @@
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
             overflow-x: auto;
-            /* Custom Scrollbar for Webkit */
             scrollbar-width: thin;
         }
 
@@ -358,7 +361,7 @@
             opacity: 0.5;
         }
 
-        /* --- Pagination --- */
+        /* --- Pagination (in-flow) --- */
         .pagination {
             display: flex;
             justify-content: space-between;
@@ -398,6 +401,64 @@
             font-size: 0.875rem;
             color: var(--text-muted);
             font-weight: 500;
+        }
+
+        /* --- FLOATING PAGINATION (Professional scroll‑aware) --- */
+        .floating-pagination {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            width: auto;
+            max-width: calc(100% - 48px);
+            background: var(--floating-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 60px;
+            box-shadow: var(--shadow-lg);
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 999;
+            transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.25s ease;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .floating-pagination.hidden {
+            transform: translateX(-50%) translateY(120%);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.25s ease;
+        }
+
+        .floating-pagination .page-info {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .floating-pagination .pagination-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .floating-pagination .btn-page {
+            background: var(--card-bg);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        /* Hide floating pagination if no records / only one page (via JS) */
+        .floating-pagination.inactive {
+            display: none !important;
         }
 
         /* --- Footer --- */
@@ -482,6 +543,11 @@
                 flex-direction: column;
                 gap: 16px;
             }
+            .floating-pagination {
+                bottom: 16px;
+                padding: 8px 16px;
+                gap: 12px;
+            }
         }
     </style>
 </head>
@@ -532,7 +598,7 @@
             </div>
         </div>
 
-        <!-- Info Bar (now has spacing above & below) -->
+        <!-- Info Bar -->
         <div class="info-bar">
             <span id="showingCount">Showing 0 records</span>
         </div>
@@ -552,12 +618,12 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    <!-- Dynamic rows will be injected here -->
+                    <!-- Dynamic rows -->
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
+        <!-- In‑flow Pagination (kept for completeness) -->
         <div class="pagination">
             <span class="page-info" id="pageIndicator">Page 1 of 1</span>
             <div class="pagination-controls">
@@ -568,6 +634,15 @@
 
     </div>
 </main>
+
+<!-- FLOATING PAGINATION – scroll‑aware, professional -->
+<div id="floatingPagination" class="floating-pagination hidden">
+    <span class="page-info" id="floatPageIndicator">Page 1 of 1</span>
+    <div class="pagination-controls">
+        <button id="floatPrevBtn" class="btn-page"><i class="fas fa-chevron-left"></i> Prev</button>
+        <button id="floatNextBtn" class="btn-page">Next <i class="fas fa-chevron-right"></i></button>
+    </div>
+</div>
 
 <footer>
     <div class="footer-content">
@@ -581,414 +656,494 @@
 </footer>
 
 <script>
-    // ---------- DATA CONFIGURATION ----------
-    const DATA_URL = 'https://hacker-ferdous.github.io/temp/cpscr/student_data.json';
+    (function(){
+        "use strict";
 
-    // State Management
-    let masterStudents = [];
-    let filteredPool =[];
-    let currentPage = 1;
-    const ROWS_PER_PAGE = 100;
+        // ---------- CONFIGURATION ----------
+        const DATA_URL = 'https://hacker-ferdous.github.io/temp/cpscr/student_data.json';
 
-    let sortColumn = null;
-    let sortDirection = 'asc';
+        // State
+        let masterStudents = [];
+        let filteredPool = [];
+        let currentPage = 1;
+        const ROWS_PER_PAGE = 500;
+        let sortColumn = null;
+        let sortDirection = 'asc';
 
-    // DOM Elements
-    const themeToggle = document.getElementById('themeToggle');
-    const searchInput = document.getElementById('searchInput');
-    const classFilter = document.getElementById('classFilter');
-    const groupFilter = document.getElementById('groupFilter');
-    const sectionFilter = document.getElementById('sectionFilter');
-    const tableBody = document.getElementById('tableBody');
-    const showingCountSpan = document.getElementById('showingCount');
-    const pageIndicator = document.getElementById('pageIndicator');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const loaderDiv = document.getElementById('loader');
-    const workspaceDiv = document.getElementById('workspace');
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const searchInput = document.getElementById('searchInput');
+        const classFilter = document.getElementById('classFilter');
+        const groupFilter = document.getElementById('groupFilter');
+        const sectionFilter = document.getElementById('sectionFilter');
+        const tableBody = document.getElementById('tableBody');
+        const showingCountSpan = document.getElementById('showingCount');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const loaderDiv = document.getElementById('loader');
+        const workspaceDiv = document.getElementById('workspace');
 
-    // ---------- UTILITIES ----------
+        // Floating pagination elements
+        const floatPagination = document.getElementById('floatingPagination');
+        const floatPageIndicator = document.getElementById('floatPageIndicator');
+        const floatPrevBtn = document.getElementById('floatPrevBtn');
+        const floatNextBtn = document.getElementById('floatNextBtn');
 
-    // Formats ALL CAPS names into Title Case appropriately
-    function formatStudentName(rawName) {
-        if (!rawName) return '';
-        const prefixMap = {
-            'MD.': 'Md.', 'MST.': 'Mst.', 'MOST.': 'Most.',
-            'MRS.': 'Mrs.', 'MR.': 'Mr.', 'DR.': 'Dr.', 'PROF.': 'Prof.'
-        };
-        let words = rawName.trim().split(/\s+/);
-        let formattedWords = words.map(word => {
-            let upperWord = word.toUpperCase();
-            if (prefixMap[upperWord]) return prefixMap[upperWord];
-            if (word === word.toUpperCase() && word.length > 1) {
+        // Scroll tracking
+        let lastScrollY = window.scrollY;
+        let scrollTimeout = null;
+
+        // ---------- UTILITIES ----------
+        function formatStudentName(rawName) {
+            if (!rawName) return '';
+            const prefixMap = {
+                'MD.': 'Md.', 'MST.': 'Mst.', 'MOST.': 'Most.',
+                'MRS.': 'Mrs.', 'MR.': 'Mr.', 'DR.': 'Dr.', 'PROF.': 'Prof.'
+            };
+            let words = rawName.trim().split(/\s+/);
+            let formattedWords = words.map(word => {
+                let upperWord = word.toUpperCase();
+                if (prefixMap[upperWord]) return prefixMap[upperWord];
+                if (word === word.toUpperCase() && word.length > 1) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                }
                 return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            }
-            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        });
-        return formattedWords.join(' ');
-    }
+            });
+            return formattedWords.join(' ');
+        }
 
-    // Flattens nested JSON into a single array of student objects
-    function flattenStudentData(jsonData) {
-        const students =[];
-        for (const className in jsonData) {
-            const classObj = jsonData[className];
-            if (!classObj.groups) continue;
-            for (const groupName in classObj.groups) {
-                const groupObj = classObj.groups[groupName];
-                if (!groupObj.sections) continue;
-                for (const sectionName in groupObj.sections) {
-                    const sectionData = groupObj.sections[sectionName];
-                    const studentList = sectionData.students ||[];
-                    for (const raw of studentList) {
-                        students.push({
-                            student_id: raw.student_id,
-                            raw_name: raw.name,
-                            name: formatStudentName(raw.name),
-                            roll: raw.roll,
-                            roll_num: parseInt(raw.roll) || 0,
-                            id_num: parseInt(raw.student_id) || 0,
-                            class: className,
-                            group: groupName,
-                            section: sectionName
-                        });
+        function flattenStudentData(jsonData) {
+            const students = [];
+            for (const className in jsonData) {
+                const classObj = jsonData[className];
+                if (!classObj.groups) continue;
+                for (const groupName in classObj.groups) {
+                    const groupObj = classObj.groups[groupName];
+                    if (!groupObj.sections) continue;
+                    for (const sectionName in groupObj.sections) {
+                        const sectionData = groupObj.sections[sectionName];
+                        const studentList = sectionData.students || [];
+                        for (const raw of studentList) {
+                            students.push({
+                                student_id: raw.student_id,
+                                raw_name: raw.name,
+                                name: formatStudentName(raw.name),
+                                roll: raw.roll,
+                                roll_num: parseInt(raw.roll) || 0,
+                                id_num: parseInt(raw.student_id) || 0,
+                                class: className,
+                                group: groupName,
+                                section: sectionName
+                            });
+                        }
                     }
                 }
             }
+            return students;
         }
-        return students;
-    }
 
-    // ---------- FILTER POPULATION ----------
+        // ---------- POPULATE FILTERS ----------
+        function populateClassFilter(students) {
+            const classSet = new Set();
+            students.forEach(s => classSet.add(s.class));
+            const order = ['Play','Nursery','KG','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','S.S.C','Eleven','Twelve','H.S.C'];
+            const sortedClasses = Array.from(classSet).sort((a,b) => order.indexOf(a) - order.indexOf(b));
+            classFilter.innerHTML = '<option value="all">All Classes</option>';
+            sortedClasses.forEach(cls => classFilter.add(new Option(cls, cls)));
+        }
 
-    function populateClassFilter(students) {
-        const classSet = new Set();
-        students.forEach(s => classSet.add(s.class));
-        const sortedClasses = Array.from(classSet).sort((a,b) => {
-            const order =['Play','Nursery','KG','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','S.S.C','Eleven','Twelve','H.S.C'];
-            return order.indexOf(a) - order.indexOf(b);
-        });
-        classFilter.innerHTML = '<option value="all">All Classes</option>';
-        sortedClasses.forEach(cls => classFilter.add(new Option(cls, cls)));
-    }
-
-    function updateSectionOptions() {
-        const selectedClass = classFilter.value;
-        const selectedGroup = groupFilter.value;
-        let availableSections = new Set();
-        
-        if (selectedClass === 'all') {
-            masterStudents.forEach(s => availableSections.add(s.section));
-        } else {
-            let filteredByClass = masterStudents.filter(s => s.class === selectedClass);
-            if (selectedGroup !== 'all') {
-                filteredByClass = filteredByClass.filter(s => s.group === selectedGroup);
+        function updateSectionOptions() {
+            const selectedClass = classFilter.value;
+            const selectedGroup = groupFilter.value;
+            let availableSections = new Set();
+            
+            if (selectedClass === 'all') {
+                masterStudents.forEach(s => availableSections.add(s.section));
+            } else {
+                let filteredByClass = masterStudents.filter(s => s.class === selectedClass);
+                if (selectedGroup !== 'all') {
+                    filteredByClass = filteredByClass.filter(s => s.group === selectedGroup);
+                }
+                filteredByClass.forEach(s => availableSections.add(s.section));
             }
-            filteredByClass.forEach(s => availableSections.add(s.section));
-        }
-        
-        const currentSectionVal = sectionFilter.value;
-        sectionFilter.innerHTML = '<option value="all">All Sections</option>';
-        Array.from(availableSections).sort().forEach(sec => sectionFilter.add(new Option(sec, sec)));
-        
-        if (Array.from(availableSections).includes(currentSectionVal)) {
-            sectionFilter.value = currentSectionVal;
-        } else {
-            sectionFilter.value = 'all';
-        }
-    }
-
-    function updateGroupFilterOptions() {
-        const selectedClass = classFilter.value;
-        const seniorClasses =['Nine', 'Ten', 'S.S.C', 'Eleven', 'Twelve', 'H.S.C'];
-        const isSenior = seniorClasses.includes(selectedClass);
-        
-        if (!isSenior || selectedClass === 'all') {
-            groupFilter.disabled = true;
-            groupFilter.value = 'all';
-            groupFilter.innerHTML = '<option value="all">All Groups</option>';
-        } else {
-            groupFilter.disabled = false;
-            const groupsSet = new Set();
-            masterStudents.filter(s => s.class === selectedClass).forEach(s => groupsSet.add(s.group));
-            const currentGroup = groupFilter.value;
             
-            groupFilter.innerHTML = '<option value="all">All Groups</option>';
-            groupsSet.forEach(g => groupFilter.add(new Option(g, g)));
+            const currentSectionVal = sectionFilter.value;
+            sectionFilter.innerHTML = '<option value="all">All Sections</option>';
+            Array.from(availableSections).sort().forEach(sec => sectionFilter.add(new Option(sec, sec)));
             
-            if (Array.from(groupsSet).includes(currentGroup)) groupFilter.value = currentGroup;
-            else groupFilter.value = 'all';
+            sectionFilter.value = Array.from(availableSections).includes(currentSectionVal) ? currentSectionVal : 'all';
         }
-        updateSectionOptions();
-    }
 
-    // ---------- FILTERING & SORTING ----------
+        function updateGroupFilterOptions() {
+            const selectedClass = classFilter.value;
+            const seniorClasses = ['Nine', 'Ten', 'S.S.C', 'Eleven', 'Twelve', 'H.S.C'];
+            const isSenior = seniorClasses.includes(selectedClass);
+            
+            if (!isSenior || selectedClass === 'all') {
+                groupFilter.disabled = true;
+                groupFilter.value = 'all';
+                groupFilter.innerHTML = '<option value="all">All Groups</option>';
+            } else {
+                groupFilter.disabled = false;
+                const groupsSet = new Set();
+                masterStudents.filter(s => s.class === selectedClass).forEach(s => groupsSet.add(s.group));
+                const currentGroup = groupFilter.value;
+                groupFilter.innerHTML = '<option value="all">All Groups</option>';
+                groupsSet.forEach(g => groupFilter.add(new Option(g, g)));
+                groupFilter.value = groupsSet.has(currentGroup) ? currentGroup : 'all';
+            }
+            updateSectionOptions();
+        }
 
-    function applyFilters() {
-        const query = searchInput.value.trim().toLowerCase();
-        const selectedClass = classFilter.value;
-        const selectedGroup = groupFilter.value;
-        const selectedSection = sectionFilter.value;
+        // ---------- FILTERING & SORTING ----------
+        function applyFilters() {
+            const query = searchInput.value.trim().toLowerCase();
+            const selectedClass = classFilter.value;
+            const selectedGroup = groupFilter.value;
+            const selectedSection = sectionFilter.value;
+            
+            filteredPool = masterStudents.filter(student => {
+                const matchSearch = student.name.toLowerCase().includes(query) ||
+                                    student.student_id.includes(query) ||
+                                    student.roll.toString().includes(query);
+                const matchClass = (selectedClass === 'all' || student.class === selectedClass);
+                const matchGroup = (selectedGroup === 'all' || student.group === selectedGroup);
+                const matchSection = (selectedSection === 'all' || student.section === selectedSection);
+                return matchSearch && matchClass && matchGroup && matchSection;
+            });
+            
+            if (sortColumn) {
+                sortData(sortColumn, sortDirection);
+            } else {
+                if (selectedClass !== 'all') {
+                    sortColumn = 'roll_num';
+                    sortDirection = 'asc';
+                    sortData('roll_num', 'asc');
+                    updateSortIcon('roll_num', 'asc');
+                } else {
+                    sortColumn = 'id_num';
+                    sortDirection = 'asc';
+                    sortData('id_num', 'asc');
+                    updateSortIcon('id_num', 'asc');
+                }
+            }
+            
+            currentPage = 1;
+            renderTable();
+            updateFloatingPagination();
+        }
         
-        filteredPool = masterStudents.filter(student => {
-            const matchSearch = student.name.toLowerCase().includes(query) ||
-                                student.student_id.includes(query) ||
-                                student.roll.toString().includes(query);
-            const matchClass = (selectedClass === 'all' || student.class === selectedClass);
-            const matchGroup = (selectedGroup === 'all' || student.group === selectedGroup);
-            const matchSection = (selectedSection === 'all' || student.section === selectedSection);
-            return matchSearch && matchClass && matchGroup && matchSection;
-        });
+        function sortData(column, direction) {
+            filteredPool.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                if (column === 'id_num' || column === 'roll_num') {
+                    return direction === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    valA = (valA || '').toString().toLowerCase();
+                    valB = (valB || '').toString().toLowerCase();
+                    if (valA < valB) return direction === 'asc' ? -1 : 1;
+                    if (valA > valB) return direction === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+        }
         
-        if (sortColumn) {
+        function updateSortIcon(column, direction) {
+            document.querySelectorAll('th i').forEach(icon => icon.className = 'fas fa-sort');
+            const thMap = {
+                id_num: 'th-id_num', name: 'th-name', class: 'th-class',
+                roll_num: 'th-roll_num', group: 'th-group', section: 'th-section'
+            };
+            const thElem = document.getElementById(thMap[column]);
+            if (thElem) {
+                const icon = thElem.querySelector('i');
+                if (icon) icon.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+            }
+        }
+        
+        window.sortTable = function(columnKey) {
+            if (sortColumn === columnKey) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = columnKey;
+                sortDirection = 'asc';
+            }
             sortData(sortColumn, sortDirection);
-        } else {
-            if (selectedClass !== 'all') {
-                sortColumn = 'roll_num';
-                sortDirection = 'asc';
-                sortData('roll_num', 'asc');
-                updateSortIcon('roll_num', 'asc');
-            } else {
-                sortColumn = 'id_num';
-                sortDirection = 'asc';
-                sortData('id_num', 'asc');
-                updateSortIcon('id_num', 'asc');
-            }
-        }
-        
-        currentPage = 1;
-        renderTable();
-    }
-    
-    function sortData(column, direction) {
-        filteredPool.sort((a, b) => {
-            let valA = a[column];
-            let valB = b[column];
-            if (column === 'id_num' || column === 'roll_num') {
-                return direction === 'asc' ? valA - valB : valB - valA;
-            } else {
-                valA = (valA || '').toString().toLowerCase();
-                valB = (valB || '').toString().toLowerCase();
-                if (valA < valB) return direction === 'asc' ? -1 : 1;
-                if (valA > valB) return direction === 'asc' ? 1 : -1;
-                return 0;
-            }
-        });
-    }
-    
-    function updateSortIcon(column, direction) {
-        document.querySelectorAll('th i').forEach(icon => icon.className = 'fas fa-sort');
-        const thMap = {
-            id_num: 'th-id_num', name: 'th-name', class: 'th-class',
-            roll_num: 'th-roll_num', group: 'th-group', section: 'th-section'
+            updateSortIcon(sortColumn, sortDirection);
+            currentPage = 1;
+            renderTable();
+            updateFloatingPagination();
         };
-        const thElem = document.getElementById(thMap[column]);
-        if (thElem) {
-            const icon = thElem.querySelector('i');
-            if (icon) icon.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
-        }
-    }
-    
-    window.sortTable = function(columnKey) {
-        if (sortColumn === columnKey) {
-            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            sortColumn = columnKey;
-            sortDirection = 'asc';
-        }
-        sortData(sortColumn, sortDirection);
-        updateSortIcon(sortColumn, sortDirection);
-        currentPage = 1;
-        renderTable();
-    };
-    
-    // ---------- RENDERING ----------
 
-    function renderTable() {
-        const start = (currentPage - 1) * ROWS_PER_PAGE;
-        const end = start + ROWS_PER_PAGE;
-        const pageRows = filteredPool.slice(start, end);
-        
-        tableBody.innerHTML = '';
-        if (pageRows.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="7">
-                        <div class="empty-state">
-                            <i class="fas fa-folder-open"></i>
-                            <h3>No records found</h3>
-                            <p>Try adjusting your search or filter settings.</p>
-                        </div>
-                    </td>
-                </tr>`;
-        } else {
-            pageRows.forEach(s => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="font-weight:500;">${s.student_id}</td>
-                    <td>${s.name}</td>
-                    <td><span class="badge">${s.class}</span></td>
-                    <td>${s.roll}</td>
-                    <td>${s.group !== 'General' ? s.group : '-'}</td>
-                    <td>${s.section}</td>
-                    <td>
-                        <button class="btn-action" 
-                            data-id="${s.student_id}" data-name="${s.name}" 
-                            data-class="${s.class}" data-roll="${s.roll}" 
-                            data-group="${s.group}" data-section="${s.section}">
-                            <i class="far fa-copy"></i> Copy
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-            document.querySelectorAll('.btn-action').forEach(btn => {
-                btn.addEventListener('click', copyHandler);
-            });
+        // ---------- RENDERING ----------
+        function renderTable() {
+            const start = (currentPage - 1) * ROWS_PER_PAGE;
+            const end = start + ROWS_PER_PAGE;
+            const pageRows = filteredPool.slice(start, end);
+            
+            tableBody.innerHTML = '';
+            if (pageRows.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <h3>No records found</h3>
+                                <p>Try adjusting your search or filter settings.</p>
+                            </div>
+                        </td>
+                    </tr>`;
+            } else {
+                pageRows.forEach(s => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="font-weight:500;">${s.student_id}</td>
+                        <td>${s.name}</td>
+                        <td><span class="badge">${s.class}</span></td>
+                        <td>${s.roll}</td>
+                        <td>${s.group !== 'General' ? s.group : '-'}</td>
+                        <td>${s.section}</td>
+                        <td>
+                            <button class="btn-action" 
+                                data-id="${s.student_id}" data-name="${s.name}" 
+                                data-class="${s.class}" data-roll="${s.roll}" 
+                                data-group="${s.group}" data-section="${s.section}">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                document.querySelectorAll('.btn-action').forEach(btn => {
+                    btn.addEventListener('click', copyHandler);
+                });
+            }
+            
+            const total = filteredPool.length;
+            const showingStart = total === 0 ? 0 : start + 1;
+            const showingEnd = Math.min(end, total);
+            showingCountSpan.innerHTML = `Showing <strong>${showingStart} – ${showingEnd}</strong> of <strong>${total}</strong> records`;
+            
+            updatePaginationIndicators();
         }
-        
-        const total = filteredPool.length;
-        const showingStart = total === 0 ? 0 : start + 1;
-        const showingEnd = Math.min(end, total);
-        showingCountSpan.innerHTML = `Showing <strong>${showingStart} – ${showingEnd}</strong> of <strong>${total}</strong> records`;
-        
-        updatePaginationIndicator();
-    }
-    
-    function copyHandler(e) {
-        const btn = e.currentTarget;
-        const data = btn.dataset;
-        const groupText = data.group !== 'General' ? data.group : 'General';
-        const copyText = `Name: ${data.name}\nStudent ID: ${data.id}\nClass: ${data.class}\nRoll: ${data.roll}\nGroup: ${groupText}\nSection: ${data.section}`;
-        
-        navigator.clipboard.writeText(copyText).then(() => {
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i> Copied';
-            btn.classList.add('copied');
-            setTimeout(() => {
-                btn.innerHTML = originalHtml;
-                btn.classList.remove('copied');
-            }, 1500);
-        }).catch(() => alert('Failed to copy to clipboard.'));
-    }
-    
-    function updatePaginationIndicator() {
-        const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
-        pageIndicator.innerText = `Page ${currentPage} of ${totalPages}`;
-        prevBtn.disabled = (currentPage === 1);
-        nextBtn.disabled = (currentPage === totalPages || filteredPool.length === 0);
-    }
-    
-    // ---------- PDF EXPORT ----------
 
-    window.exportToPDF = function() {
-        if (filteredPool.length === 0) return alert('No records available to export.');
+        function copyHandler(e) {
+            const btn = e.currentTarget;
+            const data = btn.dataset;
+            const groupText = data.group !== 'General' ? data.group : 'General';
+            const copyText = `Name: ${data.name}\nStudent ID: ${data.id}\nClass: ${data.class}\nRoll: ${data.roll}\nGroup: ${groupText}\nSection: ${data.section}`;
+            
+            navigator.clipboard.writeText(copyText).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('copied');
+                }, 1500);
+            }).catch(() => alert('Failed to copy to clipboard.'));
+        }
+
+        function updatePaginationIndicators() {
+            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
+            const pageText = `Page ${currentPage} of ${totalPages}`;
+            
+            // In‑flow pagination
+            pageIndicator.innerText = pageText;
+            prevBtn.disabled = (currentPage === 1);
+            nextBtn.disabled = (currentPage === totalPages || filteredPool.length === 0);
+            
+            // Floating pagination
+            if (floatPageIndicator) floatPageIndicator.innerText = pageText;
+            if (floatPrevBtn) floatPrevBtn.disabled = prevBtn.disabled;
+            if (floatNextBtn) floatNextBtn.disabled = nextBtn.disabled;
+            
+            // Show/hide floating pagination if only one page or no records
+            if (totalPages <= 1 || filteredPool.length === 0) {
+                floatPagination.classList.add('inactive');
+            } else {
+                floatPagination.classList.remove('inactive');
+            }
+        }
+
+        function updateFloatingPagination() {
+            updatePaginationIndicators();
+        }
+
+        // ---------- PAGINATION ACTIONS (sync both) ----------
+        function goToPage(newPage) {
+            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
+            if (newPage < 1 || newPage > totalPages) return;
+            currentPage = newPage;
+            renderTable();
+            // Scroll to top smoothly when page changes
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ---------- PDF EXPORT ----------
+        window.exportToPDF = function() {
+            if (filteredPool.length === 0) return alert('No records available to export.');
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape' });
+            
+            doc.setFontSize(14);
+            doc.text("Cantonment Public School & College, Rangpur", 14, 15);
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Student Directory Report - Generated on ${new Date().toLocaleDateString()}`, 14, 22);
+            
+            let filterStr = `Filters applied: Class (${classFilter.value}) | Group (${groupFilter.value}) | Section (${sectionFilter.value})`;
+            doc.setFontSize(9);
+            doc.text(filterStr, 14, 28);
+            doc.text(`Total Records: ${filteredPool.length}`, 14, 33);
+            
+            const headers = [['SL', 'Student ID', 'Full Name', 'Class', 'Roll', 'Group', 'Section']];
+            const bodyData = filteredPool.map((stu, idx) => [
+                idx + 1, stu.student_id, stu.name, stu.class, stu.roll, 
+                stu.group === 'General' ? '-' : stu.group, stu.section
+            ]);
+            
+            doc.autoTable({
+                head: headers,
+                body: bodyData,
+                startY: 38,
+                theme: 'grid',
+                styles: { fontSize: 8, cellPadding: 3 },
+                headStyles: { fillColor: [37, 99, 235], textColor:[255,255,255] },
+                alternateRowStyles: { fillColor:[248, 250, 252] }
+            });
+            
+            doc.save(`CPSCR_Directory_${new Date().toISOString().slice(0,10)}.pdf`);
+        };
+
+        // ---------- SCROLL BEHAVIOR: Hide floating pagination on scroll down, show on scroll up ----------
+        function handleScroll() {
+            const currentScrollY = window.scrollY;
+            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
+            
+            // Don't show if only one page or no records
+            if (totalPages <= 1 || filteredPool.length === 0) {
+                floatPagination.classList.add('hidden');
+                return;
+            }
+            
+            // Determine direction
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling down & not at very top
+                floatPagination.classList.add('hidden');
+            } else {
+                // Scrolling up
+                floatPagination.classList.remove('hidden');
+            }
+            
+            // At the very top, we might want to keep it visible? Professional: show when near top too.
+            if (currentScrollY < 50) {
+                floatPagination.classList.remove('hidden');
+            }
+            
+            lastScrollY = currentScrollY;
+        }
+
+        // Throttle scroll event
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        document.getElementById('exportPdfBtn').addEventListener('click', window.exportToPDF);
         
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF({ orientation: 'landscape' });
+        // In‑flow pagination buttons
+        prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+        nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
         
-        doc.setFontSize(14);
-        doc.text("Cantonment Public School & College, Rangpur", 14, 15);
-        doc.setFontSize(10);
-        doc.setTextColor(100);
-        doc.text(`Student Directory Report - Generated on ${new Date().toLocaleDateString()}`, 14, 22);
+        // Floating pagination buttons
+        floatPrevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+        floatNextBtn.addEventListener('click', () => goToPage(currentPage + 1));
         
-        let filterStr = `Filters applied: Class (${classFilter.value}) | Group (${groupFilter.value}) | Section (${sectionFilter.value})`;
-        doc.setFontSize(9);
-        doc.text(filterStr, 14, 28);
-        doc.text(`Total Records: ${filteredPool.length}`, 14, 33);
-        
-        const headers = [['SL', 'Student ID', 'Full Name', 'Class', 'Roll', 'Group', 'Section']];
-        const bodyData = filteredPool.map((stu, idx) =>[
-            idx + 1, stu.student_id, stu.name, stu.class, stu.roll, 
-            stu.group === 'General' ? '-' : stu.group, stu.section
-        ]);
-        
-        doc.autoTable({
-            head: headers,
-            body: bodyData,
-            startY: 38,
-            theme: 'grid',
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: [37, 99, 235], textColor:[255,255,255] },
-            alternateRowStyles: { fillColor:[248, 250, 252] }
+        searchInput.addEventListener('input', () => {
+            clearTimeout(window.searchDebounce);
+            window.searchDebounce = setTimeout(applyFilters, 300);
         });
         
-        doc.save(`CPSCR_Directory_${new Date().toISOString().slice(0,10)}.pdf`);
-    };
-    
-    // ---------- EVENT LISTENERS ----------
-
-    document.getElementById('exportPdfBtn').addEventListener('click', window.exportToPDF);
-    
-    prevBtn.addEventListener('click', () => {
-        if (currentPage > 1) { currentPage--; renderTable(); }
-    });
-    
-    nextBtn.addEventListener('click', () => {
-        const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE);
-        if (currentPage < totalPages) { currentPage++; renderTable(); }
-    });
-    
-    searchInput.addEventListener('input', () => {
-        clearTimeout(window.searchDebounce);
-        window.searchDebounce = setTimeout(applyFilters, 300);
-    });
-    
-    classFilter.addEventListener('change', () => {
-        updateGroupFilterOptions();
-        applyFilters();
-    });
-    
-    groupFilter.addEventListener('change', () => {
-        updateSectionOptions();
-        applyFilters();
-    });
-    
-    sectionFilter.addEventListener('change', applyFilters);
-    
-    // Theme Toggling
-    if (localStorage.getItem('theme') === 'light') {
-        document.body.classList.remove('dark-mode');
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-    } else {
-        document.body.classList.add('dark-mode');
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-    }
-    
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    });
-    
-    // ---------- INITIALIZATION ----------
-
-    async function init() {
-        try {
-            const response = await fetch(DATA_URL);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const jsonData = await response.json();
-            
-            masterStudents = flattenStudentData(jsonData);
-            populateClassFilter(masterStudents);
+        classFilter.addEventListener('change', () => {
             updateGroupFilterOptions();
+            applyFilters();
+        });
+        
+        groupFilter.addEventListener('change', () => {
             updateSectionOptions();
             applyFilters();
-            
-            loaderDiv.style.display = 'none';
-            workspaceDiv.style.display = 'block';
-        } catch (err) {
-            console.error('Initialization error:', err);
-            loaderDiv.innerHTML = `
-                <i class="fas fa-exclamation-triangle" style="color: var(--danger-color);"></i>
-                <p>Failed to load data. Please check your network connection and try again.</p>
-            `;
+        });
+        
+        sectionFilter.addEventListener('change', applyFilters);
+        
+        // Theme Toggle
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.remove('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
         }
-    }
-    
-    init();
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Scroll listener for floating pagination
+        window.addEventListener('scroll', throttle(handleScroll, 80));
+        
+        // Initialize floating pagination visibility on load
+        window.addEventListener('load', function() {
+            handleScroll(); // set initial state
+        });
+
+        // ---------- INITIALIZATION ----------
+        async function init() {
+            try {
+                const response = await fetch(DATA_URL);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const jsonData = await response.json();
+                
+                masterStudents = flattenStudentData(jsonData);
+                populateClassFilter(masterStudents);
+                updateGroupFilterOptions();
+                updateSectionOptions();
+                applyFilters();  // this calls renderTable & updateFloatingPagination
+                
+                loaderDiv.style.display = 'none';
+                workspaceDiv.style.display = 'block';
+                
+                // Ensure floating pagination reflects correct state
+                setTimeout(() => {
+                    handleScroll();
+                }, 50);
+            } catch (err) {
+                console.error('Initialization error:', err);
+                loaderDiv.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="color: var(--danger-color);"></i>
+                    <p>Failed to load data. Please check your network connection and try again.</p>
+                `;
+            }
+        }
+        
+        init();
+    })();
 </script>
 </body>
 </html>
