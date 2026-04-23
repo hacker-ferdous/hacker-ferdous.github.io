@@ -152,9 +152,15 @@
 
         .filters-grid {
             display: grid;
-            grid-template-columns: minmax(250px, 2fr) repeat(3, 1fr) auto;
+            grid-template-columns: minmax(280px, 2fr) repeat(3, 1fr) auto;
             gap: 16px;
             align-items: center;
+        }
+
+        /* Custom Search Box with Filter Icon */
+        .search-container {
+            position: relative;
+            width: 100%;
         }
 
         .input-group {
@@ -164,16 +170,17 @@
             width: 100%;
         }
 
-        .input-group i {
+        .input-group .fa-search {
             position: absolute;
             left: 12px;
             color: var(--text-muted);
             font-size: 0.875rem;
+            pointer-events: none;
         }
 
-        input[type="text"], select {
+        .input-group input[type="text"] {
             width: 100%;
-            padding: 10px 12px;
+            padding: 10px 40px 10px 36px;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             background-color: var(--bg-color);
@@ -183,16 +190,108 @@
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        input[type="text"] {
-            padding-left: 36px;
-        }
-
-        input[type="text"]:focus, select:focus {
+        .input-group input[type="text"]:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
+        .search-filter-btn {
+            position: absolute;
+            right: 6px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .search-filter-btn:hover {
+            color: var(--primary-color);
+            background-color: var(--table-hover);
+        }
+
+        .search-filter-btn.active {
+            color: var(--primary-color);
+        }
+
+        /* Dropdown Menu for Search Filter */
+        .filter-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            list-style: none;
+            padding: 6px 0;
+        }
+
+        .filter-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .filter-dropdown-header {
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 4px;
+        }
+
+        .filter-opt {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+
+        .filter-opt:hover {
+            background-color: var(--table-hover);
+        }
+
+        .filter-opt.selected {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .filter-opt i {
+            font-size: 0.8rem;
+            opacity: 0;
+        }
+
+        .filter-opt.selected i {
+            opacity: 1;
+        }
+
+        /* Select Elements */
         select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-size: 0.875rem;
+            outline: none;
             cursor: pointer;
             appearance: none;
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
@@ -200,6 +299,11 @@
             background-position: right 12px top 50%;
             background-size: 10px auto;
             padding-right: 32px;
+        }
+
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         select:disabled {
@@ -403,7 +507,7 @@
             font-weight: 500;
         }
 
-        /* --- FLOATING PAGINATION (Professional scroll‑aware) --- */
+        /* --- FLOATING PAGINATION --- */
         .floating-pagination {
             position: fixed;
             bottom: 24px;
@@ -456,7 +560,6 @@
             font-weight: 500;
         }
 
-        /* Hide floating pagination if no records / only one page (via JS) */
         .floating-pagination.inactive {
             display: none !important;
         }
@@ -515,7 +618,7 @@
             .filters-grid {
                 grid-template-columns: 1fr 1fr;
             }
-            .input-group {
+            .search-container {
                 grid-column: span 2;
             }
         }
@@ -530,7 +633,7 @@
             .filters-grid {
                 grid-template-columns: 1fr;
             }
-            .input-group {
+            .search-container {
                 grid-column: span 1;
             }
             .btn-export {
@@ -579,10 +682,35 @@
         <!-- Controls & Filters -->
         <div class="controls-panel">
             <div class="filters-grid">
-                <div class="input-group">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search by name, ID or roll...">
+                
+                <!-- NEW: Custom Search Input with Filter Icon -->
+                <div class="search-container">
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search by name, ID or roll..." autocomplete="off">
+                        <!-- Filter Icon Button -->
+                        <button type="button" id="searchFilterBtn" class="search-filter-btn" title="Search Options">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                    <!-- Custom Dropdown Menu -->
+                    <ul id="searchFilterMenu" class="filter-dropdown">
+                        <div class="filter-dropdown-header">Search By</div>
+                        <li class="filter-opt selected" data-type="all">
+                            <i class="fas fa-check"></i> All
+                        </li>
+                        <li class="filter-opt" data-type="name">
+                            <i class="fas fa-check"></i> Name
+                        </li>
+                        <li class="filter-opt" data-type="id">
+                            <i class="fas fa-check"></i> Student ID
+                        </li>
+                        <li class="filter-opt" data-type="roll">
+                            <i class="fas fa-check"></i> Roll Number
+                        </li>
+                    </ul>
                 </div>
+
                 <select id="classFilter" aria-label="Filter by Class">
                     <option value="all">All Classes</option>
                 </select>
@@ -623,7 +751,7 @@
             </table>
         </div>
 
-        <!-- In‑flow Pagination (kept for completeness) -->
+        <!-- In‑flow Pagination -->
         <div class="pagination">
             <span class="page-info" id="pageIndicator">Page 1 of 1</span>
             <div class="pagination-controls">
@@ -635,7 +763,7 @@
     </div>
 </main>
 
-<!-- FLOATING PAGINATION – scroll‑aware, professional -->
+<!-- FLOATING PAGINATION -->
 <div id="floatingPagination" class="floating-pagination hidden">
     <span class="page-info" id="floatPageIndicator">Page 1 of 1</span>
     <div class="pagination-controls">
@@ -664,15 +792,20 @@
 
         // State
         let masterStudents = [];
-        let filteredPool = [];
+        let filteredPool =[];
         let currentPage = 1;
         const ROWS_PER_PAGE = 500;
         let sortColumn = null;
         let sortDirection = 'asc';
+        let currentSearchType = 'all'; // State for search type filter
 
         // DOM Elements
         const themeToggle = document.getElementById('themeToggle');
         const searchInput = document.getElementById('searchInput');
+        const searchFilterBtn = document.getElementById('searchFilterBtn');
+        const searchFilterMenu = document.getElementById('searchFilterMenu');
+        const filterOpts = document.querySelectorAll('.filter-opt');
+        
         const classFilter = document.getElementById('classFilter');
         const groupFilter = document.getElementById('groupFilter');
         const sectionFilter = document.getElementById('sectionFilter');
@@ -692,7 +825,6 @@
 
         // Scroll tracking
         let lastScrollY = window.scrollY;
-        let scrollTimeout = null;
 
         // ---------- UTILITIES ----------
         function formatStudentName(rawName) {
@@ -714,7 +846,7 @@
         }
 
         function flattenStudentData(jsonData) {
-            const students = [];
+            const students =[];
             for (const className in jsonData) {
                 const classObj = jsonData[className];
                 if (!classObj.groups) continue;
@@ -723,7 +855,7 @@
                     if (!groupObj.sections) continue;
                     for (const sectionName in groupObj.sections) {
                         const sectionData = groupObj.sections[sectionName];
-                        const studentList = sectionData.students || [];
+                        const studentList = sectionData.students ||[];
                         for (const raw of studentList) {
                             students.push({
                                 student_id: raw.student_id,
@@ -747,7 +879,7 @@
         function populateClassFilter(students) {
             const classSet = new Set();
             students.forEach(s => classSet.add(s.class));
-            const order = ['Play','Nursery','KG','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','S.S.C','Eleven','Twelve','H.S.C'];
+            const order =['Play','Nursery','KG','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','S.S.C','Eleven','Twelve','H.S.C'];
             const sortedClasses = Array.from(classSet).sort((a,b) => order.indexOf(a) - order.indexOf(b));
             classFilter.innerHTML = '<option value="all">All Classes</option>';
             sortedClasses.forEach(cls => classFilter.add(new Option(cls, cls)));
@@ -777,7 +909,7 @@
 
         function updateGroupFilterOptions() {
             const selectedClass = classFilter.value;
-            const seniorClasses = ['Nine', 'Ten', 'S.S.C', 'Eleven', 'Twelve', 'H.S.C'];
+            const seniorClasses =['Nine', 'Ten', 'S.S.C', 'Eleven', 'Twelve', 'H.S.C'];
             const isSenior = seniorClasses.includes(selectedClass);
             
             if (!isSenior || selectedClass === 'all') {
@@ -804,9 +936,22 @@
             const selectedSection = sectionFilter.value;
             
             filteredPool = masterStudents.filter(student => {
-                const matchSearch = student.name.toLowerCase().includes(query) ||
-                                    student.student_id.includes(query) ||
-                                    student.roll.toString().includes(query);
+                let matchSearch = true;
+                if (query) {
+                    if (currentSearchType === 'name') {
+                        matchSearch = student.name.toLowerCase().includes(query);
+                    } else if (currentSearchType === 'id') {
+                        matchSearch = student.student_id.includes(query);
+                    } else if (currentSearchType === 'roll') {
+                        matchSearch = student.roll.toString().includes(query);
+                    } else {
+                        // All
+                        matchSearch = student.name.toLowerCase().includes(query) ||
+                                      student.student_id.includes(query) ||
+                                      student.roll.toString().includes(query);
+                    }
+                }
+                
                 const matchClass = (selectedClass === 'all' || student.class === selectedClass);
                 const matchGroup = (selectedGroup === 'all' || student.group === selectedGroup);
                 const matchSection = (selectedSection === 'all' || student.section === selectedSection);
@@ -960,7 +1105,7 @@
             if (floatPrevBtn) floatPrevBtn.disabled = prevBtn.disabled;
             if (floatNextBtn) floatNextBtn.disabled = nextBtn.disabled;
             
-            // Show/hide floating pagination if only one page or no records
+            // Show/hide floating pagination
             if (totalPages <= 1 || filteredPool.length === 0) {
                 floatPagination.classList.add('inactive');
             } else {
@@ -972,13 +1117,12 @@
             updatePaginationIndicators();
         }
 
-        // ---------- PAGINATION ACTIONS (sync both) ----------
+        // ---------- PAGINATION ACTIONS ----------
         function goToPage(newPage) {
             const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
             if (newPage < 1 || newPage > totalPages) return;
             currentPage = newPage;
             renderTable();
-            // Scroll to top smoothly when page changes
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1001,7 +1145,7 @@
             doc.text(`Total Records: ${filteredPool.length}`, 14, 33);
             
             const headers = [['SL', 'Student ID', 'Full Name', 'Class', 'Roll', 'Group', 'Section']];
-            const bodyData = filteredPool.map((stu, idx) => [
+            const bodyData = filteredPool.map((stu, idx) =>[
                 idx + 1, stu.student_id, stu.name, stu.class, stu.roll, 
                 stu.group === 'General' ? '-' : stu.group, stu.section
             ]);
@@ -1012,34 +1156,29 @@
                 startY: 38,
                 theme: 'grid',
                 styles: { fontSize: 8, cellPadding: 3 },
-                headStyles: { fillColor: [37, 99, 235], textColor:[255,255,255] },
+                headStyles: { fillColor:[37, 99, 235], textColor: [255,255,255] },
                 alternateRowStyles: { fillColor:[248, 250, 252] }
             });
             
             doc.save(`CPSCR_Directory_${new Date().toISOString().slice(0,10)}.pdf`);
         };
 
-        // ---------- SCROLL BEHAVIOR: Hide floating pagination on scroll down, show on scroll up ----------
+        // ---------- SCROLL BEHAVIOR ----------
         function handleScroll() {
             const currentScrollY = window.scrollY;
             const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
             
-            // Don't show if only one page or no records
             if (totalPages <= 1 || filteredPool.length === 0) {
                 floatPagination.classList.add('hidden');
                 return;
             }
             
-            // Determine direction
             if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                // Scrolling down & not at very top
                 floatPagination.classList.add('hidden');
             } else {
-                // Scrolling up
                 floatPagination.classList.remove('hidden');
             }
             
-            // At the very top, we might want to keep it visible? Professional: show when near top too.
             if (currentScrollY < 50) {
                 floatPagination.classList.remove('hidden');
             }
@@ -1047,7 +1186,6 @@
             lastScrollY = currentScrollY;
         }
 
-        // Throttle scroll event
         function throttle(func, limit) {
             let inThrottle;
             return function() {
@@ -1062,13 +1200,56 @@
         }
 
         // ---------- EVENT LISTENERS ----------
+        
+        // Search Filter Menu Toggle
+        searchFilterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            searchFilterMenu.classList.toggle('show');
+            searchFilterBtn.classList.toggle('active');
+        });
+
+        // Close menu when clicked outside
+        document.addEventListener('click', (e) => {
+            if (!searchFilterMenu.contains(e.target) && e.target !== searchFilterBtn) {
+                searchFilterMenu.classList.remove('show');
+                searchFilterBtn.classList.remove('active');
+            }
+        });
+
+        // Search Filter Options Click
+        filterOpts.forEach(opt => {
+            opt.addEventListener('click', () => {
+                // Remove selected class from all
+                filterOpts.forEach(o => o.classList.remove('selected'));
+                // Add selected class to clicked
+                opt.classList.add('selected');
+                
+                currentSearchType = opt.dataset.type;
+                
+                // Update placeholder
+                if (currentSearchType === 'name') searchInput.placeholder = 'Search by name...';
+                else if (currentSearchType === 'id') searchInput.placeholder = 'Search by ID...';
+                else if (currentSearchType === 'roll') searchInput.placeholder = 'Search by roll number...';
+                else searchInput.placeholder = 'Search by name, ID or roll...';
+                
+                // Focus back on input
+                searchInput.focus();
+                
+                searchFilterMenu.classList.remove('show');
+                searchFilterBtn.classList.remove('active');
+                
+                // If there's already text, re-apply filter immediately
+                if (searchInput.value.trim() !== '') {
+                    applyFilters();
+                }
+            });
+        });
+
+        // Other Listeners
         document.getElementById('exportPdfBtn').addEventListener('click', window.exportToPDF);
         
-        // In‑flow pagination buttons
         prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
         nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
-        
-        // Floating pagination buttons
         floatPrevBtn.addEventListener('click', () => goToPage(currentPage - 1));
         floatNextBtn.addEventListener('click', () => goToPage(currentPage + 1));
         
@@ -1105,13 +1286,8 @@
             themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         });
 
-        // Scroll listener for floating pagination
         window.addEventListener('scroll', throttle(handleScroll, 80));
-        
-        // Initialize floating pagination visibility on load
-        window.addEventListener('load', function() {
-            handleScroll(); // set initial state
-        });
+        window.addEventListener('load', handleScroll);
 
         // ---------- INITIALIZATION ----------
         async function init() {
@@ -1124,15 +1300,12 @@
                 populateClassFilter(masterStudents);
                 updateGroupFilterOptions();
                 updateSectionOptions();
-                applyFilters();  // this calls renderTable & updateFloatingPagination
+                applyFilters(); 
                 
                 loaderDiv.style.display = 'none';
                 workspaceDiv.style.display = 'block';
                 
-                // Ensure floating pagination reflects correct state
-                setTimeout(() => {
-                    handleScroll();
-                }, 50);
+                setTimeout(() => handleScroll(), 50);
             } catch (err) {
                 console.error('Initialization error:', err);
                 loaderDiv.innerHTML = `
