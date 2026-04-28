@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>স্মার্ট নামাজের সময় BD</title>
+    <script src="theme.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+        --primary-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-border: rgba(255, 255, 255, 0.6);
+        --text-primary: #1a202c;
+        --text-secondary: #4a5568;
+        --accent-color: #4c51bf;
+        --accent-glow: rgba(76, 81, 191, 0.3);
+        --card-bg: rgba(255, 255, 255, 0.9);
+        --nav-bg: rgba(255, 255, 255, 0.9);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        --warning-bg: rgba(255, 243, 205, 0.8);
+        --warning-text: #856404;
+        --warning-ip-bg: #f8d7da;
+        --warning-ip-text: #721c24;
+    }
+
+    body.dark-mode {
+        --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        --glass-bg: rgba(17, 25, 40, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-primary: #f7fafc;
+        --text-secondary: #a0aec0;
+        --accent-color: #63b3ed;
+        --accent-glow: transparent;
+        --card-bg: rgba(45, 55, 72, 0.8);
+        --nav-bg: rgba(26, 32, 44, 0.9);
+        --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        --warning-bg: rgba(74, 85, 104, 0.5);
+        --warning-text: #ecc94b;
+        --warning-ip-bg: #5a2e32;
+        --warning-ip-text: #f5c6cb;
+    }
+
+    body {
+        font-family: 'Hind Siliguri', sans-serif;
+        background: var(--primary-gradient);
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--text-primary);
+        overflow: hidden; 
+        transition: color 0.3s ease;
+    }
+
+    .app-container {
+        width: 100%;
+        height: 100vh; 
+        height: 100dvh; 
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 0 50px rgba(0,0,0,0.2);
+    }
+
+    .fixed-header {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 1000;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--glass-border);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .location-badge {
+        background: var(--card-bg);
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--accent-color);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--glass-border);
+        width: fit-content;
+        max-width: calc(100% - 50px);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .location-badge.ip-location {
+        color: #c62828;
+        background: #ffebee;
+        border-color: #ef9a9a;
+    }
+    body.dark-mode .location-badge.ip-location {
+        color: #ffb3b3;
+        background: #4a2a2a;
+        border-color: #b71c1c;
+    }
+
+    .theme-toggle {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-color);
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+    }
+    .theme-toggle:active { transform: scale(0.9); }
+
+    .scroll-content {
+        flex: 1;
+        overflow-y: auto;
+        margin-top: 0;
+        padding: 15px 0 140px 0;
+        scrollbar-width: none; 
+    }
+    .scroll-content::-webkit-scrollbar {
+        display: none; 
+    }
+
+    .date-section {
+        text-align: center;
+        margin-bottom: 15px;
+        padding-top: 5px;
+    }
+    .eng-date { font-size: 1.2rem; font-weight: 700; display: block; }
+    .hijri-date { font-size: 0.95rem; color: var(--text-secondary); opacity: 0.8; }
+
+    .countdown-box {
+        background: linear-gradient(135deg, var(--accent-color), #805ad5);
+        margin: 0 20px 20px;
+        padding: 25px;
+        border-radius: 24px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 25px -5px var(--accent-glow);
+    }
+    .countdown-box::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(circle at top right, rgba(255,255,255,0.2), transparent 40%);
+    }
+    .next-label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px; }
+    .timer { 
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem; 
+        font-weight: 700; 
+        line-height: 1.1;
+        margin: 5px 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .timer.red {
+        color: #ff5353 !important;
+        text-shadow: 0 0 10px rgba(255, 75, 43, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    body.dark-mode .timer.red {
+        color: #ff6b6b !important;
+        text-shadow: 0 0 15px rgba(255, 107, 107, 0.6);
+    }
+
+    .next-name { font-size: 1.1rem; font-weight: 600; opacity: 1; }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        padding: 0 20px;
+        margin-bottom: 15px;
+    }
+    .info-card {
+        background: var(--card-bg);
+        padding: 15px;
+        border-radius: 18px;
+        border: 1px solid var(--glass-border);
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .info-card:active { transform: scale(0.98); }
+    .info-icon { font-size: 1.2rem; margin-bottom: 5px; color: var(--accent-color); }
+    .info-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px; display: block; }
+    .info-time { 
+        font-family: 'Poppins', sans-serif; 
+        font-weight: 600; 
+        font-size: 1.1rem; 
+        color: var(--text-primary);
+    }
+
+    .warning-note {
+        font-size: 0.75rem;
+        text-align: center;
+        padding: 8px;
+        margin: 0 20px 15px;
+        border-radius: 10px;
+        font-weight: 500;
+        background: var(--warning-bg);
+        color: var(--warning-text);
+    }
+    .warning-note.warning-ip {
+        background: var(--warning-ip-bg);
+        color: var(--warning-ip-text);
+    }
+    .warning-note i { margin-right: 4px; }
+
+    .prayer-list { padding: 0 20px; }
+    .prayer-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--card-bg);
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .prayer-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .prayer-item.active {
+        border-color: var(--accent-color);
+        background: rgba(76, 81, 191, 0.05);
+    }
+    .prayer-item.active::after {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 4px;
+        background: var(--accent-color);
+    }
+    .p-name { 
+        display: flex; 
+        align-items: center; 
+        gap: 15px; 
+        font-weight: 600; 
+        font-size: 1rem;
+    }
+    .p-icon { width: 20px; text-align: center; color: var(--accent-color); }
+    .p-time { 
+        font-family: 'Poppins', sans-serif; 
+        font-weight: 600; 
+        color: var(--text-secondary); 
+    }
+    .prayer-item.active .p-time { color: var(--accent-color); }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 30px; 
+        margin-bottom: env(safe-area-inset-bottom);
+        left: 20px;
+        right: 20px;
+        max-width: 560px; 
+        margin-left: auto;
+        margin-right: auto;
+        background: var(--nav-bg);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        height: 75px;
+        border-radius: 25px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        border: 1px solid var(--glass-border);
+        z-index: 1000;
+    }
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        cursor: pointer;
+        width: 60px;
+        height: 60px;
+        transition: color 0.3s ease;
+        background: transparent; 
+        border-radius: 0; 
+    }
+    .nav-item i {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .nav-item.active {
+        color: var(--accent-color);
+        font-weight: 600;
+        background: transparent; 
+    }
+    .nav-item.active i { transform: translateY(-2px); }
+
+    .pdf-download-btn {
+        position: fixed;
+        bottom: 120px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        cursor: pointer;
+        z-index: 1001;
+        border: 2px solid var(--glass-border);
+        transition: transform 0.2s;
+    }
+    .pdf-download-btn:active { transform: scale(0.9); }
+
+    .skeleton {
+        background: linear-gradient(90deg, var(--glass-border) 25%, rgba(128,128,128,0.1) 50%, var(--glass-border) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        color: transparent !important;
+        border-radius: 4px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .error-message {
+        text-align: center;
+        padding: 20px;
+        color: var(--warning-ip-text);
+        font-weight: 500;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="app-container">
+    
+    <!-- Fixed Header -->
+    <div class="fixed-header">
+        <div class="header-row">
+            <div class="location-badge" id="locationBadge">
+                <i class="fas fa-location-dot"></i> 
+                <span id="locationText">অনুমতি নেওয়া হচ্ছে...</span>
+            </div>
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="scroll-content" id="scrollContent">
+        
+        <!-- Date Display -->
+        <div class="date-section">
+            <span class="eng-date" id="gregorianDate">...</span>
+            <span class="hijri-date" id="hijriDate">...</span>
+        </div>
+
+        <!-- Hero Countdown -->
+        <div class="countdown-box">
+            <div class="next-label">পরবর্তী ওয়াক্ত বাকি</div>
+            <div class="timer" id="countdownTimer">--:--:--</div>
+            <div class="next-name" id="nextPrayerName">অপেক্ষা করুন...</div>
+        </div>
+
+        <!-- Sehri & Iftar Grid -->
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-utensils"></i></div>
+                <span class="info-label" id="sehriLabel">সেহেরি শেষ</span>
+                <div class="info-time" id="sehriTime">--:--</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon"><i class="fas fa-utensils"></i></div>
+                <span class="info-label" id="iftarLabel">ইফতার শুরু</span>
+                <div class="info-time" id="iftarTime">--:--</div>
+            </div>
+        </div>
+
+        <!-- Dynamic warning note -->
+        <div class="warning-note" id="warningNote">
+            <i class="fas fa-info-circle"></i> সেহেরি ও ইফতারে সতর্কতা স্বরূপ ২ মিনিট কমবেশি করা হয়েছে
+        </div>
+
+        <!-- Prayer Times List -->
+        <div class="prayer-list" id="prayerList">
+            <!-- skeleton items -->
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+        </div>
+
+        <div id="locationErrorMessage" style="display: none;" class="error-message"></div>
+
+    </div> <!-- End Scroll Content -->
+
+    <!-- Fixed Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item"><i class="fas fa-house"></i><span>হোম</span></div>
+        <div class="nav-item active"><i class="fas fa-clock"></i><span>ওয়াক্ত</span></div>
+        <div class="nav-item"><i class="fas fa-quran"></i><span>কুরআন</span></div>
+        <div class="nav-item"><i class="fas fa-book-open"></i><span>হাদিস</span></div>
+        <div class="nav-item"><i class="fas fa-hands-praying"></i><span>দোয়া</span></div>
+    </div>
+
+    <!-- PDF Download Button -->
+    <div class="pdf-download-btn" id="pdfDownloadBtn" title="মাসের সময়সূচি ডাউনলোড">
+        <i class="fas fa-download"></i>
+    </div>
+
+</div>
+
+<script>
+    // ===== কনফিগারেশন ও ভেরিয়েবল =====
+    const prayerMap = {
+        Fajr:     { name: 'ফজর',     icon: 'fa-mosque' },
+        Sunrise:  { name: 'সূর্যোদয়', icon: 'fa-sun' },
+        Dhuhr:    { name: 'যোহর',     icon: 'fa-mosque' },
+        Asr:      { name: 'আসর',      icon: 'fa-mosque' },
+        Sunset:   { name: 'সূর্যাস্ত', icon: 'fa-sun' },
+        Maghrib:  { name: 'মাগরিব',   icon: 'fa-mosque' },
+        Isha:     { name: 'ইশা',       icon: 'fa-mosque' }
+    };
+    
+    // নামাজের ক্রম (লজিক্যাল অর্ডার)
+    const prayerKeysOrder = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
+
+    // ডিসপ্লে অর্ডার (লিস্টে যেভাবে দেখাবে)
+    const displayOrder = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Sunset', 'Maghrib', 'Isha'];
+
+
+    const banglaMonths = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+    const hijriMonths = [
+        'Muharram', 'Safar', 'Rabi\' al-Awwal', 'Rabi\' al-Thani',
+        'Jumada al-Ula', 'Jumada al-Akhirah', 'Rajab', 'Sha\'ban',
+        'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'
+    ];
+
+    let prayerTimesToday = null;      // আজকের কাঁচা সময় (API থেকে)
+    let prayerTimesTomorrow = null;   // আগামীকালের কাঁচা সময় (প্রয়োজনে)
+    let hijriYesterday = null;        // গতকালের হিজরি (মাগরিবের আগে দেখাতে)
+    let hijriToday = null;            // আজকের হিজরি (মাগরিবের পর দেখাতে)
+    let nextPrayerTarget = null;      // পরবর্তী নামাজ/সূর্যোদয় টার্গেট { name, dateObj }
+    let timerInterval = null;
+    let currentLat = null, currentLon = null; // পিডিএফ ডাউনলোডের জন্য লোকেশন সংরক্ষণ
+
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const locationSpan = document.getElementById('locationText');
+    const locationBadge = document.getElementById('locationBadge');
+    const warningNote = document.getElementById('warningNote');
+    const hijriSpan = document.getElementById('hijriDate');
+    const countdownTimerEl = document.getElementById('countdownTimer');
+    const sehriLabel = document.getElementById('sehriLabel');
+    const iftarLabel = document.getElementById('iftarLabel');
+
+    // ===== হেল্পার ফাংশন =====
+    const formatTime12 = (t) => {
+        if (!t) return '--:--';
+        let [h, m] = t.split(':').map(Number);
+        const suffix = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${m.toString().padStart(2,'0')} ${suffix}`;
+    };
+
+    const getMinutes = (s) => {
+        const [h, m] = s.split(':').map(Number);
+        return h * 60 + m;
+    };
+
+    const minsToTime = (mins) => {
+        let h = Math.floor(mins / 60) % 24;
+        let m = mins % 60;
+        return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
+    };
+
+    // টাইমআউট সহ ফেচ
+    async function fetchWithTimeout(url, options = {}, timeout = 8000) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        try {
+            const response = await fetch(url, { ...options, signal: controller.signal });
+            clearTimeout(id);
+            return response;
+        } catch (error) {
+            clearTimeout(id);
+            throw error;
+        }
+    }
+
+    // রিভার্স জিওকোডিং – এলাকার নাম বাংলায়
+    async function fetchAreaName(lat, lon) {
+    try {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&accept-language=bn`;
+        const res = await fetchWithTimeout(url, {
+            headers: { 'User-Agent': 'SmartSalatApp/1.0' }
+        }, 5000);
+        const data = await res.json();
+        const addr = data.address;
+        
+        return addr.suburb || addr.neighbourhood || addr.village || addr.town || addr.city || addr.district || addr.state || "অজানা এলাকা";
+    } catch (e) {
+        throw new Error('Reverse geocode failed');
+    }
+}
+
+
+    // জিওলোকেশন প্রমিস
+    function getCurrentPosition(options = {}) {
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject(new Error('Geolocation not supported'));
+            } else {
+                navigator.geolocation.getCurrentPosition(resolve, reject, options);
+            }
+        });
+    }
+
+    // ===== হিজরি তারিখ আপডেট (সবসময় ১ দিন পিছিয়ে) =====
+    function updateHijriDisplay() {
+        if (!hijriToday || !hijriYesterday || !prayerTimesToday) return;
+
+        const now = new Date();
+        const ct = now.getHours() * 60 + now.getMinutes();
+        const maghribTime = getMinutes(prayerTimesToday.Maghrib);
+
+        let displayHijri;
+
+        // রাত ১২টা থেকে মাগরিবের আগ পর্যন্ত আগের দিনের হিজরি দেখাবে
+        if (ct < maghribTime) {
+            displayHijri = hijriYesterday;
+        } else {
+            // মাগরিব হয়ে গেলে আজকের (নতুন দিনের) হিজরি দেখাবে
+            displayHijri = hijriToday;
+        }
+
+        const monthName = displayHijri.month.en; 
+        hijriSpan.innerText = `${displayHijri.day} ${monthName} ${displayHijri.year} হিজরি`;
+    }
+
+    // ===== পরবর্তী নামাজ/সূর্যোদয় টার্গেট নির্ধারণ =====
+    function updateNextPrayerTarget() {
+        if (!prayerTimesToday || !prayerTimesTomorrow) return;
+
+        const now = new Date();
+        const curMins = now.getHours() * 60 + now.getMinutes();
+
+        // Sunset Ignore 
+        const targetKeys = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+        const todayTimes = targetKeys.map(key => ({
+            key,
+            mins: getMinutes(prayerTimesToday[key])
+        })).sort((a, b) => a.mins - b.mins);
+
+        let next = null;
+        for (let i = 0; i < todayTimes.length; i++) {
+            if (curMins < todayTimes[i].mins) {
+                next = { key: todayTimes[i].key, mins: todayTimes[i].mins, dayOffset: 0 };
+                break;
+            }
+        }
+
+        // যদি আজকের সব ওয়াক্ত পার হয়ে যায়, তাহলে আগামীকালের ফজর
+        if (!next) {
+            next = { key: 'Fajr', mins: getMinutes(prayerTimesTomorrow.Fajr), dayOffset: 1 };
+        }
+
+        // টার্গেট ডেট অবজেক্ট বানানো
+        const targetDate = new Date(now);
+        targetDate.setDate(targetDate.getDate() + (next.dayOffset || 0));
+        targetDate.setHours(Math.floor(next.mins / 60), next.mins % 60, 0, 0);
+
+        nextPrayerTarget = {
+            name: prayerMap[next.key].name,
+            key: next.key,
+            dateObj: targetDate
+        };
+
+        document.getElementById('nextPrayerName').innerText = `পরবর্তী: ${nextPrayerTarget.name}`;
+    }
+
+    // ===== সেহরি/ইফতার টাইম এবং লেবেল আপডেট =====
+    function updateSehriIftarTimes() {
+        if (!prayerTimesToday || !prayerTimesTomorrow) return;
+
+        const now = new Date();
+        const ct = now.getHours() * 60 + now.getMinutes();
+
+        const sehriToday = getMinutes(prayerTimesToday.Fajr) - 2;
+        const iftarToday = getMinutes(prayerTimesToday.Maghrib) + 2;
+        const sehriTomorrow = getMinutes(prayerTimesTomorrow.Fajr) - 2;
+        const iftarTomorrow = getMinutes(prayerTimesTomorrow.Maghrib) + 2;
+
+        // সেহরি ও ইফতার ডিসপ্লে (সময়)
+        if (ct >= iftarToday) {
+            // মাগরিবের পর: কালকের সেহরি ও ইফতার দেখাও
+            document.getElementById('sehriTime').innerText = formatTime12(minsToTime(sehriTomorrow));
+            document.getElementById('iftarTime').innerText = formatTime12(minsToTime(iftarTomorrow));
+            sehriLabel.innerText = 'পরবর্তী সেহেরি';
+            iftarLabel.innerText = 'পরবর্তী ইফতার';
+        } else if (ct > sehriToday && ct < iftarToday) {
+            // রোজার সময়: আজকের ইফতার ও কালকের সেহরি দেখাও
+            document.getElementById('sehriTime').innerText = formatTime12(minsToTime(sehriTomorrow));
+            document.getElementById('iftarTime').innerText = formatTime12(minsToTime(iftarToday));
+            sehriLabel.innerText = 'পরবর্তী সেহেরি';
+            iftarLabel.innerText = 'ইফতার শুরু';
+        } else {
+            // সেহরির আগে: আজকের সেহরি ও ইফতার দেখাও
+            document.getElementById('sehriTime').innerText = formatTime12(minsToTime(sehriToday));
+            document.getElementById('iftarTime').innerText = formatTime12(minsToTime(iftarToday));
+            sehriLabel.innerText = 'সেহেরি শেষ';
+            iftarLabel.innerText = 'ইফতার শুরু';
+        }
+    }
+
+    // ===== বর্তমান সক্রিয় নামাজ বের করা (লিস্ট হাইলাইটের জন্য) =====
+    function getCurrentActivePrayer() {
+    if (!prayerTimesToday) return 'Fajr';
+    const now = new Date();
+    const curMins = now.getHours() * 60 + now.getMinutes();
+
+    const checkPoints = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    const sorted = checkPoints.map(k => ({ 
+        k, 
+        mins: getMinutes(prayerTimesToday[k]) 
+    })).sort((a,b) => a.mins - b.mins);
+
+    let activeKey = 'Isha'; 
+    for (let i = 0; i < sorted.length; i++) {
+        if (curMins >= sorted[i].mins) {
+            activeKey = sorted[i].k;
+        }
+    }
+
+    // সূর্যোদয় হয়ে গেলে যোহরের আগ পর্যন্ত কোনো নামাজ হাইলাইট হবে না
+    if (activeKey === 'Sunrise') return null;
+
+    return activeKey;
+}
+
+
+    // ===== লিস্ট রেন্ডার – ফজর থেকে শুরু =====
+    function renderList(activeKey) {
+        if (!prayerTimesToday) return;
+        const list = document.getElementById('prayerList');
+        list.innerHTML = '';
+        displayOrder.forEach(key => {
+            const isActive = (key === activeKey);
+            const div = document.createElement('div');
+            div.className = `prayer-item ${isActive ? 'active' : ''}`;
+            div.innerHTML = `<div class="p-name"><div class="p-icon"><i class="fas ${prayerMap[key].icon}"></i></div>${prayerMap[key].name}</div><div class="p-time">${formatTime12(prayerTimesToday[key])}</div>`;
+            list.appendChild(div);
+        });
+    }
+
+    // ===== টাইমার চালু =====
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (!nextPrayerTarget || !nextPrayerTarget.dateObj) return;
+
+            const now = new Date();
+            const diff = nextPrayerTarget.dateObj - now;
+            
+            if (diff < 0) {
+                // টার্গেট শেষ, আপডেট করি
+                updateNextPrayerTarget();
+                renderList(getCurrentActivePrayer());
+                return;
+            }
+
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff / 60000) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            countdownTimerEl.innerText = 
+                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            // সূর্যোদয়ের পর ১৫ মিনিটের মধ্যে টাইমার লাল করা
+            if (prayerTimesToday) {
+                const sunriseMins = getMinutes(prayerTimesToday.Sunrise);
+                const curMins = now.getHours() * 60 + now.getMinutes();
+                if (curMins >= sunriseMins && curMins < sunriseMins + 15) {
+                    countdownTimerEl.classList.add('red');
+                } else {
+                    countdownTimerEl.classList.remove('red');
+                }
+            }
+        }, 1000);
+    }
+
+    // ===== নামাজের সময় লোড করা (আজ ও কাল ও গতকাল) =====
+    async function loadPrayerTimes(lat, lon, areaName = null) {
+        try {
+            if (!areaName) areaName = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+            locationSpan.innerText = areaName;
+            currentLat = lat;
+            currentLon = lon;
+
+            let now = new Date();
+            let yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+            let tomorrow = new Date(now); tomorrow.setDate(now.getDate() + 1);
+
+            const formatDate = (d) => `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+
+            // গতকাল, আজ আর আগামীকালের ডেটা একবারে নিচ্ছি
+            const [resYest, resToday, resTom] = await Promise.all([
+                fetch(`https://api.aladhan.com/v1/timings/${formatDate(yesterday)}?latitude=${lat}&longitude=${lon}&method=1&school=1`),
+                fetch(`https://api.aladhan.com/v1/timings/${formatDate(now)}?latitude=${lat}&longitude=${lon}&method=1&school=1`),
+                fetch(`https://api.aladhan.com/v1/timings/${formatDate(tomorrow)}?latitude=${lat}&longitude=${lon}&method=1&school=1`)
+            ]);
+
+            const dataYest = await resYest.json();
+            const dataToday = await resToday.json();
+            const dataTom = await resTom.json();
+
+            // গ্লোবাল ভেরিয়েবলে স্টোর করছি
+            prayerTimesToday = dataToday.data.timings;
+            prayerTimesTomorrow = dataTom.data.timings;
+
+            // হিজরি অবজেক্টগুলো আলাদা করছি
+            hijriYesterday = dataYest.data.date.hijri;
+            hijriToday = dataToday.data.date.hijri;
+
+            // ইংরেজি তারিখ আপডেট
+            document.getElementById('gregorianDate').innerText = `${now.getDate()} ${banglaMonths[now.getMonth()]}, ${now.getFullYear()}`;
+
+            // বাকি ফাংশন কল
+            updateHijriDisplay();
+            updateSehriIftarTimes();     // গ্রিডের জন্য (সময় ও লেবেল)
+            updateNextPrayerTarget();     // কাউন্টডাউনের জন্য
+            renderList(getCurrentActivePrayer());
+            startTimer();
+            saveToCache({ 
+    timesToday: prayerTimesToday, 
+    timesTomorrow: prayerTimesTomorrow, 
+    hijriYesterday, 
+    hijriToday, 
+    lat, 
+    lon, 
+    areaName: document.getElementById('locationText').innerText 
+});
+        } catch (e) {
+            console.error("ডেটা লোড ফেইল্ড:", e);
+        }
+    }
+
+    // ===== পিডিএফ ডাউনলোড ফাংশন =====
+    async function downloadMonthlyPDF() {
+    if (!currentLat || !currentLon || !prayerTimesToday || !hijriYesterday || !hijriToday) {
+        alert('আগে ডেটা লোড হতে দিন, তারপর ডাউনলোড করুন!');
+        return;
+    }
+
+    const btn = document.getElementById('pdfDownloadBtn');
+    btn.style.opacity = '0.5';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    try {
+        let locationNameEn = '';
+        try {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${currentLat}&lon=${currentLon}&zoom=10&accept-language=en`;
+            const res = await fetchWithTimeout(url, { headers: { 'User-Agent': 'SmartSalatApp/1.0' } }, 5000);
+            const data = await res.json();
+            locationNameEn = data.address.city || data.address.town || data.address.village || data.address.district || data.address.state || "Unknown area";
+        } catch (e) {
+            locationNameEn = `${currentLat.toFixed(4)}, ${currentLon.toFixed(4)}`;
+        }
+
+        const now = new Date();
+        const curMins = now.getHours() * 60 + now.getMinutes();
+        const maghribMins = getMinutes(prayerTimesToday.Maghrib);
+        const currentHijri = (curMins < maghribMins) ? hijriYesterday : hijriToday;
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = doc.internal.pageSize.width;
+
+        const monthName = hijriMonths[currentHijri.month.number - 1] || currentHijri.month.en;
+        const year = currentHijri.year;
+
+        // এই মাসের ডাটা আনা
+        const currentUrl = `https://api.aladhan.com/v1/hijriCalendar/${year}/${currentHijri.month.number}?latitude=${currentLat}&longitude=${currentLon}&method=1&school=1`;
+        const resCurr = await fetch(currentUrl);
+        const dataCurr = await resCurr.json();
+
+        // পরের মাসের ডাটা আনা (যাতে ১ তারিখ চুরি করা যায়)
+        let nextM = currentHijri.month.number + 1;
+        let nextY = year;
+        if (nextM > 12) { nextM = 1; nextY++; }
+        const nextUrl = `https://api.aladhan.com/v1/hijriCalendar/${nextY}/${nextM}?latitude=${currentLat}&longitude=${currentLon}&method=1&school=1`;
+        const resNext = await fetch(nextUrl);
+        const dataNext = await resNext.json();
+
+        // --- তোর বিশেষ "Shifted" লজিক এখানে ---
+        
+        // ১. এই মাসের ডাটা থেকে ১ম দিন (index 0) বাদ দিয়ে ২ তারিখ থেকে নিলাম
+        let customDays = dataCurr.data.slice(1);
+
+        // ২. পরের মাসের প্রথম দিনটি ডাটার শেষে পুশ করলাম
+        if (dataNext.data && dataNext.data.length > 0) {
+            customDays.push(dataNext.data[0]);
+        }
+
+        const tableData = customDays.map((day, index) => {
+            const t = day.timings;
+            const clean = (s) => s.split(' ')[0];
+            
+            // সিরিয়াল ১ থেকে শুরু হবে (তোর কথা মতো)
+            const displayHijriDay = index + 1; 
+
+            return [
+                displayHijriDay,
+                day.date.gregorian.date,
+                formatTime12(minsToTime(getMinutes(clean(t.Fajr)) - 2)),
+                formatTime12(clean(t.Fajr)),
+                formatTime12(clean(t.Sunrise)), // Sunrise বানান ঠিক করছি, গালি দিস না আবার
+                formatTime12(clean(t.Dhuhr)),
+                formatTime12(clean(t.Asr)),
+                formatTime12(minsToTime(getMinutes(clean(t.Maghrib)) + 2)),
+                formatTime12(clean(t.Isha))
+            ];
+        });
+
+        // PDF ডিজাইন শুরু
+        doc.setFontSize(16);
+        doc.setTextColor(76, 81, 191);
+        doc.text(`${monthName} ${year} Hijri Schedule`, pageWidth / 2, 15, { align: 'center' });
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Location: ${locationNameEn}`, pageWidth / 2, 21, { align: 'center' });
+
+        doc.autoTable({
+            startY: 25,
+            head: [[monthName, 'Date', 'Sehri', 'Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Iftar', 'Isha']],
+            body: tableData,
+            theme: 'grid',
+            headStyles: { fillColor: [76, 81, 191], halign: 'center' },
+            styles: { fontSize: 9, halign: 'center' },
+            margin: { left: 10, right: 10 }
+        });
+
+        doc.save(`Schedule_${monthName}_${year}.pdf`);
+
+    } catch (err) {
+        console.error(err);
+        alert('PDF বানাতে গিয়ে ধরা খাইছি! কনসোল চেক কর।');
+    } finally {
+        btn.innerHTML = '<i class="fas fa-download"></i>';
+        btn.style.opacity = '1';
+    }
+}
+
+
+
+    // পিডিএফ বাটনে ক্লিক ইভেন্ট
+    document.getElementById('pdfDownloadBtn').addEventListener('click', downloadMonthlyPDF);
+
+    // ===== মেইন অ্যাপ =====
+    async function startApp() {
+        if (!navigator.onLine) {
+            showFatalError('ইন্টারনেট সংযোগ নেই!');
+            return;
+        }
+
+        try {
+            const position = await getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 });
+            const { latitude, longitude } = position.coords;
+
+            let areaName = null;
+            try {
+                areaName = await fetchAreaName(latitude, longitude);
+            } catch (reverseErr) {
+                console.warn('Reverse geocode failed, using coordinates as name');
+            }
+
+            await loadPrayerTimes(latitude, longitude, areaName);
+        } catch (geoError) {
+            console.error('Geolocation error:', geoError);
+            let errorMsg = 'লোকেশন পাওয়া যায়নি।';
+            if (geoError.code === 1) errorMsg = 'লোকেশন অনুমতি দেওয়া হয়নি।';
+            else if (geoError.code === 2) errorMsg = 'লোকেশন অপ্রাপ্য।';
+            else if (geoError.code === 3) errorMsg = 'লোকেশন টাইমআউট।';
+            showFatalError(errorMsg + ' সেটিংস চেক করুন।');
+        }
+    }
+
+    function showFatalError(msg) {
+        locationSpan.innerText = 'লোকেশন নেই';
+        warningNote.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${msg}`;
+        document.getElementById('prayerList').innerHTML = `
+            <div class="error-message">${msg}</div>
+        `;
+    }
+
+    // ===== লোকেশন ব্যাজে ক্লিক করলে রিফ্রেশ (সম্পূর্ণ লোডিং) =====
+    locationBadge.addEventListener('click', async () => {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        // UI লোডিং স্টেট
+        locationSpan.innerText = 'অনুমতি নেওয়া হচ্ছে...';
+        warningNote.innerHTML = `<i class="fas fa-info-circle"></i> সেহেরি ও ইফতারে সতর্কতা স্বরূপ ২ মিনিট কমবেশি করা হয়েছে`;
+        document.getElementById('prayerList').innerHTML = `
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+            <div class="prayer-item"><span class="p-name skeleton">নামাজ</span><span class="p-time skeleton">00:00</span></div>
+        `;
+        document.getElementById('countdownTimer').innerText = '--:--:--';
+        document.getElementById('nextPrayerName').innerText = 'অপেক্ষা করুন...';
+        document.getElementById('sehriTime').innerText = '--:--';
+        document.getElementById('iftarTime').innerText = '--:--';
+        document.getElementById('gregorianDate').innerText = '...';
+        document.getElementById('hijriDate').innerText = '...';
+
+        try {
+            const position = await getCurrentPosition({ enableHighAccuracy: true, timeout: 10000 });
+            const { latitude, longitude } = position.coords;
+            let areaName = null;
+            try {
+                areaName = await fetchAreaName(latitude, longitude);
+            } catch (reverseErr) {
+                console.warn('Reverse geocode failed, using coordinates as name');
+            }
+            await loadPrayerTimes(latitude, longitude, areaName);
+        } catch (geoError) {
+            console.error('Geolocation error:', geoError);
+            let errorMsg = 'লোকেশন পাওয়া যায়নি।';
+            if (geoError.code === 1) errorMsg = 'লোকেশন অনুমতি দেওয়া হয়নি।';
+            else if (geoError.code === 2) errorMsg = 'লোকেশন অপ্রাপ্য।';
+            else if (geoError.code === 3) errorMsg = 'লোকেশন টাইমআউট।';
+            showFatalError(errorMsg + ' সেটিংস চেক করুন।');
+        }
+    });
+
+    // শুরু
+    window.onload = initApp 
+    
+    function setupNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+            if (index === 1) return; // ওয়াক্ত পেইজে কিছু না
+            const pages = ['index.html', '', 'quran.html', 'hadith.html', 'dua.html'];
+            if (pages[index]) window.location.href = pages[index];
+        });
+    });
+}
+
+// ১. ক্যাশ মেমোরি হ্যান্ডলার
+function saveToCache(data) {
+    localStorage.setItem('prayerData', JSON.stringify({
+        date: new Date().toDateString(),
+        ...data
+    }));
+}
+
+function loadFromCache() {
+    const cached = localStorage.getItem('prayerData');
+    if (!cached) return null;
+    try {
+        const data = JSON.parse(cached);
+        return data.date === new Date().toDateString() ? data : null;
+    } catch (e) { return null; }
+}
+
+// ২. মেইন কন্ট্রোলার (Boss Function)
+async function initApp() {
+    if (typeof setupNavigation === 'function') setupNavigation();
+    
+    const cached = loadFromCache();
+    if (cached) {
+        console.log("ক্যাশ ডাটা পাওয়া গেছে! জিপিএস অফ রাখা হলো।");
+        // ক্যাশ থেকে ভেরিয়েবল সেট করা
+        prayerTimesToday = cached.timesToday;
+        prayerTimesTomorrow = cached.timesTomorrow;
+        hijriYesterday = cached.hijriYesterday;
+        hijriToday = cached.hijriToday;
+        currentLat = cached.lat;
+        currentLon = cached.lon;
+        
+        // UI আপডেট (লোকেশন নাম সহ)
+        if (document.getElementById('locationText')) {
+            document.getElementById('locationText').innerText = cached.areaName;
+        }
+        updateUI(); // এই ফাংশনটা তোর ফাইলে অলরেডি আছে
+    } else {
+        console.log("ক্যাশ নেই, লোকেশন চেক করা হচ্ছে...");
+        if (typeof startApp === 'function') startApp(); 
+    }
+}
+
+// ৩. পেজ লোড হলে শুধু এই বস-কে ডাক দাও
+window.addEventListener('load', initApp);
+
+
+// সালাত ডেটা ক্যাশ (localStorage)
+(function() {
+    const PRAYER_CACHE = 'prayerData';
+    
+    function saveToCache(times, location) {
+        localStorage.setItem(PRAYER_CACHE, JSON.stringify({
+            date: new Date().toDateString(),
+            times: times,
+            location: location
+        }));
+    }
+    
+    function loadFromCache() {
+        const cached = localStorage.getItem(PRAYER_CACHE);
+        if (!cached) return null;
+        const data = JSON.parse(cached);
+        return data.date === new Date().toDateString() ? data : null;
+    }
+    
+    
+    // যখন API থেকে ডেটা আসে, সেভ করো
+    window.savePrayerData = function(times, location) {
+        saveToCache(times, location);
+    };
+})();
+
+function updateUI() {
+    if (!prayerTimesToday) return;
+    const now = new Date();
+    document.getElementById('gregorianDate').innerText = `${now.getDate()} ${banglaMonths[now.getMonth()]}, ${now.getFullYear()}`;
+    
+    updateHijriDisplay();
+    updateSehriIftarTimes();
+    updateNextPrayerTarget();
+    renderList(getCurrentActivePrayer());
+    startTimer();
+}
+
+</script>
+
+
+</body>
+</html>

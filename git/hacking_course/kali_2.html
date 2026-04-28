@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kali Linux Basic Commands</title>
+    <style>
+        /* --- Google Fonts Import --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        /* 
+        ========================================
+        CSS Variables (Custom Properties) for Theming
+        ========================================
+        */
+        :root {
+            --color-background: #121212;
+            --color-surface: #1e1e1e;
+            --color-primary: #bb86fc;
+            --color-secondary: #03dac6;
+            --color-text-primary: #e0e0e0;
+            --color-text-secondary: #a0a0a0;
+            --color-border: #333;
+            --font-primary: 'Poppins', Arial, sans-serif;
+            --font-weight-light: 300;
+            --font-weight-regular: 400;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --spacing-unit: 8px;
+            --border-radius: 8px;
+            --shadow-elevation-medium: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            --transition-speed: 0.3s ease;
+        }
+
+        /* 
+        ========================================
+        Global & Reset Styles
+        ========================================
+        */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            line-height: 1.8;
+            background-color: #0d0d0d; /* Changed to match terminal bg */
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-regular);
+        }
+        
+        /* 
+        ========================================
+        Main Layout & Container
+        ========================================
+        */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: calc(var(--spacing-unit) * 3) 0;
+        }
+
+        /* 
+        ========================================
+        Header & Navigation
+        ========================================
+        */
+        header {
+            background: var(--color-surface);
+            color: #fff;
+            padding-top: calc(var(--spacing-unit) * 4);
+            min-height: 80px;
+            border-bottom: 4px solid var(--color-primary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            text-align: center;
+            text-transform: uppercase;
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            letter-spacing: 2px;
+            color: var(--color-text-primary);
+        }
+        
+        /* 
+        ========================================
+        Language Selector
+        ========================================
+        */
+        .language-selector {
+            text-align: right;
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 4);
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .language-selector label {
+            color: var(--color-text-secondary);
+            margin-right: var(--spacing-unit);
+            font-weight: var(--font-weight-light);
+        }
+
+        #lang-select {
+            padding: var(--spacing-unit);
+            border-radius: var(--border-radius);
+            background-color: var(--color-surface);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+            transition: all var(--transition-speed);
+            cursor: pointer;
+        }
+
+        #lang-select:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 8px var(--color-primary);
+        }
+        
+        /* 
+        ========================================
+        Main Content Styling
+        ========================================
+        */
+        .main-content {
+            padding: calc(var(--spacing-unit) * 5);
+            background: var(--color-surface);
+            margin-top: calc(var(--spacing-unit) * 4);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-elevation-medium);
+            border: 1px solid var(--color-border);
+        }
+
+        .main-content h2 {
+            color: var(--color-primary);
+            font-size: 2rem;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            padding-bottom: var(--spacing-unit);
+            border-bottom: 2px solid var(--color-secondary);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .main-content h3 {
+            color: var(--color-secondary);
+            font-size: 1.5rem;
+            margin-top: calc(var(--spacing-unit) * 4);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+        }
+        
+        .main-content p, .main-content li {
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            color: var(--color-text-secondary);
+            font-family: var(--font-primary);
+        }
+
+        .main-content code {
+            background-color: #2d2d2d;
+            color: var(--color-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .main-content em {
+            color: var(--color-text-primary);
+            font-style: normal;
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .main-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .main-content ul li {
+            background: rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-unit);
+            padding: calc(var(--spacing-unit) * 2);
+            border-left: 4px solid var(--color-secondary);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            transition: all var(--transition-speed);
+        }
+
+        .main-content ul li:hover {
+            transform: translateX(10px);
+            border-left-color: var(--color-primary);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content ul li strong {
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        /* 
+        ========================================
+        Footer
+        ========================================
+        */
+        footer {
+            background: var(--color-surface);
+            color: var(--color-text-secondary);
+            text-align: center;
+            padding: calc(var(--spacing-unit) * 4);
+            margin-top: calc(var(--spacing-unit) * 4);
+            border-top: 4px solid var(--color-primary);
+        }
+        
+        /* 
+        ========================================
+        Responsive Design for Mobile Devices
+        ========================================
+        */
+        @media(max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .language-selector { text-align: center; }
+            .main-content { padding: calc(var(--spacing-unit) * 3); }
+            .main-content h2 { font-size: 1.6rem; }
+        }
+
+        /* 
+        ========================================
+        TERMINAL SIMULATOR STYLES
+        ========================================
+        */
+        .terminal-wrapper {
+            background-color: #0d0d0d;
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            margin-top: calc(var(--spacing-unit) * 4);
+            height: 500px; /* Fixed height for the terminal */
+            display: flex;
+            flex-direction: column;
+            font-family: 'Courier New', monospace;
+            box-shadow: var(--shadow-elevation-medium);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 data-lang-key="title">Kali Linux Basic Commands</h1>
+        </div>
+    </header>
+    
+    <div class="language-selector">
+        <label for="lang-select" data-lang-key="select_language">Select Language:</label>
+        <select id="lang-select">
+            	<option value="en">English</option>
+	    	<option value="zh">Mandarin Chinese</option>
+	    	<option value="hi">Hindi</option>
+		<option value="es">Spanish</option>
+		<option value="fr">French</option>
+		<option value="ar">Arabic</option>
+		<option value="bn">Bengali</option>
+		<option value="pt">Portuguese</option>
+		<option value="ru">Russian</option>
+		<option value="ur">Urdu</option>
+        </select>
+    </div>
+    
+    <div class="container main-content">
+        
+        <h2 data-lang-key="recap_title">Quick Recap and What's Next</h2>
+        <p data-lang-key="recap_p1">In our previous tutorial, we learned what Kali Linux is and how to install it. Now, we will dive into the heart of Linux: the command line terminal. We'll explore some fundamental commands you will use daily.</p>
+        
+        <h2 data-lang-key="commands_title">Basic Kali Linux Commands</h2>
+        <p data-lang-key="commands_intro">The terminal is a powerful tool. Let's get comfortable with it by learning these essential commands. Below are the commands with explanations and examples.</p>
+        <p data-lang-key="case_sensitive_note"></p>
+        
+        <ul>
+            <li><strong><code>whoami</code></strong><br><span data-lang-key="cmd_whoami_desc"></span></li>
+            <li><strong><code>pwd</code></strong><br><span data-lang-key="cmd_pwd_desc"></span></li>
+            <li><strong><code>ls</code></strong><br><span data-lang-key="cmd_ls_desc"></span><br><em data-lang-key="example_text"></em> <code>ls -l</code></li>
+            <li><strong><code>cd</code></strong><br><span data-lang-key="cmd_cd_desc"></span><br><em data-lang-key="example_text"></em> <code>cd Documents</code> or <code>cd ..</code></li>
+            <li><strong><code>cat</code></strong><br><span data-lang-key="cmd_cat_desc"></span><br><em data-lang-key="example_text"></em> <code>cat filename.txt</code></li>
+            <li><strong><code>touch</code></strong><br><span data-lang-key="cmd_touch_desc"></span><br><em data-lang-key="example_text"></em> <code>touch newfile.txt</code></li>
+            <li><strong><code>mkdir</code></strong><br><span data-lang-key="cmd_mkdir_desc"></span><br><em data-lang-key="example_text"></em> <code>mkdir new_folder</code></li>
+            <li><strong><code>echo</code></strong><br><span data-lang-key="cmd_echo_desc"></span><br><em data-lang-key="example_text"></em> <code>echo "Hello World" > hello.txt</code></li>
+            <li><strong><code>ifconfig</code> / <code>ip addr</code></strong><br><span data-lang-key="cmd_ifconfig_desc"></span></li>
+            <li><strong><code>iwconfig</code></strong><br><span data-lang-key="cmd_iwconfig_desc"></span></li>
+            <li><strong><code>apt</code></strong><br><span data-lang-key="cmd_apt_desc"></span><br><em data-lang-key="example_text"></em> <code>apt update</code> or <code>apt install packagename</code></li>
+            <li><strong><code>ping</code></strong><br><span data-lang-key="cmd_ping_desc"></span><br><em data-lang-key="example_text"></em> <code>ping google.com</code></li>
+            <li><strong><code>history</code></strong><br><span data-lang-key="cmd_history_desc"></span></li>
+            <li><strong><code>clear</code></strong><br><span data-lang-key="cmd_clear_desc"></span></li>
+            <li><strong><code>command --help</code></strong><br><span data-lang-key="cmd_help_desc"></span><br><em data-lang-key="example_text"></em> <code>ls --help</code></li>
+            <li><strong><code>uname</code></strong><br><span data-lang-key="cmd_uname_desc"></span><br><em data-lang-key="example_text"></em> <code>uname -a</code></li>
+             <li><strong><code>neofetch</code></strong><br><span data-lang-key="cmd_neofetch_desc"></span></li>
+            <li><strong><code>date</code></strong><br><span data-lang-key="cmd_date_desc"></span></li>
+        </ul>
+
+        <h2 data-lang-key="task_title">Your Missions: Practice in the Terminal</h2>
+        <p data-lang-key="task_p1">Now, practice in the terminal simulator below. Complete the following missions to test your skills.</p>
+        <p data-lang-key="task_su_instruction"></p>
+
+        <h3 data-lang-key="task1_title"></h3>
+        <ol>
+            <li data-lang-key="task1_step1"></li>
+            <li data-lang-key="task1_step2"></li>
+            <li data-lang-key="task1_step3"></li>
+            <li data-lang-key="task1_step4"></li>
+        </ol>
+
+        <h3 data-lang-key="task2_title"></h3>
+        <ol>
+            <li data-lang-key="task2_step1"></li>
+            <li data-lang-key="task2_step2"></li>
+        </ol>
+        
+        <h3 data-lang-key="task3_title"></h3>
+        <ol>
+            <li data-lang-key="task3_step1"></li>
+            <li data-lang-key="task3_step2"></li>
+        </ol>
+
+        <h3 data-lang-key="task4_title"></h3>
+        <ol>
+            <li data-lang-key="task4_step1"></li>
+            <li data-lang-key="task4_step2"></li>
+        </ol>
+
+        <!-- Terminal Simulator starts here -->
+        <div class="terminal-wrapper">
+            <iframe src="https://hacker-ferdous.github.io/hacking_course/trm1.html" style="width: 100%; height: 100%; border: none;" title="Kali Linux Terminal Simulator"></iframe>
+        </div>
+        <!-- Terminal Simulator ends here -->
+
+    </div>
+    
+    <footer>
+        <p>
+            <a href="https://hacker-ferdous.github.io/" style="color: var(--color-text-secondary); text-decoration: none;">© 2025 Nafsin Ferdous</a>
+        </p>
+    </footer>
+    <script>
+    window.onload = function() {
+        setTimeout(function() {
+            window.scrollTo(0, 0);
+        }, 1);
+    };
+    </script>
+ <script type="text/javascript">
+    // Language Translation Script
+    const translations = {
+        en: {
+            title: "Kali Linux Basic Commands",
+            select_language: "Select Language:",
+            example_text: "Example:",
+            recap_title: "Quick Recap and What's Next",
+            recap_p1: "In our previous tutorial, we learned what Kali Linux is and how to install it. Now, we will dive into the heart of Linux: the command line terminal. We'll explore some fundamental commands you will use daily.",
+            commands_title: "Basic Kali Linux Commands",
+            commands_intro: "The terminal is a powerful tool. Let's get comfortable with it by learning these essential commands. Below are the commands with explanations and examples.",
+            case_sensitive_note: "<strong>Important Note:</strong> The Linux terminal is <strong>case-sensitive</strong>. This means <code>Documents</code> and <code>documents</code> are treated as different names. Always pay attention to capitalization!",
+            
+            cmd_whoami_desc: "Displays the username of the current user. It's useful to know who you are currently logged in as.",
+            cmd_pwd_desc: "Stands for 'Print Working Directory'. It shows the full path of your current location in the file system.",
+            cmd_ls_desc: "Lists files and directories in the current location. You can use flags like <code>-l</code> for a detailed list or <code>-a</code> to show hidden files.",
+            cmd_cd_desc: "Stands for 'Change Directory'. It's used to navigate between directories. Use <code>cd ..</code> to go up one level.",
+            cmd_cat_desc: "Stands for 'Concatenate'. It is used to display the content of a file on the screen.",
+            cmd_touch_desc: "Creates a new, empty file. If the file already exists, it updates its timestamp.",
+            cmd_mkdir_desc: "Stands for 'Make Directory'. It creates a new directory (folder) in the current location.",
+            cmd_echo_desc: "Displays a line of text. It can also be used to write text into a file using redirection (<code>></code>).",
+            cmd_ifconfig_desc: "Displays your network interface configuration, including your IP address (look for 'inet'). The newer command is <code>ip addr</code>.",
+            cmd_iwconfig_desc: "Similar to <code>ifconfig</code>, but specifically for wireless network interfaces. It shows Wi-Fi details like SSID and Access Point MAC address.",
+            cmd_apt_desc: "Advanced Package Tool (APT) is used to manage software packages. <code>apt update</code> refreshes the package list, and <code>apt install</code> installs a new package.",
+            cmd_ping_desc: "Tests the network connection to another host (like a website) by sending packets and waiting for a response.",
+            cmd_history_desc: "Shows a numbered list of the commands you have previously run in the terminal.",
+            cmd_clear_desc: "Clears all text and previous commands from the terminal screen, giving you a clean slate.",
+            cmd_help_desc: "Shows a summary of how to use a specific command and what its options are. Very useful when you're stuck.",
+            cmd_uname_desc: "Displays system information. Use the <code>-a</code> (all) flag to see detailed information like Kernel version, architecture, etc.",
+            cmd_neofetch_desc: "Shows a visual summary of your system information in an artistic way.",
+            cmd_date_desc: "Displays the current system date and time.",
+
+            task_title: "Your Missions: Practice in the Terminal",
+            task_p1: "Now, practice in the terminal simulator below. Complete the following missions to test your skills.",
+            task_su_instruction: "<strong>Note:</strong> This terminal simulator starts you directly as the <strong>root</strong> user. You do not need to use the <code>su</code> or <code>sudo</code> command.",
+            
+            task1_title: "Mission 1: Find the Secret Credentials",
+            task1_step1: "List the contents to see the available folders (use <code>ls</code>).",
+            task1_step2: "Navigate into the <code>Documents</code> directory (use <code>cd</code>).",
+            task1_step3: "List contents again to find the <code>passwords.txt</code> file (use <code>ls</code>).",
+            task1_step4: "Display the file's content to find the username and password (use <code>cat</code>).",
+
+            task2_title: "Mission 2: Find Your IP Address",
+            task2_step1: "Run the network configuration command to see details about your network devices (use <code>ifconfig</code>).",
+            task2_step2: "Look for the <code>wlan0</code> interface and find the value next to <code>inet</code>. That is your local IP address.",
+            
+            task3_title: "Mission 3: Find Your Wi-Fi's BSSID",
+            task3_step1: "Run the wireless configuration command (use <code>iwconfig</code>).",
+            task3_step2: "Look for the <code>wlan0</code> section and find the MAC address next to 'Access Point'. This is the BSSID.",
+
+            task4_title: "Mission 4: Install a New Tool",
+            task4_step1: "First, update your system's package list to make sure you have the latest information (use <code>apt update</code>).",
+            task4_step2: "Now, install a fun tool called 'cowsay' (use <code>apt install cowsay</code>).",
+        },
+        zh: {
+            title: "Kali Linux 基本命令",
+            select_language: "选择语言:",
+            example_text: "例子:",
+            recap_title: "快速回顾与展望",
+            recap_p1: "在我们之前的教程中，我们学习了什么是 Kali Linux 以及如何安装它。现在，我们将深入探讨 Linux 的核心：命令行终端。我们将探索一些您每天都会使用的基本命令。",
+            commands_title: "Kali Linux 基本命令",
+            commands_intro: "终端是一个强大的工具。让我们通过学习这些基本命令来熟悉它。以下是带有解释和示例的命令。",
+            case_sensitive_note: "<strong>重要提示:</strong> Linux 终端是<strong>区分大小写</strong>的。这意味着 <code>Documents</code> 和 <code>documents</code> 被视为不同的名称。请始终注意大写！",
+            cmd_whoami_desc: "显示当前用户的用户名。了解您当前以谁的身份登录很有用。",
+            cmd_pwd_desc: "代表“打印工作目录”（Print Working Directory）。它显示您在文件系统中的当前位置的完整路径。",
+            cmd_ls_desc: "列出当前位置的文件和目录。您可以使用 <code>-l</code> 等标志获取详细列表，或使用 <code>-a</code> 显示隐藏文件。",
+            cmd_cd_desc: "代表“更改目录”（Change Directory）。它用于在目录之间导航。使用 <code>cd ..</code> 返回上一级。",
+            cmd_cat_desc: "代表“连接”（Concatenate）。它用于在屏幕上显示文件的内容。",
+            cmd_touch_desc: "创建一个新的空文件。如果文件已存在，它会更新其时间戳。",
+            cmd_mkdir_desc: "代表“创建目录”（Make Directory）。它在当前位置创建一个新目录（文件夹）。",
+            cmd_echo_desc: "显示一行文本。它也可以使用重定向 (<code>></code>) 将文本写入文件。",
+            cmd_ifconfig_desc: "显示您的网络接口配置，包括您的 IP 地址（查找 'inet'）。较新的命令是 <code>ip addr</code>。",
+            cmd_iwconfig_desc: "与 <code>ifconfig</code> 类似，但专门用于无线网络接口。它显示 Wi-Fi 详细信息，如 SSID 和接入点 MAC 地址。",
+            cmd_apt_desc: "高级软件包工具 (APT) 用于管理软件包。<code>apt update</code> 刷新软件包列表，<code>apt install</code> 安装一个新软件包。",
+            cmd_ping_desc: "通过发送数据包并等待响应来测试与另一台主机（如网站）的网络连接。",
+            cmd_history_desc: "显示您之前在终端中运行过的命令的编号列表。",
+            cmd_clear_desc: "清除终端屏幕上的所有文本和以前的命令，为您提供一个干净的界面。",
+            cmd_help_desc: "显示如何使用特定命令及其选项的摘要。当您遇到困难时非常有用。",
+            cmd_uname_desc: "显示系统信息。使用 <code>-a</code> (all) 标志查看详细信息，如内核版本、架构等。",
+            cmd_neofetch_desc: "以艺术的方式显示您的系统信息的可视化摘要。",
+            cmd_date_desc: "显示当前系统日期和时间。",
+            task_title: "你的任务：在终端中练习",
+            task_p1: "现在，在下面的终端模拟器中练习。完成以下任务来测试您的技能。",
+            task_su_instruction: "<strong>注意:</strong> 此终端模拟器直接以 <strong>root</strong> 用户身份启动。您不需要使用 <code>su</code> 或 <code>sudo</code> 命令。",
+            task1_title: "任务 1：找到秘密凭证",
+            task1_step1: "列出内容以查看可用文件夹 (使用 <code>ls</code>)。",
+            task1_step2: "导航到 <code>Documents</code> 目录 (使用 <code>cd</code>)。",
+            task1_step3: "再次列出内容以找到 <code>passwords.txt</code> 文件 (使用 <code>ls</code>)。",
+            task1_step4: "显示文件内容以找到用户名和密码 (使用 <code>cat</code>)。",
+            task2_title: "任务 2：找到您的 IP 地址",
+            task2_step1: "运行网络配置命令以查看有关您的网络设备的详细信息 (使用 <code>ifconfig</code>)。",
+            task2_step2: "查找 <code>wlan0</code> 接口并找到 <code>inet</code> 旁边的值。那是您的本地 IP 地址。",
+            task3_title: "任务 3：找到您的 Wi-Fi 的 BSSID",
+            task3_step1: "运行无线配置命令 (使用 <code>iwconfig</code>)。",
+            task3_step2: "查找 <code>wlan0</code> 部分并找到“Access Point”旁边的 MAC 地址。这就是 BSSID。",
+            task4_title: "任务 4：安装一个新工具",
+            task4_step1: "首先，更新您系统的软件包列表以确保您拥有最新信息 (使用 <code>apt update</code>)。",
+            task4_step2: "现在，安装一个名为“cowsay”的有趣工具 (使用 <code>apt install cowsay</code>)。"
+        },
+        hi: {
+            title: "काली लिनक्स बेसिक कमांड्स",
+            select_language: "भाषा चुनें:",
+            example_text: "उदाहरण:",
+            recap_title: "त्वरित पुनर्कथन और आगे क्या है",
+            recap_p1: "हमारे पिछले ट्यूटोरियल में, हमने सीखा कि काली लिनक्स क्या है और इसे कैसे स्थापित किया जाए। अब, हम लिनक्स के दिल में उतरेंगे: कमांड लाइन टर्मिनल। हम कुछ मूलभूत कमांड्स का पता लगाएंगे जिनका आप दैनिक उपयोग करेंगे।",
+            commands_title: "बेसिक काली लिनक्स कमांड्स",
+            commands_intro: "टर्मिनल एक शक्तिशाली उपकरण है। आइए इन आवश्यक कमांड्स को सीखकर इसके साथ सहज हों। नीचे स्पष्टीकरण और उदाहरणों के साथ कमांड दिए गए हैं।",
+            case_sensitive_note: "<strong>महत्वपूर्ण नोट:</strong> लिनक्स टर्मिनल <strong>केस-संवेदी</strong> है। इसका मतलब है कि <code>Documents</code> और <code>documents</code> को अलग-अलग नामों के रूप में माना जाता है। हमेशा कैपिटलाइज़ेशन पर ध्यान दें!",
+            cmd_whoami_desc: "वर्तमान उपयोगकर्ता का उपयोगकर्ता नाम प्रदर्शित करता है। यह जानना उपयोगी है कि आप वर्तमान में किसके रूप में लॉग इन हैं।",
+            cmd_pwd_desc: "'प्रिंट वर्किंग डायरेक्टरी' के लिए है। यह फाइल सिस्टम में आपके वर्तमान स्थान का पूरा पथ दिखाता है।",
+            cmd_ls_desc: "वर्तमान स्थान में फ़ाइलों और निर्देशिकाओं को सूचीबद्ध करता है। आप विस्तृत सूची के लिए <code>-l</code> जैसे फ्लैग का उपयोग कर सकते हैं या छिपी हुई फ़ाइलों को दिखाने के लिए <code>-a</code> का उपयोग कर सकते हैं।",
+            cmd_cd_desc: "'चेंज डायरेक्टरी' के लिए है। इसका उपयोग निर्देशिकाओं के बीच नेविगेट करने के लिए किया जाता है। एक स्तर ऊपर जाने के लिए <code>cd ..</code> का उपयोग करें।",
+            cmd_cat_desc: "'कॉन्केटनेट' के लिए है। इसका उपयोग स्क्रीन पर फ़ाइल की सामग्री को प्रदर्शित करने के लिए किया जाता है।",
+            cmd_touch_desc: "एक नई, खाली फ़ाइल बनाता है। यदि फ़ाइल पहले से मौजूद है, तो यह उसके टाइमस्टैम्प को अपडेट करता है।",
+            cmd_mkdir_desc: "'मेक डायरेक्टरी' के लिए है। यह वर्तमान स्थान में एक नई निर्देशिका (फ़ोल्डर) बनाता है।",
+            cmd_echo_desc: "पाठ की एक पंक्ति प्रदर्शित करता है। इसका उपयोग पुनर्निर्देशन (<code>></code>) का उपयोग करके फ़ाइल में पाठ लिखने के लिए भी किया जा सकता है।",
+            cmd_ifconfig_desc: "आपके आईपी पते सहित आपके नेटवर्क इंटरफ़ेस कॉन्फ़िगरेशन को प्रदर्शित करता है ('inet' देखें)। नया कमांड <code>ip addr</code> है।",
+            cmd_iwconfig_desc: "<code>ifconfig</code> के समान, लेकिन विशेष रूप से वायरलेस नेटवर्क इंटरफेस के लिए। यह SSID और एक्सेस प्वाइंट मैक पते जैसे वाई-फाई विवरण दिखाता है।",
+            cmd_apt_desc: "एडवांस्ड पैकेज टूल (APT) का उपयोग सॉफ्टवेयर पैकेजों को प्रबंधित करने के लिए किया जाता है। <code>apt update</code> पैकेज सूची को ताज़ा करता है, और <code>apt install</code> एक नया पैकेज स्थापित करता है।",
+            cmd_ping_desc: "पैकेट भेजकर और प्रतिक्रिया की प्रतीक्षा करके किसी अन्य होस्ट (जैसे वेबसाइट) से नेटवर्क कनेक्शन का परीक्षण करता है।",
+            cmd_history_desc: "टर्मिनल में आपके द्वारा पहले चलाए गए कमांड की एक क्रमांकित सूची दिखाता है।",
+            cmd_clear_desc: "टर्मिनल स्क्रीन से सभी पाठ और पिछले कमांड को साफ़ करता है, जिससे आपको एक साफ स्लेट मिलती है।",
+            cmd_help_desc: "एक विशिष्ट कमांड का उपयोग कैसे करें और इसके विकल्प क्या हैं, इसका सारांश दिखाता है। जब आप फंस जाते हैं तो यह बहुत उपयोगी होता है।",
+            cmd_uname_desc: "सिस्टम जानकारी प्रदर्शित करता है। कर्नेल संस्करण, आर्किटेक्चर आदि जैसी विस्तृत जानकारी देखने के लिए <code>-a</code> (सभी) ध्वज का उपयोग करें।",
+            cmd_neofetch_desc: "आपकी सिस्टम जानकारी का एक दृश्य सारांश कलात्मक तरीके से दिखाता है।",
+            cmd_date_desc: "वर्तमान सिस्टम दिनांक और समय प्रदर्शित करता है।",
+            task_title: "आपके मिशन: टर्मिनल में अभ्यास करें",
+            task_p1: "अब, नीचे दिए गए टर्मिनल सिम्युलेटर में अभ्यास करें। अपने कौशल का परीक्षण करने के लिए निम्नलिखित मिशनों को पूरा करें।",
+            task_su_instruction: "<strong>नोट:</strong> यह टर्मिनल सिम्युलेटर आपको सीधे <strong>रूट</strong> उपयोगकर्ता के रूप में शुरू करता है। आपको <code>su</code> या <code>sudo</code> कमांड का उपयोग करने की आवश्यकता नहीं है।",
+            task1_title: "मिशन 1: गुप्त क्रेडेंशियल खोजें",
+            task1_step1: "उपलब्ध फ़ोल्डरों को देखने के लिए सामग्री सूचीबद्ध करें (<code>ls</code> का उपयोग करें)।",
+            task1_step2: "<code>Documents</code> निर्देशिका में नेविगेट करें (<code>cd</code> का उपयोग करें)।",
+            task1_step3: "<code>passwords.txt</code> फ़ाइल खोजने के लिए सामग्री फिर से सूचीबद्ध करें (<code>ls</code> का उपयोग करें)।",
+            task1_step4: "उपयोगकर्ता नाम और पासवर्ड खोजने के लिए फ़ाइल की सामग्री प्रदर्शित करें (<code>cat</code> का उपयोग करें)।",
+            task2_title: "मिशन 2: अपना आईपी पता खोजें",
+            task2_step1: "अपने नेटवर्क उपकरणों के बारे में विवरण देखने के लिए नेटवर्क कॉन्फ़िगरेशन कमांड चलाएँ (<code>ifconfig</code> का उपयोग करें)।",
+            task2_step2: "<code>wlan0</code> इंटरफ़ेस की तलाश करें और <code>inet</code> के आगे का मान खोजें। यह आपका स्थानीय आईपी पता है।",
+            task3_title: "मिशन 3: अपने वाई-फाई का BSSID खोजें",
+            task3_step1: "वायरलेस कॉन्फ़िगरेशन कमांड चलाएँ (<code>iwconfig</code> का उपयोग करें)।",
+            task3_step2: "<code>wlan0</code> अनुभाग देखें और 'एक्सेस प्वाइंट' के आगे मैक पता खोजें। यह BSSID है।",
+            task4_title: "मिशन 4: एक नया टूल स्थापित करें",
+            task4_step1: "सबसे पहले, यह सुनिश्चित करने के लिए कि आपके पास नवीनतम जानकारी है, अपने सिस्टम की पैकेज सूची को अपडेट करें (<code>apt update</code> का उपयोग करें)।",
+            task4_step2: "अब, 'cowsay' नामक एक मजेदार टूल स्थापित करें (<code>apt install cowsay</code> का उपयोग करें)।"
+        },
+        es: {
+            title: "Comandos Básicos de Kali Linux",
+            select_language: "Seleccionar Idioma:",
+            example_text: "Ejemplo:",
+            recap_title: "Resumen Rápido y Próximos Pasos",
+            recap_p1: "En nuestro tutorial anterior, aprendimos qué es Kali Linux y cómo instalarlo. Ahora, nos sumergiremos en el corazón de Linux: la terminal de línea de comandos. Exploraremos algunos comandos fundamentales que usarás a diario.",
+            commands_title: "Comandos Básicos de Kali Linux",
+            commands_intro: "La terminal es una herramienta poderosa. Vamos a familiarizarnos con ella aprendiendo estos comandos esenciales. A continuación se presentan los comandos con explicaciones y ejemplos.",
+            case_sensitive_note: "<strong>Nota Importante:</strong> La terminal de Linux es <strong>sensible a mayúsculas y minúsculas</strong>. Esto significa que <code>Documents</code> y <code>documents</code> se tratan como nombres diferentes. ¡Presta siempre atención a las mayúsculas!",
+            cmd_whoami_desc: "Muestra el nombre de usuario del usuario actual. Es útil para saber con qué usuario has iniciado sesión.",
+            cmd_pwd_desc: "Significa 'Print Working Directory' (Imprimir Directorio de Trabajo). Muestra la ruta completa de tu ubicación actual en el sistema de archivos.",
+            cmd_ls_desc: "Lista los archivos y directorios en la ubicación actual. Puedes usar indicadores como <code>-l</code> para una lista detallada o <code>-a</code> para mostrar archivos ocultos.",
+            cmd_cd_desc: "Significa 'Change Directory' (Cambiar Directorio). Se usa para navegar entre directorios. Usa <code>cd ..</code> para subir un nivel.",
+            cmd_cat_desc: "Significa 'Concatenate' (Concatenar). Se utiliza para mostrar el contenido de un archivo en la pantalla.",
+            cmd_touch_desc: "Crea un archivo nuevo y vacío. Si el archivo ya existe, actualiza su marca de tiempo.",
+            cmd_mkdir_desc: "Significa 'Make Directory' (Crear Directorio). Crea un nuevo directorio (carpeta) en la ubicación actual.",
+            cmd_echo_desc: "Muestra una línea de texto. También se puede usar para escribir texto en un archivo usando redirección (<code>></code>).",
+            cmd_ifconfig_desc: "Muestra la configuración de tu interfaz de red, incluida tu dirección IP (busca 'inet'). El comando más nuevo es <code>ip addr</code>.",
+            cmd_iwconfig_desc: "Similar a <code>ifconfig</code>, pero específico para interfaces de red inalámbricas. Muestra detalles de Wi-Fi como el SSID y la dirección MAC del Punto de Acceso.",
+            cmd_apt_desc: "Advanced Package Tool (APT) se utiliza para gestionar paquetes de software. <code>apt update</code> actualiza la lista de paquetes y <code>apt install</code> instala un paquete nuevo.",
+            cmd_ping_desc: "Prueba la conexión de red con otro host (como un sitio web) enviando paquetes y esperando una respuesta.",
+            cmd_history_desc: "Muestra una lista numerada de los comandos que has ejecutado anteriormente en la terminal.",
+            cmd_clear_desc: "Limpia todo el texto y los comandos anteriores de la pantalla de la terminal, dejándote un lienzo en blanco.",
+            cmd_help_desc: "Muestra un resumen de cómo usar un comando específico y cuáles son sus opciones. Muy útil cuando estás atascado.",
+            cmd_uname_desc: "Muestra información del sistema. Usa el indicador <code>-a</code> (all) para ver información detallada como la versión del Kernel, la arquitectura, etc.",
+            cmd_neofetch_desc: "Muestra un resumen visual de la información de tu sistema de una manera artística.",
+            cmd_date_desc: "Muestra la fecha y hora actuales del sistema.",
+            task_title: "Tus Misiones: Practica en la Terminal",
+            task_p1: "Ahora, practica en el simulador de terminal de abajo. Completa las siguientes misiones para poner a prueba tus habilidades.",
+            task_su_instruction: "<strong>Nota:</strong> Este simulador de terminal te inicia directamente como el usuario <strong>root</strong>. No necesitas usar el comando <code>su</code> o <code>sudo</code>.",
+            task1_title: "Misión 1: Encuentra las Credenciales Secretas",
+            task1_step1: "Lista el contenido para ver las carpetas disponibles (usa <code>ls</code>).",
+            task1_step2: "Navega al directorio <code>Documents</code> (usa <code>cd</code>).",
+            task1_step3: "Vuelve a listar el contenido para encontrar el archivo <code>passwords.txt</code> (usa <code>ls</code>).",
+            task1_step4: "Muestra el contenido del archivo para encontrar el nombre de usuario y la contraseña (usa <code>cat</code>).",
+            task2_title: "Misión 2: Encuentra tu Dirección IP",
+            task2_step1: "Ejecuta el comando de configuración de red para ver detalles sobre tus dispositivos de red (usa <code>ifconfig</code>).",
+            task2_step2: "Busca la interfaz <code>wlan0</code> y encuentra el valor junto a <code>inet</code>. Esa es tu dirección IP local.",
+            task3_title: "Misión 3: Encuentra el BSSID de tu Wi-Fi",
+            task3_step1: "Ejecuta el comando de configuración inalámbrica (usa <code>iwconfig</code>).",
+            task3_step2: "Busca la sección <code>wlan0</code> y encuentra la dirección MAC junto a 'Access Point'. Este es el BSSID.",
+            task4_title: "Misión 4: Instala una Nueva Herramienta",
+            task4_step1: "Primero, actualiza la lista de paquetes de tu sistema para asegurarte de tener la información más reciente (usa <code>apt update</code>).",
+            task4_step2: "Ahora, instala una herramienta divertida llamada 'cowsay' (usa <code>apt install cowsay</code>)."
+        },
+        fr: {
+            title: "Commandes de Base de Kali Linux",
+            select_language: "Sélectionner la Langue:",
+            example_text: "Exemple:",
+            recap_title: "Récapitulatif Rapide et Prochaines Étapes",
+            recap_p1: "Dans notre tutoriel précédent, nous avons appris ce qu'est Kali Linux et comment l'installer. Maintenant, nous allons plonger au cœur de Linux : le terminal de ligne de commande. Nous explorerons quelques commandes fondamentales que vous utiliserez quotidiennement.",
+            commands_title: "Commandes de Base de Kali Linux",
+            commands_intro: "Le terminal est un outil puissant. Familiarisons-nous avec lui en apprenant ces commandes essentielles. Vous trouverez ci-dessous les commandes avec des explications et des exemples.",
+            case_sensitive_note: "<strong>Note Importante :</strong> Le terminal Linux est <strong>sensible à la casse</strong>. Cela signifie que <code>Documents</code> et <code>documents</code> sont traités comme des noms différents. Faites toujours attention à la capitalisation !",
+            cmd_whoami_desc: "Affiche le nom d'utilisateur de l'utilisateur actuel. C'est utile pour savoir en tant que qui vous êtes actuellement connecté.",
+            cmd_pwd_desc: "Signifie 'Print Working Directory' (Afficher le répertoire de travail). Il montre le chemin complet de votre emplacement actuel dans le système de fichiers.",
+            cmd_ls_desc: "Liste les fichiers et les répertoires à l'emplacement actuel. Vous pouvez utiliser des options comme <code>-l</code> pour une liste détaillée ou <code>-a</code> pour afficher les fichiers cachés.",
+            cmd_cd_desc: "Signifie 'Change Directory' (Changer de répertoire). Il est utilisé pour naviguer entre les répertoires. Utilisez <code>cd ..</code> pour remonter d'un niveau.",
+            cmd_cat_desc: "Signifie 'Concatenate' (Concaténer). Il est utilisé pour afficher le contenu d'un fichier à l'écran.",
+            cmd_touch_desc: "Crée un nouveau fichier vide. Si le fichier existe déjà, il met à jour son horodatage.",
+            cmd_mkdir_desc: "Signifie 'Make Directory' (Créer un répertoire). Il crée un nouveau répertoire (dossier) à l'emplacement actuel.",
+            cmd_echo_desc: "Affiche une ligne de texte. Il peut également être utilisé pour écrire du texte dans un fichier en utilisant la redirection (<code>></code>).",
+            cmd_ifconfig_desc: "Affiche la configuration de votre interface réseau, y compris votre adresse IP (recherchez 'inet'). La commande plus récente est <code>ip addr</code>.",
+            cmd_iwconfig_desc: "Similaire à <code>ifconfig</code>, mais spécifiquement pour les interfaces réseau sans fil. Il affiche les détails Wi-Fi comme le SSID et l'adresse MAC du point d'accès.",
+            cmd_apt_desc: "Advanced Package Tool (APT) est utilisé pour gérer les paquets logiciels. <code>apt update</code> rafraîchit la liste des paquets, et <code>apt install</code> installe un nouveau paquet.",
+            cmd_ping_desc: "Teste la connexion réseau avec un autre hôte (comme un site web) en envoyant des paquets et en attendant une réponse.",
+            cmd_history_desc: "Affiche une liste numérotée des commandes que vous avez précédemment exécutées dans le terminal.",
+            cmd_clear_desc: "Efface tout le texte et les commandes précédentes de l'écran du terminal, vous donnant une page blanche.",
+            cmd_help_desc: "Affiche un résumé de l'utilisation d'une commande spécifique et de ses options. Très utile lorsque vous êtes bloqué.",
+            cmd_uname_desc: "Affiche les informations système. Utilisez l'option <code>-a</code> (all) pour voir des informations détaillées comme la version du noyau, l'architecture, etc.",
+            cmd_neofetch_desc: "Affiche un résumé visuel de vos informations système de manière artistique.",
+            cmd_date_desc: "Affiche la date et l'heure actuelles du système.",
+            task_title: "Vos Missions : Pratiquez dans le Terminal",
+            task_p1: "Maintenant, entraînez-vous dans le simulateur de terminal ci-dessous. Accomplissez les missions suivantes pour tester vos compétences.",
+            task_su_instruction: "<strong>Note :</strong> Ce simulateur de terminal vous démarre directement en tant qu'utilisateur <strong>root</strong>. Vous n'avez pas besoin d'utiliser la commande <code>su</code> ou <code>sudo</code>.",
+            task1_title: "Mission 1 : Trouver les Identifiants Secrets",
+            task1_step1: "Listez le contenu pour voir les dossiers disponibles (utilisez <code>ls</code>).",
+            task1_step2: "Naviguez dans le répertoire <code>Documents</code> (utilisez <code>cd</code>).",
+            task1_step3: "Listez à nouveau le contenu pour trouver le fichier <code>passwords.txt</code> (utilisez <code>ls</code>).",
+            task1_step4: "Affichez le contenu du fichier pour trouver le nom d'utilisateur et le mot de passe (utilisez <code>cat</code>).",
+            task2_title: "Mission 2 : Trouver votre Adresse IP",
+            task2_step1: "Exécutez la commande de configuration réseau pour voir les détails de vos périphériques réseau (utilisez <code>ifconfig</code>).",
+            task2_step2: "Cherchez l'interface <code>wlan0</code> et trouvez la valeur à côté de <code>inet</code>. C'est votre adresse IP locale.",
+            task3_title: "Mission 3 : Trouver le BSSID de votre Wi-Fi",
+            task3_step1: "Exécutez la commande de configuration sans fil (utilisez <code>iwconfig</code>).",
+            task3_step2: "Cherchez la section <code>wlan0</code> et trouvez l'adresse MAC à côté de 'Access Point'. C'est le BSSID.",
+            task4_title: "Mission 4 : Installer un Nouvel Outil",
+            task4_step1: "D'abord, mettez à jour la liste des paquets de votre système pour vous assurer d'avoir les dernières informations (utilisez <code>apt update</code>).",
+            task4_step2: "Maintenant, installez un outil amusant appelé 'cowsay' (utilisez <code>apt install cowsay</code>)."
+        },
+        ar: {
+            title: "أوامر كالي لينكس الأساسية",
+            select_language: "اختار اللغة:",
+            example_text: "مثال:",
+            recap_title: "ملخص سريع وما هو التالي",
+            recap_p1: "في درسنا التعليمي السابق، تعلمنا ما هو كالي لينكس وكيفية تثبيته. الآن، سوف نتعمق في قلب لينكس: طرفية سطر الأوامر. سوف نستكشف بعض الأوامر الأساسية التي ستستخدمها يوميًا.",
+            commands_title: "أوامر كالي لينكس الأساسية",
+            commands_intro: "الطرفية أداة قوية. دعنا نعتاد عليها من خلال تعلم هذه الأوامر الأساسية. فيما يلي الأوامر مع الشروحات والأمثلة.",
+            case_sensitive_note: "<strong>ملاحظة هامة:</strong> طرفية لينكس <strong>حساسة لحالة الأحرف</strong>. هذا يعني أن <code>Documents</code> و <code>documents</code> يتم التعامل معهما كأسماء مختلفة. انتبه دائمًا إلى الأحرف الكبيرة!",
+            cmd_whoami_desc: "يعرض اسم المستخدم للمستخدم الحالي. من المفيد معرفة من أنت الذي قمت بتسجيل الدخول به حاليًا.",
+            cmd_pwd_desc: "اختصار لـ 'Print Working Directory' (طباعة دليل العمل). يعرض المسار الكامل لموقعك الحالي في نظام الملفات.",
+            cmd_ls_desc: "يسرد الملفات والأدلة في الموقع الحالي. يمكنك استخدام علامات مثل <code>-l</code> للحصول على قائمة مفصلة أو <code>-a</code> لإظهار الملفات المخفية.",
+            cmd_cd_desc: "اختصار لـ 'Change Directory' (تغيير الدليل). يستخدم للتنقل بين الأدلة. استخدم <code>cd ..</code> للانتقال إلى مستوى أعلى.",
+            cmd_cat_desc: "اختصار لـ 'Concatenate' (سلسلة). يستخدم لعرض محتوى ملف على الشاشة.",
+            cmd_touch_desc: "ينشئ ملفًا جديدًا وفارغًا. إذا كان الملف موجودًا بالفعل، فإنه يقوم بتحديث طابعه الزمني.",
+            cmd_mkdir_desc: "اختصار لـ 'Make Directory' (إنشاء دليل). ينشئ دليلاً (مجلدًا) جديدًا في الموقع الحالي.",
+            cmd_echo_desc: "يعرض سطرًا من النص. يمكن استخدامه أيضًا لكتابة نص في ملف باستخدام إعادة التوجيه (<code>></code>).",
+            cmd_ifconfig_desc: "يعرض تكوين واجهة الشبكة الخاصة بك، بما في ذلك عنوان IP الخاص بك (ابحث عن 'inet'). الأمر الأحدث هو <code>ip addr</code>.",
+            cmd_iwconfig_desc: "مشابه لـ <code>ifconfig</code>، ولكنه مخصص لواجهات الشبكة اللاسلكية. يعرض تفاصيل Wi-Fi مثل SSID وعنوان MAC لنقطة الوصول.",
+            cmd_apt_desc: "تُستخدم أداة الحزم المتقدمة (APT) لإدارة حزم البرامج. يقوم <code>apt update</code> بتحديث قائمة الحزم، و <code>apt install</code> بتثبيت حزمة جديدة.",
+            cmd_ping_desc: "يختبر اتصال الشبكة بمضيف آخر (مثل موقع ويب) عن طريق إرسال حزم وانتظار الرد.",
+            cmd_history_desc: "يعرض قائمة مرقمة بالأوامر التي قمت بتشغيلها مسبقًا في الطرفية.",
+            cmd_clear_desc: "يمسح كل النصوص والأوامر السابقة من شاشة الطرفية، مما يمنحك شاشة نظيفة.",
+            cmd_help_desc: "يعرض ملخصًا لكيفية استخدام أمر معين وما هي خياراته. مفيد جدًا عندما تكون عالقًا.",
+            cmd_uname_desc: "يعرض معلومات النظام. استخدم علامة <code>-a</code> (الكل) لرؤية معلومات مفصلة مثل إصدار النواة، والهندسة المعمارية، وما إلى ذلك.",
+            cmd_neofetch_desc: "يعرض ملخصًا مرئيًا لمعلومات نظامك بطريقة فنية.",
+            cmd_date_desc: "يعرض تاريخ ووقت النظام الحاليين.",
+            task_title: "مهماتك: تدرب في الطرفية",
+            task_p1: "الآن، تدرب في محاكي الطرفية أدناه. أكمل المهمات التالية لاختبار مهاراتك.",
+            task_su_instruction: "<strong>ملاحظة:</strong> يبدأ محاكي الطرفية هذا مباشرة كمستخدم <strong>الجذر (root)</strong>. لا تحتاج إلى استخدام الأمر <code>su</code> أو <code>sudo</code>.",
+            task1_title: "المهمة 1: العثور على بيانات الاعتماد السرية",
+            task1_step1: "اسرد المحتويات لرؤية المجلدات المتاحة (استخدم <code>ls</code>).",
+            task1_step2: "انتقل إلى دليل <code>Documents</code> (استخدم <code>cd</code>).",
+            task1_step3: "اسرد المحتويات مرة أخرى للعثور على ملف <code>passwords.txt</code> (استخدم <code>ls</code>).",
+            task1_step4: "اعرض محتوى الملف للعثور على اسم المستخدم وكلمة المرور (استخدم <code>cat</code>).",
+            task2_title: "المهمة 2: العثور على عنوان IP الخاص بك",
+            task2_step1: "قم بتشغيل أمر تكوين الشبكة لرؤية تفاصيل حول أجهزة الشبكة الخاصة بك (استخدم <code>ifconfig</code>).",
+            task2_step2: "ابحث عن واجهة <code>wlan0</code> وابحث عن القيمة بجوار <code>inet</code>. هذا هو عنوان IP المحلي الخاص بك.",
+            task3_title: "المهمة 3: العثور على BSSID لشبكة Wi-Fi الخاصة بك",
+            task3_step1: "قم بتشغيل أمر التكوين اللاسلكي (استخدم <code>iwconfig</code>).",
+            task3_step2: "ابحث عن قسم <code>wlan0</code> وابحث عن عنوان MAC بجوار 'Access Point'. هذا هو BSSID.",
+            task4_title: "المهمة 4: تثبيت أداة جديدة",
+            task4_step1: "أولاً، قم بتحديث قائمة حزم النظام لديك للتأكد من أن لديك أحدث المعلومات (استخدم <code>apt update</code>).",
+            task4_step2: "الآن، قم بتثبيت أداة ممتعة تسمى 'cowsay' (استخدم <code>apt install cowsay</code>)."
+        },
+        bn: {
+            title: "কালি লিনাক্স বেসিক কমান্ড",
+            select_language: "ভাষা নির্বাচন করুন:",
+            example_text: "উদাহরণ:",
+            recap_title: "দ্রুত পুনরালোচনা এবং পরবর্তী ধাপ",
+            recap_p1: "আমাদের আগের টিউটোরিয়ালে, আমরা শিখেছি কালি লিনাক্স কী এবং কীভাবে এটি ইনস্টল করতে হয়। এখন, আমরা লিনাক্সের কেন্দ্রবিন্দুতে প্রবেশ করব: কমান্ড লাইন টার্মিনাল। আমরা প্রতিদিন ব্যবহৃত কিছু মৌলিক কমান্ড শিখব।",
+            commands_title: "কালি লিনাক্সের বেসিক কমান্ড",
+            commands_intro: "টার্মিনাল একটি শক্তিশালী টুল। আসুন এই প্রয়োজনীয় কমান্ডগুলো শিখে এর সাথে পরিচিত হই। নিচে ব্যাখ্যা এবং উদাহরণসহ কমান্ডগুলো দেওয়া হলো।",
+            case_sensitive_note: "<strong>গুরুত্বপূর্ণ নোট:</strong> লিনাক্স টার্মিনাল <strong>কেস-সেনসিটিভ</strong>। এর মানে <code>Documents</code> এবং <code>documents</code> দুটি ভিন্ন নাম হিসেবে বিবেচিত হয়। সর্বদা ক্যাপিটালাইজেশনের দিকে মনোযোগ দিন!",
+            
+            cmd_whoami_desc: "বর্তমান ব্যবহারকারীর ইউজারনেম প্রদর্শন করে। আপনি বর্তমানে কোন ব্যবহারকারী হিসাবে লগ ইন আছেন তা জানার জন্য এটি কার্যকর।",
+            cmd_pwd_desc: "'Print Working Directory' এর সংক্ষিপ্ত রূপ। এটি ফাইল সিস্টেমে আপনার বর্তমান অবস্থানের সম্পূর্ণ পাথ দেখায়।",
+            cmd_ls_desc: "বর্তমান অবস্থানের ফাইল এবং ডিরেক্টরি তালিকাভুক্ত করে। আপনি বিস্তারিত তালিকার জন্য <code>-l</code> বা লুকানো ফাইল দেখতে <code>-a</code> এর মতো ফ্ল্যাগ ব্যবহার করতে পারেন।",
+            cmd_cd_desc: "'Change Directory' এর সংক্ষিপ্ত রূপ। এটি ডিরেক্টরির মধ্যে নেভিগেট করতে ব্যবহৃত হয়। এক লেভেল উপরে যেতে <code>cd ..</code> ব্যবহার করুন।",
+            cmd_cat_desc: "'Concatenate' এর সংক্ষিপ্ত রূপ। এটি স্ক্রিনে একটি ফাইলের বিষয়বস্তু প্রদর্শন করতে ব্যবহৃত হয়।",
+            cmd_touch_desc: "একটি নতুন, খালি ফাইল তৈরি করে। যদি ফাইলটি আগে থেকেই বিদ্যমান থাকে, তবে এটি তার টাইমস্ট্যাম্প আপডেট করে।",
+            cmd_mkdir_desc: "'Make Directory' এর সংক্ষিপ্ত রূপ। এটি বর্তমান অবস্থানে একটি নতুন ডিরেক্টরি (ফোল্ডার) তৈরি করে।",
+            cmd_echo_desc: "এক লাইন টেক্সট প্রদর্শন করে। এটি রিডাইরেকশন (<code>></code>) ব্যবহার করে ফাইলে টেক্সট লিখতেও ব্যবহৃত হতে পারে।",
+            cmd_ifconfig_desc: "আপনার নেটওয়ার্ক ইন্টারফেস কনফিগারেশন প্রদর্শন করে, যার মধ্যে আপনার আইপি অ্যাড্রেসও রয়েছে ('inet' সন্ধান করুন)। এর নতুন কমান্ড হলো <code>ip addr</code>।",
+            cmd_iwconfig_desc: "<code>ifconfig</code> এর মতোই, কিন্তু বিশেষভাবে ওয়্যারলেস নেটওয়ার্ক ইন্টারফেসের জন্য। এটি SSID এবং Access Point MAC অ্যাড্রেসের মতো Wi-Fi বিবরণ দেখায়।",
+            cmd_apt_desc: "Advanced Package Tool (APT) সফটওয়্যার প্যাকেজ পরিচালনা করতে ব্যবহৃত হয়। <code>apt update</code> প্যাকেজ তালিকা রিফ্রেশ করে এবং <code>apt install</code> একটি নতুন প্যাকেজ ইনস্টল করে।",
+            cmd_ping_desc: "প্যাকেট পাঠিয়ে এবং প্রতিক্রিয়ার জন্য অপেক্ষা করে অন্য হোস্টের (যেমন একটি ওয়েবসাইট) সাথে নেটওয়ার্ক সংযোগ পরীক্ষা করে।",
+            cmd_history_desc: "আপনি টার্মিনালে আগে চালানো কমান্ডগুলির একটি সংখ্যাযুক্ত তালিকা দেখায়।",
+            cmd_clear_desc: "টার্মিনাল স্ক্রিন থেকে সমস্ত লেখা এবং পূর্ববর্তী কমান্ড মুছে দেয়, আপনাকে একটি পরিষ্কার স্ক্রিন দেয়।",
+            cmd_help_desc: "একটি নির্দিষ্ট কমান্ড কীভাবে ব্যবহার করতে হয় এবং তার বিকল্পগুলি কী কী তার সারসংক্ষেপ দেখায়। আটকে গেলে এটি খুব দরকারী।",
+            cmd_uname_desc: "সিস্টেমের তথ্য প্রদর্শন করে। কার্নেল সংস্করণ, আর্কিটেকচার ইত্যাদির মতো বিস্তারিত তথ্য দেখতে <code>-a</code> (all) ফ্ল্যাগ ব্যবহার করুন।",
+            cmd_neofetch_desc: "আপনার সিস্টেমের তথ্যের একটি ভিজ্যুয়াল সারসংক্ষেপ শৈল্পিকভাবে দেখায়।",
+            cmd_date_desc: "বর্তমান সিস্টেমের তারিখ এবং সময় প্রদর্শন করে।",
+
+            task_title: "আপনার মিশন: টার্মিনালে অনুশীলন করুন",
+            task_p1: "এখন, নিচের টার্মিনাল সিমুলেটরে অনুশীলন করুন। আপনার দক্ষতা পরীক্ষা করার জন্য নিম্নলিখিত মিশনগুলো সম্পন্ন করুন।",
+            task_su_instruction: "<strong>নোট:</strong> এই টার্মিনাল সিমুলেটরটি আপনাকে সরাসরি <strong>রুট</strong> ব্যবহারকারী হিসাবে শুরু করে। আপনাকে <code>su</code> বা <code>sudo</code> কমান্ড ব্যবহার করতে হবে না।",
+            
+            task1_title: "মিশন ১: গোপন ক্রেডেনশিয়াল খুঁজুন",
+            task1_step1: "উপলব্ধ ফোল্ডারগুলি দেখতে কনটেন্ট তালিকাভুক্ত করুন (<code>ls</code> ব্যবহার করুন)।",
+            task1_step2: "<code>Documents</code> ডিরেক্টরিতে নেভিগেট করুন (<code>cd</code> ব্যবহার করুন)।",
+            task1_step3: "<code>passwords.txt</code> ফাইলটি খুঁজে পেতে আবার কনটেন্ট তালিকাভুক্ত করুন (<code>ls</code> ব্যবহার করুন)।",
+            task1_step4: "ইউজারনেম এবং পাসওয়ার্ড খুঁজে পেতে ফাইলের বিষয়বস্তু প্রদর্শন করুন (<code>cat</code> ব্যবহার করুন)।",
+
+            task2_title: "মিশন ২: আপনার আইপি অ্যাড্রেস খুঁজুন",
+            task2_step1: "আপনার নেটওয়ার্ক ডিভাইসগুলির বিবরণ দেখতে নেটওয়ার্ক কনফিগারেশন কমান্ডটি চালান (<code>ifconfig</code> ব্যবহার করুন)।",
+            task2_step2: "<code>wlan0</code> ইন্টারফেসটি সন্ধান করুন এবং <code>inet</code> এর পাশের মানটি খুঁজুন। এটি আপনার লোকাল আইপি অ্যাড্রেস।",
+
+            task3_title: "মিশন ৩: আপনার ওয়াই-ফাই BSSID খুঁজুন",
+            task3_step1: "ওয়্যারলেস কনফিগারেশন কমান্ডটি চালান (<code>iwconfig</code> ব্যবহার করুন)।",
+            task3_step2: "<code>wlan0</code> বিভাগটি সন্ধান করুন এবং 'Access Point' এর পাশের MAC অ্যাড্রেসটি খুঁজুন। এটিই BSSID।",
+
+            task4_title: "মিশন ৪: একটি নতুন টুল ইনস্টল করুন",
+            task4_step1: "প্রথমে, আপনার সিস্টেমের প্যাকেজ তালিকা আপডেট করুন যাতে আপনার কাছে সর্বশেষ তথ্য থাকে (<code>apt update</code> ব্যবহার করুন)।",
+            task4_step2: "এখন, 'cowsay' নামের একটি মজার টুল ইনস্টল করুন (<code>apt install cowsay</code> ব্যবহার করুন)।",
+        },
+        pt: {
+            title: "Comandos Básicos do Kali Linux",
+            select_language: "Selecionar Idioma:",
+            example_text: "Exemplo:",
+            recap_title: "Recapitulação Rápida e Próximos Passos",
+            recap_p1: "Em nosso tutorial anterior, aprendemos o que é o Kali Linux e como instalá-lo. Agora, vamos mergulhar no coração do Linux: o terminal de linha de comando. Exploraremos alguns comandos fundamentais que você usará diariamente.",
+            commands_title: "Comandos Básicos do Kali Linux",
+            commands_intro: "O terminal é uma ferramenta poderosa. Vamos nos familiarizar com ele aprendendo estes comandos essenciais. Abaixo estão os comandos com explicações e exemplos.",
+            case_sensitive_note: "<strong>Nota Importante:</strong> O terminal do Linux é <strong>sensível a maiúsculas e minúsculas</strong>. Isso significa que <code>Documents</code> e <code>documents</code> são tratados como nomes diferentes. Sempre preste atenção à capitalização!",
+            cmd_whoami_desc: "Exibe o nome de usuário do usuário atual. É útil saber como quem você está logado no momento.",
+            cmd_pwd_desc: "Significa 'Print Working Directory' (Imprimir Diretório de Trabalho). Mostra o caminho completo da sua localização atual no sistema de arquivos.",
+            cmd_ls_desc: "Lista arquivos e diretórios na localização atual. Você pode usar flags como <code>-l</code> para uma lista detalhada ou <code>-a</code> para mostrar arquivos ocultos.",
+            cmd_cd_desc: "Significa 'Change Directory' (Mudar Diretório). É usado para navegar entre diretórios. Use <code>cd ..</code> para subir um nível.",
+            cmd_cat_desc: "Significa 'Concatenate' (Concatenar). É usado para exibir o conteúdo de um arquivo na tela.",
+            cmd_touch_desc: "Cria um novo arquivo vazio. Se o arquivo já existir, atualiza seu carimbo de data/hora.",
+            cmd_mkdir_desc: "Significa 'Make Directory' (Criar Diretório). Cria um novo diretório (pasta) na localização atual.",
+            cmd_echo_desc: "Exibe uma linha de texto. Também pode ser usado para escrever texto em um arquivo usando redirecionamento (<code>></code>).",
+            cmd_ifconfig_desc: "Exibe a configuração da sua interface de rede, incluindo seu endereço IP (procure por 'inet'). O comando mais novo é <code>ip addr</code>.",
+            cmd_iwconfig_desc: "Semelhante ao <code>ifconfig</code>, mas especificamente para interfaces de rede sem fio. Mostra detalhes do Wi-Fi como SSID e endereço MAC do Ponto de Acesso.",
+            cmd_apt_desc: "A Ferramenta de Pacotes Avançada (APT) é usada para gerenciar pacotes de software. <code>apt update</code> atualiza a lista de pacotes e <code>apt install</code> instala um novo pacote.",
+            cmd_ping_desc: "Testa a conexão de rede com outro host (como um site) enviando pacotes e esperando por uma resposta.",
+            cmd_history_desc: "Mostra uma lista numerada dos comandos que você executou anteriormente no terminal.",
+            cmd_clear_desc: "Limpa todo o texto e comandos anteriores da tela do terminal, dando-lhe uma tela limpa.",
+            cmd_help_desc: "Mostra um resumo de como usar um comando específico e quais são suas opções. Muito útil quando você está empacado.",
+            cmd_uname_desc: "Exibe informações do sistema. Use a flag <code>-a</code> (all) para ver informações detalhadas como a versão do Kernel, arquitetura, etc.",
+            cmd_neofetch_desc: "Mostra um resumo visual das informações do seu sistema de uma forma artística.",
+            cmd_date_desc: "Exibe a data e a hora atuais do sistema.",
+            task_title: "Suas Missões: Pratique no Terminal",
+            task_p1: "Agora, pratique no simulador de terminal abaixo. Complete as seguintes missões para testar suas habilidades.",
+            task_su_instruction: "<strong>Nota:</strong> Este simulador de terminal inicia você diretamente como o usuário <strong>root</strong>. Você não precisa usar o comando <code>su</code> ou <code>sudo</code>.",
+            task1_title: "Missão 1: Encontre as Credenciais Secretas",
+            task1_step1: "Liste o conteúdo para ver as pastas disponíveis (use <code>ls</code>).",
+            task1_step2: "Navegue para o diretório <code>Documents</code> (use <code>cd</code>).",
+            task1_step3: "Liste o conteúdo novamente para encontrar o arquivo <code>passwords.txt</code> (use <code>ls</code>).",
+            task1_step4: "Exiba o conteúdo do arquivo para encontrar o nome de usuário e a senha (use <code>cat</code>).",
+            task2_title: "Missão 2: Encontre seu Endereço IP",
+            task2_step1: "Execute o comando de configuração de rede para ver detalhes sobre seus dispositivos de rede (use <code>ifconfig</code>).",
+            task2_step2: "Procure pela interface <code>wlan0</code> e encontre o valor ao lado de <code>inet</code>. Esse é o seu endereço IP local.",
+            task3_title: "Missão 3: Encontre o BSSID do seu Wi-Fi",
+            task3_step1: "Execute o comando de configuração sem fio (use <code>iwconfig</code>).",
+            task3_step2: "Procure pela seção <code>wlan0</code> e encontre o endereço MAC ao lado de 'Access Point'. Este é o BSSID.",
+            task4_title: "Missão 4: Instale uma Nova Ferramenta",
+            task4_step1: "Primeiro, atualize a lista de pacotes do seu sistema para ter certeza de que possui as informações mais recentes (use <code>apt update</code>).",
+            task4_step2: "Agora, instale uma ferramenta divertida chamada 'cowsay' (use <code>apt install cowsay</code>)."
+        },
+        ru: {
+            title: "Основные команды Kali Linux",
+            select_language: "Выберите язык:",
+            example_text: "Пример:",
+            recap_title: "Краткий обзор и что дальше",
+            recap_p1: "В нашем предыдущем руководстве мы узнали, что такое Kali Linux и как его установить. Теперь мы погрузимся в самое сердце Linux: терминал командной строки. Мы рассмотрим некоторые основные команды, которые вы будете использовать ежедневно.",
+            commands_title: "Основные команды Kali Linux",
+            commands_intro: "Терминал — это мощный инструмент. Давайте освоимся с ним, изучив эти основные команды. Ниже приведены команды с объяснениями и примерами.",
+            case_sensitive_note: "<strong>Важное примечание:</strong> Терминал Linux <strong>чувствителен к регистру</strong>. Это означает, что <code>Documents</code> и <code>documents</code> рассматриваются как разные имена. Всегда обращайте внимание на регистр!",
+            cmd_whoami_desc: "Отображает имя текущего пользователя. Полезно знать, под каким пользователем вы вошли в систему.",
+            cmd_pwd_desc: "Означает 'Print Working Directory' (Вывести рабочий каталог). Показывает полный путь к вашему текущему местоположению в файловой системе.",
+            cmd_ls_desc: "Перечисляет файлы и каталоги в текущем местоположении. Вы можете использовать флаги, такие как <code>-l</code> для подробного списка или <code>-a</code> для отображения скрытых файлов.",
+            cmd_cd_desc: "Означает 'Change Directory' (Сменить каталог). Используется для навигации между каталогами. Используйте <code>cd ..</code>, чтобы подняться на один уровень вверх.",
+            cmd_cat_desc: "Означает 'Concatenate' (Объединить). Используется для вывода содержимого файла на экран.",
+            cmd_touch_desc: "Создает новый пустой файл. Если файл уже существует, обновляет его временную метку.",
+            cmd_mkdir_desc: "Означает 'Make Directory' (Создать каталог). Создает новый каталог (папку) в текущем местоположении.",
+            cmd_echo_desc: "Отображает строку текста. Также может использоваться для записи текста в файл с помощью перенаправления (<code>></code>).",
+            cmd_ifconfig_desc: "Отображает конфигурацию вашего сетевого интерфейса, включая ваш IP-адрес (ищите 'inet'). Более новой командой является <code>ip addr</code>.",
+            cmd_iwconfig_desc: "Аналогично <code>ifconfig</code>, но специально для беспроводных сетевых интерфейсов. Показывает детали Wi-Fi, такие как SSID и MAC-адрес точки доступа.",
+            cmd_apt_desc: "Advanced Package Tool (APT) используется для управления пакетами программного обеспечения. <code>apt update</code> обновляет список пакетов, а <code>apt install</code> устанавливает новый пакет.",
+            cmd_ping_desc: "Проверяет сетевое соединение с другим хостом (например, веб-сайтом), отправляя пакеты и ожидая ответа.",
+            cmd_history_desc: "Показывает нумерованный список команд, которые вы ранее выполняли в терминале.",
+            cmd_clear_desc: "Очищает весь текст и предыдущие команды с экрана терминала, предоставляя вам чистый лист.",
+            cmd_help_desc: "Показывает краткое руководство по использованию определенной команды и ее опций. Очень полезно, когда вы застряли.",
+            cmd_uname_desc: "Отображает информацию о системе. Используйте флаг <code>-a</code> (all) для просмотра подробной информации, такой как версия ядра, архитектура и т. д.",
+            cmd_neofetch_desc: "Показывает визуальную сводку информации о вашей системе в художественном стиле.",
+            cmd_date_desc: "Отображает текущую системную дату и время.",
+            task_title: "Ваши миссии: Практика в терминале",
+            task_p1: "Теперь попрактикуйтесь в симуляторе терминала ниже. Выполните следующие миссии, чтобы проверить свои навыки.",
+            task_su_instruction: "<strong>Примечание:</strong> Этот симулятор терминала запускает вас непосредственно под пользователем <strong>root</strong>. Вам не нужно использовать команду <code>su</code> или <code>sudo</code>.",
+            task1_title: "Миссия 1: Найти секретные учетные данные",
+            task1_step1: "Выведите список содержимого, чтобы увидеть доступные папки (используйте <code>ls</code>).",
+            task1_step2: "Перейдите в каталог <code>Documents</code> (используйте <code>cd</code>).",
+            task1_step3: "Снова выведите список содержимого, чтобы найти файл <code>passwords.txt</code> (используйте <code>ls</code>).",
+            task1_step4: "Отобразите содержимое файла, чтобы найти имя пользователя и пароль (используйте <code>cat</code>).",
+            task2_title: "Миссия 2: Найти свой IP-адрес",
+            task2_step1: "Выполните команду настройки сети, чтобы увидеть подробности о ваших сетевых устройствах (используйте <code>ifconfig</code>).",
+            task2_step2: "Найдите интерфейс <code>wlan0</code> и найдите значение рядом с <code>inet</code>. Это ваш локальный IP-адрес.",
+            task3_title: "Миссия 3: Найти BSSID вашего Wi-Fi",
+            task3_step1: "Выполните команду настройки беспроводной сети (используйте <code>iwconfig</code>).",
+            task3_step2: "Найдите раздел <code>wlan0</code> и найдите MAC-адрес рядом с 'Access Point'. Это и есть BSSID.",
+            task4_title: "Миссия 4: Установить новый инструмент",
+            task4_step1: "Сначала обновите список пакетов вашей системы, чтобы убедиться, что у вас есть самая свежая информация (используйте <code>apt update</code>).",
+            task4_step2: "Теперь установите забавный инструмент под названием 'cowsay' (используйте <code>apt install cowsay</code>)."
+        },
+        ur: {
+            title: "کالی لینکس کے بنیادی کمانڈز",
+            select_language: "زبان منتخب کریں:",
+            example_text: "مثال:",
+            recap_title: "فوری یاد دہانی اور آگے کیا ہے",
+            recap_p1: "ہمارے پچھلے ٹیوٹوریل میں، ہم نے سیکھا کہ کالی لینکس کیا ہے اور اسے کیسے انسٹال کیا جائے۔ اب، ہم لینکس کے دل میں غوطہ لگائیں گے: کمانڈ لائن ٹرمینل۔ ہم کچھ بنیادی کمانڈز دریافت کریں گے جو آپ روزانہ استعمال کریں گے۔",
+            commands_title: "کالی لینکس کے بنیادی کمانڈز",
+            commands_intro: "ٹرمینل ایک طاقتور ٹول ہے۔ آئیے ان ضروری کمانڈز کو سیکھ کر اس سے مانوس ہوں۔ ذیل میں وضاحتوں اور مثالوں کے ساتھ کمانڈز دی گئی ہیں۔",
+            case_sensitive_note: "<strong>اہم نوٹ:</strong> لینکس ٹرمینل <strong>کیس حساس</strong> ہے۔ اس کا مطلب ہے کہ <code>Documents</code> اور <code>documents</code> کو مختلف ناموں کے طور پر سمجھا جاتا ہے۔ ہمیشہ کیپٹلائزیشن پر دھیان دیں!",
+            cmd_whoami_desc: "موجودہ صارف کا صارف نام دکھاتا ہے۔ یہ جاننا مفید ہے کہ آپ فی الحال کس کے طور پر لاگ ان ہیں۔",
+            cmd_pwd_desc: "اس کا مطلب ہے 'پرنٹ ورکنگ ڈائرکٹری'۔ یہ فائل سسٹم میں آپ کے موجودہ مقام کا مکمل راستہ دکھاتا ہے۔",
+            cmd_ls_desc: "موجودہ مقام میں فائلوں اور ڈائریکٹریوں کی فہرست بناتا ہے۔ آپ تفصیلی فہرست کے لیے <code>-l</code> جیسے جھنڈے استعمال کر سکتے ہیں یا چھپی ہوئی فائلوں کو دکھانے کے لیے <code>-a</code> استعمال کر سکتے ہیں۔",
+            cmd_cd_desc: "اس کا مطلب ہے 'ڈائرکٹری تبدیل کریں'۔ یہ ڈائریکٹریوں کے درمیان نیویگیٹ کرنے کے لیے استعمال ہوتا ہے۔ ایک سطح اوپر جانے کے لیے <code>cd ..</code> استعمال کریں۔",
+            cmd_cat_desc: "اس کا مطلب ہے 'کونکیٹینیٹ'۔ یہ اسکرین پر کسی فائل کے مواد کو ظاہر کرنے کے لیے استعمال ہوتا ہے۔",
+            cmd_touch_desc: "ایک نئی، خالی فائل بناتا ہے۔ اگر فائل پہلے سے موجود ہے، تو یہ اس کے ٹائم اسٹیمپ کو اپ ڈیٹ کرتا ہے۔",
+            cmd_mkdir_desc: "اس کا مطلب ہے 'ڈائرکٹری بنائیں'۔ یہ موجودہ مقام میں ایک نئی ڈائرکٹری (فولڈر) بناتا ہے۔",
+            cmd_echo_desc: "متن کی ایک لائن دکھاتا ہے۔ اسے ری ڈائریکشن (<code>></code>) کا استعمال کرتے ہوئے فائل میں متن لکھنے کے لیے بھی استعمال کیا جا سکتا ہے۔",
+            cmd_ifconfig_desc: "آپ کے آئی پی ایڈریس سمیت آپ کے نیٹ ورک انٹرفیس کی کنفیگریشن دکھاتا ہے ('inet' تلاش کریں)۔ نیا کمانڈ <code>ip addr</code> ہے۔",
+            cmd_iwconfig_desc: "<code>ifconfig</code> کی طرح، لیکن خاص طور پر وائرلیس نیٹ ورک انٹرفیس کے لیے۔ یہ وائی فائی کی تفصیلات جیسے SSID اور رسائی پوائنٹ کا میک ایڈریس دکھاتا ہے۔",
+            cmd_apt_desc: "ایڈوانسڈ پیکیج ٹول (APT) سافٹ ویئر پیکجوں کا نظم کرنے کے لیے استعمال ہوتا ہے۔ <code>apt update</code> پیکیج کی فہرست کو تازہ کرتا ہے، اور <code>apt install</code> ایک نیا پیکیج انسٹال کرتا ہے۔",
+            cmd_ping_desc: "پیکٹ بھیج کر اور جواب کا انتظار کرکے کسی دوسرے میزبان (جیسے ویب سائٹ) سے نیٹ ورک کنکشن کی جانچ کرتا ہے۔",
+            cmd_history_desc: "ان کمانڈز کی ایک نمبر والی فہرست دکھاتا ہے جو آپ نے پہلے ٹرمینل میں چلائی ہیں۔",
+            cmd_clear_desc: "ٹرمینل اسکرین سے تمام متن اور پچھلی کمانڈز کو صاف کرتا ہے، آپ کو ایک صاف سلیٹ دیتا ہے۔",
+            cmd_help_desc: "کسی مخصوص کمانڈ کو استعمال کرنے کا طریقہ اور اس کے اختیارات کیا ہیں کا خلاصہ دکھاتا ہے۔ جب آپ پھنس جاتے ہیں تو یہ بہت مفید ہے۔",
+            cmd_uname_desc: "سسٹم کی معلومات دکھاتا ہے۔ कर्نل ورژن، آرکیٹیکچر وغیرہ جیسی تفصیلی معلومات دیکھنے کے لیے <code>-a</code> (تمام) پرچم کا استعمال کریں۔",
+            cmd_neofetch_desc: "آپ کے سسٹم کی معلومات کا ایک بصری خلاصہ فنکارانہ انداز میں دکھاتا ہے۔",
+            cmd_date_desc: "موجودہ سسٹم کی تاریخ اور وقت دکھاتا ہے۔",
+            task_title: "آپ کے مشن: ٹرمینل میں مشق کریں",
+            task_p1: "اب، نیچے ٹرمینل سمیلیٹر میں مشق کریں۔ اپنی مہارتوں کو جانچنے کے لیے درج ذیل مشن مکمل کریں۔",
+            task_su_instruction: "<strong>نوٹ:</strong> یہ ٹرمینل سمیلیٹر آپ کو براہ راست <strong>روٹ</strong> صارف کے طور پر شروع کرتا ہے۔ آپ کو <code>su</code> یا <code>sudo</code> کمانڈ استعمال کرنے کی ضرورت نہیں ہے۔",
+            task1_title: "مشن 1: خفیہ اسناد تلاش کریں",
+            task1_step1: "دستیاب فولڈرز دیکھنے کے لیے مواد کی فہرست بنائیں (<code>ls</code> استعمال کریں)۔",
+            task1_step2: "<code>Documents</code> ڈائرکٹری میں جائیں (<code>cd</code> استعمال کریں)۔",
+            task1_step3: "<code>passwords.txt</code> فائل تلاش کرنے کے لیے دوبارہ مواد کی فہرست بنائیں (<code>ls</code> استعمال کریں)۔",
+            task1_step4: "صارف نام اور پاس ورڈ تلاش کرنے کے لیے فائل کا مواد ڈسپلے کریں (<code>cat</code> استعمال کریں)۔",
+            task2_title: "مشن 2: اپنا آئی پی ایڈریس تلاش کریں",
+            task2_step1: "اپنے نیٹ ورک ڈیوائسز کے بارے میں تفصیلات دیکھنے کے لیے نیٹ ورک کنفیگریشن کمانڈ چلائیں (<code>ifconfig</code> استعمال کریں)۔",
+            task2_step2: "<code>wlan0</code> انٹرفیس تلاش کریں اور <code>inet</code> کے آگے دی گئی قدر تلاش کریں۔ یہ آپ کا مقامی آئی پی ایڈریس ہے۔",
+            task3_title: "مشن 3: اپنے وائی فائی کا BSSID تلاش کریں",
+            task3_step1: "وائرلیس کنفیگریشن کمانڈ چلائیں (<code>iwconfig</code> استعمال کریں)۔",
+            task3_step2: "<code>wlan0</code> سیکشن تلاش کریں اور 'ایکسیس پوائنٹ' کے آگے میک ایڈریس تلاش کریں۔ یہ BSSID ہے۔",
+            task4_title: "مشن 4: ایک نیا ٹول انسٹال کریں",
+            task4_step1: "سب سے پہلے، اپنے سسٹم کی پیکیج لسٹ کو اپ ڈیٹ کریں تاکہ یہ یقینی بنایا جا سکے کہ آپ کے پاس تازہ ترین معلومات ہیں (<code>apt update</code> استعمال کریں)۔",
+            task4_step2: "اب، 'cowsay' نامی ایک تفریحی ٹول انسٹال کریں (<code>apt install cowsay</code> استعمال کریں)۔"
+        }
+    };
+
+    const langSelect = document.getElementById('lang-select');
+    const elementsToTranslate = document.querySelectorAll('[data-lang-key]');
+
+    function changeLanguage(lang) {
+        const selectedTranslations = translations[lang] || translations['en'];
+        elementsToTranslate.forEach(element => {
+            const key = element.getAttribute('data-lang-key');
+            if (selectedTranslations[key]) {
+                element.innerHTML = selectedTranslations[key];
+            }
+        });
+        document.documentElement.lang = lang;
+        if (lang === 'ar' || lang === 'ur') {
+            document.body.style.direction = 'rtl';
+        } else {
+            document.body.style.direction = 'ltr';
+        }
+    }
+
+    langSelect.addEventListener('change', (event) => {
+        changeLanguage(event.target.value);
+    });
+    changeLanguage(langSelect.value); // Initial load
+    </script>
+</body>
+</html>

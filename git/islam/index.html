@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ইসলামিক হোম</title>
+    <script src="theme.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Amiri:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+        --primary-gradient: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+        --glass-bg: rgba(255,255,255,0.75);
+        --glass-border: rgba(255,255,255,0.6);
+        --text-primary: #1a202c;
+        --text-secondary: #4a5568;
+        --accent-color: #4c51bf;
+        --accent-glow: rgba(76,81,191,0.3);
+        --card-bg: rgba(255,255,255,0.9);
+        --nav-bg: rgba(255,255,255,0.9);
+        --ramadan-bg: linear-gradient(135deg, #1e4b3c, #0e7b5c);
+        /* Day Mode Weather: একটু ডিপ এবং রিচ গ্রেডিয়েন্ট */
+        --weather-bg: linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%);
+    }
+    body.dark-mode {
+        --primary-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 100%);
+        --glass-bg: rgba(17,25,40,0.85);
+        --glass-border: rgba(255,255,255,0.1);
+        --text-primary: #f7fafc;
+        --text-secondary: #a0aec0;
+        --accent-color: #63b3ed;
+        --card-bg: rgba(45,55,72,0.8);
+        --nav-bg: rgba(26, 32, 44, 0.9);
+        --ramadan-bg: linear-gradient(135deg, #0a3629, #065f46);
+        /* Dark Mode Weather: আরও বেশি গভীর নীল/কালো ভাব */
+        --weather-bg: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+    }
+    body.dark-mode .theme-toggle {
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    body {
+        font-family: 'Hind Siliguri', sans-serif;
+        background: var(--primary-gradient);
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--text-primary);
+        overflow: hidden;
+    }
+    .app-container {
+        width: 100%;
+        height: 100vh; height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        max-width: 600px;
+        margin: 0 auto;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 0 50px rgba(0,0,0,0.2);
+    }
+    
+    .home-header {
+        padding: 20px 20px 15px;
+        border-bottom: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .header-info { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 4px;
+        flex: 1;
+    }
+    .hijri-date { 
+        font-size: 0.85rem; 
+        color: var(--accent-color); 
+        font-weight: 600; 
+        font-family: 'Poppins', 'Hind Siliguri', sans-serif;
+    }
+    .greeting { 
+        font-size: 1.4rem; 
+        font-weight: 700; 
+        color: var(--text-primary); 
+        line-height: 1.2;
+    }
+    .location { 
+        font-size: 0.9rem; 
+        color: var(--text-secondary); 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        margin-top: 2px;
+    }
+    .theme-toggle {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-color);
+        cursor: pointer;
+        background: var(--card-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 50%;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        transition: transform 0.2s, background 0.2s;
+        box-shadow: 0 4px 10px var(--accent-glow);
+    }
+    .theme-toggle:active { transform: scale(0.9); }
+
+    .scroll-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 20px 140px 20px;
+        scrollbar-width: none;
+    }
+    .scroll-content::-webkit-scrollbar { display: none; }
+
+    .card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        padding: 20px;
+        margin-bottom: 18px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+    }
+    .card-title {
+        font-size: 1.15rem; font-weight: 700; color: var(--accent-color);
+        margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
+    }
+
+    .weather-card {
+        background: var(--weather-bg);
+        color: white; border: none;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 20px 25px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .weather-main { display: flex; align-items: center; gap: 15px; }
+    .weather-main i { font-size: 2.5rem; opacity: 0.95;}
+    .weather-temp { font-size: 2.2rem; font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1;}
+    .weather-desc { font-size: 0.75rem; opacity: 0.9;}
+    .weather-details { text-align: right; font-size: 0.85rem; opacity: 0.9; font-family: 'Poppins', sans-serif; line-height: 1.5;}
+    
+    .ramadan-card {
+        background: var(--ramadan-bg);
+        color: white; border: none;
+        display: flex; align-items: center; justify-content: space-between;
+        text-decoration: none; cursor: pointer;
+    }
+    .ramadan-card:active { transform: scale(0.98); }
+    .ramadan-text h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 2px; }
+    .ramadan-text p { font-size: 0.9rem; opacity: 0.85; margin-bottom: 8px;}
+    .view-btn {
+        background: rgba(255,255,255,0.2);
+        padding: 4px 12px; border-radius: 20px;
+        font-size: 0.8rem; font-weight: 600;
+        display: inline-flex; align-items: center; gap: 5px;
+    }
+    .ramadan-icon { font-size: 2.5rem; opacity: 0.7; }
+
+    .prayer-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 10px 0; border-bottom: 1px dashed var(--glass-border);
+    }
+    .prayer-row:last-child { border-bottom: none; padding-bottom: 0;}
+    .prayer-label { font-weight: 600; font-size: 1rem; color: var(--text-primary);}
+    .prayer-value { font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--accent-color); font-size: 1.1rem;}
+
+    .daily-arabic {
+        font-family: 'Amiri', serif; font-size: 1.5rem; text-align: right;
+        direction: rtl; line-height: 2; margin-bottom: 12px; color: var(--text-primary);
+    }
+    .daily-translation { font-size: 1rem; color: var(--text-primary); line-height: 1.6; }
+    .daily-pronunciation { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; font-style: italic;}
+    .daily-reference {
+        font-size: 0.85rem; color: var(--accent-color); margin-top: 10px;
+        font-style: italic; text-align: right; font-weight: 600;
+    }
+    .dua-title { font-weight: 700; color: var(--accent-color); margin-bottom: 10px; font-size: 1.1rem; }
+    
+   /* ভিডিও কার্ডের প্লেইন ডিজাইন */
+.video-card {
+    background: var(--card-bg); /* তোর থিমের ব্যাকগ্রাউন্ড */
+    border: 1.5px solid var(--border-color); /* হালকা বর্ডার */
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.video-card .card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.video-container {
+    background: #1a1a1a; /* ভিডিওর এরিয়াটা জাস্ট ডার্ক থাকবে */
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+#videoTitle {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    margin: 8px 0 0 0;
+}
+
+#videoProvider {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* লোডিং স্কেলিটনও হবে একদম প্লেইন */
+.skeleton-video {
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+
+    .skeleton {
+        background: linear-gradient(90deg, var(--glass-border) 25%, rgba(128,128,128,0.1) 50%, var(--glass-border) 75%);
+        background-size: 200% 100%; animation: shimmer 1.5s infinite;
+        color: transparent !important; border-radius: 6px; min-height: 20px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .bottom-nav {
+        position: fixed; bottom: 30px; margin-bottom: env(safe-area-inset-bottom);
+        left: 20px; right: 20px; max-width: 560px; margin-left: auto; margin-right: auto;
+        background: var(--nav-bg); backdrop-filter: blur(25px); height: 75px;
+        border-radius: 25px; display: flex; justify-content: space-around; align-items: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 1px solid var(--glass-border); z-index: 1000;
+    }
+    .nav-item {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: var(--text-secondary); font-size: 0.75rem; cursor: pointer; width: 60px; height: 60px;
+    }
+    .nav-item i { font-size: 1.4rem; margin-bottom: 4px; transition: transform 0.3s; }
+    .nav-item.active { color: var(--accent-color); font-weight: 600; }
+    .nav-item.active i { transform: translateY(-2px); }
+    a { text-decoration: none; color: inherit; }
+</style>
+
+</head>
+<body>
+<div class="app-container">
+    
+    <div class="home-header">
+        <div class="header-info">
+            <span class="hijri-date skeleton" id="hijriDate">হিজরি তারিখ লোড হচ্ছে...</span>
+            <span class="greeting" id="greeting">আস-সালামু আলাইকুম</span>
+            <span class="location" id="locationText"><i class="fas fa-map-marker-alt"></i> অবস্থান খোঁজা হচ্ছে...</span>
+        </div>
+        <div class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </div>
+    </div>
+
+    <div class="scroll-content" id="scrollContent">
+        
+        <div class="card weather-card" id="weatherCard">
+            <div class="weather-main">
+                <i class="fas fa-cloud-sun" id="wIcon"></i>
+                <div>
+                    <div class="weather-temp" id="wTemp">--°</div>
+                    <div class="weather-desc" id="wDesc">লোড হচ্ছে...</div>
+                </div>
+            </div>
+            <div class="weather-details">
+                <div id="wFeels">Feels like: --°C</div>
+                <div id="wMinMax">Min: --° | Max: --°</div>
+            </div>
+        </div>
+
+        <div class="card" id="prayerCard">
+            <div class="card-title"><i class="fas fa-clock"></i> নামাজের সময়সূচি</div>
+            <div id="prayerContent">
+                <div class="prayer-row"><span class="prayer-label">চলমান ওয়াক্ত:</span> <span class="prayer-value skeleton">--:--</span></div>
+                <div class="prayer-row"><span class="prayer-label">পরবর্তী ওয়াক্ত:</span> <span class="prayer-value skeleton">--:--</span></div>
+            </div>
+        </div>
+
+        <div class="card" id="ayahCard">
+            <div class="card-title"><i class="fas fa-quran"></i> আজকের আয়াত</div>
+            <div id="ayahContent">
+                <div class="daily-arabic skeleton">আরবি আয়াত</div>
+                <div class="daily-translation skeleton">অনুবাদ</div>
+                <div class="daily-reference skeleton">রেফারেন্স</div>
+            </div>
+        </div>
+
+        <div class="card" id="hadithCard">
+            <div class="card-title"><i class="fas fa-book-open"></i> আজকের হাদিস</div>
+            <div id="hadithContent">
+                <div class="daily-translation skeleton" style="min-height: 40px;">হাদিসের অর্থ</div>
+                <div class="daily-reference skeleton">রেফারেন্স</div>
+            </div>
+        </div>
+
+        <div class="card" id="duaCard">
+            <div class="card-title"><i class="fas fa-hands-praying"></i> <span id="duaTitle">আজকের দোয়া</span></div>
+            <div id="duaContent">
+                <div class="dua-title skeleton">শিরোনাম</div>
+                <div class="daily-arabic skeleton">আরবি</div>
+                <div class="daily-pronunciation skeleton">উচ্চারণ</div>
+                <div class="daily-translation skeleton">অর্থ</div>
+                <div class="daily-reference skeleton">রেফারেন্স</div>
+            </div>
+        </div>
+
+        <a href="ramadan-calendar.html" style="text-decoration: none;">
+            <div class="card ramadan-card">
+                <div class="ramadan-text">
+                    <h3>রমাদান <span id="Hyr"></span></h3>
+                    <p>সেহরি ও ইফতারের সময়সূচি</p>
+                    <span class="view-btn">দেখুন <i class="fas fa-arrow-right"></i></span>
+                </div>
+                <div class="ramadan-icon"><i class="fas fa-calendar-alt"></i></div>
+            </div>
+        </a>
+
+        <div class="card video-card" style="margin-top: 15px; overflow: hidden;">
+            <div class="card-header">
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-primary);">
+                    <i class="fab fa-youtube" style="color: #ff0000; margin-right: 8px;"></i> ইসলামিক ভিডিও
+                </h3>
+            </div>
+            
+            <div id="videoContainer" class="video-container" style="position: relative; width: 100%; border-radius: 12px; background: #000; overflow: hidden; aspect-ratio: 16 / 9; margin-top: 12px;">
+                <div class="skeleton-video" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-play-circle" style="font-size: 3rem; color: rgba(255,255,255,0.2);"></i>
+                </div>
+            </div>
+
+            <div class="video-info" style="padding-top: 10px;">
+                <p id="videoTitle" style="margin: 0; font-size: 0.95rem; line-height: 1.4; color: var(--text-primary); font-weight: 500;"></p>
+                <div id="videoProvider" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px; font-weight: bold;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" data-nav="home"><i class="fas fa-house"></i><span>হোম</span></div>
+        <div class="nav-item" data-nav="waqt"><i class="fas fa-clock"></i><span>ওয়াক্ত</span></div>
+        <div class="nav-item" data-nav="quran"><i class="fas fa-quran"></i><span>কুরআন</span></div>
+        <div class="nav-item" data-nav="hadith"><i class="fas fa-book-open"></i><span>হাদিস</span></div>
+        <div class="nav-item" data-nav="dua"><i class="fas fa-hands-praying"></i><span>দোয়া</span></div>
+    </div>
+</div>
+
+
+<script>
+  (function() {
+    // Cache key (version bump to avoid old cache and enforce new logic)
+    const CACHE_KEY = 'HomeCache_v11_strict_location';
+    const CACHE_DURATION = 60 * 60 * 1000; // ১ ঘণ্টা (মিলিসেকেন্ডে)
+    // App State
+    const appState = {
+        prayerTimesToday: null,
+        hijriToday: null,
+        hijriYesterday: null,
+        currentLocation: null, // { lat, lon }
+        areaName: null
+    };
+
+    const uiElements = {
+        hijriDate: document.getElementById('hijriDate'),
+        greeting: document.getElementById('greeting'),
+        location: document.getElementById('locationText'),
+        wIcon: document.getElementById('wIcon'),
+        wTemp: document.getElementById('wTemp'),
+        wDesc: document.getElementById('wDesc'),
+        wFeels: document.getElementById('wFeels'),
+        wMinMax: document.getElementById('wMinMax'),
+        prayerContent: document.getElementById('prayerContent'),
+        ayahContent: document.getElementById('ayahContent'),
+        hadithContent: document.getElementById('hadithContent'),
+        duaTitle: document.getElementById('duaTitle'),
+        duaContent: document.getElementById('duaContent')
+    };
+
+    // Utility: Extract minutes from time string
+    const getMinutes = (timeStr) => {
+        if(!timeStr) return 0;
+        const parts = timeStr.split(':');
+        const h = parseInt(parts[0], 10);
+        const m = parseInt(parts[1].substring(0, 2), 10);
+        return (h * 60) + m;
+    };
+    
+    // Format time to AM/PM
+    const formatTimeAmPm = (timeStr) => {
+        if (!timeStr) return '--:--';
+        const parts = timeStr.split(':');
+        let h = parseInt(parts[0], 10);
+        const m = parts[1].substring(0, 2);
+        const suffix = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${m} ${suffix}`;
+    };
+
+    // Compute current/next prayer (excluding Sunrise)
+    const computeCurrentNextPrayer = (timings) => {
+        if (!timings) return null;
+        
+        const order = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        const names = { Fajr:'ফজর', Dhuhr:'যোহর', Asr:'আসর', Maghrib:'মাগরিব', Isha:'ইশা' };
+        
+        const now = new Date();
+        const nowMins = now.getHours() * 60 + now.getMinutes();
+        
+        const timesArr = order.map(k => ({ 
+            name: names[k], 
+            mins: getMinutes(timings[k]), 
+            raw: timings[k] 
+        }));
+        
+        let current = null, next = null;
+        
+        for (let i = 0; i < timesArr.length; i++) {
+            if (nowMins < timesArr[i].mins) {
+                next = timesArr[i];
+                current = i > 0 ? timesArr[i-1] : timesArr[timesArr.length-1];
+                break;
+            }
+        }
+        
+        if (!next) { // after Isha
+            current = timesArr[timesArr.length-1];
+            next = timesArr[0];
+        }
+        
+        return {
+            current: `${current.name} (${formatTimeAmPm(current.raw)})`,
+            next: `${next.name} (${formatTimeAmPm(next.raw)})`
+        };
+    };
+
+    // Update Hijri based on Maghrib (only if data exists)
+    const updateHijriDisplay = () => {
+    const hijriElement = uiElements.hijriDate;
+    const hyrElement = document.getElementById('Hyr');
+
+    if (!appState.hijriToday || !appState.hijriYesterday || !appState.prayerTimesToday) {
+        if (hijriElement) hijriElement.innerText = 'হিজরি তারিখ পাওয়া যায়নি';
+        if (hyrElement) hyrElement.innerText = ''; // ডাটা না থাকলে সাল দেখানোর দরকার নাই
+        hijriElement?.classList.remove('skeleton');
+        return;
+    }
+
+    const now = new Date();
+    const currentMins = (now.getHours() * 60) + now.getMinutes();
+    const maghribMins = getMinutes(appState.prayerTimesToday.Maghrib);
+
+    // মাগরিবের পর হিজরি তারিখ বদলে যাবে
+    let activeHijriObj = (currentMins < maghribMins) ? appState.hijriYesterday : appState.hijriToday;
+
+    if (activeHijriObj && activeHijriObj.month && activeHijriObj.month.en) {
+        // মেন ডিসপ্লে আপডেট
+        hijriElement.innerText = `${activeHijriObj.day} ${activeHijriObj.month.en} ${activeHijriObj.year} হিজরি`;
+        
+        // তোর কার্ডের ওই স্পেশাল সাল আপডেট (Hyr ID)
+        if (hyrElement) {
+            hyrElement.innerText = `(${activeHijriObj.year})`; // সালটা ব্র্যাকেটে দিলে দেখতে বেশি সুন্দর লাগবে
+        }
+        
+        hijriElement.classList.remove('skeleton');
+    } else {
+        if (hijriElement) hijriElement.innerText = 'হিজরি তারিখ পাওয়া যায়নি';
+        hijriElement?.classList.remove('skeleton');
+    }
+};
+
+
+    const updateGreeting = () => {
+    const h = new Date().getHours();
+    let greetingText = 'শুভ রাত্রি'; // রাত ৮টা থেকে ভোর ৪:৫৯ পর্যন্ত ডিফল্ট
+
+    if (h >= 5 && h < 12) {
+        greetingText = 'শুভ সকাল';   // ভোর ৫টা থেকে সকাল ১১:৫৯
+    } else if (h >= 12 && h < 15) {
+        greetingText = 'শুভ মধ্যাহ্ন'; // দুপুর ১২টা থেকে দুপুর ২:৫৯
+    } else if (h >= 15 && h < 17) {
+        greetingText = 'শুভ বিকাল';   // দুপুর ৩টা থেকে বিকেল ৪:৫৯
+    } else if (h >= 17 && h < 20) {
+        greetingText = 'শুভ সন্ধ্যা';   // বিকেল ৫টা থেকে সন্ধ্যা ৭:৫৯
+    }
+    
+    uiElements.greeting.innerText = `আস-সালামু আলাইকুম, ${greetingText}`;
+};
+
+
+
+    // Get user location – rejects if fails or denied
+    const getPosition = () => {
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject(new Error('Geolocation not supported'));
+            } else {
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+                    err => reject(err),
+                    { timeout: 10000, maximumAge: 0 }
+                );
+            }
+        });
+    };
+
+    // Fetch area name from coordinates
+    const fetchAreaName = async (lat, lon) => {
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&accept-language=bn`, {
+            headers: { 'User-Agent': 'IslamicHome/1.0' }
+        });
+        if(!res.ok) throw new Error("Location fetch failed");
+        const data = await res.json();
+        const addr = data.address;
+        
+        // পাড়া, মহল্লা বা গ্রামকে আগে প্রায়োরিটি দেওয়া হয়েছে
+        return addr.suburb || addr.neighbourhood || addr.village || addr.residential || addr.town || addr.city || addr.district || 'অজানা স্থান';
+    } catch {
+        return 'অজানা স্থান';
+    }
+};
+
+
+    // Map weather code to Font Awesome icon (Sun for day, Moon for night)
+    const mapWeatherIcon = (code) => {
+        const h = new Date().getHours();
+        const isNight = (h >= 18 || h < 6);
+        
+        const codeMap = {
+            // Sunny / Clear / Night
+            113: isNight ? 'fa-moon' : 'fa-sun',
+            // Partly cloudy
+            116: isNight ? 'fa-cloud-moon' : 'fa-cloud-sun',
+            // Cloudy
+            119: 'fa-cloud',
+            // Overcast
+            122: 'fa-cloud',
+            // Fog / Mist
+            143: 'fa-smog', 248: 'fa-smog', 260: 'fa-smog',
+            // Light rain shower / drizzle
+            176: 'fa-cloud-rain', 263: 'fa-cloud-rain', 293: 'fa-cloud-rain',
+            296: 'fa-cloud-rain', 353: 'fa-cloud-rain',
+            // Rain
+            266: 'fa-cloud-rain', 281: 'fa-cloud-rain', 284: 'fa-cloud-rain',
+            299: 'fa-cloud-showers-heavy', 302: 'fa-cloud-showers-heavy',
+            305: 'fa-cloud-showers-heavy', 308: 'fa-cloud-showers-heavy',
+            311: 'fa-cloud-rain', 314: 'fa-cloud-showers-heavy',
+            356: 'fa-cloud-showers-heavy', 359: 'fa-cloud-showers-heavy',
+            // Sleet
+            182: 'fa-cloud-rain', 185: 'fa-cloud-rain', 317: 'fa-cloud-rain',
+            320: 'fa-cloud-showers-heavy', 362: 'fa-cloud-rain',
+            365: 'fa-cloud-showers-heavy',
+            // Snow
+            179: 'fa-snowflake', 227: 'fa-snowflake', 230: 'fa-snowflake',
+            323: 'fa-snowflake', 326: 'fa-snowflake', 329: 'fa-snowflake',
+            332: 'fa-snowflake', 335: 'fa-snowflake', 338: 'fa-snowflake',
+            350: 'fa-snowflake', 368: 'fa-snowflake', 371: 'fa-snowflake',
+            374: 'fa-snowflake', 377: 'fa-snowflake',
+            // Thunder
+            200: 'fa-cloud-bolt', 386: 'fa-cloud-bolt', 389: 'fa-cloud-bolt',
+            392: 'fa-cloud-bolt', 395: 'fa-cloud-bolt',
+        };
+        return codeMap[code] || (isNight ? 'fa-cloud-moon' : 'fa-cloud');
+    };
+
+    // Fetch weather – returns null on failure
+    const fetchWeather = async (lat, lon) => {
+        try {
+            const res = await fetch(`https://wttr.in/${lat},${lon}?format=j1`);
+            if(!res.ok) throw new Error("Weather fetch failed");
+            const data = await res.json();
+            const curr = data.current_condition[0];
+            const code = parseInt(curr.weatherCode, 10);
+            const icon = mapWeatherIcon(code);
+            return { 
+                temp: curr.temp_C, 
+                feels: curr.FeelsLikeC, 
+                min: data.weather[0].mintempC, 
+                max: data.weather[0].maxtempC, 
+                desc: 'বর্তমান আবহাওয়া', 
+                icon: icon
+            };
+        } catch {
+            return null;
+        }
+    };
+
+    // Fetch prayer times and hijri for today and yesterday – returns raw timings or null
+    const fetchPrayerAndAllHijri = async (lat, lon) => {
+        try {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+
+            const formatDate = (d) => `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
+            
+            const [resToday, resYesterday] = await Promise.all([
+                fetch(`https://api.aladhan.com/v1/timings/${formatDate(today)}?latitude=${lat}&longitude=${lon}&method=1`),
+                fetch(`https://api.aladhan.com/v1/timings/${formatDate(yesterday)}?latitude=${lat}&longitude=${lon}&method=1`)
+            ]);
+
+            if(!resToday.ok || !resYesterday.ok) throw new Error("Prayer API failed");
+
+            const dataToday = await resToday.json();
+            const dataYesterday = await resYesterday.json();
+
+            // Store in appState
+            appState.prayerTimesToday = dataToday.data.timings;
+            appState.hijriToday = dataToday.data.date.hijri;
+            appState.hijriYesterday = dataYesterday.data.date.hijri;
+
+            return dataToday.data.timings; // raw timings for cache
+        } catch {
+            return null;
+        }
+    };
+
+    // Fetch random ayah – returns null on failure
+    const fetchQuranAyah = async () => {
+    try {
+        const randAyah = Math.floor(Math.random() * 6236) + 1;
+        const res = await fetch(`https://api.alquran.cloud/v1/ayah/${randAyah}/editions/quran-uthmani,bn.bengali`);
+        if(!res.ok) throw new Error("Quran API failed");
+        
+        const d = await res.json();
+        const arabicText = d.data[0].text;
+        const translationText = d.data[1].text;
+
+        // যদি আয়াতের অনুবাদ ২৫ অক্ষরের ছোট হয়, তবে আবার নতুন আয়াত খুঁজবে
+        if (translationText.length < 25) {
+            return fetchQuranAyah(); 
+        }
+
+        return { 
+            arabic: arabicText, 
+            translation: translationText, 
+            ref: `সূরা ${d.data[0].surah.englishName} (${d.data[0].surah.number}:${d.data[0].numberInSurah})` 
+        };
+    } catch (e) {
+        console.error("Quran Ayah Fetch Error:", e);
+        return null;
+    }
+};
+
+
+    // Fetch random hadith – returns null on failure
+    const fetchHadith = async () => {
+        try {
+            const res = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ben-bukhari.min.json`);
+            if(!res.ok) throw new Error("Hadith API failed");
+            const d = await res.json();
+            const randomHadith = d.hadiths[Math.floor(Math.random() * d.hadiths.length)];
+            return { 
+                text: randomHadith.text, 
+                ref: `সহীহ বুখারী, হাদিস: ${randomHadith.hadithnumber}` 
+            };
+        } catch {
+            return null;
+        }
+    };
+
+    // Fetch random dua from local JSON – returns null on failure
+    const fetchDua = async () => {
+    try {
+        const res = await fetch('dua.json');
+        if(!res.ok) throw new Error("Dua JSON failed");
+        const duaList = await res.json();
+        
+        const h = new Date().getHours();
+        let targetCategory = "";
+
+        // ১. সময় অনুযায়ী ক্যাটাগরি ফিক্স করা
+        if (h >= 5 && h < 10) {
+            targetCategory = "সকাল ও সন্ধ্যার যিকর";
+        } 
+        else if (h >= 17 && h < 20) {
+            targetCategory = "সকাল ও সন্ধ্যার যিকর";
+        }
+
+        let selectedDua;
+
+        if (targetCategory) {
+            const categoryObj = duaList.find(c => c.category === targetCategory);
+            if (categoryObj && categoryObj.duas.length > 0) {
+                selectedDua = categoryObj.duas[Math.floor(Math.random() * categoryObj.duas.length)];
+            }
+        }
+
+        // ২. যদি নির্দিষ্ট সময় না হয়, তবে র‍্যান্ডম দোয়া
+        if (!selectedDua) {
+            const restricted = ["সকাল ও সন্ধ্যার যিকর", "ঈদুল ফিতর ও আযহা", "রুকইয়াহ"]; 
+            const filteredCategories = duaList.filter(c => !restricted.includes(c.category));
+            
+            const randomCategory = filteredCategories[Math.floor(Math.random() * filteredCategories.length)];
+            selectedDua = randomCategory.duas[Math.floor(Math.random() * randomCategory.duas.length)];
+            selectedDua.categoryTitle = randomCategory.category;
+        }
+
+        // --- ৩. এইখানেই আসল ম্যাজিক: ডাটা প্রসেসিং (Array check) ---
+        
+        const processField = (field, key) => {
+            if (Array.isArray(field)) {
+                // যদি অ্যারে হয়, তবে লুপ চালিয়ে সব টেক্সট জোড়া লাগিয়ে স্ট্রিং বানাবে
+                return field.map(item => item[key] || item.verse || item.text).join(' ');
+            }
+            return field; // স্ট্রিং হলে সরাসরি পাঠিয়ে দিবে
+        };
+
+        return { 
+            title: selectedDua.title || selectedDua.categoryTitle, 
+            arabic: processField(selectedDua.arabic, 'verse'), 
+            pronunciation: processField(selectedDua.pronunciation, 'text'), 
+            meaning: processField(selectedDua.meaning, 'text'), 
+            ref: selectedDua.reference 
+        };
+
+    } catch (e) {
+        console.error("Dua Fetch Error:", e);
+        return null;
+    }
+}
+
+    // Render main UI with provided data
+    const renderMainUI = (data) => {
+        // Location
+        if (data.area) {
+            uiElements.location.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${data.area}`;
+        } else {
+            uiElements.location.innerHTML = `<i class="fas fa-map-marker-alt"></i> অবস্থান পাওয়া যায়নি`;
+        }
+        
+        // Weather
+        document.getElementById('weatherCard').classList.remove('skeleton');
+        if (data.weather) {
+            uiElements.wIcon.className = `fas ${data.weather.icon}`;
+            uiElements.wTemp.innerText = `${data.weather.temp}°C`;
+            uiElements.wDesc.innerText = data.weather.desc;
+            uiElements.wFeels.innerText = `Feels like: ${data.weather.feels}°C`;
+            uiElements.wMinMax.innerText = `Min: ${data.weather.min}° | Max: ${data.weather.max}°`;
+        } else {
+            // Show NO default weather
+            const isNight = new Date().getHours() >= 18 || new Date().getHours() < 6;
+            uiElements.wIcon.className = isNight ? 'fas fa-cloud-moon' : 'fas fa-cloud'; 
+            uiElements.wTemp.innerText = '--°';
+            uiElements.wDesc.innerText = 'আবহাওয়া তথ্য পাওয়া যায়নি';
+            uiElements.wFeels.innerText = '';
+            uiElements.wMinMax.innerText = '';
+        }
+
+        // Prayer
+        if (data.prayerTimes) {
+            const p = computeCurrentNextPrayer(data.prayerTimes);
+            if (p) {
+                uiElements.prayerContent.innerHTML = `
+                    <div class="prayer-row"><span>চলমান:</span> <span class="prayer-value">${p.current}</span></div>
+                    <div class="prayer-row"><span>পরবর্তী:</span> <span class="prayer-value">${p.next}</span></div>
+                `;
+            } else {
+                uiElements.prayerContent.innerHTML = `<div class="prayer-row">নামাজের সময় পাওয়া যায়নি</div>`;
+            }
+        } else {
+            uiElements.prayerContent.innerHTML = `<div class="prayer-row">নামাজের সময় পাওয়া যায়নি</div>`;
+        }
+
+        // Ayah
+        if (data.ayah) {
+            uiElements.ayahContent.innerHTML = `
+                <div class="daily-arabic">${data.ayah.arabic}</div>
+                <div class="daily-translation">${data.ayah.translation}</div>
+                <div class="daily-reference">${data.ayah.ref}</div>
+            `;
+        } else {
+            uiElements.ayahContent.innerHTML = `<div class="daily-translation">আয়াত পাওয়া যায়নি</div>`;
+        }
+
+        // Hadith
+        if (data.hadith) {
+            uiElements.hadithContent.innerHTML = `
+                <div class="daily-translation" style="font-size: 1.1rem;">${data.hadith.text}</div>
+                <div class="daily-reference">${data.hadith.ref}</div>
+            `;
+        } else {
+            uiElements.hadithContent.innerHTML = `<div class="daily-translation">হাদিস পাওয়া যায়নি</div>`;
+        }
+
+        // Dua
+        if (data.dua) {
+            uiElements.duaTitle.innerText = data.dua.title;
+            uiElements.duaContent.innerHTML = `
+                <div class="daily-arabic">${data.dua.arabic}</div>
+                <div class="daily-pronunciation">উচ্চারণ: ${data.dua.pronunciation}</div>
+                <div class="daily-translation">অর্থ: ${data.dua.meaning}</div>
+                <div class="daily-reference">${data.dua.ref}</div>
+            `;
+        } else {
+            uiElements.duaTitle.innerText = 'আজকের দোয়া';
+            uiElements.duaContent.innerHTML = `<div class="daily-translation">দোয়া পাওয়া যায়নি</div>`;
+        }
+
+        // Update Hijri (uses appState)
+        updateHijriDisplay();
+    };
+
+    // Load location-based data (weather, prayer, hijri) using current lat/lon
+    const loadLocationBasedData = async (lat, lon) => {
+        // Fetch area, weather, prayer in parallel
+        const [area, weather, prayerTimings] = await Promise.all([
+            fetchAreaName(lat, lon),
+            fetchWeather(lat, lon),
+            fetchPrayerAndAllHijri(lat, lon)
+        ]);
+
+        // Update appState with new location info
+        appState.areaName = area;
+        appState.currentLocation = { lat, lon };
+        // prayerTimings and hijri are already set inside fetchPrayerAndAllHijri
+
+        return { area, weather, prayerTimes: prayerTimings };
+    };
+
+    // Main boot: try to get location, then fetch everything, or fallback to non-location data
+    const bootApplication = async () => {
+    updateGreeting();
+
+    // Ramadan Icon change
+    const ramadanIcon = document.querySelector('.ramadan-icon i');
+    if (ramadanIcon) {
+        ramadanIcon.className = 'fas fa-calendar-alt';
+    }
+
+    const todayStr = new Date().toDateString();
+    
+    let cached = null;
+    try { cached = JSON.parse(localStorage.getItem(CACHE_KEY)); } catch(e) {}
+    
+    // ১. যদি আজই ক্যাশ করা থাকে
+    if (cached && cached.date === todayStr) {
+        if (cached.prayerTimes) appState.prayerTimesToday = cached.prayerTimes;
+        if (cached.hijriToday) appState.hijriToday = cached.hijriToday;
+        if (cached.hijriYesterday) appState.hijriYesterday = cached.hijriYesterday;
+        if (cached.area) appState.areaName = cached.area;
+        if (cached.location) appState.currentLocation = cached.location;
+        
+        renderMainUI(cached);
+
+        // দোয়ার জন্য ক্যাশ ইগনোর করে ফ্রেশ লোড করা
+        fetchDua().then(freshDua => {
+            if (freshDua) {
+                if (uiElements.duaTitle) uiElements.duaTitle.innerText = freshDua.title;
+                if (uiElements.duaContent) {
+                    uiElements.duaContent.innerHTML = `
+                        <div class="daily-arabic">${freshDua.arabic}</div>
+                        <div class="daily-pronunciation">উচ্চারণ: ${freshDua.pronunciation}</div>
+                        <div class="daily-translation">অর্থ: ${freshDua.meaning}</div>
+                        <div class="daily-reference">${freshDua.ref}</div>
+                    `;
+                }
+                cached.dua = freshDua;
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cached));
+            }
+        });
+
+        // ভিডিও ক্যাশে রাখা বোকামি, তাই এখানেও কল করে দিলাম
+        fetchRandomIslamicVideo();
+
+        if (!cached.location) {
+            reloadLocationData(true);
+        }
+    } 
+    // ২. প্রথমবার লোড বা নতুন দিন
+    else {
+        uiElements.location.innerHTML = `<i class="fas fa-map-marker-alt"></i> অবস্থান খোঁজা হচ্ছে...`;
+        uiElements.wIcon.className = 'fas fa-spinner fa-spin';
+        uiElements.wTemp.innerText = '--°';
+        uiElements.wDesc.innerText = 'অবস্থান খোঁজা হচ্ছে...';
+
+        let locationSuccess = false;
+        let locationData = { area: null, weather: null, prayerTimes: null };
+        
+        try {
+            const pos = await getPosition();
+            locationSuccess = true;
+            locationData = await loadLocationBasedData(pos.lat, pos.lon);
+        } catch (e) {
+            console.warn('Location failed:', e);
+        }
+
+        const [ayah, hadith, dua] = await Promise.all([
+            fetchQuranAyah(),
+            fetchHadith(),
+            fetchDua()
+        ]);
+
+        const newCache = {
+            date: todayStr,
+            location: locationSuccess ? appState.currentLocation : null,
+            area: locationData.area || null,
+            weather: locationData.weather,
+            prayerTimes: locationData.prayerTimes,
+            hijriToday: appState.hijriToday,
+            hijriYesterday: appState.hijriYesterday,
+            ayah,
+            hadith,
+            dua
+        };
+
+        localStorage.setItem(CACHE_KEY, JSON.stringify(newCache));
+        renderMainUI(newCache);
+
+        // নতুন দিন বা প্রথমবার লোডের সময়ও ভিডিও কল হবে
+        fetchRandomIslamicVideo();
+    }
+};
+
+
+    // Reload location-based data (triggered by clicking location or silently on start)
+    const reloadLocationData = async (silent = false) => {
+        if (!silent) {
+            uiElements.location.innerHTML = `<i class="fas fa-map-marker-alt"></i> অবস্থান নেওয়া হচ্ছে...`;
+            uiElements.wIcon.className = 'fas fa-spinner fa-spin';
+            uiElements.wTemp.innerText = '--°';
+            uiElements.wDesc.innerText = 'আপডেট করা হচ্ছে...';
+            uiElements.wFeels.innerText = '';
+            uiElements.wMinMax.innerText = '';
+        }
+        
+        try {
+            const pos = await getPosition();
+            const locationData = await loadLocationBasedData(pos.lat, pos.lon);
+            
+            const cached = JSON.parse(localStorage.getItem(CACHE_KEY)) || {};
+            const updatedCache = {
+                ...cached,
+                date: new Date().toDateString(),
+                location: appState.currentLocation,
+                area: locationData.area,
+                weather: locationData.weather,
+                prayerTimes: locationData.prayerTimes,
+                hijriToday: appState.hijriToday,
+                hijriYesterday: appState.hijriYesterday
+            };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(updatedCache));
+            
+            renderMainUI(updatedCache);
+        } catch (e) {
+            if (!silent) {
+                uiElements.location.innerHTML = `<i class="fas fa-map-marker-alt"></i> অবস্থান পাওয়া যায়নি`;
+                
+                const isNight = new Date().getHours() >= 18 || new Date().getHours() < 6;
+                uiElements.wIcon.className = isNight ? 'fas fa-cloud-moon' : 'fas fa-cloud';
+                uiElements.wTemp.innerText = '--°';
+                uiElements.wDesc.innerText = 'আবহাওয়া তথ্য পাওয়া যায়নি';
+                uiElements.wFeels.innerText = '';
+                uiElements.wMinMax.innerText = '';
+            }
+        }
+    };
+
+    const initializeNavigation = () => {
+        const pages = ['index.html', 'salat.html', 'quran.html', 'hadith.html', 'dua.html'];
+        document.querySelectorAll('.nav-item').forEach((item, idx) => {
+            item.addEventListener('click', () => { 
+                if (idx !== 0 && pages[idx]) window.location.href = pages[idx]; 
+            });
+        });
+    };
+
+    // Add click listener on location text
+    const initLocationClickListener = () => {
+        uiElements.location.addEventListener('click', () => reloadLocationData(false));
+    };
+
+    window.addEventListener('load', () => { 
+        bootApplication(); 
+        initializeNavigation();
+        initLocationClickListener();
+    });
+    const fetchRandomIslamicVideo = async (retryCount = 0) => {const channels = [
+    { id: 'UCClsYw7y1BTTtTT8-EE_GPw', name: 'Peace TV Bangla' },
+    { id: 'UCt8GtqDrTSROZkAuLa6vCVg', name: 'Shaykh Ahmadullah' },
+    { id: 'UCWuvzUF7ZcRCAsWswzjNLbw', name: 'Dr. Abdullah Jahangir' },
+    { id: 'UCxStLx7yb96MGBfIMo20x7Q', name: 'Mizanur Rahman Azhari' },
+    { id: 'UC_SnOIu89n9LlDoicAHvECA', name: 'Islamic TV' }
+];
+
+    
+
+    const selectedChannel = channels[Math.floor(Math.random() * channels.length)];
+    const videoContainer = document.getElementById('videoContainer');
+    const videoTitle = document.getElementById('videoTitle');
+    const videoProvider = document.getElementById('videoProvider');
+
+    try {
+        // লিঙ্কের শেষে &t=${new Date().getTime()} যোগ করায় ক্যাশ থাকবে না
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.youtube.com/feeds/videos.xml?channel_id=${selectedChannel.id}&t=${new Date().getTime()}`);
+        const data = await response.json();
+
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+            const randomVideoIndex = Math.floor(Math.random() * Math.min(data.items.length, 5));
+            const video = data.items[randomVideoIndex];
+            const videoId = video.link.split('v=')[1];
+
+            const cleanTitle = video.title.split('#')[0].trim();
+            videoTitle.innerText = cleanTitle;
+            videoProvider.innerText = "— " + selectedChannel.name;
+            
+videoContainer.innerHTML = `
+    <iframe width="100%" height="100%" 
+    src="https://www.youtube.com/embed/${videoId}?rel=0&autoplay=0&origin=${window.location.origin}" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen
+    onerror="this.src='https://www.youtube.com/watch?v=${videoId}'">
+    </iframe>
+`;
+
+        } else {
+            throw new Error("Invalid response");
+        }
+    } catch (error) {
+        console.error("Video Fetch Error:", error);
+        // যদি একবার এরর হয়, তবে আরেকবার ট্রাই করবে অন্য চ্যানেলের জন্য (সর্বোচ্চ ৩ বার)
+        if (retryCount < 3) {
+            console.log("Retrying with another channel...");
+            fetchRandomIslamicVideo(retryCount + 1);
+        } else {
+            videoTitle.innerText = "ভিডিও লোড করা যাচ্ছে না, পরে চেষ্টা কর।";
+            videoProvider.innerText = "";
+        }
+    }
+};
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUSSSCR Student Database</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- jsPDF + AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        :root {
+            /* Light Theme Variables */
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger-color: #dc2626;
+            --danger-hover: #b91c1c;
+            --header-bg: #ffffff;
+            --table-header-bg: #f1f5f9;
+            --table-hover: #f8fafc;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --floating-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        body.dark-mode {
+            /* Dark Theme Variables */
+            --bg-color: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --primary-color: #3b82f6;
+            --primary-hover: #60a5fa;
+            --danger-color: #ef4444;
+            --danger-hover: #f87171;
+            --header-bg: #1e293b;
+            --table-header-bg: #0f172a;
+            --table-hover: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+            --floating-bg: rgba(30, 41, 59, 0.9);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-container img {
+            height: 60px;
+            width: 60px;
+            border-radius: 100%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            background-color: #ffffff;
+            padding: 2px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-text h1 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .brand-text small {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 8px;
+            border-radius: var(--radius-md);
+        }
+
+        .theme-toggle:hover {
+            color: var(--text-main);
+            background-color: var(--table-hover);
+        }
+
+        /* --- Main Content --- */
+        main {
+            max-width: 1440px;
+            margin: 24px auto;
+            padding: 0 24px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* --- Controls & Filters --- */
+        .controls-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: minmax(280px, 2fr) repeat(3, 1fr) auto;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Custom Search Box with Filter Icon */
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .input-group .fa-search {
+            position: absolute;
+            left: 12px;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            pointer-events: none;
+        }
+
+        .input-group input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 36px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-filter-btn {
+            position: absolute;
+            right: 6px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .search-filter-btn:hover {
+            color: var(--primary-color);
+            background-color: var(--table-hover);
+        }
+
+        .search-filter-btn.active {
+            color: var(--primary-color);
+        }
+
+        /* Dropdown Menu for Search Filter */
+        .filter-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            list-style: none;
+            padding: 6px 0;
+        }
+
+        .filter-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .filter-dropdown-header {
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 4px;
+        }
+
+        .filter-opt {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+
+        .filter-opt:hover {
+            background-color: var(--table-hover);
+        }
+
+        .filter-opt.selected {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .filter-opt i {
+            font-size: 0.8rem;
+            opacity: 0;
+        }
+
+        .filter-opt.selected i {
+            opacity: 1;
+        }
+
+        /* Select Elements */
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-size: 0.875rem;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px top 50%;
+            background-size: 10px auto;
+            padding-right: 32px;
+        }
+
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: var(--table-header-bg);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-export {
+            background-color: var(--danger-color);
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .btn-export:hover {
+            background-color: var(--danger-hover);
+        }
+
+        /* --- Info Bar --- */
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* --- Table Styling --- */
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            transition: background-color 0.2s;
+        }
+
+        th:hover {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        th i {
+            margin-left: 6px;
+            font-size: 0.7rem;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: var(--table-hover);
+        }
+
+        .badge {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .btn-action {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        .btn-action.copied {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: #ffffff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* --- Pagination (in-flow) --- */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-page {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-page:hover:not(:disabled) {
+            background-color: var(--table-hover);
+            border-color: var(--text-muted);
+        }
+
+        .btn-page:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--bg-color);
+        }
+
+        .page-info {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* --- FLOATING PAGINATION --- */
+        .floating-pagination {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            width: auto;
+            max-width: calc(100% - 48px);
+            background: var(--floating-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 60px;
+            box-shadow: var(--shadow-lg);
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 999;
+            transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.25s ease;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .floating-pagination.hidden {
+            transform: translateX(-50%) translateY(120%);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.6, 1), opacity 0.25s ease;
+        }
+
+        .floating-pagination .page-info {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .floating-pagination .pagination-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .floating-pagination .btn-page {
+            background: var(--card-bg);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        .floating-pagination.inactive {
+            display: none !important;
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            padding: 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-links a {
+            color: var(--text-muted);
+            font-size: 1.25rem;
+            transition: color 0.2s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- Loader --- */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+            gap: 16px;
+        }
+
+        .loader-container i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 1024px) {
+            .filters-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .search-container {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            header {
+                padding: 12px 16px;
+            }
+            main {
+                padding: 0 16px;
+            }
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            .search-container {
+                grid-column: span 1;
+            }
+            .btn-export {
+                width: 100%;
+            }
+            .brand-text h1 {
+                font-size: 1rem;
+            }
+            .pagination {
+                flex-direction: column;
+                gap: 16px;
+            }
+            .floating-pagination {
+                bottom: 16px;
+                padding: 8px 16px;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+<header>
+    <div class="brand-container">
+        <img src="https://lh4.googleusercontent.com/proxy/RU4CYM7RqIvxj-frMPdwnNaFhBl-JUNq1tAItdvgYEPXEaxeTNoch7xp6Y-xO4gahG0O2rJwF_arwStb3oRzS_AsSgB9afNjuEIyzgSVDG10Z40zONV_3w" alt="BUSSSCR Logo" loading="lazy" onerror="this.onerror=null;this.src='https://via.placeholder.com/60?text=BUSSSCR';">
+        <div class="brand-text">
+            <h1>BUSSSCR Database</h1>
+            <small>Bir Uttam Shaheed Samad High School, Rangpur</small>
+        </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i class="fas fa-sun"></i>
+    </button>
+</header>
+
+<main>
+    <!-- Loader -->
+    <div id="loader" class="loader-container">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p>Loading student records...</p>
+    </div>
+
+    <!-- Main Workspace -->
+    <div id="workspace" style="display: none;">
+        
+        <!-- Controls & Filters -->
+        <div class="controls-panel">
+            <div class="filters-grid">
+                
+                <!-- Custom Search Input with Filter Icon -->
+                <div class="search-container">
+                    <div class="input-group">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search by name, ID or roll..." autocomplete="off">
+                        <button type="button" id="searchFilterBtn" class="search-filter-btn" title="Search Options">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                    <ul id="searchFilterMenu" class="filter-dropdown">
+                        <div class="filter-dropdown-header">Search By</div>
+                        <li class="filter-opt selected" data-type="all">
+                            <i class="fas fa-check"></i> All
+                        </li>
+                        <li class="filter-opt" data-type="name">
+                            <i class="fas fa-check"></i> Name
+                        </li>
+                        <li class="filter-opt" data-type="id">
+                            <i class="fas fa-check"></i> Student ID
+                        </li>
+                        <li class="filter-opt" data-type="roll">
+                            <i class="fas fa-check"></i> Roll Number
+                        </li>
+                    </ul>
+                </div>
+
+                <select id="classFilter" aria-label="Filter by Class">
+                    <option value="all">All Classes</option>
+                </select>
+                <select id="groupFilter" disabled aria-label="Filter by Group">
+                    <option value="all">All Groups</option>
+                </select>
+                <select id="sectionFilter" aria-label="Filter by Section">
+                    <option value="all">All Sections</option>
+                </select>
+                <button id="exportPdfBtn" class="btn btn-export">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Info Bar -->
+        <div class="info-bar">
+            <span id="showingCount">Showing 0 records</span>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container">
+            <table id="studentTable">
+                <thead>
+                    <tr>
+                        <th id="th-id_num" onclick="sortTable('id_num')">Student ID <i class="fas fa-sort"></i></th>
+                        <th id="th-name" onclick="sortTable('name')">Full Name <i class="fas fa-sort"></i></th>
+                        <th id="th-class" onclick="sortTable('class')">Class <i class="fas fa-sort"></i></th>
+                        <th id="th-roll_num" onclick="sortTable('roll_num')">Roll <i class="fas fa-sort"></i></th>
+                        <th id="th-group" onclick="sortTable('group')">Group <i class="fas fa-sort"></i></th>
+                        <th id="th-section" onclick="sortTable('section')">Section <i class="fas fa-sort"></i></th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Dynamic rows -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- In‑flow Pagination -->
+        <div class="pagination">
+            <span class="page-info" id="pageIndicator">Page 1 of 1</span>
+            <div class="pagination-controls">
+                <button id="prevBtn" class="btn-page"><i class="fas fa-chevron-left"></i> Previous</button>
+                <button id="nextBtn" class="btn-page">Next <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- FLOATING PAGINATION -->
+<div id="floatingPagination" class="floating-pagination hidden">
+    <span class="page-info" id="floatPageIndicator">Page 1 of 1</span>
+    <div class="pagination-controls">
+        <button id="floatPrevBtn" class="btn-page"><i class="fas fa-chevron-left"></i> Prev</button>
+        <button id="floatNextBtn" class="btn-page">Next <i class="fas fa-chevron-right"></i></button>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-content">
+        <p>Managed & Developed by <strong style="color: var(--text-main);">Ferdous</strong></p>
+        <div class="social-links">
+            <a href="https://fb.com/nafsin.ferdous.5" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://instagram.com/n.ferdous_" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://github.com/hacker-ferdous" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    (function(){
+        "use strict";
+
+        // ---------- UPDATED CONFIGURATION ----------
+        const DATA_URL = 'https://hacker-ferdous.github.io/temp/bussscr/bussscr_2026_data.json';
+        const SCHOOL_NAME = "Bir Uttam Shaheed Samad High School, Rangpur";
+
+        // State
+        let masterStudents = [];
+        let filteredPool =[];
+        let currentPage = 1;
+        const ROWS_PER_PAGE = 500;
+        let sortColumn = null;
+        let sortDirection = 'asc';
+        let currentSearchType = 'all';
+
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const searchInput = document.getElementById('searchInput');
+        const searchFilterBtn = document.getElementById('searchFilterBtn');
+        const searchFilterMenu = document.getElementById('searchFilterMenu');
+        const filterOpts = document.querySelectorAll('.filter-opt');
+        
+        const classFilter = document.getElementById('classFilter');
+        const groupFilter = document.getElementById('groupFilter');
+        const sectionFilter = document.getElementById('sectionFilter');
+        const tableBody = document.getElementById('tableBody');
+        const showingCountSpan = document.getElementById('showingCount');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const loaderDiv = document.getElementById('loader');
+        const workspaceDiv = document.getElementById('workspace');
+
+        // Floating pagination elements
+        const floatPagination = document.getElementById('floatingPagination');
+        const floatPageIndicator = document.getElementById('floatPageIndicator');
+        const floatPrevBtn = document.getElementById('floatPrevBtn');
+        const floatNextBtn = document.getElementById('floatNextBtn');
+
+        // Scroll tracking
+        let lastScrollY = window.scrollY;
+
+        // ---------- UTILITIES ----------
+        function formatStudentName(rawName) {
+            if (!rawName) return '';
+            const prefixMap = {
+                'MD.': 'Md.', 'MST.': 'Mst.', 'MOST.': 'Most.',
+                'MRS.': 'Mrs.', 'MR.': 'Mr.', 'DR.': 'Dr.', 'PROF.': 'Prof.'
+            };
+            let words = rawName.trim().split(/\s+/);
+            let formattedWords = words.map(word => {
+                let upperWord = word.toUpperCase();
+                if (prefixMap[upperWord]) return prefixMap[upperWord];
+                if (word === word.toUpperCase() && word.length > 1) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                }
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            });
+            return formattedWords.join(' ');
+        }
+
+        function flattenStudentData(jsonData) {
+            const students =[];
+            for (const className in jsonData) {
+                const classObj = jsonData[className];
+                if (!classObj.groups) continue;
+                for (const groupName in classObj.groups) {
+                    const groupObj = classObj.groups[groupName];
+                    if (!groupObj.sections) continue;
+                    for (const sectionName in groupObj.sections) {
+                        const sectionData = groupObj.sections[sectionName];
+                        const studentList = sectionData.students ||[];
+                        for (const raw of studentList) {
+                            students.push({
+                                student_id: raw.student_id,
+                                raw_name: raw.name,
+                                name: formatStudentName(raw.name),
+                                roll: raw.roll,
+                                roll_num: parseInt(raw.roll) || 0,
+                                id_num: parseInt(raw.student_id) || 0,
+                                class: className,
+                                group: groupName,
+                                section: sectionName
+                            });
+                        }
+                    }
+                }
+            }
+            return students;
+        }
+
+        // ---------- POPULATE FILTERS ----------
+        function populateClassFilter(students) {
+            const classSet = new Set();
+            students.forEach(s => classSet.add(s.class));
+            // Define custom order for the school's classes (Shishu - Nursery - etc)
+            const order =['Shishu', 'Nursery', 'KG', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'S.S.C', 'Eleven', 'Twelve', 'H.S.C'];
+            const sortedClasses = Array.from(classSet).sort((a,b) => {
+                let idxA = order.indexOf(a);
+                let idxB = order.indexOf(b);
+                if (idxA === -1) idxA = order.length;
+                if (idxB === -1) idxB = order.length;
+                return idxA - idxB;
+            });
+            classFilter.innerHTML = '<option value="all">All Classes</option>';
+            sortedClasses.forEach(cls => classFilter.add(new Option(cls, cls)));
+        }
+
+        function updateSectionOptions() {
+            const selectedClass = classFilter.value;
+            const selectedGroup = groupFilter.value;
+            let availableSections = new Set();
+            
+            if (selectedClass === 'all') {
+                masterStudents.forEach(s => availableSections.add(s.section));
+            } else {
+                let filteredByClass = masterStudents.filter(s => s.class === selectedClass);
+                if (selectedGroup !== 'all') {
+                    filteredByClass = filteredByClass.filter(s => s.group === selectedGroup);
+                }
+                filteredByClass.forEach(s => availableSections.add(s.section));
+            }
+            
+            const currentSectionVal = sectionFilter.value;
+            sectionFilter.innerHTML = '<option value="all">All Sections</option>';
+            Array.from(availableSections).sort().forEach(sec => sectionFilter.add(new Option(sec, sec)));
+            
+            sectionFilter.value = Array.from(availableSections).includes(currentSectionVal) ? currentSectionVal : 'all';
+        }
+
+        function updateGroupFilterOptions() {
+            const selectedClass = classFilter.value;
+            const seniorClasses =['Nine', 'Ten', 'S.S.C', 'Eleven', 'Twelve', 'H.S.C'];
+            const isSenior = seniorClasses.includes(selectedClass);
+            
+            if (!isSenior || selectedClass === 'all') {
+                groupFilter.disabled = true;
+                groupFilter.value = 'all';
+                groupFilter.innerHTML = '<option value="all">All Groups</option>';
+            } else {
+                groupFilter.disabled = false;
+                const groupsSet = new Set();
+                masterStudents.filter(s => s.class === selectedClass).forEach(s => groupsSet.add(s.group));
+                const currentGroup = groupFilter.value;
+                groupFilter.innerHTML = '<option value="all">All Groups</option>';
+                groupsSet.forEach(g => groupFilter.add(new Option(g, g)));
+                groupFilter.value = groupsSet.has(currentGroup) ? currentGroup : 'all';
+            }
+            updateSectionOptions();
+        }
+
+        // ---------- FILTERING & SORTING ----------
+        function applyFilters() {
+            const query = searchInput.value.trim().toLowerCase();
+            const selectedClass = classFilter.value;
+            const selectedGroup = groupFilter.value;
+            const selectedSection = sectionFilter.value;
+            
+            filteredPool = masterStudents.filter(student => {
+                let matchSearch = true;
+                if (query) {
+                    if (currentSearchType === 'name') {
+                        matchSearch = student.name.toLowerCase().includes(query);
+                    } else if (currentSearchType === 'id') {
+                        matchSearch = student.student_id.includes(query);
+                    } else if (currentSearchType === 'roll') {
+                        matchSearch = student.roll.toString().includes(query);
+                    } else {
+                        // All
+                        matchSearch = student.name.toLowerCase().includes(query) ||
+                                      student.student_id.includes(query) ||
+                                      student.roll.toString().includes(query);
+                    }
+                }
+                
+                const matchClass = (selectedClass === 'all' || student.class === selectedClass);
+                const matchGroup = (selectedGroup === 'all' || student.group === selectedGroup);
+                const matchSection = (selectedSection === 'all' || student.section === selectedSection);
+                return matchSearch && matchClass && matchGroup && matchSection;
+            });
+            
+            if (sortColumn) {
+                sortData(sortColumn, sortDirection);
+            } else {
+                if (selectedClass !== 'all') {
+                    sortColumn = 'roll_num';
+                    sortDirection = 'asc';
+                    sortData('roll_num', 'asc');
+                    updateSortIcon('roll_num', 'asc');
+                } else {
+                    sortColumn = 'id_num';
+                    sortDirection = 'asc';
+                    sortData('id_num', 'asc');
+                    updateSortIcon('id_num', 'asc');
+                }
+            }
+            
+            currentPage = 1;
+            renderTable();
+            updateFloatingPagination();
+        }
+        
+        function sortData(column, direction) {
+            filteredPool.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                if (column === 'id_num' || column === 'roll_num') {
+                    return direction === 'asc' ? valA - valB : valB - valA;
+                } else {
+                    valA = (valA || '').toString().toLowerCase();
+                    valB = (valB || '').toString().toLowerCase();
+                    if (valA < valB) return direction === 'asc' ? -1 : 1;
+                    if (valA > valB) return direction === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+        }
+        
+        function updateSortIcon(column, direction) {
+            document.querySelectorAll('th i').forEach(icon => icon.className = 'fas fa-sort');
+            const thMap = {
+                id_num: 'th-id_num', name: 'th-name', class: 'th-class',
+                roll_num: 'th-roll_num', group: 'th-group', section: 'th-section'
+            };
+            const thElem = document.getElementById(thMap[column]);
+            if (thElem) {
+                const icon = thElem.querySelector('i');
+                if (icon) icon.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+            }
+        }
+        
+        window.sortTable = function(columnKey) {
+            if (sortColumn === columnKey) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = columnKey;
+                sortDirection = 'asc';
+            }
+            sortData(sortColumn, sortDirection);
+            updateSortIcon(sortColumn, sortDirection);
+            currentPage = 1;
+            renderTable();
+            updateFloatingPagination();
+        };
+
+        // ---------- RENDERING ----------
+        function renderTable() {
+            const start = (currentPage - 1) * ROWS_PER_PAGE;
+            const end = start + ROWS_PER_PAGE;
+            const pageRows = filteredPool.slice(start, end);
+            
+            tableBody.innerHTML = '';
+            if (pageRows.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <h3>No records found</h3>
+                                <p>Try adjusting your search or filter settings.</p>
+                            </div>
+                        </td>
+                    </tr>`;
+            } else {
+                pageRows.forEach(s => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td style="font-weight:500;">${s.student_id}</td>
+                        <td>${s.name}</td>
+                        <td><span class="badge">${s.class}</span></td>
+                        <td>${s.roll}</td>
+                        <td>${s.group !== 'General' ? s.group : '-'}</td>
+                        <td>${s.section}</td>
+                        <td>
+                            <button class="btn-action" 
+                                data-id="${s.student_id}" data-name="${s.name}" 
+                                data-class="${s.class}" data-roll="${s.roll}" 
+                                data-group="${s.group}" data-section="${s.section}">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                document.querySelectorAll('.btn-action').forEach(btn => {
+                    btn.addEventListener('click', copyHandler);
+                });
+            }
+            
+            const total = filteredPool.length;
+            const showingStart = total === 0 ? 0 : start + 1;
+            const showingEnd = Math.min(end, total);
+            showingCountSpan.innerHTML = `Showing <strong>${showingStart} – ${showingEnd}</strong> of <strong>${total}</strong> records`;
+            
+            updatePaginationIndicators();
+        }
+
+        function copyHandler(e) {
+            const btn = e.currentTarget;
+            const data = btn.dataset;
+            const groupText = data.group !== 'General' ? data.group : 'General';
+            const copyText = `Name: ${data.name}\nStudent ID: ${data.id}\nClass: ${data.class}\nRoll: ${data.roll}\nGroup: ${groupText}\nSection: ${data.section}`;
+            
+            navigator.clipboard.writeText(copyText).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('copied');
+                }, 1500);
+            }).catch(() => alert('Failed to copy to clipboard.'));
+        }
+
+        function updatePaginationIndicators() {
+            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
+            const pageText = `Page ${currentPage} of ${totalPages}`;
+            
+            pageIndicator.innerText = pageText;
+            prevBtn.disabled = (currentPage === 1);
+            nextBtn.disabled = (currentPage === totalPages || filteredPool.length === 0);
+            
+            if (floatPageIndicator) floatPageIndicator.innerText = pageText;
+            if (floatPrevBtn) floatPrevBtn.disabled = prevBtn.disabled;
+            if (floatNextBtn) floatNextBtn.disabled = nextBtn.disabled;
+            
+            if (totalPages <= 1 || filteredPool.length === 0) {
+                floatPagination.classList.add('inactive');
+            } else {
+                floatPagination.classList.remove('inactive');
+            }
+        }
+
+        function updateFloatingPagination() {
+            updatePaginationIndicators();
+        }
+
+        function goToPage(newPage) {
+            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
+            if (newPage < 1 || newPage > totalPages) return;
+            currentPage = newPage;
+            renderTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.exportToPDF = function() {
+            if (filteredPool.length === 0) return alert('No records available to export.');
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape' });
+            
+            doc.setFontSize(14);
+            doc.text("Bir Uttam Shaheed Samad High School, Rangpur", 14, 15);
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Student Directory Report - Generated on ${new Date().toLocaleDateString()}`, 14, 22);
+            
+            let filterStr = `Filters applied: Class (${classFilter.value}) | Group (${groupFilter.value}) | Section (${sectionFilter.value})`;
+            doc.setFontSize(9);
+            doc.text(filterStr, 14, 28);
+            doc.text(`Total Records: ${filteredPool.length}`, 14, 33);
+            
+            const headers = [['SL', 'Student ID', 'Full Name', 'Class', 'Roll', 'Group', 'Section']];
+            const bodyData = filteredPool.map((stu, idx) =>[
+                idx + 1, stu.student_id, stu.name, stu.class, stu.roll, 
+                stu.group === 'General' ? '-' : stu.group, stu.section
+            ]);
+            
+            doc.autoTable({
+                head: headers,
+                body: bodyData,
+                startY: 38,
+                theme: 'grid',
+                styles: { fontSize: 8, cellPadding: 3 },
+                headStyles: { fillColor:[37, 99, 235], textColor: [255,255,255] },
+                alternateRowStyles: { fillColor:[248, 250, 252] }
+            });
+            
+            doc.save(`BUSSSCR_Directory_${new Date().toISOString().slice(0,10)}.pdf`);
+        };
+
+        function handleScroll() {
+            const currentScrollY = window.scrollY;
+            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
+            
+            if (totalPages <= 1 || filteredPool.length === 0) {
+                floatPagination.classList.add('hidden');
+                return;
+            }
+            
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                floatPagination.classList.add('hidden');
+            } else {
+                floatPagination.classList.remove('hidden');
+            }
+            
+            if (currentScrollY < 50) {
+                floatPagination.classList.remove('hidden');
+            }
+            
+            lastScrollY = currentScrollY;
+        }
+
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        searchFilterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            searchFilterMenu.classList.toggle('show');
+            searchFilterBtn.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!searchFilterMenu.contains(e.target) && e.target !== searchFilterBtn) {
+                searchFilterMenu.classList.remove('show');
+                searchFilterBtn.classList.remove('active');
+            }
+        });
+
+        filterOpts.forEach(opt => {
+            opt.addEventListener('click', () => {
+                filterOpts.forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                currentSearchType = opt.dataset.type;
+                if (currentSearchType === 'name') searchInput.placeholder = 'Search by name...';
+                else if (currentSearchType === 'id') searchInput.placeholder = 'Search by ID...';
+                else if (currentSearchType === 'roll') searchInput.placeholder = 'Search by roll number...';
+                else searchInput.placeholder = 'Search by name, ID or roll...';
+                searchInput.focus();
+                searchFilterMenu.classList.remove('show');
+                searchFilterBtn.classList.remove('active');
+                if (searchInput.value.trim() !== '') applyFilters();
+            });
+        });
+
+        document.getElementById('exportPdfBtn').addEventListener('click', window.exportToPDF);
+        
+        prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+        nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+        floatPrevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+        floatNextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+        
+        searchInput.addEventListener('input', () => {
+            clearTimeout(window.searchDebounce);
+            window.searchDebounce = setTimeout(applyFilters, 300);
+        });
+        
+        classFilter.addEventListener('change', () => {
+            updateGroupFilterOptions();
+            applyFilters();
+        });
+        
+        groupFilter.addEventListener('change', () => {
+            updateSectionOptions();
+            applyFilters();
+        });
+        
+        sectionFilter.addEventListener('change', applyFilters);
+        
+        // Theme Toggle
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.remove('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        window.addEventListener('scroll', throttle(handleScroll, 80));
+
+        // ---------- INITIALIZATION ----------
+        async function init() {
+            try {
+                const response = await fetch(DATA_URL);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const jsonData = await response.json();
+                
+                masterStudents = flattenStudentData(jsonData);
+                populateClassFilter(masterStudents);
+                updateGroupFilterOptions();
+                updateSectionOptions();
+                applyFilters(); 
+                
+                loaderDiv.style.display = 'none';
+                workspaceDiv.style.display = 'block';
+                
+                setTimeout(() => handleScroll(), 50);
+            } catch (err) {
+                console.error('Initialization error:', err);
+                loaderDiv.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="color: var(--danger-color);"></i>
+                    <p>Failed to load data. Please check your network connection and try again.</p>
+                `;
+            }
+        }
+        
+        init();
+    })();
+</script>
+</body>
+</html>
