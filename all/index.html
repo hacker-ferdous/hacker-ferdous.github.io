@@ -6,9 +6,7 @@
     <title>Student Database</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-
+    
     <style>
         /* --- VARIABLES --- */
         :root {
@@ -325,8 +323,13 @@
             white-space: nowrap;
         }
 
-        .btn-export:hover {
+        .btn-export:hover:not(:disabled) {
             background-color: var(--danger-hover);
+        }
+
+        .btn-export:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         /* --- INFO BAR --- */
@@ -476,7 +479,7 @@
             gap: 6px;
         }
 
-        .btn-action:hover {
+        .btn-action:hover:not(:disabled) {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: #ffffff;
@@ -486,6 +489,11 @@
             background-color: #10b981;
             border-color: #10b981;
             color: #ffffff;
+        }
+
+        .btn-action:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .empty-state {
@@ -816,630 +824,682 @@
 </footer>
 
 <script>
-    (function(){
-        "use strict";
+/* --- WEB WORKER BLOB --- */
+const workerString = `
+self.window = self;
+self.document = { createElementNS: () => { return {} } };
+importScripts('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+importScripts('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js');
 
-        /* --- CONFIGURATION --- */
-        const DATA_URL = 'https://hacker-ferdous.github.io/all/all_students.json';
-        const CACHE_NAME = 'student-db-cache-v2';
+const DB_NAME = 'StudentDB_Optimized';
+const DB_VERSION = 1;
+const STORE_LIGHT = 'lightData';
+const STORE_HISTORY = 'historyData';
+const DATA_URL = 'https://hacker-ferdous.github.io/all/all_students.json';
 
-        let masterStudents =[];
-        let filteredPool =[];
-        let currentPage = 1;
-        const ROWS_PER_PAGE = 500; 
-        let sortColumn = null;
-        let sortDirection = 'asc';
-        let currentSearchType = 'all';
+let db;
+let lightData = [];
+let filteredPool =[];
+const ROWS_PER_PAGE = 500;
 
-        const themeToggle = document.getElementById('themeToggle');
-        const searchInput = document.getElementById('searchInput');
-        const searchFilterBtn = document.getElementById('searchFilterBtn');
-        const searchFilterMenu = document.getElementById('searchFilterMenu');
-        const filterOpts = document.querySelectorAll('.filter-opt');
-        
-        const schoolFilter = document.getElementById('schoolFilter');
-        const sessionFilter = document.getElementById('sessionFilter');
-        const classFilter = document.getElementById('classFilter');
-        const groupFilter = document.getElementById('groupFilter');
-        const sectionFilter = document.getElementById('sectionFilter');
-        const tableBody = document.getElementById('tableBody');
-        const showingCountSpan = document.getElementById('showingCount');
-        const pageIndicator = document.getElementById('pageIndicator');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const loaderDiv = document.getElementById('loader');
-        const loaderText = document.getElementById('loaderText');
-        const workspaceDiv = document.getElementById('workspace');
-
-        const floatPagination = document.getElementById('floatingPagination');
-        const floatPageIndicator = document.getElementById('floatPageIndicator');
-        const floatPrevBtn = document.getElementById('floatPrevBtn');
-        const floatNextBtn = document.getElementById('floatNextBtn');
-
-        let lastScrollY = window.scrollY;
-
-        /* --- FORMATTING --- */
-        function formatStudentName(rawName) {
-            if (!rawName) return '';
-            const prefixMap = {
-                'MD.': 'Md.', 'MST.': 'Mst.', 'MOST.': 'Most.',
-                'MRS.': 'Mrs.', 'MR.': 'Mr.', 'DR.': 'Dr.', 'PROF.': 'Prof.'
-            };
-            let words = rawName.trim().split(/\s+/);
-            let formattedWords = words.map(word => {
-                let upperWord = word.toUpperCase();
-                if (prefixMap[upperWord]) return prefixMap[upperWord];
-                if (word === word.toUpperCase() && word.length > 1) {
-                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-                }
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            });
-            return formattedWords.join(' ');
+function formatStudentName(rawName) {
+    if (!rawName) return '';
+    const prefixMap = {
+        'MD.': 'Md.', 'MST.': 'Mst.', 'MOST.': 'Most.',
+        'MRS.': 'Mrs.', 'MR.': 'Mr.', 'DR.': 'Dr.', 'PROF.': 'Prof.'
+    };
+    let words = rawName.trim().split(/\\s+/);
+    return words.map(word => {
+        let upperWord = word.toUpperCase();
+        if (prefixMap[upperWord]) return prefixMap[upperWord];
+        if (word === word.toUpperCase() && word.length > 1) {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         }
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
+}
 
-        function calcStatus(session, cls) {
-            if (!session || cls === '-') return '';
-            const currentYear = new Date().getFullYear();
-            
-            // Extract the end year of the session properly
-            let endYear = parseInt(session);
-            if (isNaN(endYear)) return '';
-            
-            const match = session.match(/(\d{4})[^\d]*(\d{2,4})/);
-            if (match) {
-                let part2 = parseInt(match[2]);
-                if (part2 < 100) {
-                    let prefix = match[1].substring(0, 2);
-                    endYear = parseInt(prefix + match[2]); // converts 2025-26 to 2026
-                } else {
-                    endYear = part2; // converts 2025-2026 to 2026
-                }
-            }
-            
-            const gap = currentYear - endYear;
-            if (gap <= 0) return '';
-            
-            const c = String(cls).toLowerCase();
-            let baseLevel = 0;
-            if (c.includes('play')) baseLevel = -2;
-            else if (c.includes('nursery')) baseLevel = -1;
-            else if (c.includes('kg')) baseLevel = 0;
-            else if (c === 'new one' || c === 'one') baseLevel = 1;
-            else if (c === 'two') baseLevel = 2;
-            else if (c === 'three') baseLevel = 3;
-            else if (c === 'four') baseLevel = 4;
-            else if (c === 'five') baseLevel = 5;
-            else if (c === 'six') baseLevel = 6;
-            else if (c === 'seven') baseLevel = 7;
-            else if (c === 'eight') baseLevel = 8;
-            else if (c === 'nine') baseLevel = 9;
-            else if (c === 'ten' || c.includes('ssc') || c.includes('s.s.c')) baseLevel = 10;
-            else if (c === 'eleven') baseLevel = 11;
-            else if (c === 'twelve' || c.includes('hsc') || c.includes('h.s.c')) baseLevel = 12;
-            else if (c.includes('degree')) baseLevel = 13;
-            else baseLevel = 10;
-            
-            const projectedLevel = baseLevel + gap;
-            return projectedLevel <= 12 ? 'Leaved' : 'Old-Leaved';
-        }
+function calcStatus(session, cls) {
+    if (!session || cls === '-') return '';
+    const currentYear = new Date().getFullYear();
+    let endYear = parseInt(session);
+    if (isNaN(endYear)) return '';
+    const match = session.match(/(\\d{4})[^\\d]*(\\d{2,4})/);
+    if (match) {
+        let part2 = parseInt(match[2]);
+        if (part2 < 100) endYear = parseInt(match[1].substring(0, 2) + match[2]);
+        else endYear = part2;
+    }
+    const gap = currentYear - endYear;
+    if (gap <= 0) return '';
+    const c = String(cls).toLowerCase();
+    let baseLevel = 0;
+    if (c.includes('play')) baseLevel = -2;
+    else if (c.includes('nursery')) baseLevel = -1;
+    else if (c.includes('kg')) baseLevel = 0;
+    else if (c === 'new one' || c === 'one') baseLevel = 1;
+    else if (c === 'two') baseLevel = 2;
+    else if (c === 'three') baseLevel = 3;
+    else if (c === 'four') baseLevel = 4;
+    else if (c === 'five') baseLevel = 5;
+    else if (c === 'six') baseLevel = 6;
+    else if (c === 'seven') baseLevel = 7;
+    else if (c === 'eight') baseLevel = 8;
+    else if (c === 'nine') baseLevel = 9;
+    else if (c === 'ten' || c.includes('ssc') || c.includes('s.s.c')) baseLevel = 10;
+    else if (c === 'eleven') baseLevel = 11;
+    else if (c === 'twelve' || c.includes('hsc') || c.includes('h.s.c')) baseLevel = 12;
+    else if (c.includes('degree')) baseLevel = 13;
+    else baseLevel = 10;
+    return (baseLevel + gap) <= 12 ? 'Leaved' : 'Old-Leaved';
+}
 
-        /* --- FETCH DATA --- */
-        async function fetchAndCacheData() {
-            try {
-                if ('caches' in window) {
-                    const cache = await caches.open(CACHE_NAME);
-                    let response = await cache.match(DATA_URL);
-                    
-                    if (response) {
-                        loaderText.innerText = "Processing Cached Data...";
-                        return await response.json();
-                    } else {
-                        loaderText.innerText = "Downloading Database (70MB+)... Please wait.";
-                        response = await fetch(DATA_URL);
-                        if(response.ok) {
-                            await cache.put(DATA_URL, response.clone());
-                            loaderText.innerText = "Processing Data...";
-                            return await response.json();
-                        }
-                    }
-                }
-                const res = await fetch(DATA_URL);
-                return await res.json();
-            } catch (error) {
-                console.error("Data fetch failed:", error);
-                throw error;
-            }
-        }
-
-        function flattenStudentData(jsonData) {
-            const students = [];
-            for (const[schoolKey, schoolObj] of Object.entries(jsonData)) {
-                if (!schoolObj.data) continue;
-                
-                for (const raw of schoolObj.data) {
-                    if (!raw.History || raw.History.length === 0) continue;
-
-                    let latest = raw.History.reduce((max, current) => {
-                        return (parseInt(current.Session) > parseInt(max.Session)) ? current : max;
-                    });
-
-                    let isNafsin = raw.Name.trim().toLowerCase() === 'nafsin ferdous';
-                    let isCpscr9709 = (schoolKey === 'cpscr' && raw.ID === '9709');
-                    let assignedClass = isCpscr9709 ? '-' : (latest.Class || '-');
-                    
-                    students.push({
-                        schoolKey: schoolKey.toUpperCase(),
-                        schoolName: schoolObj.full_name || schoolKey.toUpperCase(),
-                        student_id: raw.ID,
-                        id_num: parseInt(raw.ID) || 0,
-                        name: formatStudentName(raw.Name),
-                        session: isCpscr9709 ? '-' : (latest.Session || '-'),
-                        class: assignedClass,
-                        roll: isCpscr9709 ? '-' : (latest.Roll || '-'),
-                        roll_num: isCpscr9709 ? 0 : (parseInt(latest.Roll) || 0),
-                        group: isCpscr9709 ? '-' : (latest.Group || '-'),
-                        section: isCpscr9709 ? '-' : (latest.Section || '-'),
-                        history: raw.History,
-                        isNafsin: isNafsin,
-                        status: calcStatus(latest.Session, assignedClass)
-                    });
-                }
-            }
-            return students;
-        }
-
-        /* --- POPULATE DROPDOWNS --- */
-        function populateDropdowns(students) {
-            const schools = new Set();
-            const sessions = new Set();
-            const classes = new Set();
-            const groups = new Set();
-            const sections = new Set();
-
-            students.forEach(s => {
-                schools.add(s.schoolKey);
-                if(s.session !== '-') sessions.add(s.session);
-                if(s.class !== '-') classes.add(s.class);
-                if(s.group !== '-') groups.add(s.group);
-                if(s.section !== '-') sections.add(s.section);
-            });
-
-            const classOrder =[
-                'play', 'nursery', 'kg', 'new one', 'one', 'two', 'three', 'four', 
-                'five', 'six', 'seven', 'eight', 'nine', 'ten', 's.s.c', 'ssc', 
-                'eleven', 'twelve', 'h.s.c', 'hsc', 'degree'
-            ];
-
-            const sortedClasses = Array.from(classes).sort((a, b) => {
-                let indexA = classOrder.indexOf(String(a).toLowerCase());
-                let indexB = classOrder.indexOf(String(b).toLowerCase());
-                
-                if (indexA === -1) indexA = 999;
-                if (indexB === -1) indexB = 999;
-                
-                return indexA !== indexB ? indexA - indexB : String(a).localeCompare(String(b));
-            });
-
-            fillSelect(schoolFilter, Array.from(schools).sort(), "All Schools");
-            fillSelect(sessionFilter, Array.from(sessions).sort((a, b) => b.localeCompare(a)), "All Sessions");
-            fillSelect(classFilter, sortedClasses, "All Classes");
-            fillSelect(groupFilter, Array.from(groups).sort(), "All Groups");
-            fillSelect(sectionFilter, Array.from(sections).sort(), "All Sections");
-        }
-
-        function fillSelect(element, array, defaultText) {
-            element.innerHTML = `<option value="all">${defaultText}</option>`;
-            array.forEach(opt => element.add(new Option(opt, opt)));
-        }
-
-        /* --- FILTERS --- */
-        function applyFilters() {
-            const query = searchInput.value.trim().toLowerCase();
-            const fSchool = schoolFilter.value;
-            const fSession = sessionFilter.value;
-            const fClass = classFilter.value;
-            const fGroup = groupFilter.value;
-            const fSection = sectionFilter.value;
-            
-            filteredPool = masterStudents.filter(student => {
-                let matchSearch = true;
-                if (query) {
-                    if (currentSearchType === 'name') {
-                        matchSearch = student.name.toLowerCase().includes(query);
-                    } else if (currentSearchType === 'id') {
-                        matchSearch = student.student_id.includes(query);
-                    } else if (currentSearchType === 'roll') {
-                        matchSearch = student.roll.toString().includes(query);
-                    } else {
-                        matchSearch = student.name.toLowerCase().includes(query) ||
-                                      student.student_id.includes(query) ||
-                                      student.roll.toString().includes(query);
-                    }
-                }
-                
-                const matchSchool = (fSchool === 'all' || student.schoolKey === fSchool);
-                const matchSession = (fSession === 'all' || student.session === fSession);
-                const matchClass = (fClass === 'all' || student.class === fClass);
-                const matchGroup = (fGroup === 'all' || student.group === fGroup);
-                const matchSection = (fSection === 'all' || student.section === fSection);
-                return matchSearch && matchSchool && matchSession && matchClass && matchGroup && matchSection;
-            });
-            
-            if (sortColumn) {
-                sortData(sortColumn, sortDirection);
-            } else {
-                sortColumn = 'id_num';
-                sortDirection = 'asc';
-                sortData('id_num', 'asc');
-                updateSortIcon('id_num', 'asc');
-            }
-            
-            currentPage = 1;
-            renderTable();
-            updateFloatingPagination();
-        }
-        
-        function sortData(column, direction) {
-            const classOrder =[
-                'play', 'nursery', 'kg', 'new one', 'one', 'two', 'three', 'four', 
-                'five', 'six', 'seven', 'eight', 'nine', 'ten', 's.s.c', 'ssc', 
-                'eleven', 'twelve', 'h.s.c', 'hsc', 'degree'
-            ];
-
-            filteredPool.sort((a, b) => {
-                let valA = a[column];
-                let valB = b[column];
-
-                if (column === 'id_num' || column === 'roll_num') {
-                    return direction === 'asc' ? valA - valB : valB - valA;
-                } 
-                else if (column === 'class') {
-                    let indexA = classOrder.indexOf(String(valA).toLowerCase());
-                    let indexB = classOrder.indexOf(String(valB).toLowerCase());
-                    
-                    if (indexA === -1) indexA = 999;
-                    if (indexB === -1) indexB = 999;
-                    
-                    if (indexA !== indexB) {
-                        return direction === 'asc' ? indexA - indexB : indexB - indexA;
-                    }
-                    return direction === 'asc' ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
-                } 
-                else {
-                    valA = (valA || '').toString().toLowerCase();
-                    valB = (valB || '').toString().toLowerCase();
-                    if (valA < valB) return direction === 'asc' ? -1 : 1;
-                    if (valA > valB) return direction === 'asc' ? 1 : -1;
-                    return 0;
-                }
-            });
-        }
-        
-        function updateSortIcon(column, direction) {
-            document.querySelectorAll('th i').forEach(icon => icon.className = 'fas fa-sort');
-            const thMap = {
-                schoolKey: 'th-schoolKey', id_num: 'th-id_num', name: 'th-name', session: 'th-session',
-                class: 'th-class', roll_num: 'th-roll_num', group: 'th-group', section: 'th-section'
-            };
-            const thElem = document.getElementById(thMap[column]);
-            if (thElem) {
-                const icon = thElem.querySelector('i');
-                if (icon) icon.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
-            }
-        }
-        
-        window.sortTable = function(columnKey) {
-            if (sortColumn === columnKey) {
-                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortColumn = columnKey;
-                sortDirection = 'asc';
-            }
-            sortData(sortColumn, sortDirection);
-            updateSortIcon(sortColumn, sortDirection);
-            currentPage = 1;
-            renderTable();
-            updateFloatingPagination();
+function openDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = e => {
+            let idb = e.target.result;
+            if(!idb.objectStoreNames.contains(STORE_LIGHT)) idb.createObjectStore(STORE_LIGHT, {keyPath: 'id'});
+            if(!idb.objectStoreNames.contains(STORE_HISTORY)) idb.createObjectStore(STORE_HISTORY, {keyPath: 'id'});
         };
+        req.onsuccess = e => { db = e.target.result; resolve(); };
+        req.onerror = () => reject();
+    });
+}
 
-        /* --- RENDER --- */
-        function renderTable() {
-            const start = (currentPage - 1) * ROWS_PER_PAGE;
-            const end = start + ROWS_PER_PAGE;
-            const pageRows = filteredPool.slice(start, end);
-            
-            tableBody.innerHTML = '';
-            if (pageRows.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="10">
-                            <div class="empty-state">
-                                <i class="fas fa-folder-open"></i>
-                                <h3>No records found</h3>
-                                <p>Try adjusting your search or filter settings.</p>
-                            </div>
+function getFromIDB(storeName, id) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, 'readonly');
+        const req = tx.objectStore(storeName).get(id);
+        req.onsuccess = () => resolve(req.result ? req.result.data : null);
+        req.onerror = () => reject();
+    });
+}
+
+function saveToIDB(storeName, id, data) {
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        tx.objectStore(storeName).put({ id, data });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject();
+    });
+}
+
+async function initializeData() {
+    await openDB();
+    let cachedLight = await getFromIDB(STORE_LIGHT, 'all_light');
+    
+    if (cachedLight) {
+        self.postMessage({ cmd: 'status', msg: 'Processing Cached Data...' });
+        lightData = cachedLight;
+    } else {
+        self.postMessage({ cmd: 'status', msg: 'Downloading Database (70MB+)... Please wait.' });
+        const res = await fetch(DATA_URL);
+        const jsonData = await res.json();
+        
+        self.postMessage({ cmd: 'status', msg: 'Parsing & Structuring Data...' });
+        const lightArr =[];
+        const historyObj = {};
+        
+        for (const [schoolKey, schoolObj] of Object.entries(jsonData)) {
+            if (!schoolObj.data) continue;
+            for (const raw of schoolObj.data) {
+                if (!raw.History || raw.History.length === 0) continue;
+                let latest = raw.History.reduce((max, cur) => (parseInt(cur.Session) > parseInt(max.Session)) ? cur : max);
+                let isNafsin = raw.Name.trim().toLowerCase() === 'nafsin ferdous';
+                let sk = schoolKey.toUpperCase();
+                let isCpscr9709 = (sk === 'CPSCR' && raw.ID === '9709');
+                let assignedClass = isCpscr9709 ? '-' : (latest.Class || '-');
+                
+                let sId = raw.ID;
+                lightArr.push({
+                    sk: sk,
+                    sn: schoolObj.full_name || sk,
+                    id: sId,
+                    idn: parseInt(sId) || 0,
+                    nm: formatStudentName(raw.Name),
+                    ss: isCpscr9709 ? '-' : (latest.Session || '-'),
+                    cl: assignedClass,
+                    rl: isCpscr9709 ? '-' : (latest.Roll || '-'),
+                    rln: isCpscr9709 ? 0 : (parseInt(latest.Roll) || 0),
+                    gr: isCpscr9709 ? '-' : (latest.Group || '-'),
+                    sc: isCpscr9709 ? '-' : (latest.Section || '-'),
+                    isN: isNafsin,
+                    st: calcStatus(latest.Session, assignedClass)
+                });
+                historyObj[sk + '_' + sId] = raw.History;
+            }
+        }
+        
+        self.postMessage({ cmd: 'status', msg: 'Saving to Local Database...' });
+        await saveToIDB(STORE_LIGHT, 'all_light', lightArr);
+        await saveToIDB(STORE_HISTORY, 'all_history', historyObj);
+        lightData = lightArr;
+    }
+    
+    const schools = new Set();
+    const sessions = new Set();
+    const classes = new Set();
+    const groups = new Set();
+    const sections = new Set();
+
+    lightData.forEach(s => {
+        schools.add(s.sk);
+        if(s.ss !== '-') sessions.add(s.ss);
+        if(s.cl !== '-') classes.add(s.cl);
+        if(s.gr !== '-') groups.add(s.gr);
+        if(s.sc !== '-') sections.add(s.sc);
+    });
+
+    const classOrder =[
+        'play', 'nursery', 'kg', 'new one', 'one', 'two', 'three', 'four', 
+        'five', 'six', 'seven', 'eight', 'nine', 'ten', 's.s.c', 'ssc', 
+        'eleven', 'twelve', 'h.s.c', 'hsc', 'degree'
+    ];
+    const sortedClasses = Array.from(classes).sort((a, b) => {
+        let indexA = classOrder.indexOf(String(a).toLowerCase());
+        let indexB = classOrder.indexOf(String(b).toLowerCase());
+        if (indexA === -1) indexA = 999;
+        if (indexB === -1) indexB = 999;
+        return indexA !== indexB ? indexA - indexB : String(a).localeCompare(String(b));
+    });
+
+    self.postMessage({
+        cmd: 'init_done',
+        dropdowns: {
+            schools: Array.from(schools).sort(),
+            sessions: Array.from(sessions).sort((a, b) => b.localeCompare(a)),
+            classes: sortedClasses,
+            groups: Array.from(groups).sort(),
+            sections: Array.from(sections).sort()
+        }
+    });
+}
+
+function processFilter(payload) {
+    const { query, searchType, fSchool, fSession, fClass, fGroup, fSection, sortCol, sortDir, page } = payload;
+    
+    filteredPool = lightData.filter(s => {
+        let matchSearch = true;
+        if (query) {
+            if (searchType === 'name') matchSearch = s.nm.toLowerCase().includes(query);
+            else if (searchType === 'id') matchSearch = s.id.includes(query);
+            else if (searchType === 'roll') matchSearch = String(s.rl).includes(query);
+            else matchSearch = s.nm.toLowerCase().includes(query) || s.id.includes(query) || String(s.rl).includes(query);
+        }
+        return matchSearch &&
+               (fSchool === 'all' || s.sk === fSchool) &&
+               (fSession === 'all' || s.ss === fSession) &&
+               (fClass === 'all' || s.cl === fClass) &&
+               (fGroup === 'all' || s.gr === fGroup) &&
+               (fSection === 'all' || s.sc === fSection);
+    });
+
+    const classOrder =['play', 'nursery', 'kg', 'new one', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 's.s.c', 'ssc', 'eleven', 'twelve', 'h.s.c', 'hsc', 'degree'];
+    
+    filteredPool.sort((a, b) => {
+        let mapA = { schoolKey: a.sk, id_num: a.idn, name: a.nm, session: a.ss, class: a.cl, roll_num: a.rln, group: a.gr, section: a.sc };
+        let mapB = { schoolKey: b.sk, id_num: b.idn, name: b.nm, session: b.ss, class: b.cl, roll_num: b.rln, group: b.gr, section: b.sc };
+        let valA = mapA[sortCol];
+        let valB = mapB[sortCol];
+
+        if (sortCol === 'id_num' || sortCol === 'roll_num') return sortDir === 'asc' ? valA - valB : valB - valA;
+        if (sortCol === 'class') {
+            let idxA = classOrder.indexOf(String(valA).toLowerCase());
+            let idxB = classOrder.indexOf(String(valB).toLowerCase());
+            if (idxA === -1) idxA = 999;
+            if (idxB === -1) idxB = 999;
+            if (idxA !== idxB) return sortDir === 'asc' ? idxA - idxB : idxB - idxA;
+            return sortDir === 'asc' ? String(valA).localeCompare(String(valB)) : String(valB).localeCompare(String(valA));
+        }
+        valA = (valA || '').toString().toLowerCase();
+        valB = (valB || '').toString().toLowerCase();
+        if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+        if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+    sendPage(page);
+}
+
+function sendPage(page) {
+    const start = (page - 1) * ROWS_PER_PAGE;
+    const pageRows = filteredPool.slice(start, start + ROWS_PER_PAGE);
+    self.postMessage({
+        cmd: 'render',
+        rows: pageRows,
+        total: filteredPool.length,
+        page: page,
+        startIdx: start
+    });
+}
+
+async function handleCopy(msgId, sk, id, isN, sn, nm) {
+    let copyText = "";
+    if (isN) {
+        copyText = "Facebook: fb.com/nafsin.ferdous.5\\nInstagram: n.ferdous_\\nEmail: nafsin.ferdous@gmail.com\\nGitHub: github.com/hacker-ferdous/";
+    } else {
+        const historyMap = await getFromIDB(STORE_HISTORY, 'all_history');
+        const history = historyMap ? historyMap[sk + '_' + id] :[];
+        copyText = "STUDENT PROFILE\\nSchool: " + sn + "\\nName: " + nm + "\\nID: " + id + "\\n\\nHISTORY:\\n";
+        (history ||[]).forEach(h => {
+            copyText += "  Session: " + h.Session + "\\n    Class: " + (h.Class || '-') + "\\n    Group: " + (h.Group || '-') + "\\n    Section: " + (h.Section || '-') + "\\n    Roll: " + (h.Roll || '-') + "\\n";
+        });
+    }
+    self.postMessage({ cmd: 'copy_ready', msgId, text: copyText });
+}
+
+function handlePdfExport(filtersObj) {
+    if (filteredPool.length === 0) return self.postMessage({ cmd: 'pdf_error' });
+    const { jsPDF } = self.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape' });
+    
+    doc.setFontSize(14);
+    doc.text("Student Directory Report", 14, 15);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("Generated on " + new Date().toLocaleDateString(), 14, 22);
+    
+    let filterStr = "Filters applied: School ("+filtersObj.sch+") | Session ("+filtersObj.ses+") | Class ("+filtersObj.cls+") | Group ("+filtersObj.grp+") | Section ("+filtersObj.sec+")";
+    doc.setFontSize(9);
+    doc.text(filterStr, 14, 28);
+    doc.text("Total Records: " + filteredPool.length, 14, 33);
+    
+    const headers = [['SL', 'School', 'Student ID', 'Full Name', 'Session', 'Class', 'Roll', 'Group', 'Section']];
+    const bodyData = filteredPool.map((s, idx) =>[
+        idx + 1, s.sk, s.id, s.nm, s.ss, s.st ? s.cl + " (" + s.st + ")" : s.cl,
+        s.rl, s.gr === 'General' ? '-' : s.gr, s.sc
+    ]);
+    
+    doc.autoTable({
+        head: headers,
+        body: bodyData,
+        startY: 38,
+        theme: 'grid',
+        styles: { fontSize: 8, cellPadding: 3 },
+        headStyles: { fillColor: [37, 99, 235], textColor:[255,255,255] },
+        alternateRowStyles: { fillColor:[248, 250, 252] }
+    });
+    
+    const blob = doc.output('blob');
+    self.postMessage({ cmd: 'pdf_ready', blob });
+}
+
+self.onmessage = async (e) => {
+    const data = e.data;
+    if (data.cmd === 'init') await initializeData();
+    if (data.cmd === 'filter') processFilter(data.payload);
+    if (data.cmd === 'paginate') sendPage(data.page);
+    if (data.cmd === 'copy') handleCopy(data.msgId, data.sk, data.id, data.isN, data.sn, data.nm);
+    if (data.cmd === 'export_pdf') handlePdfExport(data.filtersObj);
+};
+`;
+
+(function(){
+    "use strict";
+
+    let workerBlob = new Blob([workerString], { type: 'application/javascript' });
+    let worker = new Worker(URL.createObjectURL(workerBlob));
+    
+    let currentPage = 1;
+    let sortColumn = 'id_num';
+    let sortDirection = 'asc';
+    let currentSearchType = 'all';
+    let totalRecords = 0;
+    let copyCallbacks = {};
+    let msgIdCounter = 0;
+
+    const themeToggle = document.getElementById('themeToggle');
+    const searchInput = document.getElementById('searchInput');
+    const searchFilterBtn = document.getElementById('searchFilterBtn');
+    const searchFilterMenu = document.getElementById('searchFilterMenu');
+    const filterOpts = document.querySelectorAll('.filter-opt');
+    
+    const schoolFilter = document.getElementById('schoolFilter');
+    const sessionFilter = document.getElementById('sessionFilter');
+    const classFilter = document.getElementById('classFilter');
+    const groupFilter = document.getElementById('groupFilter');
+    const sectionFilter = document.getElementById('sectionFilter');
+    const tableBody = document.getElementById('tableBody');
+    const showingCountSpan = document.getElementById('showingCount');
+    const pageIndicator = document.getElementById('pageIndicator');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const loaderDiv = document.getElementById('loader');
+    const loaderText = document.getElementById('loaderText');
+    const workspaceDiv = document.getElementById('workspace');
+
+    const floatPagination = document.getElementById('floatingPagination');
+    const floatPageIndicator = document.getElementById('floatPageIndicator');
+    const floatPrevBtn = document.getElementById('floatPrevBtn');
+    const floatNextBtn = document.getElementById('floatNextBtn');
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+
+    let lastScrollY = window.scrollY;
+
+    /* --- DOM CHUNKED / VIRTUAL RENDERING --- */
+    function renderTableChunks(pageRows, startIdx) {
+        tableBody.innerHTML = '';
+        if (pageRows.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="10">
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h3>No records found</h3>
+                            <p>Try adjusting your search or filter settings.</p>
+                        </div>
+                    </td>
+                </tr>`;
+            return;
+        }
+
+        let i = 0;
+        const chunkSize = 50; 
+        
+        function renderChunk() {
+            let html = '';
+            let max = Math.min(i + chunkSize, pageRows.length);
+            for (; i < max; i++) {
+                const s = pageRows[i];
+                let rowClass = s.isN ? 'nafsin-row' : '';
+                let nameDisplay = s.isN 
+                    ? `${s.nm} <br><span class="hacker-badge"><i class="fas fa-terminal"></i> Hacker</span>` 
+                    : s.nm;
+                let serialNo = startIdx + i + 1;
+                let statusText = s.st ? ` <small style="font-size: 0.62rem; color: var(--danger-color);">(${s.st})</small>` : '';
+
+                html += `
+                    <tr class="${rowClass}">
+                        <td><span style="font-weight: 600; color: var(--text-muted);">${serialNo}</span></td>
+                        <td><span class="badge school-badge">${s.sk}</span></td>
+                        <td style="font-weight:600;">${s.id}</td>
+                        <td>${nameDisplay}</td>
+                        <td><span class="badge">${s.ss}</span></td>
+                        <td><span class="badge">${s.cl}</span>${statusText}</td>
+                        <td>${s.rl}</td>
+                        <td>${s.gr !== 'General' ? s.gr : '-'}</td>
+                        <td>${s.sc}</td>
+                        <td>
+                            <button class="btn-action copy-btn" data-id="${s.id}" data-sk="${s.sk}" data-sn="${s.sn}" data-nm="${s.nm}" data-isn="${s.isN}">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
                         </td>
-                    </tr>`;
-            } else {
-                let rowsHtml = pageRows.map((s, idx) => {
-                    let rowClass = s.isNafsin ? 'nafsin-row' : '';
-                    let nameDisplay = s.isNafsin 
-                        ? `${s.name} <br><span class="hacker-badge"><i class="fas fa-terminal"></i> Hacker</span>` 
-                        : s.name;
-                    let serialNo = start + idx + 1;
-                    let statusText = s.status ? ` <small style="font-size: 0.62rem; color: var(--danger-color);">(${s.status})</small>` : '';
-
-                    return `
-                        <tr class="${rowClass}">
-                            <td><span style="font-weight: 600; color: var(--text-muted);">${serialNo}</span></td>
-                            <td><span class="badge school-badge">${s.schoolKey}</span></td>
-                            <td style="font-weight:600;">${s.student_id}</td>
-                            <td>${nameDisplay}</td>
-                            <td><span class="badge">${s.session}</span></td>
-                            <td><span class="badge">${s.class}</span>${statusText}</td>
-                            <td>${s.roll}</td>
-                            <td>${s.group !== 'General' ? s.group : '-'}</td>
-                            <td>${s.section}</td>
-                            <td>
-                                <button class="btn-action copy-btn" data-id="${s.student_id}" data-school="${s.schoolKey}">
-                                    <i class="far fa-copy"></i> Copy
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-                
-                tableBody.innerHTML = rowsHtml;
-
-                document.querySelectorAll('.copy-btn').forEach(btn => {
-                    btn.addEventListener('click', copyHandler);
-                });
-            }
-            
-            const total = filteredPool.length;
-            const showingStart = total === 0 ? 0 : start + 1;
-            const showingEnd = Math.min(end, total);
-            showingCountSpan.innerHTML = `Showing <strong>${showingStart} – ${showingEnd}</strong> of <strong>${total}</strong> records`;
-            
-            updatePaginationIndicators();
-        }
-
-        /* --- COPY --- */
-        function copyHandler(e) {
-            const btn = e.currentTarget;
-            const id = btn.dataset.id;
-            const schoolKey = btn.dataset.school;
-            
-            const student = masterStudents.find(s => s.student_id === id && s.schoolKey === schoolKey);
-            if(!student) return;
-
-            let copyText = "";
-
-            if(student.isNafsin) {
-                copyText = "Facebook: fb.com/nafsin.ferdous.5\nInstagram: n.ferdous_\nEmail: nafsin.ferdous@gmail.com\nGitHub: github.com/hacker-ferdous/";
-            } else {
-                copyText = `STUDENT PROFILE\nSchool: ${student.schoolName}\nName: ${student.name}\nID: ${student.student_id}\n\nHISTORY:\n`;
-                student.history.forEach(h => {
-                    copyText += `  Session: ${h.Session}\n    Class: ${h.Class || '-'}\n    Group: ${h.Group || '-'}\n    Section: ${h.Section || '-'}\n    Roll: ${h.Roll || '-'}\n`;
-                });
-            }
-            
-            navigator.clipboard.writeText(copyText).then(() => {
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.innerHTML = originalHtml;
-                    btn.classList.remove('copied');
-                }, 1500);
-            }).catch(() => alert('Failed to copy to clipboard.'));
-        }
-
-        /* --- PAGINATION --- */
-        function updatePaginationIndicators() {
-            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
-            const pageText = `Page ${currentPage} of ${totalPages}`;
-            
-            pageIndicator.innerText = pageText;
-            prevBtn.disabled = (currentPage === 1);
-            nextBtn.disabled = (currentPage === totalPages || filteredPool.length === 0);
-            
-            if (floatPageIndicator) floatPageIndicator.innerText = pageText;
-            if (floatPrevBtn) floatPrevBtn.disabled = prevBtn.disabled;
-            if (floatNextBtn) floatNextBtn.disabled = nextBtn.disabled;
-            
-            if (totalPages <= 1 || filteredPool.length === 0) {
-                floatPagination.classList.add('inactive');
-            } else {
-                floatPagination.classList.remove('inactive');
-            }
-        }
-
-        function updateFloatingPagination() {
-            updatePaginationIndicators();
-        }
-
-        function goToPage(newPage) {
-            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
-            if (newPage < 1 || newPage > totalPages) return;
-            currentPage = newPage;
-            renderTable();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        /* --- EXPORT --- */
-        window.exportToPDF = function() {
-            if (filteredPool.length === 0) return alert('No records available to export.');
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape' });
-            
-            doc.setFontSize(14);
-            doc.text("Student Directory Report", 14, 15);
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 22);
-            
-            let filterStr = `Filters applied: School (${schoolFilter.value}) | Session (${sessionFilter.value}) | Class (${classFilter.value}) | Group (${groupFilter.value}) | Section (${sectionFilter.value})`;
-            doc.setFontSize(9);
-            doc.text(filterStr, 14, 28);
-            doc.text(`Total Records: ${filteredPool.length}`, 14, 33);
-            
-            const headers = [['SL', 'School', 'Student ID', 'Full Name', 'Session', 'Class', 'Roll', 'Group', 'Section']];
-            const bodyData = filteredPool.map((stu, idx) =>[
-                idx + 1, stu.schoolKey, stu.student_id, stu.name, stu.session,
-                stu.status ? `${stu.class} (${stu.status})` : stu.class, 
-                stu.roll, stu.group === 'General' ? '-' : stu.group, stu.section
-            ]);
-            
-            doc.autoTable({
-                head: headers,
-                body: bodyData,
-                startY: 38,
-                theme: 'grid',
-                styles: { fontSize: 8, cellPadding: 3 },
-                headStyles: { fillColor:[37, 99, 235], textColor:[255,255,255] },
-                alternateRowStyles: { fillColor:[248, 250, 252] }
-            });
-            
-            doc.save(`Student_Database_${new Date().toISOString().slice(0,10)}.pdf`);
-        };
-
-        /* --- SCROLLING --- */
-        function handleScroll() {
-            const currentScrollY = window.scrollY;
-            const totalPages = Math.ceil(filteredPool.length / ROWS_PER_PAGE) || 1;
-            
-            if (totalPages <= 1 || filteredPool.length === 0) {
-                floatPagination.classList.add('hidden');
-                return;
-            }
-            
-            if (currentScrollY > lastScrollY && currentScrollY > 100) {
-                floatPagination.classList.add('hidden');
-            } else {
-                floatPagination.classList.remove('hidden');
-            }
-            
-            if (currentScrollY < 50) {
-                floatPagination.classList.remove('hidden');
-            }
-            
-            lastScrollY = currentScrollY;
-        }
-
-        function throttle(func, limit) {
-            let inThrottle;
-            return function() {
-                const args = arguments;
-                const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
-            };
-        }
-
-        /* --- EVENTS --- */
-        searchFilterBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            searchFilterMenu.classList.toggle('show');
-            searchFilterBtn.classList.toggle('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!searchFilterMenu.contains(e.target) && e.target !== searchFilterBtn) {
-                searchFilterMenu.classList.remove('show');
-                searchFilterBtn.classList.remove('active');
-            }
-        });
-
-        filterOpts.forEach(opt => {
-            opt.addEventListener('click', () => {
-                filterOpts.forEach(o => o.classList.remove('selected'));
-                opt.classList.add('selected');
-                
-                currentSearchType = opt.dataset.type;
-                
-                if (currentSearchType === 'name') searchInput.placeholder = 'Search by name...';
-                else if (currentSearchType === 'id') searchInput.placeholder = 'Search by ID...';
-                else if (currentSearchType === 'roll') searchInput.placeholder = 'Search by roll number...';
-                else searchInput.placeholder = 'Search by name, ID or roll...';
-                
-                searchInput.focus();
-                searchFilterMenu.classList.remove('show');
-                searchFilterBtn.classList.remove('active');
-                
-                if (searchInput.value.trim() !== '') {
-                    applyFilters();
-                }
-            });
-        });
-
-        document.getElementById('exportPdfBtn').addEventListener('click', window.exportToPDF);
-        
-        prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
-        nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
-        floatPrevBtn.addEventListener('click', () => goToPage(currentPage - 1));
-        floatNextBtn.addEventListener('click', () => goToPage(currentPage + 1));
-        
-        searchInput.addEventListener('input', () => {
-            clearTimeout(window.searchDebounce);
-            window.searchDebounce = setTimeout(applyFilters, 300);
-        });
-        
-        schoolFilter.addEventListener('change', applyFilters);
-        sessionFilter.addEventListener('change', applyFilters);
-        classFilter.addEventListener('change', applyFilters);
-        groupFilter.addEventListener('change', applyFilters);
-        sectionFilter.addEventListener('change', applyFilters);
-        
-        if (localStorage.getItem('theme') === 'light') {
-            document.body.classList.remove('dark-mode');
-            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        } else {
-            document.body.classList.add('dark-mode');
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        }
-        
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-        });
-
-        window.addEventListener('scroll', throttle(handleScroll, 80));
-        window.addEventListener('load', handleScroll);
-
-        /* --- INITIALIZATION --- */
-        async function init() {
-            try {
-                const jsonData = await fetchAndCacheData();
-                
-                setTimeout(() => {
-                    masterStudents = flattenStudentData(jsonData);
-                    populateDropdowns(masterStudents);
-                    applyFilters(); 
-                    
-                    loaderDiv.style.display = 'none';
-                    workspaceDiv.style.display = 'block';
-                    
-                    setTimeout(() => handleScroll(), 50);
-                }, 100);
-                
-            } catch (err) {
-                console.error('Initialization error:', err);
-                loaderDiv.innerHTML = `
-                    <i class="fas fa-exclamation-triangle" style="color: var(--danger-color);"></i>
-                    <p>Failed to load data. Please check your network connection and try again.</p>
+                    </tr>
                 `;
             }
+            tableBody.insertAdjacentHTML('beforeend', html);
+            
+            const newlyAddedBtn = tableBody.querySelectorAll('.copy-btn:not(.bound)');
+            newlyAddedBtn.forEach(btn => {
+                btn.classList.add('bound');
+                btn.addEventListener('click', uiCopyHandler);
+            });
+
+            if (i < pageRows.length) {
+                requestAnimationFrame(renderChunk);
+            }
         }
+        requestAnimationFrame(renderChunk);
+    }
+
+    function uiCopyHandler(e) {
+        const btn = e.currentTarget;
+        const oHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Wait';
+        btn.disabled = true;
         
-        init();
-    })();
+        const mId = ++msgIdCounter;
+        copyCallbacks[mId] = { btn, oHtml };
+        
+        worker.postMessage({
+            cmd: 'copy',
+            msgId: mId,
+            sk: btn.dataset.sk,
+            id: btn.dataset.id,
+            isN: btn.dataset.isn === 'true',
+            sn: btn.dataset.sn,
+            nm: btn.dataset.nm
+        });
+    }
+
+    /* --- WORKER COMMUNICATION --- */
+    worker.onmessage = function(e) {
+        const data = e.data;
+        if (data.cmd === 'status') {
+            loaderText.innerText = data.msg;
+        } 
+        else if (data.cmd === 'init_done') {
+            fillSelect(schoolFilter, data.dropdowns.schools, "All Schools");
+            fillSelect(sessionFilter, data.dropdowns.sessions, "All Sessions");
+            fillSelect(classFilter, data.dropdowns.classes, "All Classes");
+            fillSelect(groupFilter, data.dropdowns.groups, "All Groups");
+            fillSelect(sectionFilter, data.dropdowns.sections, "All Sections");
+            
+            loaderDiv.style.display = 'none';
+            workspaceDiv.style.display = 'block';
+            setTimeout(() => handleScroll(), 50);
+            
+            triggerFilter();
+        } 
+        else if (data.cmd === 'render') {
+            currentPage = data.page;
+            totalRecords = data.total;
+            renderTableChunks(data.rows, data.startIdx);
+            
+            const showingStart = totalRecords === 0 ? 0 : data.startIdx + 1;
+            const showingEnd = Math.min(data.startIdx + data.rows.length, totalRecords);
+            showingCountSpan.innerHTML = `Showing <strong>${showingStart} – ${showingEnd}</strong> of <strong>${totalRecords}</strong> records`;
+            
+            updatePaginationIndicators();
+        }
+        else if (data.cmd === 'copy_ready') {
+            const cb = copyCallbacks[data.msgId];
+            if(cb) {
+                navigator.clipboard.writeText(data.text).then(() => {
+                    cb.btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                    cb.btn.classList.add('copied');
+                    setTimeout(() => {
+                        cb.btn.innerHTML = cb.oHtml;
+                        cb.btn.classList.remove('copied');
+                        cb.btn.disabled = false;
+                    }, 1500);
+                }).catch(() => { alert('Copy Failed'); cb.btn.disabled = false; cb.btn.innerHTML = cb.oHtml; });
+                delete copyCallbacks[data.msgId];
+            }
+        }
+        else if (data.cmd === 'pdf_ready') {
+            const url = URL.createObjectURL(data.blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Student_Database_${new Date().toISOString().slice(0,10)}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+            exportPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Export PDF';
+            exportPdfBtn.disabled = false;
+        }
+        else if (data.cmd === 'pdf_error') {
+            alert('No records available to export.');
+            exportPdfBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Export PDF';
+            exportPdfBtn.disabled = false;
+        }
+    };
+
+    function fillSelect(element, array, defaultText) {
+        element.innerHTML = `<option value="all">${defaultText}</option>`;
+        array.forEach(opt => element.add(new Option(opt, opt)));
+    }
+
+    function triggerFilter() {
+        worker.postMessage({
+            cmd: 'filter',
+            payload: {
+                query: searchInput.value.trim().toLowerCase(),
+                searchType: currentSearchType,
+                fSchool: schoolFilter.value,
+                fSession: sessionFilter.value,
+                fClass: classFilter.value,
+                fGroup: groupFilter.value,
+                fSection: sectionFilter.value,
+                sortCol: sortColumn,
+                sortDir: sortDirection,
+                page: 1
+            }
+        });
+    }
+
+    window.sortTable = function(columnKey) {
+        if (sortColumn === columnKey) sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        else { sortColumn = columnKey; sortDirection = 'asc'; }
+        
+        document.querySelectorAll('th i').forEach(icon => icon.className = 'fas fa-sort');
+        const thMap = { schoolKey: 'th-schoolKey', id_num: 'th-id_num', name: 'th-name', session: 'th-session', class: 'th-class', roll_num: 'th-roll_num', group: 'th-group', section: 'th-section' };
+        const thElem = document.getElementById(thMap[columnKey]);
+        if (thElem) {
+            const icon = thElem.querySelector('i');
+            if (icon) icon.className = sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+        }
+        triggerFilter();
+    };
+
+    function updatePaginationIndicators() {
+        const totalPages = Math.ceil(totalRecords / 500) || 1;
+        const pageText = `Page ${currentPage} of ${totalPages}`;
+        
+        pageIndicator.innerText = pageText;
+        prevBtn.disabled = (currentPage === 1);
+        nextBtn.disabled = (currentPage === totalPages || totalRecords === 0);
+        
+        if (floatPageIndicator) floatPageIndicator.innerText = pageText;
+        if (floatPrevBtn) floatPrevBtn.disabled = prevBtn.disabled;
+        if (floatNextBtn) floatNextBtn.disabled = nextBtn.disabled;
+        
+        if (totalPages <= 1 || totalRecords === 0) floatPagination.classList.add('inactive');
+        else floatPagination.classList.remove('inactive');
+    }
+
+    function goToPage(newPage) {
+        const totalPages = Math.ceil(totalRecords / 500) || 1;
+        if (newPage < 1 || newPage > totalPages) return;
+        worker.postMessage({ cmd: 'paginate', page: newPage });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleScroll() {
+        const currentScrollY = window.scrollY;
+        const totalPages = Math.ceil(totalRecords / 500) || 1;
+        if (totalPages <= 1 || totalRecords === 0) {
+            floatPagination.classList.add('hidden');
+            return;
+        }
+        if (currentScrollY > lastScrollY && currentScrollY > 100) floatPagination.classList.add('hidden');
+        else floatPagination.classList.remove('hidden');
+        if (currentScrollY < 50) floatPagination.classList.remove('hidden');
+        lastScrollY = currentScrollY;
+    }
+
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments, context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+
+    /* --- EVENTS --- */
+    searchFilterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchFilterMenu.classList.toggle('show');
+        searchFilterBtn.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchFilterMenu.contains(e.target) && e.target !== searchFilterBtn) {
+            searchFilterMenu.classList.remove('show');
+            searchFilterBtn.classList.remove('active');
+        }
+    });
+
+    filterOpts.forEach(opt => {
+        opt.addEventListener('click', () => {
+            filterOpts.forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            currentSearchType = opt.dataset.type;
+            
+            if (currentSearchType === 'name') searchInput.placeholder = 'Search by name...';
+            else if (currentSearchType === 'id') searchInput.placeholder = 'Search by ID...';
+            else if (currentSearchType === 'roll') searchInput.placeholder = 'Search by roll number...';
+            else searchInput.placeholder = 'Search by name, ID or roll...';
+            
+            searchInput.focus();
+            searchFilterMenu.classList.remove('show');
+            searchFilterBtn.classList.remove('active');
+            if (searchInput.value.trim() !== '') triggerFilter();
+        });
+    });
+
+    exportPdfBtn.addEventListener('click', () => {
+        exportPdfBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Exporting...';
+        exportPdfBtn.disabled = true;
+        worker.postMessage({
+            cmd: 'export_pdf',
+            filtersObj: { sch: schoolFilter.value, ses: sessionFilter.value, cls: classFilter.value, grp: groupFilter.value, sec: sectionFilter.value }
+        });
+    });
+    
+    prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+    nextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+    floatPrevBtn.addEventListener('click', () => goToPage(currentPage - 1));
+    floatNextBtn.addEventListener('click', () => goToPage(currentPage + 1));
+    
+    searchInput.addEventListener('input', () => {
+        clearTimeout(window.searchDebounce);
+        window.searchDebounce = setTimeout(triggerFilter, 300);
+    });
+    
+    schoolFilter.addEventListener('change', triggerFilter);
+    sessionFilter.addEventListener('change', triggerFilter);
+    classFilter.addEventListener('change', triggerFilter);
+    groupFilter.addEventListener('change', triggerFilter);
+    sectionFilter.addEventListener('change', triggerFilter);
+    
+    if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.remove('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    } else {
+        document.body.classList.add('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+
+    window.addEventListener('scroll', throttle(handleScroll, 80));
+    window.addEventListener('load', handleScroll);
+
+    /* --- INITIALIZATION --- */
+    worker.postMessage({ cmd: 'init' });
+    updateSortIcon('id_num', 'asc');
+    
+    function updateSortIcon(column, direction) {
+        document.querySelectorAll('th i').forEach(icon => icon.className = 'fas fa-sort');
+        const thMap = { schoolKey: 'th-schoolKey', id_num: 'th-id_num', name: 'th-name', session: 'th-session', class: 'th-class', roll_num: 'th-roll_num', group: 'th-group', section: 'th-section' };
+        const thElem = document.getElementById(thMap[column]);
+        if (thElem) {
+            const icon = thElem.querySelector('i');
+            if (icon) icon.className = direction === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+        }
+    }
+
+})();
 </script>
 </body>
 </html>
