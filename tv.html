@@ -35,7 +35,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
+            height: 100vh; /* Fallback for older browsers */
+            height: 100dvh; /* Mobile footer cut-off fix */
             overflow: hidden;
         }
 
@@ -171,7 +172,8 @@
             flex-direction: row;
             width: 98%;
             max-width: 1600px;
-            height: calc(100vh - 160px);
+            height: calc(100vh - 160px); /* Fallback */
+            height: calc(100dvh - 160px);
             background: var(--panel-bg);
             border-radius: 12px;
             overflow: hidden;
@@ -405,12 +407,12 @@
 
         /* Responsive Design */
         @media (max-width: 1000px) {
-            .container { flex-direction: column; height: calc(100vh - 120px); overflow-y: auto;}
-            .video-section { flex: none; height: 45vh; border-right: none; border-bottom: 1px solid var(--border-color); }
+            .container { flex-direction: column; height: calc(100dvh - 140px); overflow-y: auto;} /* Fixed cut off on mobile */
+            .video-section { flex: none; height: 40vh; border-right: none; border-bottom: 1px solid var(--border-color); }
             .playlist-section { flex: none; height: auto; min-height: 50vh; }
             header h1 { font-size: 20px; }
             .header-btn span { display: none; }
-            footer { flex-direction: column; gap: 10px; padding: 15px 0; }
+            footer { flex-direction: column; gap: 10px; padding: 10px 0; }
         }
     </style>
 </head>
@@ -442,9 +444,9 @@
     <!-- Main App Container -->
     <div class="container" id="app-container">
         
-        <!-- Video Player -->
+        <!-- Video Player - Added playsinline for PiP/Mobile Support -->
         <div class="video-section">
-            <video id="my-video" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" data-setup='{"fluid": false}'>
+            <video id="my-video" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" playsinline data-setup='{"fluid": false}'>
                 <p class="vjs-no-js">To view this video please enable JavaScript.</p>
             </video>
         </div>
@@ -500,6 +502,10 @@
     
     <!-- Application Logic -->
     <script>
+        // --- Navigation Logic for Old Phones (Nokia/KaiOS/Button Phones) ---
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isOldDevice = /KaiOS|Symbian|Nokia|Series40|Series60|BlackBerry|IEMobile|Opera Mini|Android [1-4]\./i.test(userAgent);
+
         // --- State Variables ---
         const player = videojs('my-video');
         let allChannels = [];       
@@ -755,6 +761,13 @@
 
         // --- Initialization ---
         window.onload = function() {
+            // Remove alert immediately for older phones/button phones
+            if (isOldDevice) {
+                const alertModal = document.getElementById('custom-alert');
+                if (alertModal) {
+                    alertModal.style.display = 'none';
+                }
+            }
             // Initiate App immediately in the background
             initApp();
         };
@@ -1022,6 +1035,23 @@
                 console.error("PiP Error:", error);
             }
         };
+
+        // 3. Auto Picture-in-Picture when app is minimized/exited (Mobile Background Playback)
+        document.addEventListener("visibilitychange", async () => {
+            const videoEl = document.querySelector('#my-video_html5_api');
+            if (!videoEl) return;
+
+            if (document.visibilityState === "hidden") {
+                // When user goes to home screen or another app
+                if (!videoEl.paused && document.pictureInPictureEnabled && !document.pictureInPictureElement) {
+                    try {
+                        await videoEl.requestPictureInPicture();
+                    } catch (err) {
+                        console.log("Auto PiP blocked by device/browser rules.", err);
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
