@@ -6,6 +6,7 @@
     <title>IPTV Player</title>
     <meta name="referrer" content="no-referrer-when-downgrade">
     
+    <!-- HLS.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
     <style>
@@ -36,28 +37,27 @@
 <body>
 
 <div class="video-container">
-    <video id="video" controls autoplay></video>
+    <video id="video" controls autoplay muted></video>
 </div>
 
 <script>
     var video = document.getElementById('video');
-    var videoSrc = 'https://lalisccor.cachefly.net/laliscor/index.m3u8';
+    var targetSrc = 'https://lalisccor.cachefly.net/laliscor/index.m3u8';
+    
+    // CORS Bypass করার জন্য AllOrigins প্রক্সি দিয়ে লিঙ্কটি র‍্যাপ করা হলো
+    var videoSrc = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetSrc);
 
     if (Hls.isSupported()) {
-        var hls = new Hls({
-            // কিছু কিছু ক্ষেত্রে custom request header কনফিগার করতে সাহায্য করে
-            xhrSetup: function (xhr, url) {
-                // ব্রাউজার সাধারণত সিকিউরিটির জন্য সরাসরি Referer বা Origin মডিফাই করতে দেয় না,
-                // তবে HLS load রিকোয়েস্টের ক্ষেত্রে কিছু কিছু এনভায়রনমেন্টে এটি সহায়ক হতে পারে।
-            }
-        });
+        var hls = new Hls();
         hls.loadSource(videoSrc);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, function() {
-            video.play();
+            video.play().catch(function(error) {
+                console.log("Autoplay prevented. Click play to start.", error);
+            });
         });
     }
-    // Safari বা iOS এর জন্য native m3u8 সাপোর্ট
+    // Safari/iOS native m3u8 সাপোর্ট এর জন্য
     else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = videoSrc;
         video.addEventListener('loadedmetadata', function() {
