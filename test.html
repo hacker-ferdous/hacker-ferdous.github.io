@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player</title>
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .video-container {
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        video {
+            width: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="video-container">
+    <video id="video" controls autoplay></video>
+</div>
+
+<script>
+    var video = document.getElementById('video');
+    var videoSrc = 'https://lalisccor.cachefly.net/laliscor/index.m3u8';
+
+    if (Hls.isSupported()) {
+        var hls = new Hls({
+            // কিছু কিছু ক্ষেত্রে custom request header কনফিগার করতে সাহায্য করে
+            xhrSetup: function (xhr, url) {
+                // ব্রাউজার সাধারণত সিকিউরিটির জন্য সরাসরি Referer বা Origin মডিফাই করতে দেয় না,
+                // তবে HLS load রিকোয়েস্টের ক্ষেত্রে কিছু কিছু এনভায়রনমেন্টে এটি সহায়ক হতে পারে।
+            }
+        });
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            video.play();
+        });
+    }
+    // Safari বা iOS এর জন্য native m3u8 সাপোর্ট
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
+        video.addEventListener('loadedmetadata', function() {
+            video.play();
+        });
+    }
+</script>
+
+</body>
+</html>
