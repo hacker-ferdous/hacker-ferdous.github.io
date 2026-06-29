@@ -1101,7 +1101,6 @@
                     const { id, status } = e.data;
                     setStatus(id, status);
                     
-                    // Super fast DOM update without CSS.escape
                     const li = document.getElementById(id);
                     if (li) {
                         const dot = li.querySelector('.status-dot');
@@ -1170,7 +1169,6 @@
                 
                 statusInFlight.add(ch.id);
                 
-                // Only touch DOM if element actually exists (Huge performance boost)
                 const li = document.getElementById(ch.id);
                 if (li) {
                     const dot = li.querySelector('.status-dot');
@@ -1195,7 +1193,6 @@
                 memoryCache[id] = channelStatus[id];
                 return channelStatus[id];
             }
-            // Fallback for legacy cache cleanup
             const raw = localStorage.getItem('iptv_cache_' + id);
             if (raw) {
                 try {
@@ -1211,7 +1208,6 @@
             return 'unknown';
         }
 
-        // Debounce heavy localStorage writes & UI updates
         const saveStatusDebounced = debounce(() => {
             localStorage.setItem('iptv_channel_status', JSON.stringify(channelStatus));
             updateStatusStats();
@@ -1237,7 +1233,6 @@
 
         function updateStatusStats() {
             let a = 0, b = 0, u = 0;
-            // Iterate using traditional for-loop for max speed
             for (let i = 0; i < currentViewList.length; i++) {
                 const s = getStatus(currentViewList[i].id);
                 if (s === 'active') a++;
@@ -1322,7 +1317,6 @@
             select.innerHTML = '<option value="">All Categories</option>';
             const cats = extractAllCategories();
             
-            // Batch DOM insertion
             const frag = document.createDocumentFragment();
             for (let i = 0; i < cats.length; i++) {
                 const opt = document.createElement('option');
@@ -1341,7 +1335,7 @@
         }
 
         // ============================================================
-        //  FILTERING ENGINE
+        //  FILTERING & SCANNING LOGIC (NEW & IMPROVED)
         // ============================================================
         function getFilteredChannels() {
             let source;
@@ -1380,6 +1374,31 @@
         function applyFiltersAndRender() {
             const filtered = getFilteredChannels();
             resetAndRender(filtered);
+        }
+
+        function handleFilterChange() {
+            // 1. Interrupt any ongoing scans by clearing the queues.
+            cancelCheckAll();
+            highPriorityQueue = [];
+            lowPriorityQueue = [];
+            statusInFlight.clear();
+
+            // 2. Apply filters to get the new list and render it.
+            applyFiltersAndRender();
+
+            // 3. Decide what to scan next.
+            const searchVal = document.getElementById('search').value.trim();
+            const hasActiveFilter = searchVal.length > 0 || selectedCategory || selectedStatusFilter !== 'all';
+
+            if (hasActiveFilter) {
+                // If there's a filter, start a *targeted scan* on the visible results.
+                if (currentViewList.length > 0) {
+                    setTimeout(startCheckAll, 100);
+                }
+            } else {
+                // If all filters are cleared, resume the general background scan of all channels.
+                setTimeout(() => queueChannels(allChannels, 'low'), 1000);
+            }
         }
 
         // ============================================================
@@ -1435,7 +1454,6 @@
             userChannels.push(newCh);
             localStorage.setItem('iptv_user_channels', JSON.stringify(userChannels));
             
-            // Reset categories cache & update UI
             cachedCategories = null;
             allChannels = [...userChannels, ...allChannels.filter(c => !c.userAdded)];
             populateCategoryDropdown();
@@ -1474,33 +1492,24 @@
             const first = (ch.name || '?').charAt(0).toUpperCase();
             const color = getColorFromName(ch.name);
             el.style.background = color;
-            el.style.color = '#fff';
-            el.style.display = 'flex';
-            el.style.alignItems = 'center';
-            el.style.justifyContent = 'center';
-            el.style.fontWeight = '700';
-            el.style.fontSize = '18px';
-            el.style.textTransform = 'uppercase';
             el.textContent = first;
             el.classList.add('fallback');
 
             if (ch.logo && ch.logo.startsWith('http')) {
-                const img = document.createElement('img');
+                const img = new Image();
                 img.src = ch.logo;
                 img.alt = ch.name;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'contain';
-                img.onerror = function() {
-                    this.remove();
-                    el.textContent = first;
-                    el.classList.add('fallback');
-                };
-                img.onload = function() {
+                img.style.cssText = 'width:100%; height:100%; object-fit:contain;';
+                img.onload = () => {
                     el.textContent = '';
                     el.style.background = 'transparent';
                     el.classList.remove('fallback');
                     el.appendChild(img);
+                };
+                img.onerror = () => {
+                    img.remove();
+                    el.textContent = first;
+                    el.classList.add('fallback');
                 };
             }
         }
@@ -1509,13 +1518,12 @@
         //  TRACK PROGRESS AND CHECK ALL
         // ============================================================
         function startCheckAll() {
-            if (currentViewList.length === 0) return;
+            if (currentViewList.length === 0 || checkAllActive) return;
+            checkAllActive = true;
             trackProgressList = [...currentViewList];
             checkAllCanceled = false;
-            checkAllActive = true;
 
-            const progressEl = document.getElementById('check-progress');
-            progressEl.classList.add('show');
+            document.getElementById('check-progress').classList.add('show');
             document.querySelector('.check-btn').disabled = true;
             document.querySelector('.check-btn').style.opacity = '0.5';
 
@@ -1546,11 +1554,15 @@
         }
 
         function finishCheckAll() {
+            if (!checkAllActive) return;
             checkAllActive = false;
             if (trackProgressInterval) clearInterval(trackProgressInterval);
             document.getElementById('check-progress').classList.remove('show');
-            document.querySelector('.check-btn').disabled = false;
-            document.querySelector('.check-btn').style.opacity = '1';
+            const checkBtn = document.querySelector('.check-btn');
+            if (checkBtn) {
+              checkBtn.disabled = false;
+              checkBtn.style.opacity = '1';
+            }
             updateStatusStats();
         }
 
@@ -1620,22 +1632,14 @@
                 }
             });
 
-            // Debounced Search (Crucial for preventing lag while typing)
-            document.getElementById('search').addEventListener('input', debounce(function() {
-                applyFiltersAndRender();
-                const val = this.value.trim();
-                if (val.length > 0) startCheckAll();
-                else cancelCheckAll();
-            }, 300));
-
+            document.getElementById('search').addEventListener('input', debounce(handleFilterChange, 300));
             document.getElementById('category-filter').addEventListener('change', function() {
                 selectedCategory = this.value;
-                applyFiltersAndRender();
+                handleFilterChange();
             });
-
             document.getElementById('status-filter').addEventListener('change', function() {
                 selectedStatusFilter = this.value;
-                applyFiltersAndRender();
+                handleFilterChange();
             });
 
             const observer = new IntersectionObserver((entries) => {
@@ -1656,26 +1660,22 @@
             listElement.appendChild(sentinel);
             document.getElementById('channel-count').innerHTML = `<i class="fa-solid fa-list-ol"></i> Total: 0`;
             
+            cancelCheckAll();
             highPriorityQueue = [];
             lowPriorityQueue = [];
             statusInFlight.clear();
-
-            if (trackProgressInterval) clearInterval(trackProgressInterval);
-            checkAllActive = false;
-            document.getElementById('check-progress').classList.remove('show');
 
             try {
                 const resp = await fetch(url);
                 if (!resp.ok) throw new Error();
                 const data = await resp.text();
-                // Push parsing to next frame to prevent UI freezing
-                setTimeout(() => parseM3UFast(data), 0);
+                setTimeout(() => parseM3U(data), 0);
             } catch {
                 loadingEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:red;"></i><span>Failed to load playlist.</span>';
             }
         }
 
-        function parseM3UFast(data) {
+        function parseM3U(data) {
             const lines = data.split('\n');
             let current = {};
             let idCounter = 0;
@@ -1707,11 +1707,10 @@
             allChannels = [...userChannels, ...playlistChannels];
             document.getElementById('loading').style.display = 'none';
 
-            cachedCategories = null; // Flush cache
+            cachedCategories = null;
             populateCategoryDropdown();
             applyFiltersAndRender();
             
-            // Delay auto-checking to ensure UI remains perfectly smooth
             setTimeout(() => { queueChannels(allChannels, 'low'); }, 2000);
         }
 
@@ -1739,11 +1738,12 @@
 
             const logoDiv = document.createElement('div');
             logoDiv.className = 'channel-logo';
+            logoDiv.style.cssText = 'display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; text-transform:uppercase;';
             renderLogo(logoDiv, ch);
 
             const infoDiv = document.createElement('div');
             infoDiv.className = 'channel-info';
-            infoDiv.onclick = function() { playChannel(ch.id); };
+            infoDiv.onclick = () => playChannel(ch.id);
             infoDiv.innerHTML = `
                 <span class="channel-name">${ch.name} ${isUserAdded ? '<span class="added-badge">Added</span>' : ''}</span>
                 <span class="channel-category">${ch.category || 'Uncategorized'}</span>
@@ -1751,21 +1751,18 @@
 
             const favIcon = document.createElement('i');
             favIcon.className = `fa-solid fa-star fav-btn ${isFav ? 'favorited' : ''}`;
-            favIcon.onclick = function(e) { toggleFavorite(e, ch.id); };
+            favIcon.onclick = e => toggleFavorite(e, ch.id);
 
             const rmBtn = document.createElement('i');
             rmBtn.className = 'fa-solid fa-xmark remove-btn';
             rmBtn.style.display = isUserAdded ? 'block' : 'none';
-            rmBtn.onclick = function(e) { removeUserChannel(ch.id, e); };
+            rmBtn.onclick = e => removeUserChannel(ch.id, e);
 
             const dot = document.createElement('span');
             dot.className = `status-dot ${statusClass}`;
             dot.title = `Status: ${status}`;
 
-            li.appendChild(dot);
-            li.appendChild(logoDiv);
-            li.appendChild(infoDiv);
-            li.appendChild(favIcon);
+            li.append(dot, logoDiv, infoDiv, favIcon);
             if (isUserAdded) li.appendChild(rmBtn);
 
             if (insertBeforeSentinel && sentinel.parentNode === listElement) {
@@ -1814,14 +1811,7 @@
             }
 
             player.src({ src: ch.url, type: 'application/x-mpegURL' });
-            player.play().then(() => {
-                setStatus(ch.id, 'active');
-                const li = document.getElementById(ch.id);
-                if (li) {
-                    const d = li.querySelector('.status-dot');
-                    if (d) d.className = 'status-dot active';
-                }
-            }).catch(() => {
+            player.play().catch(() => {
                 setStatus(ch.id, 'inactive');
                 const li = document.getElementById(ch.id);
                 if (li) {
@@ -1833,6 +1823,14 @@
                 msg.textContent = `⚠️ "${ch.name}" is broken or blocked by CORS.`;
                 document.body.appendChild(msg);
                 setTimeout(() => msg.remove(), 3500);
+            });
+            player.one('playing', () => {
+              setStatus(ch.id, 'active');
+                const li = document.getElementById(ch.id);
+                if (li) {
+                    const d = li.querySelector('.status-dot');
+                    if (d) d.className = 'status-dot active';
+                }
             });
         };
 
@@ -1874,7 +1872,7 @@
             } else {
                 document.getElementById('filter-container').style.display = 'flex';
                 document.getElementById('search').value = '';
-                applyFiltersAndRender();
+                handleFilterChange();
             }
         };
 
