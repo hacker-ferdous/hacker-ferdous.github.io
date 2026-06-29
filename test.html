@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTV Player</title>
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>IPTV Player Pro</title>
+    <meta name="referrer" content="no-referrer">
     
-    <!-- HLS.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
     
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #111;
+            background-color: #0b0b0b;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,12 +20,13 @@
             font-family: Arial, sans-serif;
         }
         .video-container {
-            width: 80%;
-            max-width: 800px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 850px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
             background: #000;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
+            border: 1px solid #222;
         }
         video {
             width: 100%;
@@ -37,33 +37,61 @@
 <body>
 
 <div class="video-container">
-    <video id="video" controls autoplay muted></video>
+    <video id="video" controls autoplay muted playsinline></video>
 </div>
 
 <script>
-    var video = document.getElementById('video');
-    var targetSrc = 'https://lalisccor.cachefly.net/laliscor/index.m3u8';
-    
-    // CORS Bypass করার জন্য AllOrigins প্রক্সি দিয়ে লিঙ্কটি র‍্যাপ করা হলো
-    var videoSrc = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetSrc);
+    // লাইব্রেরি লোড হতে ১ মিলিমেকন্ড দেরি হলেও যাতে ক্র্যাশ না করে তার জন্য সেটাআপ
+    window.onload = function() {
+        var video = document.getElementById('video');
+        var targetStream = 'https://lalisccor.cachefly.net/laliscor/index.m3u8';
+        
+        // corsproxy.io ব্যবহার করা হয়েছে যা স্ট্রিমিং ডেটা ব্লক করে না
+        var videoSrc = 'https://corsproxy.io/?' + encodeURIComponent(targetStream);
 
-    if (Hls.isSupported()) {
-        var hls = new Hls();
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function() {
-            video.play().catch(function(error) {
-                console.log("Autoplay prevented. Click play to start.", error);
+        // গ্লোবাল উইন্ডোতে Hls আছে কিনা তা চেক করা
+        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
+            var hls = new Hls({
+                maxBufferLength: 30, // স্মুথ স্ট্রিমিং বাফারিং এর জন্য
+                enableWorker: true
             });
-        });
-    }
-    // Safari/iOS native m3u8 সাপোর্ট এর জন্য
-    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = videoSrc;
-        video.addEventListener('loadedmetadata', function() {
-            video.play();
-        });
-    }
+            
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                video.play().catch(err => console.log("Autoplay blocked, needs user interaction"));
+            });
+
+            // এরর ট্র্যাকিং (যদি কোনো কারণে আবার ব্লক হয়)
+            hls.on(Hls.Events.ERROR, function (event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            console.log("Network error encountered, trying to recover...");
+                            hls.startLoad();
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            console.log("Media error encountered, trying to recover...");
+                            hls.recoverMediaError();
+                            break;
+                        default:
+                            console.error("Fatal error, cannot recover", data);
+                            break;
+                    }
+                }
+            });
+        }
+        // Safari বা iOS ডিভাইসগুলোর জন্য ডিরেক্ট সাপোর্ট
+        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', function() {
+                video.play();
+            });
+        } else {
+            alert("Your browser does not support HLS streaming.");
+        }
+    };
 </script>
 
 </body>
