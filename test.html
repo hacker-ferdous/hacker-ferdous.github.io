@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tspott lite</title>
+    <title>Lite Tport</title>
     <style>
         body, html {
             margin: 0;
@@ -12,7 +12,6 @@
             width: 100%;
             overflow: hidden;
             background-color: #000;
-            cursor: pointer;
         }
         video {
             position: absolute;
@@ -20,101 +19,68 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
-        }
-        /* স্ক্রিনে একটা বড় প্লে আইকন দেখাবে যাতে বুঝতে পারিস ক্লিক করতে হবে */
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-family: sans-serif;
-            font-size: 24px;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 10;
-            transition: opacity 0.3s ease;
+            object-fit: contain; /* টিভির স্ক্রিন সাইজ অনুযায়ী ফিট হবে */
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
-    <div id="overlay" class="overlay">রিমোটের বাটন বা স্ক্রিনে ক্লিক কর প্লে করার জন্য</div>
-    <video id="video" playsinline loop></video>
+    <video id="video" autoplay controls playsinline muted></video>
 
     <script>
         const video = document.getElementById('video');
-        const overlay = document.getElementById('overlay');
         const streamUrl = 'https://bdixserver.tvhunter.top/ant1009/tracks-v1a1/mono.m3u8';
-        let hls;
-        let isInitialized = false;
         
-        function startStreaming() {
-            if (isInitialized) return;
-            isInitialized = true;
-
-            // ক্লিক করার সাথে সাথে ওভারলে হাওয়া করে দাও
-            overlay.style.opacity = 0;
-            setTimeout(() => overlay.remove(), 300);
-
-            // ফুল স্ক্রিন রিকোয়েস্ট
-            if (video.requestFullscreen) video.requestFullscreen();
-            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-            else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
-            else if (video.msRequestFullscreen) video.msRequestFullscreen();
-
-            // এবার প্লেয়ার ইনিশিয়ালাইজ হবে, তার আগে এক ফোঁটা ডেটাও খাবে না
+        function initPlayer() {
             if (Hls.isSupported()) {
-                hls = new Hls({
-                    maxBufferLength: 8,
-                    maxMaxBufferLength: 15,
-                    enableWorker: true,
-                    lowLatencyMode: true
+                const hls = new Hls({
+                    maxBufferLength: 10,     // বাফার সাইজ কম রাখা হয়েছে যাতে টিভির র‍্যাম জ্যাম না হয়
+                    maxMaxBufferLength: 20,
+                    enableWorker: true,      // ব্যাকগ্রাউন্ড থ্রেড ব্যবহার করবে পারফরম্যান্সের জন্য
+                    lowLatencyMode: true     // ল্যাগ কমাবে
                 });
                 
                 hls.loadSource(streamUrl);
                 hls.attachMedia(video);
                 
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.muted = false;
-                    video.play().catch(e => console.log("Play blocked:", e));
-                });
-
+                // যদি কোনো কারণে স্ট্রিম এরর খায় বা আটকে যায়, অটো-রিকভারি করবে
                 hls.on(Hls.Events.ERROR, function (event, data) {
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
+                                console.log("Network error, trying to recover...");
                                 hls.startLoad();
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
+                                console.log("Media error, trying to recover...");
                                 hls.recoverMediaError();
                                 break;
                             default:
+                                console.log("Unrecoverable error, reloading player...");
+                                setTimeout(() => { initPlayer(); }, 2000);
                                 break;
                         }
                     }
                 });
             } 
+            // কিছু কিছু পুরোনো স্মার্ট টিভি (যেমন পুরোনো Android বা Samsung Tizen) সরাসরি m3u8 সাপোর্ট করে
             else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = streamUrl;
-                video.muted = false;
-                video.play().catch(e => console.log("Play blocked:", e));
             }
         }
 
-        // ইউজার ক্লিক করলেই কেবল স্ট্রিম চালু হবে এবং ফুল স্ক্রিন হবে
-        document.addEventListener('click', startStreaming);
-        document.addEventListener('keydown', startStreaming);
+        // টিভি ব্রাউজারে অনেক সময় অটো-প্লে ব্লক করে, তাই স্ক্রিনে একটা ক্লিকের পর সাউন্ড আনমিউট হবে
+        video.addEventListener('play', () => {
+            video.muted = false;
+        });
 
-        // এন্টি-স্টাক মেকানিজম (ভিডিও চলন্ত অবস্থায় আটকে গেলে রিকভার করবে, পজ থাকলে ডিস্টার্ব করবে না)
+        // প্লেয়ার চালু কর
+        initPlayer();
+
+        // এন্টি-স্টাক মেকানিজম: যদি ভিডিও ৫ সেকেন্ডের বেশি সময় ধরে 'loading' বা আটকে থাকে, জোর করে প্লে করবে
         setInterval(() => {
-            if (isInitialized && video.paused && !video.ended) {
-                // যদি প্লে করার পর কোনো এররে আটকে যায়, তবেই পুশ করবে
+            if (video.paused && !video.ended) {
                 video.play().catch(() => {});
             }
         }, 5000);
