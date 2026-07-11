@@ -3,96 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTV Player Pro</title>
-    <meta name="referrer" content="no-referrer">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js"></script>
-    
+    <title>Full Screen IPTV</title>
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
-            background-color: #0b0b0b;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-        }
-        .video-container {
-            width: 90%;
-            max-width: 850px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #222;
-        }
-        video {
+            height: 100%;
             width: 100%;
-            display: block;
+            overflow: hidden;
+            background-color: black;
+        }
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
 <body>
-
-<div class="video-container">
-    <video id="video" controls autoplay muted playsinline></video>
-</div>
-
-<script>
-    // লাইব্রেরি লোড হতে ১ মিলিমেকন্ড দেরি হলেও যাতে ক্র্যাশ না করে তার জন্য সেটাআপ
-    window.onload = function() {
-        var video = document.getElementById('video');
-        var targetStream = 'https://lalisccor.cachefly.net/laliscor/index.m3u8';
-        
-        // corsproxy.io ব্যবহার করা হয়েছে যা স্ট্রিমিং ডেটা ব্লক করে না
-        var videoSrc = 'https://corsproxy.io/?' + encodeURIComponent(targetStream);
-
-        // গ্লোবাল উইন্ডোতে Hls আছে কিনা তা চেক করা
-        if (typeof Hls !== 'undefined' && Hls.isSupported()) {
-            var hls = new Hls({
-                maxBufferLength: 30, // স্মুথ স্ট্রিমিং বাফারিং এর জন্য
-                enableWorker: true
-            });
-            
-            hls.loadSource(videoSrc);
-            hls.attachMedia(video);
-            
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play().catch(err => console.log("Autoplay blocked, needs user interaction"));
-            });
-
-            // এরর ট্র্যাকিং (যদি কোনো কারণে আবার ব্লক হয়)
-            hls.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            console.log("Network error encountered, trying to recover...");
-                            hls.startLoad();
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            console.log("Media error encountered, trying to recover...");
-                            hls.recoverMediaError();
-                            break;
-                        default:
-                            console.error("Fatal error, cannot recover", data);
-                            break;
-                    }
-                }
-            });
-        }
-        // Safari বা iOS ডিভাইসগুলোর জন্য ডিরেক্ট সাপোর্ট
-        else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = videoSrc;
-            video.addEventListener('loadedmetadata', function() {
-                video.play();
-            });
-        } else {
-            alert("Your browser does not support HLS streaming.");
-        }
-    };
-</script>
-
+    <iframe 
+        src="https://bdixserver.tvhunter.top/ant1009/tracks-v1a1/mono.m3u8" 
+        allow="autoplay; fullscreen" 
+        allowfullscreen>
+    </iframe>
 </body>
 </html>
