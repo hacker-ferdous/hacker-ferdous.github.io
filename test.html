@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tsports</title>
+    <title>Tspott lite</title>
     <style>
         body, html {
             margin: 0;
@@ -12,7 +12,7 @@
             width: 100%;
             overflow: hidden;
             background-color: #000;
-            cursor: pointer; /* স্ক্রিনে হাত দিলেই যেন কাজ করে */
+            cursor: pointer;
         }
         video {
             position: absolute;
@@ -22,23 +22,56 @@
             height: 100%;
             object-fit: contain;
         }
+        /* স্ক্রিনে একটা বড় প্লে আইকন দেখাবে যাতে বুঝতে পারিস ক্লিক করতে হবে */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: sans-serif;
+            font-size: 24px;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 10;
+            transition: opacity 0.3s ease;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
-    <!-- controls বাদ দিয়েছি যাতে টিভির স্ক্রিনে ফালতু মেনু ভেসে না থাকে, একদম ক্লিন ফুল স্ক্রিন -->
-    <video id="video" autoplay playsinline muted loop></video>
+    <div id="overlay" class="overlay">রিমোটের বাটন বা স্ক্রিনে ক্লিক কর প্লে করার জন্য</div>
+    <video id="video" playsinline loop></video>
 
     <script>
         const video = document.getElementById('video');
+        const overlay = document.getElementById('overlay');
         const streamUrl = 'https://bdixserver.tvhunter.top/ant1009/tracks-v1a1/mono.m3u8';
         let hls;
+        let isInitialized = false;
         
-        function initPlayer() {
+        function startStreaming() {
+            if (isInitialized) return;
+            isInitialized = true;
+
+            // ক্লিক করার সাথে সাথে ওভারলে হাওয়া করে দাও
+            overlay.style.opacity = 0;
+            setTimeout(() => overlay.remove(), 300);
+
+            // ফুল স্ক্রিন রিকোয়েস্ট
+            if (video.requestFullscreen) video.requestFullscreen();
+            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+            else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
+            else if (video.msRequestFullscreen) video.msRequestFullscreen();
+
+            // এবার প্লেয়ার ইনিশিয়ালাইজ হবে, তার আগে এক ফোঁটা ডেটাও খাবে না
             if (Hls.isSupported()) {
                 hls = new Hls({
-                    maxBufferLength: 8,       // র‍্যামের প্রেশার আরও কমানো হলো
+                    maxBufferLength: 8,
                     maxMaxBufferLength: 15,
                     enableWorker: true,
                     lowLatencyMode: true
@@ -48,7 +81,8 @@
                 hls.attachMedia(video);
                 
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    forceAutoplay();
+                    video.muted = false;
+                    video.play().catch(e => console.log("Play blocked:", e));
                 });
 
                 hls.on(Hls.Events.ERROR, function (event, data) {
@@ -61,7 +95,6 @@
                                 hls.recoverMediaError();
                                 break;
                             default:
-                                setTimeout(() => { initPlayer(); }, 2000);
                                 break;
                         }
                     }
@@ -69,62 +102,22 @@
             } 
             else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = streamUrl;
-                video.addEventListener('loadedmetadata', forceAutoplay);
+                video.muted = false;
+                video.play().catch(e => console.log("Play blocked:", e));
             }
         }
 
-        // এগ্রেসিভ অটো-প্লে মেকানিজম
-        function forceAutoplay() {
-            video.muted = true; // ব্রাউজারকে ধোঁকা দেওয়ার জন্য প্রথমে মিউট
-            let playPromise = video.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("Autoplay started successfully!");
-                }).catch(error => {
-                    console.log("Autoplay blocked, waiting for user interaction...");
-                    // যদি ব্রাউজার আটকে দেয়, তবে ১ সেকেন্ড পর পর জোর জবরদস্তি করতে থাকবে
-                    let retry = setInterval(() => {
-                        video.play().then(() => clearInterval(retry)).catch(() => {});
-                    }, 1000);
-                });
-            }
-        }
+        // ইউজার ক্লিক করলেই কেবল স্ট্রিম চালু হবে এবং ফুল স্ক্রিন হবে
+        document.addEventListener('click', startStreaming);
+        document.addEventListener('keydown', startStreaming);
 
-        // ফুল স্ক্রিন এবং সাউন্ড অন করার ম্যাজিক (ইউজারের যেকোনো ক্লিকে)
-        function triggerFullScreenAndSound() {
-            // সাউন্ড আনমিউট কর
-            video.muted = false;
-            
-            // ফুল স্ক্রিন রিকোয়েস্ট (সব ধরনের ব্রাউজারের জন্য)
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.mozRequestFullScreen) { /* Firefox */
-                video.mozRequestFullScreen();
-            } else if (video.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) { /* IE/Edge */
-                video.msRequestFullscreen();
-            }
-            
-            // একবার ফুল স্ক্রিন হয়ে গেলে এই লিসেনার রিমুভ করে দাও
-            document.removeEventListener('click', triggerFullScreenAndSound);
-            document.removeEventListener('keydown', triggerFullScreenAndSound);
-        }
-
-        // স্ক্রিনে ক্লিক করলে বা রিমোটের যেকোনো বাটন চাপলেই ফুল স্ক্রিন + সাউন্ড চালু হবে
-        document.addEventListener('click', triggerFullScreenAndSound);
-        document.addEventListener('keydown', triggerFullScreenAndSound);
-
-        // প্লেয়ার চালু কর
-        initPlayer();
-
-        // এন্টি-স্টাক মেকানিজম (ভিডিও যাতে কোনোভাবেই পজ হয়ে না থাকে)
+        // এন্টি-স্টাক মেকানিজম (ভিডিও চলন্ত অবস্থায় আটকে গেলে রিকভার করবে, পজ থাকলে ডিস্টার্ব করবে না)
         setInterval(() => {
-            if (video.paused) {
+            if (isInitialized && video.paused && !video.ended) {
+                // যদি প্লে করার পর কোনো এররে আটকে যায়, তবেই পুশ করবে
                 video.play().catch(() => {});
             }
-        }, 3000);
+        }, 5000);
     </script>
 </body>
 </html>
