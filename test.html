@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Lightweight IPTV Player</title>
+    <title>Tsports</title>
     <style>
         body, html {
             margin: 0;
@@ -12,6 +12,7 @@
             width: 100%;
             overflow: hidden;
             background-color: #000;
+            cursor: pointer; /* স্ক্রিনে হাত দিলেই যেন কাজ করে */
         }
         video {
             position: absolute;
@@ -19,71 +20,111 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* টিভির স্ক্রিন সাইজ অনুযায়ী ফিট হবে */
+            object-fit: contain;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 
-    <video id="video" autoplay controls playsinline muted></video>
+    <!-- controls বাদ দিয়েছি যাতে টিভির স্ক্রিনে ফালতু মেনু ভেসে না থাকে, একদম ক্লিন ফুল স্ক্রিন -->
+    <video id="video" autoplay playsinline muted loop></video>
 
     <script>
         const video = document.getElementById('video');
         const streamUrl = 'https://bdixserver.tvhunter.top/ant1009/tracks-v1a1/mono.m3u8';
+        let hls;
         
         function initPlayer() {
             if (Hls.isSupported()) {
-                const hls = new Hls({
-                    maxBufferLength: 10,     // বাফার সাইজ কম রাখা হয়েছে যাতে টিভির র‍্যাম জ্যাম না হয়
-                    maxMaxBufferLength: 20,
-                    enableWorker: true,      // ব্যাকগ্রাউন্ড থ্রেড ব্যবহার করবে পারফরম্যান্সের জন্য
-                    lowLatencyMode: true     // ল্যাগ কমাবে
+                hls = new Hls({
+                    maxBufferLength: 8,       // র‍্যামের প্রেশার আরও কমানো হলো
+                    maxMaxBufferLength: 15,
+                    enableWorker: true,
+                    lowLatencyMode: true
                 });
                 
                 hls.loadSource(streamUrl);
                 hls.attachMedia(video);
                 
-                // যদি কোনো কারণে স্ট্রিম এরর খায় বা আটকে যায়, অটো-রিকভারি করবে
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    forceAutoplay();
+                });
+
                 hls.on(Hls.Events.ERROR, function (event, data) {
                     if (data.fatal) {
                         switch (data.type) {
                             case Hls.ErrorTypes.NETWORK_ERROR:
-                                console.log("Network error, trying to recover...");
                                 hls.startLoad();
                                 break;
                             case Hls.ErrorTypes.MEDIA_ERROR:
-                                console.log("Media error, trying to recover...");
                                 hls.recoverMediaError();
                                 break;
                             default:
-                                console.log("Unrecoverable error, reloading player...");
                                 setTimeout(() => { initPlayer(); }, 2000);
                                 break;
                         }
                     }
                 });
             } 
-            // কিছু কিছু পুরোনো স্মার্ট টিভি (যেমন পুরোনো Android বা Samsung Tizen) সরাসরি m3u8 সাপোর্ট করে
             else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = streamUrl;
+                video.addEventListener('loadedmetadata', forceAutoplay);
             }
         }
 
-        // টিভি ব্রাউজারে অনেক সময় অটো-প্লে ব্লক করে, তাই স্ক্রিনে একটা ক্লিকের পর সাউন্ড আনমিউট হবে
-        video.addEventListener('play', () => {
+        // এগ্রেসিভ অটো-প্লে মেকানিজম
+        function forceAutoplay() {
+            video.muted = true; // ব্রাউজারকে ধোঁকা দেওয়ার জন্য প্রথমে মিউট
+            let playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Autoplay started successfully!");
+                }).catch(error => {
+                    console.log("Autoplay blocked, waiting for user interaction...");
+                    // যদি ব্রাউজার আটকে দেয়, তবে ১ সেকেন্ড পর পর জোর জবরদস্তি করতে থাকবে
+                    let retry = setInterval(() => {
+                        video.play().then(() => clearInterval(retry)).catch(() => {});
+                    }, 1000);
+                });
+            }
+        }
+
+        // ফুল স্ক্রিন এবং সাউন্ড অন করার ম্যাজিক (ইউজারের যেকোনো ক্লিকে)
+        function triggerFullScreenAndSound() {
+            // সাউন্ড আনমিউট কর
             video.muted = false;
-        });
+            
+            // ফুল স্ক্রিন রিকোয়েস্ট (সব ধরনের ব্রাউজারের জন্য)
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.mozRequestFullScreen) { /* Firefox */
+                video.mozRequestFullScreen();
+            } else if (video.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { /* IE/Edge */
+                video.msRequestFullscreen();
+            }
+            
+            // একবার ফুল স্ক্রিন হয়ে গেলে এই লিসেনার রিমুভ করে দাও
+            document.removeEventListener('click', triggerFullScreenAndSound);
+            document.removeEventListener('keydown', triggerFullScreenAndSound);
+        }
+
+        // স্ক্রিনে ক্লিক করলে বা রিমোটের যেকোনো বাটন চাপলেই ফুল স্ক্রিন + সাউন্ড চালু হবে
+        document.addEventListener('click', triggerFullScreenAndSound);
+        document.addEventListener('keydown', triggerFullScreenAndSound);
 
         // প্লেয়ার চালু কর
         initPlayer();
 
-        // এন্টি-স্টাক মেকানিজম: যদি ভিডিও ৫ সেকেন্ডের বেশি সময় ধরে 'loading' বা আটকে থাকে, জোর করে প্লে করবে
+        // এন্টি-স্টাক মেকানিজম (ভিডিও যাতে কোনোভাবেই পজ হয়ে না থাকে)
         setInterval(() => {
-            if (video.paused && !video.ended) {
+            if (video.paused) {
                 video.play().catch(() => {});
             }
-        }, 5000);
+        }, 3000);
     </script>
 </body>
 </html>
