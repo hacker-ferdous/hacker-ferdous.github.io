@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -385,6 +384,24 @@
             margin-right: 4px;
         }
 
+        /* Loading Spinner */
+        .main-loader {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 15px;
+            gap: 15px;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .main-loader i {
+            font-size: 30px;
+        }
+
         .channel-scroll {
             flex: 1;
             overflow-y: auto;
@@ -536,15 +553,7 @@
         background-size: 15px;
         }
 
-    .filter-select {
-        padding-right: 35px;
-        appearance: none;
-        background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 9l6 6 6-6\"/></svg>");
-        background-repeat: no-repeat;
-        background-position: right 15px center;
-        background-size: 15px;
-        }
-                /* Fullscreen Mode - Overrides */
+        /* Fullscreen Mode - Overrides */
         body.fullscreen-active .top-bar,
         body.fullscreen-active .app-footer,
         body.fullscreen-active .sidebar {
@@ -653,6 +662,12 @@
                 </div>
             </div>
             <div class="channel-scroll" id="scroll-container">
+                <!-- Loading Animation Area -->
+                <div id="main-loader" class="main-loader">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <div>Fetching Channels...<br><small style="font-size: 11px; color: var(--muted); font-weight: normal;">Please wait</small></div>
+                </div>
+
                 <ul id="channel-list" style="list-style:none;">
                     <li id="scroll-sentinel" style="height:10px;"></li>
                 </ul>
@@ -678,26 +693,62 @@
         const player = videojs('my-video', { fluid: false });
 
         // 🔹 ADMIN CHANNELS CONFIGURATION 🔹
-        // Add 'name' field to override the auto-extracted name.
-        // Leave name: '' or null to use dynamic extraction from URL.
-const adminChannelsConfig = [
-    { name: 'Tsport HD', url: 'https://bdixserver.tvhunter.top/ant1009/tracks-v1a1/mono.m3u8', category: 'Sports' },
-    { name: 'Diccovery ID (Hindi)', url: 'https://stream.ottplus.bd/live/id_hd_abr/live/id_hd/chunks.m3u8', category: 'Entertainment' },
-    { name: 'Discovery HD (hindi)', url: 'https://stream.ottplus.bd/live/discovery_sd_abr/live/discovery_sd/chunks.m3u8', category: 'Entertainment' },
-    { name: 'BBC Earth', url: 'https://amg00793-amg00793c6-xumo-us-2669.playouts.now.amagi.tv/BBCStudios-BBCEarthA-hls/playlist540p.m3u8', category: 'Documentary' },
-    { name: 'Doremon', url: 'https://live20.bozztv.com/giatvplayout7/giatv-209902/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
-    { name: 'Oggy & The Cockroaches', url: 'https://live20.bozztv.com/giatvplayout7/giatv-210728/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
-    { name: 'Gopal Bhar', url: 'https://live20.bozztv.com/giatvplayout7/giatv-209611/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
-    { name: 'BeIN Sports TR', url: 'https://andro.okan11gote12sokan.cfd/checklist/androstreamlivebs2.m3u8', category: 'Sports' },
-    { name: 'Motu Patlu', url: 'https://live20.bozztv.com/giatvplayout7/giatv-209622/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
-    { name: 'Tom and Jerry', url: 'https://live20.bozztv.com/giatvplayout7/giatv-208314/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
-    { name: 'BTV', url: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8', category: 'News' },
-    { name: 'Jomuna TV', url: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8', category: 'News' }
-];
-        // Build admin channels — uses `name` if provided, otherwise falls back to ''
+        const adminChannelsConfig = [
+            { name: 'Tsport HD', url: 'https://bdixserver.tvhunter.top/ant1009/tracks-v1a1/mono.m3u8', category: 'Sports' },
+            { name: 'Fox Sport', url: 'https://andro.evrenesoglu57.click/checklist/androstreamliveexn1.m3u8', category: 'Sports' },
+            { name: 'TSN4', url: 'https://proxy.futuredesh.com/api/proxy?url=http://213.152.185.148/tsn4/tracks-v1a1/mono.ts.m3u8', category: 'Sports' },
+            { name: 'TSN', url: 'https://andro.evrenesoglu57.click/checklist/androstreamliveexn4.m3u8', category: 'Sports' },
+            { name: 'BeIN Sports TR', url: 'https://andro.okan11gote12sokan.cfd/checklist/androstreamlivebs2.m3u8', category: 'Sports' },
+            { name: 'Sony Ten Sports 1 HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sony_sports_1_hd&e=.m3u8', category: 'Sports' },
+            { name: 'Sony Ten Sports 2 HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sony_sports_2_hd&e=.m3u8', category: 'Sports' },
+            { name: 'Sony Ten Sports 3 HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sony_sports_3_hd&e=.m3u8', category: 'Sports' },
+            { name: 'Sony Ten Sports 5 HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sony_sports_5_hd&e=.m3u8', category: 'Sports' },
+            { name: 'Sony Ten Cricket', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=ten_cricket&e=.m3u8', category: 'Sports' },
+            { name: 'Eurosport HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=euro_sports_hd&e=.m3u8', category: 'Sports' },
+            { name: 'Doremon', url: 'https://live20.bozztv.com/giatvplayout7/giatv-209902/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
+            { name: 'Oggy & The Cockroaches', url: 'https://live20.bozztv.com/giatvplayout7/giatv-210728/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
+            { name: 'Gopal Bhar', url: 'https://live20.bozztv.com/giatvplayout7/giatv-209611/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
+            { name: 'Motu Patlu', url: 'https://live20.bozztv.com/giatvplayout7/giatv-209622/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
+            { name: 'Tom and Jerry', url: 'https://live20.bozztv.com/giatvplayout7/giatv-208314/tracks-v1a1/mono.ts.m3u8', category: 'Kids' },
+            { name: 'Cartoon Network HD+', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=cartoon_network_hd&e=.m3u8', category: 'Kids' },
+            { name: 'Cartoon Network', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=cartoon_network_sd&e=.m3u8', category: 'Kids' },
+            { name: 'Pogo', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=pogo_sd&e=.m3u8', category: 'Kids' },
+            { name: 'Anime X Hidive', url: 'https://wurlrainbowmedia.global.transmit.live/hls/68c497de18e2a74e37774fb3/v1/amc_anime_x_hidive_1/lg_us/latest/main/hls/playlist.m3u8', category: 'Entertainment' },
+            { name: 'Discovery Kids', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=discovery_kids&e=.m3u8', category: 'Kids' },
+            { name: 'Sony YAY', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sonyyay&e=.m3u8', category: 'Kids' },
+            { name: 'BBC Earth', url: 'https://amg00793-amg00793c6-xumo-us-2669.playouts.now.amagi.tv/BBCStudios-BBCEarthA-hls/playlist540p.m3u8', category: 'Documentary' },
+            { name: 'Animal Planet HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=animal_planet_hd&e=.m3u8', category: 'Documentary' },
+            { name: 'Discovery Science', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=discovery_science&e=.m3u8', category: 'Documentary' },
+            { name: 'Discovery', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=discovery_sd&e=.m3u8', category: 'Documentary' },
+            { name: 'Discovery HD (Hindi)', url: 'https://stream.ottplus.bd/live/discovery_sd_abr/live/discovery_sd/chunks.m3u8', category: 'Documentary' },
+            { name: 'Discovery ID (Hindi)', url: 'https://stream.ottplus.bd/live/id_hd_abr/live/id_hd/chunks.m3u8', category: 'Documentary' },
+            { name: 'Sony BBC Earth HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sonybbc_earth_hd&e=.m3u8', category: 'Documentary' },
+            { name: 'Sony PIX HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sonypix_hd&e=.m3u8', category: 'Entertainment' },
+            { name: 'Sony MAX 2', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sonymax_2&e=.m3u8', category: 'Entertainment' },
+            { name: 'Sony MAX HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sony_max_hd&e=.m3u8', category: 'Entertainment' },
+            { name: 'Sony Entertainment TV', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sony_entertainment&e=.m3u8', category: 'Entertainment' },
+            { name: 'Sony SAB HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sonysab_hd&e=.m3u8', category: 'Entertainment' },
+            { name: 'Toffee Movies', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=toffee_movie&e=.m3u8', category: 'Entertainment' },
+            { name: 'Toffee Dramas', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=toffee_drama&e=.m3u8', category: 'Entertainment' },
+            { name: 'Zee Action', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=zee_action&e=.m3u8', category: 'Entertainment' },
+            { name: 'Zee Anmol', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=zee_anmol&e=.m3u8', category: 'Entertainment' },
+            { name: 'Zee Bangla', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=zee_bangla&e=.m3u8', category: 'Entertainment' },
+            { name: 'Zee Bangla Cinema', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=zee_bangla_cinema&e=.m3u8', category: 'Entertainment' },
+            { name: 'Zee Cinema HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=zee_cinema_hd&e=.m3u8', category: 'Entertainment' },
+            { name: '& Pictures HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=andpicture_hd&e=.m3u8', category: 'Entertainment' },
+            { name: '&TV HD', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=and_tv_hd&e=.m3u8', category: 'Entertainment' },
+            { name: 'Sony Aath', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=sonyaath&e=.m3u8', category: 'Entertainment' },
+            { name: 'B4U Movies', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=b4u_movies&e=.m3u8', category: 'Entertainment' },
+            { name: 'Zing', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=zing_sd&e=.m3u8', category: 'Entertainment' },
+            { name: 'Somoy TV', url: 'https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8', category: 'News' },
+            { name: 'BTV', url: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8', category: 'News' },
+            { name: 'Jomuna TV', url: 'https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8', category: 'News' },
+            { name: 'CNN', url: 'https://mflixott.com/tv/toffee-by-maruf/live.php?id=cnn&e=.m3u8', category: 'News' }
+        ];
+
         let adminChannels = adminChannelsConfig.map((ch, idx) => ({
             id: 'adm_' + idx,
-            name: ch.name || '', // preserve empty for dynamic fallback
+            name: ch.name || '', 
             url: ch.url,
             category: ch.category || 'Admin Added',
             logo: '',
@@ -720,12 +771,13 @@ const adminChannelsConfig = [
             searchTimeout;
         let statsUpdateTimer = null;
 
-        const CHUNK_SIZE = 500;
+        // Render Chunk Size optimized to prevent browser hanging!
+        const CHUNK_SIZE = 60; 
         const WORKER_COUNT = 10;
 
         // --- Proxy Worker Pool ---
         const workers = [],
-            highPriorityQ = [],
+            highPriorityQ = [], // Using Arrays as Stacks (.push and .pop) for instant performance
             lowPriorityQ = [],
             inFlight = new Set();
         let isRechecking = false,
@@ -733,7 +785,8 @@ const adminChannelsConfig = [
             recheckDone = 0;
 
         function initWorkers() {
-            const workerScript = `self.onmessage=async function(e){const{id,url}=e.data;try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),3000);const r=await fetch('https://streamflix-relay.chrizmonsaji.workers.dev?url='+encodeURIComponent(url),{signal:ctrl.signal});clearTimeout(t);self.postMessage({id,status:(r.ok||r.status<400)?'active':'inactive'});}catch{self.postMessage({id,status:'inactive'});}};`;
+            // Updated timeout to 10000ms (10 seconds) for higher accuracy!
+            const workerScript = `self.onmessage=async function(e){const{id,url}=e.data;try{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),10000);const r=await fetch('https://streamflix-relay.chrizmonsaji.workers.dev?url='+encodeURIComponent(url),{signal:ctrl.signal});clearTimeout(t);self.postMessage({id,status:(r.ok||r.status<400)?'active':'inactive'});}catch{self.postMessage({id,status:'inactive'});}};`;
             const blobUrl = URL.createObjectURL(new Blob([workerScript], { type: 'application/javascript' }));
 
             for (let i = 0; i < WORKER_COUNT; i++) {
@@ -770,7 +823,10 @@ const adminChannelsConfig = [
 
             let next = null;
             while (highPriorityQ.length || lowPriorityQ.length) {
-                next = highPriorityQ.shift() || lowPriorityQ.shift();
+                // Using .pop() instead of .shift() ensures O(1) speed and stops Browser from hanging
+                if (highPriorityQ.length) next = highPriorityQ.pop();
+                else next = lowPriorityQ.pop();
+
                 if (next && !inFlight.has(next.id) && (!channelCache[next.id] || isRechecking)) {
                     break;
                 }
@@ -796,9 +852,9 @@ const adminChannelsConfig = [
 
         function updateDot(id, status) {
             const items = document.querySelectorAll('.channel-item');
-            for (const item of items) {
-                if (item.dataset.id === id) {
-                    const dot = item.querySelector('.status-dot');
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].dataset.id === id) {
+                    const dot = items[i].querySelector('.status-dot');
                     if (!dot) return;
                     dot.classList.remove('active-dot', 'inactive-dot', 'unknown-dot', 'checking-dot');
                     if (status === 'active') dot.classList.add('active-dot');
@@ -813,15 +869,14 @@ const adminChannelsConfig = [
         function updateStats() {
             clearTimeout(statsUpdateTimer);
             statsUpdateTimer = setTimeout(() => {
-                let a = 0,
-                    b = 0,
-                    u = 0;
-                currentViewList.forEach(c => {
-                    const s = channelCache[c.id];
+                let a = 0, b = 0, u = 0;
+                const cache = channelCache; 
+                for (let i = 0; i < currentViewList.length; i++) {
+                    const s = cache[currentViewList[i].id];
                     if (s === 'active') a++;
                     else if (s === 'inactive') b++;
                     else u++;
-                });
+                }
                 const activeEl = document.getElementById('active-count');
                 const inactiveEl = document.getElementById('inactive-count');
                 const unknownEl = document.getElementById('unknown-count');
@@ -858,13 +913,20 @@ const adminChannelsConfig = [
 
         async function loadPlaylist(url) {
             document.querySelectorAll('.channel-item').forEach(el => el.remove());
+            document.getElementById('main-loader').style.display = 'flex';
             displayedCount = 0;
+
+            // Short delay to allow the browser DOM to paint the loader
+            await new Promise(r => setTimeout(r, 50));
+
             try {
                 const text = await fetch(url).then(r => r.text());
                 playlistChannels = parseM3U(text, false);
                 mergeAndRender();
             } catch {
                 alert("Failed to load playlist. Check your connection.");
+            } finally {
+                document.getElementById('main-loader').style.display = 'none';
             }
         }
 
@@ -875,11 +937,11 @@ const adminChannelsConfig = [
         }
 
         function parseM3U(data, isUserAdded) {
-            const lines = data.split('\n'),
-                list = [];
+            const lines = data.split('\n');
+            const list = [];
             let current = {};
-            for (const line of lines) {
-                const l = line.trim();
+            for (let i = 0; i < lines.length; i++) {
+                const l = lines[i].trim();
                 if (!l) continue;
                 if (l.startsWith('#EXTINF:')) {
                     const lg = l.match(/tvg-logo="([^"]+)"/);
@@ -935,8 +997,7 @@ const adminChannelsConfig = [
 
             // Search & Category
             const q = document.getElementById('search').value.toLowerCase().trim();
-            if (q) src = src.filter(c => (c.name || '').toLowerCase().includes(q) || (c.category || '')
-            .toLowerCase().includes(q));
+            if (q) src = src.filter(c => (c.name || '').toLowerCase().includes(q) || (c.category || '').toLowerCase().includes(q));
             if (selectedCategory) src = src.filter(c => c.category && c.category.includes(selectedCategory));
 
             currentViewList = src;
@@ -944,31 +1005,27 @@ const adminChannelsConfig = [
             updateStats();
 
             lowPriorityQ.length = 0;
-            lowPriorityQ.push(...currentViewList);
+            // Push items reversed into Stack so we can safely use fast `.pop()`
+            for (let i = currentViewList.length - 1; i >= 0; i--) {
+                lowPriorityQ.push(currentViewList[i]);
+            }
             renderNextChunk();
         }
 
-        // ─── Dynamic Name Extractor ──────────────────────────────────────────
         function extractNameFromUrl(url) {
             if (!url) return 'Unknown';
-            // Remove query params
             let path = url.split('?')[0];
             let parts = path.split('/').filter(Boolean);
             if (!parts.length) return 'Unknown';
 
             let last = parts[parts.length - 1];
-            // If last segment is a generic stream file, use the folder name before it
-            const generic = ['chunks.m3u8', 'mono.m3u8', 'mono.ts.m3u8', 'index.m3u8', 'playlist.m3u8', 'playlist540p.m3u8',
-                'playlist720p.m3u8'
-            ];
+            const generic = ['chunks.m3u8', 'mono.m3u8', 'mono.ts.m3u8', 'index.m3u8', 'playlist.m3u8', 'playlist540p.m3u8', 'playlist720p.m3u8'];
             if (generic.includes(last.toLowerCase()) && parts.length > 1) {
                 last = parts[parts.length - 2];
             } else {
                 last = last.split('.')[0];
             }
-            // Clean up: replace dashes/underscores with spaces, uppercase
             let name = last.replace(/[-_]/g, ' ').toUpperCase();
-            // If still empty, fallback
             if (!name || name.length < 2) return 'Unknown Channel';
             return name;
         }
@@ -982,16 +1039,11 @@ const adminChannelsConfig = [
                 const dotClass = status + '-dot' + (inFlight.has(ch.id) ? ' checking-dot' : '');
                 const isFav = favoriteChannels.some(f => f.id === ch.id);
 
-                // ─── NAME RESOLUTION ──────────────────────────────────────
-                // 1. If channel has a non-empty `name`, use it.
-                // 2. Otherwise, auto-extract from URL.
                 let displayName = ch.name && ch.name.trim() ? ch.name.trim() : extractNameFromUrl(ch.url);
-
                 const firstChar = displayName.charAt(0).toUpperCase();
 
                 let bgHash = 0;
-                for (let i = 0; i < displayName.length; i++) bgHash = displayName.charCodeAt(i) + ((bgHash << 5) -
-                bgHash);
+                for (let i = 0; i < displayName.length; i++) bgHash = displayName.charCodeAt(i) + ((bgHash << 5) - bgHash);
                 const bg = `hsl(${Math.abs(bgHash) % 360}, 70%, 45%)`;
 
                 const logoContent = ch.logo ?
@@ -1022,7 +1074,11 @@ const adminChannelsConfig = [
             }
 
             displayedCount += chunk.length;
-            highPriorityQ.unshift(...chunk);
+            
+            // Push items reversed so popping from stack takes elements from top order down
+            for (let i = chunk.length - 1; i >= 0; i--) {
+                highPriorityQ.push(chunk[i]);
+            }
             processWorkerQueue();
         }
 
@@ -1090,7 +1146,6 @@ const adminChannelsConfig = [
             mergeAndRender();
         }
 
-        // --- Modal ---
         function toggleAddType() {
             const isPlaylist = document.getElementById('add-type').value === 'playlist';
             document.getElementById('new-channel-name').style.display = isPlaylist ? 'none' : 'block';
@@ -1150,7 +1205,6 @@ const adminChannelsConfig = [
             btn.disabled = false;
         }
 
-        // --- Re-Check ---
         function recheckVisible() {
             if (!currentViewList.length) return;
             isRechecking = true;
@@ -1165,7 +1219,10 @@ const adminChannelsConfig = [
 
             highPriorityQ.length = 0;
             lowPriorityQ.length = 0;
-            highPriorityQ.push(...currentViewList);
+            // Push items reversed into Stack so we can safely use fast `.pop()`
+            for (let i = currentViewList.length - 1; i >= 0; i--) {
+                highPriorityQ.push(currentViewList[i]);
+            }
             processWorkerQueue();
         }
 
@@ -1177,7 +1234,6 @@ const adminChannelsConfig = [
 
         function cancelRecheck() { stopRecheck(); }
 
-        // --- UI Helpers ---
         function handleSearch() {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(applyFiltersAndRender, 300);
@@ -1210,7 +1266,6 @@ const adminChannelsConfig = [
             else if (vid && document.pictureInPictureEnabled) await vid.requestPictureInPicture();
         }
 
-        // --- Infinite Scroll ---
         function setupIntersectionObserver() {
             const observer = new IntersectionObserver(e => {
                 if (e[0].isIntersecting && currentViewList.length > displayedCount) {
