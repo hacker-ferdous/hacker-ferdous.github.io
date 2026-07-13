@@ -1,36 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Iframe Data Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Network & Data Parser</title>
+    <!-- pdf.js Core Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background-color: #0f172a; color: #38bdf8; padding: 20px; }
+        .panel { background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 8px; max-width: 800px; margin: auto; }
+        h2, h3 { color: #f8fafc; margin-top: 0; }
+        input { background: #0f172a; border: 1px solid #475569; color: #f8fafc; padding: 10px; width: 50%; font-size: 16px; border-radius: 4px; }
+        button { background: #0284c7; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        button:hover { background: #0369a1; }
+        .console-log { background: #000; border-left: 4px solid #38bdf8; padding: 15px; color: #4ade80; white-space: pre-wrap; margin-top: 15px; max-height: 200px; overflow-y: auto; font-size: 13px; }
+        .result-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #0f172a; display: none; }
+        .result-table th, .result-table td { border: 1px solid #334155; padding: 12px; text-align: left; }
+        .result-table th { background: #1e293b; color: #e2e8f0; }
+        .result-table td { color: #f8fafc; }
+    </style>
 </head>
 <body>
-    <h3>Trying to read from Iframe...</h3>
-    <iframe id="testFrame" src="http://202.5.56.65/CPSCR/Students/StudentReport/PrintRiportStudentProfile/15758" style="width:100%; height:300px;"></iframe>
-    
-    <button onclick="tryReading()">Check If I Can Read</button>
-    <div id="status"></div>
 
-    <script>
-        function tryReading() {
-            const frame = document.getElementById('testFrame');
-            const status = document.getElementById('status');
+<div class="panel">
+    <h2>CPSC PDF Network & Data Inspector</h2>
+    <p style="color: #94a3b8; font-size: 13px;">নিচে আইডি দিয়ে 'Inspect' চাপ। ব্যাকগ্রাউন্ডে কী হচ্ছে লাইভ দেখবি।</p>
+    
+    <input type="text" id="studentId" value="15758" placeholder="Enter Student ID">
+    <button onclick="startDeepInspection()">Inspect Request</button>
+
+    <h3>[1] Network & Parsing Console Logs:</h3>
+    <div id="consoleLogs" class="console-log">Console: Waiting for request...</div>
+
+    <h3>[2] Final Extracted Data Dashboard:</h3>
+    <table id="resultTable" class="result-table">
+        <tr><th>Field</th><th>Extracted Value</th></tr>
+        <tr><td>Student Name</td><td id="res-name">-</td></tr>
+        <tr><td>Class</td><td id="res-class">-</td></tr>
+        <tr><td>Section</td><td id="res-section">-</td></tr>
+        <tr><td>Roll No</td><td id="res-roll">-</td></tr>
+    </table>
+</div>
+
+<script>
+    // pdf.js Worker Initialization
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+    function log(message) {
+        const consoleDiv = document.getElementById('consoleLogs');
+        consoleDiv.innerText += "\n" + message;
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+
+    async function startDeepInspection() {
+        const id = document.getElementById('studentId').value.trim();
+        const consoleDiv = document.getElementById('consoleLogs');
+        const table = document.getElementById('resultTable');
+        
+        consoleDiv.innerText = "Console: Request Initialized...";
+        table.style.display = 'none';
+
+        if(!id) return alert("আইডি ছাড়া কী ইন্সপেক্ট করব?");
+
+        const targetUrl = `http://202.5.56.65/CPSCR/Students/StudentReport/PrintRiportStudentProfile/${id}`;
+        
+        try {
+            log(`>> HTTP GET Request sent to: ${targetUrl}`);
             
-            try {
-                // ব্রাউজার এখানে বাধা দেবে যদি অরিজিন আলাদা হয়
-                const frameDoc = frame.contentDocument || frame.contentWindow.document;
-                const content = frameDoc.body.innerHTML;
-                
-                if (content.length > 0) {
-                    status.innerHTML = "Success! Data Found. Length: " + content.length;
-                    console.log("Content:", content);
-                } else {
-                    status.innerHTML = "Frame accessed, but no text found (because it's a PDF).";
-                }
-            } catch (e) {
-                status.innerHTML = "Failed! Error: " + e.message;
-                console.error("CORS Blocked:", e);
-            }
+            // ১. নেটওয়ার্ক রিকোয়েস্ট পাঠানো
+            const response = await fetch(targetUrl);
+            
+            log(`<< Response Received! Status: ${response.status} ${response.statusText}`);
+            log(`<< Content-Type Header: ${response.headers.get('content-type')}`);
+
+            // ২. বাইনারি বাফার হিসেবে ডাটা রিসিভ করা
+            log(`>> Reading Response Body as ArrayBuffer (Binary Data)...`);
+            const arrayBuffer = await response.arrayBuffer();
+            log(`<< Success! Binary Buffer Size: ${arrayBuffer.byteLength} bytes.`);
+
+            // ৩. PDF.js দিয়ে মেমোরিতে বাইনারি ভাঙা
+            log(`>> Feeding Binary Data into PDF.js...`);
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            log(`<< PDF Document Parsed! Total Pages: ${pdf.numPages}`);
+
+            log(`>> Extracting Text Content from Page 1...`);
+            const page = await pdf.getPage(1);
+            const textContent = await page.getTextContent();
+            
+            // পিডিএফ এর সব অবজেক্টকে এক লাইনে জোড়া লাগানো
+            const rawText = textContent.items.map(item => item.str.trim()).join(' ').replace(/\s+/g, ' ');
+            log(`<< Raw Text Extracted! Total characters: ${rawText.length}`);
+
+            // ৪. ডাটা মাইনিং (নিখুঁত Regex ম্যাচিং)
+            log(`>> Running Regex Engines to locate fields...`);
+            
+            // অরিজিনাল টেক্সট প্যাটার্ন: "Student Name (English) : Saiara Adiat Zaman Date of Birth"
+            const nameMatch = rawText.match(/Student Name \(English\)\s*:\s*(.*?)(?=\s*Date of Birth)/i);
+            
+            // অরিজিনাল টেক্সট প্যাটার্ন: "Class: Six Section: Shapla Roll: 56 Group : General"
+            const classMatch = rawText.match(/Class\s*:\s*([^\s]+)/i);
+            const sectionMatch = rawText.match(/Section\s*:\s*([^\s]+)/i);
+            const rollMatch = rawText.match(/Roll\s*:\s*(\d+)/i);
+
+            // ৫. UI তে ডিসপ্লে করা
+            document.getElementById('res-name').innerText = nameMatch ? nameMatch[1].trim() : "Not Found";
+            document.getElementById('res-class').innerText = classMatch ? classMatch[1].trim() : "-";
+            document.getElementById('res-section').innerText = sectionMatch ? sectionMatch[1].trim() : "-";
+            document.getElementById('res-roll').innerText = rollMatch ? rollMatch[1].trim() : "-";
+
+            log(`<< Extracted successfully! Updating Dashboard Table.`);
+            table.style.display = 'table';
+
+        } catch (error) {
+            log(`!! CRITICAL ERROR: ${error.message}`);
+            log(`!! Note: Make sure your browser's CORS Unblocker Extension is ACTIVE.`);
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
