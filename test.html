@@ -1,122 +1,1439 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Network & Data Parser</title>
-    <!-- pdf.js Core Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📄 Student Profile JSON Extractor</title>
+
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js">
+    </script>
+
+    <!-- Google Font & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
     <style>
-        body { font-family: 'Courier New', Courier, monospace; background-color: #0f172a; color: #38bdf8; padding: 20px; }
-        .panel { background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 8px; max-width: 800px; margin: auto; }
-        h2, h3 { color: #f8fafc; margin-top: 0; }
-        input { background: #0f172a; border: 1px solid #475569; color: #f8fafc; padding: 10px; width: 50%; font-size: 16px; border-radius: 4px; }
-        button { background: #0284c7; color: white; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; font-weight: bold; border-radius: 4px; }
-        button:hover { background: #0369a1; }
-        .console-log { background: #000; border-left: 4px solid #38bdf8; padding: 15px; color: #4ade80; white-space: pre-wrap; margin-top: 15px; max-height: 200px; overflow-y: auto; font-size: 13px; }
-        .result-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #0f172a; display: none; }
-        .result-table th, .result-table td { border: 1px solid #334155; padding: 12px; text-align: left; }
-        .result-table th { background: #1e293b; color: #e2e8f0; }
-        .result-table td { color: #f8fafc; }
+        /* ─── Reset & Base ─── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0b0e14;
+            color: #e6edf3;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 16px;
+        }
+
+        .app-wrapper {
+            max-width: 1280px;
+            width: 100%;
+        }
+
+        /* ─── Header ─── */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #3fb950);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-header h1 i {
+            -webkit-text-fill-color: initial;
+            color: #f0883e;
+            font-size: 28px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #8b949e;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .badge i {
+            color: #3fb950;
+            margin-right: 6px;
+        }
+
+        /* ─── Controls ─── */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .controls .input-group {
+            flex: 1 1 260px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.25s;
+        }
+
+        .controls .input-group:focus-within {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        .controls .input-group i {
+            color: #8b949e;
+            font-size: 15px;
+        }
+
+        .controls .input-group input {
+            background: transparent;
+            border: none;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #e6edf3;
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .controls .input-group input::placeholder {
+            color: #484f58;
+            font-weight: 400;
+        }
+
+        .controls .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.06);
+            color: #e6edf3;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .controls .btn i {
+            font-size: 14px;
+        }
+
+        .controls .btn-primary {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: #fff;
+            border: none;
+        }
+
+        .controls .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(46, 160, 67, 0.3);
+        }
+
+        .controls .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .controls .btn-secondary {
+            background: rgba(88, 166, 255, 0.12);
+            color: #58a6ff;
+            border: 1px solid rgba(88, 166, 255, 0.2);
+        }
+
+        .controls .btn-secondary:hover {
+            background: rgba(88, 166, 255, 0.2);
+        }
+
+        .controls .btn-upload {
+            background: rgba(240, 135, 62, 0.12);
+            color: #f0883e;
+            border: 1px solid rgba(240, 135, 62, 0.2);
+        }
+
+        .controls .btn-upload:hover {
+            background: rgba(240, 135, 62, 0.2);
+        }
+
+        .controls .btn-danger {
+            background: rgba(248, 81, 73, 0.12);
+            color: #f85149;
+            border: 1px solid rgba(248, 81, 73, 0.2);
+        }
+
+        .controls .btn-danger:hover {
+            background: rgba(248, 81, 73, 0.2);
+        }
+
+        .controls .file-input-wrap {
+            display: none;
+        }
+
+        /* ─── Status / Progress ─── */
+        .status-bar {
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 52px;
+            transition: all 0.3s;
+        }
+
+        .status-bar .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #58a6ff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .status-bar .status-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .status-bar .status-text {
+            flex: 1;
+        }
+
+        .status-bar .status-detail {
+            font-weight: 400;
+            color: #8b949e;
+            font-size: 13px;
+        }
+
+        .status-bar.success {
+            border-color: rgba(46, 160, 67, 0.3);
+            background: rgba(46, 160, 67, 0.06);
+        }
+
+        .status-bar.error {
+            border-color: rgba(248, 81, 73, 0.3);
+            background: rgba(248, 81, 73, 0.06);
+        }
+
+        .status-bar.info {
+            border-color: rgba(88, 166, 255, 0.2);
+            background: rgba(88, 166, 255, 0.06);
+        }
+
+        /* ─── Output Area ─── */
+        .output-area {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .output-area .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .output-area .output-header .title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #8b949e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-area .output-header .title i {
+            color: #f0883e;
+        }
+
+        .output-area .output-header .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .output-area .output-header .actions .btn-sm {
+            padding: 5px 14px;
+            font-size: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: #8b949e;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .output-area .output-header .actions .btn-sm:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e6edf3;
+        }
+
+        .output-area .output-header .actions .btn-sm.copy-btn {
+            color: #58a6ff;
+        }
+
+        .output-area .output-header .actions .btn-sm.copy-btn:hover {
+            background: rgba(88, 166, 255, 0.12);
+        }
+
+        .output-area .output-header .actions .btn-sm.download-btn {
+            color: #3fb950;
+        }
+
+        .output-area .output-header .actions .btn-sm.download-btn:hover {
+            background: rgba(46, 160, 67, 0.12);
+        }
+
+        .output-area .output-body {
+            padding: 0;
+            max-height: 600px;
+            overflow: auto;
+            position: relative;
+        }
+
+        .output-area .output-body pre {
+            margin: 0;
+            padding: 20px 24px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #e6edf3;
+            white-space: pre-wrap;
+            word-break: break-word;
+            tab-size: 2;
+            background: transparent;
+        }
+
+        .output-area .output-body .json-empty {
+            padding: 60px 24px;
+            text-align: center;
+            color: #484f58;
+            font-size: 15px;
+        }
+
+        .output-area .output-body .json-empty i {
+            font-size: 42px;
+            display: block;
+            margin-bottom: 16px;
+            color: #30363d;
+        }
+
+        .output-area .output-body .json-empty .hint {
+            font-size: 13px;
+            color: #484f58;
+            margin-top: 8px;
+        }
+
+        /* ─── JSON Syntax Highlighting (light-on-dark) ─── */
+        .json-key {
+            color: #f0883e;
+        }
+        .json-string {
+            color: #a5d6ff;
+        }
+        .json-number {
+            color: #79c0ff;
+        }
+        .json-boolean {
+            color: #ff7b72;
+        }
+        .json-null {
+            color: #ff7b72;
+        }
+        .json-brace {
+            color: #8b949e;
+        }
+        .json-colon {
+            color: #484f58;
+        }
+        .json-comma {
+            color: #484f58;
+        }
+
+        /* ─── Scrollbar ─── */
+        .output-area .output-body::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .output-area .output-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .output-area .output-body::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        .output-area .output-body::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
+        /* ─── Toast ─── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1c2333;
+            color: #e6edf3;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .toast i {
+            font-size: 18px;
+        }
+
+        .toast.success i {
+            color: #3fb950;
+        }
+        .toast.error i {
+            color: #f85149;
+        }
+        .toast.info i {
+            color: #58a6ff;
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 640px) {
+            .app-header h1 {
+                font-size: 19px;
+            }
+            .controls {
+                padding: 14px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls .input-group {
+                flex: 1 1 auto;
+            }
+            .controls .btn {
+                justify-content: center;
+            }
+            .output-area .output-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .output-area .output-header .actions {
+                flex-wrap: wrap;
+            }
+            .output-area .output-body pre {
+                padding: 14px 16px;
+                font-size: 12px;
+            }
+            .toast {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+            }
+        }
+
+        /* ─── Hidden file input ─── */
+        #fileInput {
+            display: none;
+        }
+
+        /* ─── Proxy URL toggle ─── */
+        .proxy-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #8b949e;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .proxy-toggle input[type="checkbox"] {
+            accent-color: #58a6ff;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .proxy-url-wrap {
+            display: none;
+            flex: 1 1 100%;
+            margin-top: 6px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .proxy-url-wrap.visible {
+            display: flex;
+        }
+
+        .proxy-url-wrap input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #e6edf3;
+            font-family: inherit;
+            outline: none;
+            min-width: 200px;
+        }
+
+        .proxy-url-wrap input:focus {
+            border-color: #58a6ff;
+        }
+
+        .proxy-url-wrap .proxy-label {
+            font-size: 13px;
+            color: #8b949e;
+            white-space: nowrap;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="panel">
-    <h2>CPSC PDF Network & Data Inspector</h2>
-    <p style="color: #94a3b8; font-size: 13px;">নিচে আইডি দিয়ে 'Inspect' চাপ। ব্যাকগ্রাউন্ডে কী হচ্ছে লাইভ দেখবি।</p>
-    
-    <input type="text" id="studentId" value="15758" placeholder="Enter Student ID">
-    <button onclick="startDeepInspection()">Inspect Request</button>
+    <div class="app-wrapper">
 
-    <h3>[1] Network & Parsing Console Logs:</h3>
-    <div id="consoleLogs" class="console-log">Console: Waiting for request...</div>
+        <!-- ─── Header ─── -->
+        <header class="app-header">
+            <h1>
+                <i class="fas fa-file-pdf"></i>
+                Student Profile Extractor
+            </h1>
+            <span class="badge">
+                <i class="fas fa-check-circle"></i> PDF.js · 100% Schema
+            </span>
+        </header>
 
-    <h3>[2] Final Extracted Data Dashboard:</h3>
-    <table id="resultTable" class="result-table">
-        <tr><th>Field</th><th>Extracted Value</th></tr>
-        <tr><td>Student Name</td><td id="res-name">-</td></tr>
-        <tr><td>Class</td><td id="res-class">-</td></tr>
-        <tr><td>Section</td><td id="res-section">-</td></tr>
-        <tr><td>Roll No</td><td id="res-roll">-</td></tr>
-    </table>
-</div>
+        <!-- ─── Controls ─── -->
+        <div class="controls">
+            <div class="input-group">
+                <i class="fas fa-id-badge"></i>
+                <input
+                type="text"
+                id="studentIdInput"
+                placeholder="Student ID (e.g. 12345)"
+                autofocus
+                />
+            </div>
 
-<script>
-    // pdf.js Worker Initialization
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            <button class="btn btn-primary" id="fetchBtn">
+                <i class="fas fa-cloud-download-alt"></i> Extract
+            </button>
 
-    function log(message) {
-        const consoleDiv = document.getElementById('consoleLogs');
-        consoleDiv.innerText += "\n" + message;
-        consoleDiv.scrollTop = consoleDiv.scrollHeight;
-    }
+            <button class="btn btn-upload" id="uploadBtn">
+                <i class="fas fa-upload"></i> Upload PDF
+            </button>
 
-    async function startDeepInspection() {
-        const id = document.getElementById('studentId').value.trim();
-        const consoleDiv = document.getElementById('consoleLogs');
-        const table = document.getElementById('resultTable');
-        
-        consoleDiv.innerText = "Console: Request Initialized...";
-        table.style.display = 'none';
+            <button class="btn btn-secondary" id="sampleBtn">
+                <i class="fas fa-robot"></i> Sample
+            </button>
 
-        if(!id) return alert("আইডি ছাড়া কী ইন্সপেক্ট করব?");
+            <button class="btn btn-danger" id="clearBtn">
+                <i class="fas fa-eraser"></i> Clear
+            </button>
 
-        const targetUrl = `http://202.5.56.65/CPSCR/Students/StudentReport/PrintRiportStudentProfile/${id}`;
-        
-        try {
-            log(`>> HTTP GET Request sent to: ${targetUrl}`);
-            
-            // ১. নেটওয়ার্ক রিকোয়েস্ট পাঠানো
-            const response = await fetch(targetUrl);
-            
-            log(`<< Response Received! Status: ${response.status} ${response.statusText}`);
-            log(`<< Content-Type Header: ${response.headers.get('content-type')}`);
+            <!-- hidden file input -->
+            <input type="file" id="fileInput" accept=".pdf" />
 
-            // ২. বাইনারি বাফার হিসেবে ডাটা রিসিভ করা
-            log(`>> Reading Response Body as ArrayBuffer (Binary Data)...`);
-            const arrayBuffer = await response.arrayBuffer();
-            log(`<< Success! Binary Buffer Size: ${arrayBuffer.byteLength} bytes.`);
+            <!-- Proxy toggle -->
+            <div style="flex:1; min-width:100%; margin-top:6px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                <label class="proxy-toggle">
+                    <input type="checkbox" id="useProxyCheck" checked />
+                    <span>Use CORS proxy</span>
+                    <i class="fas fa-question-circle" style="color:#484f58; font-size:13px;" title="Helps bypass CORS when fetching from external server"></i>
+                </label>
 
-            // ৩. PDF.js দিয়ে মেমোরিতে বাইনারি ভাঙা
-            log(`>> Feeding Binary Data into PDF.js...`);
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            log(`<< PDF Document Parsed! Total Pages: ${pdf.numPages}`);
+                <div class="proxy-url-wrap visible" id="proxyUrlWrap">
+                    <span class="proxy-label"><i class="fas fa-link"></i> Proxy:</span>
+                    <input
+                    type="text"
+                    id="proxyUrlInput"
+                    value="https://api.allorigins.win/raw?url="
+                    placeholder="https://corsproxy.io/?"
+                    />
+                </div>
+            </div>
+        </div>
 
-            log(`>> Extracting Text Content from Page 1...`);
-            const page = await pdf.getPage(1);
-            const textContent = await page.getTextContent();
-            
-            // পিডিএফ এর সব অবজেক্টকে এক লাইনে জোড়া লাগানো
-            const rawText = textContent.items.map(item => item.str.trim()).join(' ').replace(/\s+/g, ' ');
-            log(`<< Raw Text Extracted! Total characters: ${rawText.length}`);
+        <!-- ─── Status Bar ─── -->
+        <div class="status-bar" id="statusBar">
+            <i class="fas fa-circle status-icon" style="color:#484f58; font-size:12px;"></i>
+            <span class="status-text">Ready — enter a Student ID and click <strong>Extract</strong></span>
+            <span class="status-detail" id="statusDetail"></span>
+        </div>
 
-            // ৪. ডাটা মাইনিং (নিখুঁত Regex ম্যাচিং)
-            log(`>> Running Regex Engines to locate fields...`);
-            
-            // অরিজিনাল টেক্সট প্যাটার্ন: "Student Name (English) : Saiara Adiat Zaman Date of Birth"
-            const nameMatch = rawText.match(/Student Name \(English\)\s*:\s*(.*?)(?=\s*Date of Birth)/i);
-            
-            // অরিজিনাল টেক্সট প্যাটার্ন: "Class: Six Section: Shapla Roll: 56 Group : General"
-            const classMatch = rawText.match(/Class\s*:\s*([^\s]+)/i);
-            const sectionMatch = rawText.match(/Section\s*:\s*([^\s]+)/i);
-            const rollMatch = rawText.match(/Roll\s*:\s*(\d+)/i);
+        <!-- ─── Output ─── -->
+        <div class="output-area">
+            <div class="output-header">
+                <span class="title">
+                    <i class="fas fa-code"></i>
+                    Extracted JSON
+                    <span style="font-weight:400; font-size:12px; color:#484f58;" id="fieldCount"></span>
+                </span>
+                <div class="actions">
+                    <button class="btn-sm copy-btn" id="copyBtn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button class="btn-sm download-btn" id="downloadBtn">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="btn-sm" id="prettyToggle" style="color:#8b949e;">
+                        <i class="fas fa-align-left"></i> Pretty
+                    </button>
+                </div>
+            </div>
+            <div class="output-body" id="outputBody">
+                <div class="json-empty">
+                    <i class="fas fa-inbox"></i>
+                    No data yet
+                    <div class="hint">Enter a Student ID and click Extract, or upload a PDF.</div>
+                </div>
+            </div>
+        </div>
 
-            // ৫. UI তে ডিসপ্লে করা
-            document.getElementById('res-name').innerText = nameMatch ? nameMatch[1].trim() : "Not Found";
-            document.getElementById('res-class').innerText = classMatch ? classMatch[1].trim() : "-";
-            document.getElementById('res-section').innerText = sectionMatch ? sectionMatch[1].trim() : "-";
-            document.getElementById('res-roll').innerText = rollMatch ? rollMatch[1].trim() : "-";
+    </div>
 
-            log(`<< Extracted successfully! Updating Dashboard Table.`);
-            table.style.display = 'table';
+    <!-- ─── Toast ─── -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Copied!</span>
+    </div>
 
-        } catch (error) {
-            log(`!! CRITICAL ERROR: ${error.message}`);
-            log(`!! Note: Make sure your browser's CORS Unblocker Extension is ACTIVE.`);
-        }
-    }
-</script>
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── DOM refs ───
+            const studentIdInput = document.getElementById('studentIdInput');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const sampleBtn = document.getElementById('sampleBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const fileInput = document.getElementById('fileInput');
+            const useProxyCheck = document.getElementById('useProxyCheck');
+            const proxyUrlInput = document.getElementById('proxyUrlInput');
+            const proxyUrlWrap = document.getElementById('proxyUrlWrap');
+            const statusBar = document.getElementById('statusBar');
+            const statusDetail = document.getElementById('statusDetail');
+            const outputBody = document.getElementById('outputBody');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const prettyToggle = document.getElementById('prettyToggle');
+            const fieldCount = document.getElementById('fieldCount');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+
+            // ─── State ───
+            let currentJson = null;
+            let prettyMode = true;
+            let toastTimer = null;
+
+            // ─── PDF.js worker ───
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+            // ─── Toast helper ───
+            function showToast(msg, type = 'info') {
+                if (toastTimer) clearTimeout(toastTimer);
+                const iconMap = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    info: 'fa-info-circle'
+                };
+                toast.className = `toast ${type}`;
+                toast.querySelector('i').className = `fas ${iconMap[type] || 'fa-info-circle'}`;
+                toastMsg.textContent = msg;
+                toast.classList.add('show');
+                toastTimer = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // ─── Status updater ───
+            function setStatus(text, type = 'info', detail = '') {
+                statusBar.className = `status-bar ${type}`;
+                const iconMap = {
+                    info: 'fa-circle-info',
+                    success: 'fa-check-circle',
+                    error: 'fa-circle-exclamation',
+                    loading: 'fa-spinner fa-spin'
+                };
+                const iconEl = statusBar.querySelector('.status-icon');
+                iconEl.className = `status-icon fas ${iconMap[type] || 'fa-circle'}`;
+                statusBar.querySelector('.status-text').innerHTML = text;
+                statusDetail.textContent = detail;
+                if (type === 'loading') {
+                    iconEl.style.color = '#58a6ff';
+                } else if (type === 'success') {
+                    iconEl.style.color = '#3fb950';
+                } else if (type === 'error') {
+                    iconEl.style.color = '#f85149';
+                } else {
+                    iconEl.style.color = '#8b949e';
+                }
+            }
+
+            function setLoading() {
+                setStatus('<span class="spinner"></span> Fetching PDF & extracting data…', 'loading', 'Please wait');
+            }
+
+            function setReady() {
+                setStatus('Ready — enter a Student ID and click <strong>Extract</strong>', 'info');
+            }
+
+            // ─── Proxy toggle ───
+            useProxyCheck.addEventListener('change', function() {
+                proxyUrlWrap.classList.toggle('visible', this.checked);
+            });
+
+            // ─── Build URL ───
+            function buildPdfUrl(studentId) {
+                const base = 'http://202.5.56.65/CPSCR/Students/StudentReport/PrintRiportStudentProfile';
+                return `${base}/${studentId.trim()}`;
+            }
+
+            // ─── Fetch with proxy ───
+            async function fetchWithProxy(url, useProxy, proxyUrl) {
+                if (useProxy && proxyUrl) {
+                    // If proxy URL already contains '?url=' or similar, handle it
+                    let proxyFull = proxyUrl;
+                    if (!proxyFull.endsWith('=') && !proxyFull.endsWith('&') && !proxyFull.endsWith('?')) {
+                        // try to be smart: if it ends with '/', append '?url='
+                        if (proxyFull.endsWith('/')) {
+                            proxyFull += '?url=';
+                        } else {
+                            proxyFull += '?url=';
+                        }
+                    }
+                    const proxied = proxyFull + encodeURIComponent(url);
+                    const res = await fetch(proxied);
+                    if (!res.ok) throw new Error(`Proxy returned ${res.status} ${res.statusText}`);
+                    return await res.arrayBuffer();
+                } else {
+                    const res = await fetch(url, {
+                        mode: 'cors',
+                        credentials: 'omit',
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+                    return await res.arrayBuffer();
+                }
+            }
+
+            // ─── Extract from ArrayBuffer ───
+            async function extractFromArrayBuffer(buffer, sourceLabel = 'PDF') {
+                try {
+                    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+                    const page = await pdf.getPage(1);
+                    const textContent = await page.getTextContent();
+
+                    // ─── same algorithm as user's code ───
+                    const TOLERANCE = 7;
+                    const lines = [];
+
+                    textContent.items.forEach(item => {
+                        const str = item.str.trim();
+                        if (!str) return;
+                        const x = item.transform[4];
+                        const y = item.transform[5];
+                        let line = lines.find(l => Math.abs(l.y - y) <= TOLERANCE);
+                        if (!line) {
+                            line = { y, items: [] };
+                            lines.push(line);
+                        }
+                        line.items.push({ x, text: str });
+                    });
+
+                    lines.sort((a, b) => b.y - a.y);
+
+                    const rawLines = lines.map(line => {
+                        line.items.sort((a, b) => a.x - b.x);
+                        return line.items.map(i => i.text).join(' ');
+                    });
+
+                    // ─── result schema ───
+                    const resultJSON = {
+                        "Student Details": {
+                            "Student ID": "",
+                            "Category": "",
+                            "Student Name (Bangla)": "",
+                            "Student Name (English)": "",
+                            "Date of Birth": "",
+                            "Sex": "",
+                            "Blood Group": "",
+                            "Identification Mark": "",
+                            "Religion": "",
+                            "Cast": "",
+                            "Nationality": "",
+                            "Residing With": "",
+                            "NID": "",
+                            "Academic Class": "",
+                            "Academic Section": "",
+                            "Academic Roll": "",
+                            "Academic Group": "",
+                            "Academic Year": "",
+                            "Admission Class": "",
+                            "Admission Roll": "",
+                            "Admission Date": "",
+                            "Previous School": "",
+                            "Extra Curricullam": ""
+                        },
+                        "Father Details": {
+                            "Father Name (Bangla)": "",
+                            "Father Name (English)": "",
+                            "Occupation": "",
+                            "Rank": "",
+                            "Designation": "",
+                            "Organization": "",
+                            "Office Address": "",
+                            "Mobile No": "",
+                            "Telephone No": "",
+                            "NID No": ""
+                        },
+                        "Mother Details": {
+                            "Mother Name (Bangla)": "",
+                            "Mother Name (English)": "",
+                            "Occupation": "",
+                            "Rank": "",
+                            "Designation": "",
+                            "Organization": "",
+                            "Office Address": "",
+                            "Mobile No": "",
+                            "Telephone No": "",
+                            "NID No": ""
+                        },
+                        "Present Address": {
+                            "House #": "",
+                            "Road": "",
+                            "Village": "",
+                            "Post": "",
+                            "Upozilla": "",
+                            "District": "",
+                            "Division": ""
+                        },
+                        "Permanent Address": {
+                            "House": "",
+                            "Road": "",
+                            "Village": "",
+                            "Post": "",
+                            "Upozilla": "",
+                            "District": "",
+                            "Division": ""
+                        },
+                        "Local Guardian Details": {
+                            "Name (Bangla)": "",
+                            "Name (English)": "",
+                            "House": "",
+                            "Road": "",
+                            "Village": "",
+                            "Post": "",
+                            "Upozilla": "",
+                            "District": "",
+                            "Division": "",
+                            "Mobile No": "",
+                            "Telephone": "",
+                            "Student's Relation With Local Guardian": "",
+                            "NID No": ""
+                        },
+                        "SMS Priority": {
+                            "First": "",
+                            "Second": "",
+                            "Third": ""
+                        }
+                    };
+
+                    const SECTIONS = [
+                        "Student Details",
+                        "Father Details",
+                        "Mother Details",
+                        "Present Address",
+                        "Permanent Address",
+                        "Local Guardian Details",
+                        "Mobile No Priority for Sending Short Message Service"
+                    ];
+
+                    const KNOWN_KEYS = [
+                        "Student Name (Bangla)", "Student Name (English)", "Father Name (Bangla)", "Father Name (English)",
+                        "Mother Name (Bangla)", "Mother Name (English)", "Student's Relation With Local Guardian",
+                        "Present Academic Status", "Admission Taken In", "Identification Mark", "Previous School",
+                        "Extra Curricullam", "Office Address", "Name (Bangla)", "Name (English)", "Telephone No",
+                        "Blood Group", "Residing With", "Student ID", "Category", "Date of Birth", "Religion",
+                        "Nationality", "Occupation", "Organization", "Designation", "Mobile No", "Telephone",
+                        "NID No", "House #", "Upozilla", "District", "Division", "Section", "Village",
+                        "House", "Class", "Group", "First", "Second", "Third", "Cast", "Rank", "Road",
+                        "Post", "Roll", "Year", "Date", "Sex", "NID"
+                    ].sort((a, b) => b.length - a.length);
+
+                    let currentSection = "Student Details";
+
+                    rawLines.forEach(lineText => {
+                        let line = lineText.trim();
+                        if (!line) return;
+
+                        for (let sec of SECTIONS) {
+                            if (line.includes(sec)) {
+                                if (sec.includes("Short Message Service")) currentSection = "SMS Priority";
+                                else currentSection = sec;
+                                line = line.replace(sec, "").trim();
+                            }
+                        }
+                        if (!line) return;
+
+                        let matches = [];
+                        KNOWN_KEYS.forEach(key => {
+                            const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            const regex = new RegExp(`(?:^|\\s)(${escapedKey})\\s*:`, 'g');
+                            let m;
+                            while ((m = regex.exec(line)) !== null) {
+                                matches.push({
+                                    key: key,
+                                    startIndex: m.index + m[0].indexOf(m[1]),
+                                    endIndex: m.index + m[0].length
+                                });
+                            }
+                        });
+
+                        matches.sort((a, b) => a.startIndex - b.startIndex);
+
+                        let filtered = [];
+                        matches.forEach(m => {
+                            if (!filtered.some(f => (m.startIndex >= f.startIndex && m.startIndex < f
+                                    .endIndex))) {
+                                filtered.push(m);
+                            }
+                        });
+
+                        for (let i = 0; i < filtered.length; i++) {
+                            const k = filtered[i];
+                            const valStart = k.endIndex;
+                            const valEnd = (i + 1 < filtered.length) ? filtered[i + 1].startIndex : line.length;
+                            let val = line.substring(valStart, valEnd).trim();
+                            val = val.replace(/^:\s*/, '').trim();
+
+                            if (currentSection in resultJSON) {
+                                let keyToSave = k.key;
+
+                                if (lineText.includes("Present Academic Status")) {
+                                    if (k.key === "Class") keyToSave = "Academic Class";
+                                    if (k.key === "Roll") keyToSave = "Academic Roll";
+                                    if (k.key === "Section") keyToSave = "Academic Section";
+                                    if (k.key === "Group") keyToSave = "Academic Group";
+                                    if (k.key === "Year") keyToSave = "Academic Year";
+                                } else if (lineText.includes("Admission Taken In")) {
+                                    if (k.key === "Class") keyToSave = "Admission Class";
+                                    if (k.key === "Roll") keyToSave = "Admission Roll";
+                                    if (k.key === "Date") keyToSave = "Admission Date";
+                                }
+
+                                if (resultJSON[currentSection] && resultJSON[currentSection][keyToSave] !== undefined) {
+                                    resultJSON[currentSection][keyToSave] = val;
+                                }
+                            }
+                        }
+                    });
+
+                    return resultJSON;
+                } catch (err) {
+                    throw new Error(`Extraction failed: ${err.message}`);
+                }
+            }
+
+            // ─── Render JSON ───
+            function renderJSON(json, pretty = true) {
+                const str = JSON.stringify(json, null, pretty ? 2 : 0);
+                const highlighted = syntaxHighlight(str);
+                outputBody.innerHTML = `<pre>${highlighted}</pre>`;
+                currentJson = json;
+                const total = countFields(json);
+                fieldCount.textContent = `● ${total} fields`;
+            }
+
+            function countFields(obj) {
+                let count = 0;
+                for (const key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+                            count += countFields(obj[key]);
+                        } else {
+                            count++;
+                        }
+                    }
+                }
+                return count;
+            }
+
+            function syntaxHighlight(json) {
+                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                let output = '';
+                let inString = false;
+                let escape = false;
+                let i = 0;
+                while (i < json.length) {
+                    const ch = json[i];
+                    if (escape) {
+                        output += ch;
+                        escape = false;
+                        i++;
+                        continue;
+                    }
+                    if (ch === '\\') {
+                        escape = true;
+                        output += ch;
+                        i++;
+                        continue;
+                    }
+                    if (ch === '"') {
+                        inString = !inString;
+                        output += ch;
+                        i++;
+                        continue;
+                    }
+                    if (!inString) {
+                        if (ch === '{' || ch === '}' || ch === '[' || ch === ']') {
+                            output += `<span class="json-brace">${ch}</span>`;
+                        } else if (ch === ':') {
+                            output += `<span class="json-colon">${ch}</span>`;
+                        } else if (ch === ',') {
+                            output += `<span class="json-comma">${ch}</span>`;
+                        } else if (ch === 't' && json.substr(i, 4) === 'true') {
+                            output += `<span class="json-boolean">true</span>`;
+                            i += 3;
+                        } else if (ch === 'f' && json.substr(i, 5) === 'false') {
+                            output += `<span class="json-boolean">false</span>`;
+                            i += 4;
+                        } else if (ch === 'n' && json.substr(i, 4) === 'null') {
+                            output += `<span class="json-null">null</span>`;
+                            i += 3;
+                        } else if (ch >= '0' && ch <= '9' || ch === '-') {
+                            let num = ch;
+                            let j = i + 1;
+                            while (j < json.length && (json[j] >= '0' && json[j] <= '9' || json[j] === '.' || json[j] ===
+                                    'e' || json[j] === 'E' || json[j] === '+' || json[j] === '-')) {
+                                num += json[j];
+                                j++;
+                            }
+                            output += `<span class="json-number">${num}</span>`;
+                            i = j - 1;
+                        } else {
+                            output += ch;
+                        }
+                    } else {
+                        // inside string – check for key pattern
+                        const isKey = (json[i - 1] === '{' || json[i - 1] === ',' || json[i - 1] === '\n' || json[i - 1] ===
+                            ' ') &&
+                            json.slice(i).match(/^"[^"]+"/) &&
+                            json.slice(i + json.slice(i).indexOf('"') + 1).trim().startsWith(':');
+                        if (isKey) {
+                            // find the closing quote
+                            let end = i + 1;
+                            while (end < json.length && json[end] !== '"') {
+                                if (json[end] === '\\') end++;
+                                end++;
+                            }
+                            const keyContent = json.slice(i, end + 1);
+                            output += `<span class="json-key">${keyContent}</span>`;
+                            i = end;
+                        } else {
+                            output += ch;
+                        }
+                    }
+                    i++;
+                }
+                return output;
+            }
+
+            // ─── Show empty ───
+            function showEmpty() {
+                outputBody.innerHTML = `
+                        <div class="json-empty">
+                            <i class="fas fa-inbox"></i>
+                            No data yet
+                            <div class="hint">Enter a Student ID and click Extract, or upload a PDF.</div>
+                        </div>
+                    `;
+                currentJson = null;
+                fieldCount.textContent = '';
+            }
+
+            // ─── Main extract flow ───
+            async function handleExtract(studentId) {
+                if (!studentId || !studentId.trim()) {
+                    showToast('Please enter a Student ID.', 'error');
+                    setStatus('⚠️ Please enter a Student ID.', 'error');
+                    return;
+                }
+
+                const id = studentId.trim();
+                const url = buildPdfUrl(id);
+                const useProxy = useProxyCheck.checked;
+                const proxyUrl = proxyUrlInput.value.trim();
+
+                setLoading();
+                fetchBtn.disabled = true;
+
+                try {
+                    const buffer = await fetchWithProxy(url, useProxy, proxyUrl);
+                    const json = await extractFromArrayBuffer(buffer, `Student ID: ${id}`);
+                    renderJSON(json, prettyMode);
+                    setStatus(
+                        `✅ Extracted successfully for <strong>ID: ${id}</strong>`,
+                        'success',
+                        `${countFields(json)} fields extracted`
+                    );
+                    showToast(`Data extracted for Student ID: ${id}`, 'success');
+                } catch (err) {
+                    console.error('Extraction error:', err);
+                    const msg = err.message || 'Unknown error';
+                    setStatus(`❌ Failed: ${msg}`, 'error');
+                    showToast(`Error: ${msg}`, 'error');
+                    // If it looks like a CORS error, show helpful message
+                    if (msg.includes('fetch') || msg.includes('CORS') || msg.includes('NetworkError') || msg.includes(
+                            'Failed to fetch')) {
+                        setStatus(
+                            `❌ CORS / network error — try using the proxy or upload a PDF manually.`,
+                            'error',
+                            msg
+                        );
+                        showToast('CORS error: enable proxy or upload PDF manually', 'error');
+                    }
+                } finally {
+                    fetchBtn.disabled = false;
+                }
+            }
+
+            // ─── Handle file upload ───
+            async function handleFileUpload(file) {
+                if (!file || file.type !== 'application/pdf') {
+                    showToast('Please select a valid PDF file.', 'error');
+                    return;
+                }
+
+                setLoading();
+                uploadBtn.disabled = true;
+
+                try {
+                    const buffer = await file.arrayBuffer();
+                    const json = await extractFromArrayBuffer(buffer, file.name);
+                    renderJSON(json, prettyMode);
+                    setStatus(
+                        `✅ Extracted from <strong>${file.name}</strong>`,
+                        'success',
+                        `${countFields(json)} fields extracted`
+                    );
+                    showToast(`Extracted from ${file.name}`, 'success');
+                } catch (err) {
+                    console.error('File extraction error:', err);
+                    const msg = err.message || 'Unknown error';
+                    setStatus(`❌ Failed to parse PDF: ${msg}`, 'error');
+                    showToast(`Error: ${msg}`, 'error');
+                } finally {
+                    uploadBtn.disabled = false;
+                    fileInput.value = '';
+                }
+            }
+
+            // ─── Sample data ───
+            function loadSample() {
+                const sample = {
+                    "Student Details": {
+                        "Student ID": "12345",
+                        "Category": "General",
+                        "Student Name (Bangla)": "রহিম উদ্দিন",
+                        "Student Name (English)": "Rahim Uddin",
+                        "Date of Birth": "15-08-2005",
+                        "Sex": "Male",
+                        "Blood Group": "O+",
+                        "Identification Mark": "Mole on left cheek",
+                        "Religion": "Islam",
+                        "Cast": "Sunni",
+                        "Nationality": "Bangladeshi",
+                        "Residing With": "Parents",
+                        "NID": "1234567890123",
+                        "Academic Class": "10",
+                        "Academic Section": "A",
+                        "Academic Roll": "01",
+                        "Academic Group": "Science",
+                        "Academic Year": "2025",
+                        "Admission Class": "6",
+                        "Admission Roll": "45",
+                        "Admission Date": "01-01-2020",
+                        "Previous School": "ABC High School",
+                        "Extra Curricullam": "Football, Debate"
+                    },
+                    "Father Details": {
+                        "Father Name (Bangla)": "আব্দুল করিম",
+                        "Father Name (English)": "Abdul Karim",
+                        "Occupation": "Business",
+                        "Rank": "Owner",
+                        "Designation": "Manager",
+                        "Organization": "Karim Traders",
+                        "Office Address": "23, Motijheel, Dhaka",
+                        "Mobile No": "01712345678",
+                        "Telephone No": "02-1234567",
+                        "NID No": "1234567890124"
+                    },
+                    "Mother Details": {
+                        "Mother Name (Bangla)": "ফাতেমা বেগম",
+                        "Mother Name (English)": "Fatema Begum",
+                        "Occupation": "Housewife",
+                        "Rank": "",
+                        "Designation": "",
+                        "Organization": "",
+                        "Office Address": "",
+                        "Mobile No": "01812345678",
+                        "Telephone No": "",
+                        "NID No": "1234567890125"
+                    },
+                    "Present Address": {
+                        "House #": "12/A",
+                        "Road": "5",
+                        "Village": "Uttara",
+                        "Post": "Dhaka-1230",
+                        "Upozilla": "Uttara",
+                        "District": "Dhaka",
+                        "Division": "Dhaka"
+                    },
+                    "Permanent Address": {
+                        "House": "15",
+                        "Road": "2",
+                        "Village": "Savar",
+                        "Post": "Savar-1340",
+                        "Upozilla": "Savar",
+                        "District": "Dhaka",
+                        "Division": "Dhaka"
+                    },
+                    "Local Guardian Details": {
+                        "Name (Bangla)": "মো. ইব্রাহিম",
+                        "Name (English)": "Md. Ibrahim",
+                        "House": "22",
+                        "Road": "3",
+                        "Village": "Mirpur",
+                        "Post": "Dhaka-1216",
+                        "Upozilla": "Mirpur",
+                        "District": "Dhaka",
+                        "Division": "Dhaka",
+                        "Mobile No": "01912345678",
+                        "Telephone": "",
+                        "Student's Relation With Local Guardian": "Uncle",
+                        "NID No": "1234567890126"
+                    },
+                    "SMS Priority": {
+                        "First": "Father",
+                        "Second": "Mother",
+                        "Third": "Guardian"
+                    }
+                };
+                renderJSON(sample, prettyMode);
+                setStatus('📋 Sample data loaded', 'info', `${countFields(sample)} fields`);
+                showToast('Sample data loaded', 'info');
+            }
+
+            // ─── Copy ───
+            function copyJson() {
+                if (!currentJson) {
+                    showToast('Nothing to copy — extract data first.', 'error');
+                    return;
+                }
+                const str = JSON.stringify(currentJson, null, prettyMode ? 2 : 0);
+                navigator.clipboard.writeText(str).then(() => {
+                    showToast('Copied to clipboard!', 'success');
+                }).catch(() => {
+                    // fallback
+                    const area = document.createElement('textarea');
+                    area.value = str;
+                    document.body.appendChild(area);
+                    area.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(area);
+                    showToast('Copied to clipboard!', 'success');
+                });
+            }
+
+            // ─── Download ───
+            function downloadJson() {
+                if (!currentJson) {
+                    showToast('Nothing to download — extract data first.', 'error');
+                    return;
+                }
+                const str = JSON.stringify(currentJson, null, prettyMode ? 2 : 0);
+                const blob = new Blob([str], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const id = studentIdInput.value.trim() || 'student';
+                a.download = `student-profile-${id}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('Downloaded!', 'success');
+            }
+
+            // ─── Event listeners ───
+            fetchBtn.addEventListener('click', () => {
+                handleExtract(studentIdInput.value);
+            });
+
+            studentIdInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleExtract(studentIdInput.value);
+                }
+            });
+
+            uploadBtn.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+
+            sampleBtn.addEventListener('click', loadSample);
+
+            clearBtn.addEventListener('click', () => {
+                showEmpty();
+                setReady();
+                studentIdInput.value = '';
+                showToast('Cleared', 'info');
+            });
+
+            copyBtn.addEventListener('click', copyJson);
+            downloadBtn.addEventListener('click', downloadJson);
+
+            prettyToggle.addEventListener('click', () => {
+                prettyMode = !prettyMode;
+                prettyToggle.innerHTML = prettyMode ?
+                    '<i class="fas fa-align-left"></i> Pretty' :
+                    '<i class="fas fa-compress-alt"></i> Compact';
+                if (currentJson) {
+                    renderJSON(currentJson, prettyMode);
+                }
+                showToast(prettyMode ? 'Pretty mode' : 'Compact mode', 'info');
+            });
+
+            // ─── Init ───
+            setReady();
+            showEmpty();
+
+            // focus input
+            studentIdInput.focus();
+
+            // ─── Drag & drop on output area ───
+            outputBody.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                outputBody.style.borderColor = '#58a6ff';
+                outputBody.style.backgroundColor = 'rgba(88,166,255,0.04)';
+            });
+
+            outputBody.addEventListener('dragleave', () => {
+                outputBody.style.borderColor = 'transparent';
+                outputBody.style.backgroundColor = 'transparent';
+            });
+
+            outputBody.addEventListener('drop', (e) => {
+                e.preventDefault();
+                outputBody.style.borderColor = 'transparent';
+                outputBody.style.backgroundColor = 'transparent';
+                const files = e.dataTransfer.files;
+                if (files.length && files[0].type === 'application/pdf') {
+                    handleFileUpload(files[0]);
+                } else {
+                    showToast('Please drop a PDF file.', 'error');
+                }
+            });
+
+            // ─── Also allow drop on entire page ───
+            document.addEventListener('dragover', (e) => e.preventDefault());
+            document.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const files = e.dataTransfer.files;
+                if (files.length && files[0].type === 'application/pdf') {
+                    handleFileUpload(files[0]);
+                }
+            });
+
+        })();
+    </script>
 
 </body>
 </html>
