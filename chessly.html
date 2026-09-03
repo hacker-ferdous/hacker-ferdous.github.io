@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Chess PGN Analysis Explorer</title>
+  
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+
+<style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --accent-color: #3b82f6;
+      --accent-hover: #2563eb;
+      --text-color: #e0e0e0;
+      --border-color: #333;
+      --win-color: #22c55e;
+      --draw-color: #a1a1aa;
+      --loss-color: #ef4444;
+    }
+    
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color); color: var(--text-color);
+      overflow-x: hidden;
+    }
+
+    /* 🌟 Modern Dark Scrollbar 🌟 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-color);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #666;
+    }
+
+    /* Loader Overlay */
+    .loader-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(18,18,18,0.95); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 9999;
+      display: none;
+    }
+    .spinner {
+      border: 4px solid #333; border-top: 4px solid var(--accent-color);
+      border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Header */
+    header {
+      display: flex; align-items: center; background-color: var(--card-bg);
+      padding: 15px 20px; border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .menu-btn {
+      background: none; border: none; color: var(--text-color);
+      font-size: 1.5rem; cursor: pointer; margin-right: 15px;
+      transition: color 0.2s;
+    }
+    .menu-btn:hover { color: var(--accent-color); }
+    header h2 { margin: 0; font-size: 1.2rem; flex: 1; }
+
+    /* Layout */
+    .app-container { display: flex; flex-direction: column; height: calc(100vh - 60px); }
+    
+    /* Sliding Drawer */
+    .drawer-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6); z-index: 1000; display: none;
+      backdrop-filter: blur(2px); /* 🌟 Soft blur effect 🌟 */
+    }
+    .drawer {
+      position: fixed; top: 0; left: -360px; width: 340px; height: 100vh;
+      background-color: var(--card-bg); z-index: 1001; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 2px 0 15px rgba(0,0,0,0.6); overflow-y: auto;
+      display: flex; flex-direction: column; padding: 20px; box-sizing: border-box;
+    }
+    .drawer.open { left: 0; }
+    .drawer h3 { margin-top: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+    .close-drawer { background: none; border: none; color: #aaa; font-size: 1.2rem; cursor: pointer; }
+    .close-drawer:hover { color: #fff; }
+
+    /* Drop Zone */
+    .drop-zone {
+      border: 2px dashed var(--accent-color); border-radius: 8px;
+      padding: 20px; text-align: center; background-color: #242424;
+      cursor: pointer; transition: all 0.2s; margin-bottom: 20px;
+      color: #ccc;
+    }
+    .drop-zone:hover { background-color: #2a2a2a; border-color: var(--accent-hover); color: #fff;}
+    .drop-zone.dragover { background-color: rgba(59, 130, 246, 0.1); border-color: var(--accent-color); }
+
+    /* Filters */
+    .filter-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+    .filter-group label.title { font-size: 0.9rem; color: #aaa; font-weight: bold; }
+    
+    /* 🌟 Modern Inputs & Selects 🌟 */
+    .filter-group select, .filter-group input[type="text"], #moveSearch {
+      background-color: #1a1a1a; color: var(--text-color);
+      border: 1px solid var(--border-color); padding: 10px 15px;
+      border-radius: 20px; font-size: 0.9rem; width: 100%; box-sizing: border-box;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .filter-group select:focus, .filter-group input[type="text"]:focus, #moveSearch:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+    
+    button.apply-btn {
+      background-color: var(--accent-color); color: white; cursor: pointer; 
+      font-weight: bold; border: none; padding: 12px; border-radius: 20px; margin-top: 10px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    button.apply-btn:hover { background-color: var(--accent-hover); }
+    button.apply-btn:active { transform: scale(0.98); }
+
+    /* Multi-select box */
+    .multi-select-box {
+      max-height: 150px; overflow-y: auto; background-color: #1a1a1a;
+      border: 1px solid var(--border-color); border-radius: 8px; padding: 5px;
+    }
+    .multi-select-box label { display: flex; align-items: center; font-size: 0.85rem; padding: 6px 8px; cursor: pointer; border-radius: 4px; transition: background 0.2s;}
+    .multi-select-box label:hover { background-color: #2a2a2a; }
+    .multi-select-box input { margin-right: 8px; accent-color: var(--accent-color); cursor: pointer;}
+    .filter-actions { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 3px; padding: 0 5px;}
+    .filter-actions a { color: var(--accent-color); text-decoration: none; cursor: pointer; font-weight: 500;}
+    .filter-actions a:hover { text-decoration: underline; color: var(--accent-hover);}
+
+    /* Main Area */
+    .main-view {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      padding: 20px; overflow-y: auto;
+    }
+    
+    .board-controls-wrapper { width: 100%; max-width: 520px; text-align: center; margin-bottom: 30px; }
+    #mainBoard { width: 100%; margin: 0 auto; display: block; }
+    .path-text { margin: 15px 0 10px 0; font-weight: bold; color: #bbb; background: #222; padding: 8px; border-radius: 8px; border: 1px solid #333;}
+    
+    .btn-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .btn-group button, .btn-group a {
+      background-color: #2a2a2a; color: var(--text-color); border: 1px solid var(--border-color);
+      padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; 
+      transition: all 0.2s; text-decoration: none; display: inline-block;
+    }
+    .btn-group button:hover, .btn-group a:hover { background-color: #383838; border-color: #555; }
+    .btn-group a.lichess-btn { background-color: #d18b47; color: white; border-color: #a86c35;}
+    .btn-group a.lichess-btn:hover { background-color: #b57437; border-color: #8c5729;}
+
+    /* PGN Box */
+    .pgn-container { margin-top: 15px; display: flex; flex-direction: column; gap: 8px; }
+    .pgn-container textarea {
+      width: 100%; height: 65px; background: #181818; color: #999; resize: none;
+      border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; box-sizing: border-box;
+      font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; outline: none; transition: border-color 0.2s;
+    }
+    .pgn-container textarea:focus { border-color: var(--accent-color); color: #ccc;}
+    
+    .copy-btn {
+      align-self: flex-end; background-color: var(--card-bg); color: #ccc; 
+      border: 1px solid var(--border-color); padding: 5px 15px; border-radius: 15px; cursor: pointer; font-size: 0.8rem; transition: 0.2s;
+    }
+    .copy-btn:hover { background-color: var(--accent-color); color: white; border-color: var(--accent-hover);}
+
+    /* Candidates Grid */
+    .candidates-section { width: 100%; max-width: 1200px; display: flex; flex-direction: column; align-items: center; }
+    .candidates-header { 
+      width: 100%; display: flex; justify-content: space-between; align-items: center; 
+      border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px;
+    }
+    .candidates-header h3 { margin: 0; color: #e0e0e0; font-size: 1.1rem;}
+    
+    /* 🌟 Search Move Input Design 🌟 */
+    #moveSearch { 
+      width: 250px; 
+      background: #181818 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23888" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat;
+      background-position: 12px center;
+      padding: 10px 15px 10px 35px; /* space for search icon */
+      border-radius: 25px;
+    }
+
+    .candidates-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px; width: 100%;
+    }
+    
+    .candidate-card {
+      background: var(--card-bg); padding: 12px; border-radius: 12px; cursor: pointer;
+      border: 1px solid var(--border-color); transition: all 0.2s ease; display: flex; flex-direction: column;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .candidate-card:hover { 
+      border-color: var(--accent-color); background: #242424; 
+      transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    .candidate-san { font-size: 1.1rem; font-weight: bold; text-align: center; margin-bottom: 10px; color: #fff; }
+    .mini-board-container { width: 100%; aspect-ratio: 1; margin-bottom: 10px; pointer-events: none; border-radius: 4px; overflow: hidden;}
+    
+    .stats-info { text-align: center; font-size: 0.85rem; color: #ccc; margin-bottom: 8px; font-weight: 500;}
+    .stats-bar-container { display: flex; height: 8px; width: 100%; border-radius: 4px; overflow: hidden; background: #2a2a2a; margin-bottom: 8px;}
+    .bar-win { background-color: var(--win-color); }
+    .bar-draw { background-color: var(--draw-color); }
+    .bar-loss { background-color: var(--loss-color); }
+    
+    .stats-percentages { display: flex; justify-content: space-between; font-size: 0.75rem; color: #999; font-weight: bold;}
+    .term-data { font-size: 0.7rem; color: #888; font-style: italic; margin-top: 8px; text-align: center; border-top: 1px dashed #444; padding-top: 8px;}
+
+    @media (max-width: 600px) {
+      .candidates-grid { grid-template-columns: repeat(2, 1fr); gap: 10px;}
+      .drawer { width: 300px; left: -300px; }
+      .candidates-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+      #moveSearch { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<input type="file" id="fileInput" multiple accept=".pgn,.txt" style="display:none">
+
+<div class="loader-overlay" id="loader">
+  <div class="spinner"></div>
+  <div id="loaderText" style="margin-top: 20px; font-weight: bold; font-size: 1.1rem;">Parsing PGNs...</div>
+</div>
+
+<header>
+  <button class="menu-btn" id="menuBtn">☰</button>
+  <h2>Interactive Explorer</h2>
+</header>
+
+<div class="app-container">
+  <!-- Slide Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <h3>Data & Filters <button class="close-drawer" id="closeDrawer">✕</button></h3>
+    
+    <div class="drop-zone" id="dropZone">
+      Drop PGN Files Here
+      <br><small>(Click to browse)</small>
+    </div>
+
+    <div style="font-size:0.85rem; color:#aaa; margin-bottom: 10px;">
+      Total Valid Games: <strong id="gameCount" style="color:#fff">0</strong><br>
+      Main Player: <strong id="mainPlayerName" style="color:var(--accent-color)">None</strong>
+    </div>
+
+    <div class="filter-group">
+      <label class="title">Color Perspective:</label>
+      <select id="colorFilter">
+        <option value="all">Played as Both (White & Black)</option>
+        <option value="white">Played as White</option>
+        <option value="black">Played as Black</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="title">Result:</label>
+      <select id="resultFilter">
+        <option value="all">All Results</option>
+        <option value="win">Wins</option>
+        <option value="loss">Losses</option>
+        <option value="draw">Draws</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="title">Opponents: <span id="oppCountDisplay" style="font-weight:normal; font-size:0.8rem; color:var(--accent-color);"></span></label>
+      <input type="text" id="oppSearch" placeholder="Search opponents...">
+      <div class="filter-actions" style="margin-top: 5px;">
+        <a id="selAllOpp">Select Visible</a> <a id="deselAllOpp">Deselect All</a>
+      </div>
+      <div class="multi-select-box" id="opponentList">
+        <div style="color:#666; font-size:0.8rem; padding:4px;">No opponents yet</div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label class="title">Terminations: <span id="termCountDisplay" style="font-weight:normal; font-size:0.8rem; color:var(--accent-color);"></span></label>
+      <div class="filter-actions">
+        <a id="selAllTerm">Select All</a> <a id="deselAllTerm">Deselect All</a>
+      </div>
+      <div class="multi-select-box" id="terminationList">
+        <div style="color:#666; font-size:0.8rem; padding:4px;">No data yet</div>
+      </div>
+    </div>
+
+    <button class="apply-btn" id="applyFiltersBtn">Apply Filters & Rebuild</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-view">
+    <div class="board-controls-wrapper">
+      <div id="mainBoard"></div>
+      
+      <div class="path-text" id="currentPath">Position: Start</div>
+      
+      <div class="btn-group">
+        <button id="resetBoardBtn">Reset</button>
+        <button id="undoBtn">Undo</button>
+        <a id="lichessLink" class="lichess-btn" href="https://lichess.org/analysis" target="_blank">Study on Lichess</a>
+      </div>
+
+      <div class="pgn-container">
+        <textarea id="pgnText" readonly placeholder="PGN notation will appear here..."></textarea>
+        <button class="copy-btn" id="copyPgnBtn">Copy PGN</button>
+      </div>
+    </div>
+
+    <div class="candidates-section">
+      <div class="candidates-header">
+        <h3>Candidate Moves</h3>
+        <input type="text" id="moveSearch" placeholder="Search Move (e.g., Nf3)">
+      </div>
+      <div class="candidates-grid" id="candidateGrid">
+        <div style="grid-column: 1 / -1; color: #888; text-align: center; margin-top: 20px;">
+          Load PGN games to explore candidates...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let rawGamesData = [];
+  let mainPlayer = "";
+  let allOpponents = new Set();
+  let allTerminations = new Set();
+  
+  let globalTree = createEmptyNode();
+  let currentTreeNode = null;
+  
+  let mainBoardObj = null;
+  let chessReader = new Chess();
+  const pieceThemeUrl = 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
+
+  $(document).ready(function() {
+    initBoard();
+    setupEvents();
+  });
+
+  function initBoard() {
+    mainBoardObj = Chessboard('mainBoard', {
+      position: 'start',
+      pieceTheme: pieceThemeUrl,
+      draggable: false
+    });
+  }
+
+  function setupEvents() {
+    $('#menuBtn').on('click', () => { $('#drawer').addClass('open'); $('#drawerOverlay').fadeIn(200); });
+    $('#closeDrawer, #drawerOverlay').on('click', () => { $('#drawer').removeClass('open'); $('#drawerOverlay').fadeOut(200); });
+
+    const dropZone = $('#dropZone');
+    dropZone.on('click', () => document.getElementById('fileInput').click());
+    dropZone.on('dragover', (e) => { e.preventDefault(); e.stopPropagation(); dropZone.addClass('dragover'); });
+    dropZone.on('dragleave drop', (e) => { e.preventDefault(); e.stopPropagation(); dropZone.removeClass('dragover'); });
+    dropZone.on('drop', (e) => {
+      const files = e.originalEvent.dataTransfer.files;
+      if(files.length > 0) processFiles(files);
+    });
+    $('#fileInput').on('change', (e) => {
+      if(e.target.files.length > 0) processFiles(e.target.files);
+      $(this).val(''); 
+    });
+
+    // Smart Multi-Select Logic
+    $('#selAllOpp').on('click', () => { $('.opp-filter:visible').prop('checked', true); updateSelectedCounts(); });
+    // DANGER FIXED: Deselect all completely unchecks everything, even hidden items
+    $('#deselAllOpp').on('click', () => { $('.opp-filter').prop('checked', false); updateSelectedCounts(); });
+    
+    $('#selAllTerm').on('click', () => { $('.term-filter:visible').prop('checked', true); updateSelectedCounts(); });
+    $('#deselAllTerm').on('click', () => { $('.term-filter').prop('checked', false); updateSelectedCounts(); });
+
+    $(document).on('change', '.opp-filter, .term-filter', updateSelectedCounts);
+
+    $('#oppSearch').on('keyup', function() {
+      let val = $(this).val().toLowerCase();
+      $('#opponentList label').each(function() {
+        let text = $(this).text().toLowerCase();
+        $(this).toggle(text.indexOf(val) > -1);
+      });
+    });
+
+    $('#moveSearch').on('keyup', function() {
+      let val = $(this).val().toLowerCase();
+      $('.candidate-card').each(function() {
+        let san = $(this).data('san').toLowerCase();
+        $(this).toggle(san.indexOf(val) > -1);
+      });
+    });
+
+    $('#applyFiltersBtn').on('click', () => {
+      $('#drawer').removeClass('open');
+      $('#drawerOverlay').fadeOut(200);
+      rebuildTree();
+    });
+
+    $('#resetBoardBtn').on('click', () => {
+      chessReader.reset();
+      mainBoardObj.position('start');
+      updateUiAfterMove();
+      currentTreeNode = globalTree;
+      renderCandidates(currentTreeNode);
+    });
+
+    $('#undoBtn').on('click', () => {
+      let history = chessReader.history();
+      if (history.length === 0) return;
+      chessReader.undo();
+      mainBoardObj.position(chessReader.fen());
+      
+      updateUiAfterMove();
+      
+      currentTreeNode = globalTree;
+      let newHist = chessReader.history();
+      for(let m of newHist) {
+        if(currentTreeNode.children[m]) currentTreeNode = currentTreeNode.children[m];
+      }
+      renderCandidates(currentTreeNode);
+    });
+
+    $('#copyPgnBtn').on('click', () => {
+      const textarea = document.getElementById('pgnText');
+      textarea.select();
+      textarea.setSelectionRange(0, 99999); 
+      try {
+        navigator.clipboard.writeText(textarea.value).then(() => {
+          let btn = $('#copyPgnBtn');
+          btn.text('Copied!');
+          setTimeout(() => btn.text('Copy PGN'), 2000);
+        });
+      } catch (err) {
+        document.execCommand('copy');
+      }
+    });
+  }
+
+  function updateSelectedCounts() {
+    let oppCount = $('.opp-filter:checked').length;
+    let termCount = $('.term-filter:checked').length;
+    $('#oppCountDisplay').text(`(${oppCount} selected)`);
+    $('#termCountDisplay').text(`(${termCount} selected)`);
+  }
+
+  function normalizeTermination(termString) {
+    if(!termString) return 'Unknown';
+    let t = termString.toLowerCase();
+    if (t.includes('resignation') || t.includes('resigned')) return 'Resignation';
+    if (t.includes('checkmate') || t.includes('mate')) return 'Checkmate';
+    if (t.includes('time') || t.includes('flag')) return 'Timeout';
+    if (t.includes('abandoned')) return 'Abandoned';
+    if (t.includes('rule') || t.includes('agreement') || t.includes('repetition') || t.includes('stalemate') || t.includes('insufficient') || t.includes('draw')) return 'Draw';
+    return 'Normal';
+  }
+
+  function updateUiAfterMove() {
+    let hist = chessReader.history();
+    $('#currentPath').text('Position: ' + (hist.length > 0 ? hist.join(' ') : 'Start'));
+    $('#pgnText').val(chessReader.pgn());
+
+    // FEN export directly to Analysis Board - completely reliable
+    let fen = chessReader.fen().replace(/\s/g, '_');
+    $('#lichessLink').attr('href', 'https://lichess.org/analysis/standard/' + fen);
+  }
+
+  function processFiles(files) {
+    $('#loader').css('display', 'flex');
+    $('#loaderText').text('Reading files...');
+    
+    let rawTexts = [];
+    let pending = files.length;
+    
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        rawTexts.push(e.target.result);
+        pending--;
+        if (pending === 0) setTimeout(() => parsePGNs(rawTexts), 100);
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  function parsePGNs(textArray) {
+    $('#loaderText').text('Parsing games & identifying main player...');
+    
+    let tempGames = [];
+    let nameCounts = {};
+
+    textArray.forEach(pgnString => {
+      const cleanStr = pgnString.replace(/\r\n/g, '\n');
+      const pgnBlocks = cleanStr.split(/\[Event\s+/gi).filter(b => b.trim().length > 0);
+      
+      let tempChess = new Chess();
+      pgnBlocks.forEach(block => {
+        if (tempChess.load_pgn("[Event " + block, { sloppy: true })) {
+          let h = tempChess.header();
+          tempGames.push({
+            White: h.White || 'Unknown',
+            Black: h.Black || 'Unknown',
+            Result: h.Result || '*',
+            Termination: normalizeTermination(h.Termination || ''),
+            history: tempChess.history()
+          });
+          if(h.White) nameCounts[h.White] = (nameCounts[h.White] || 0) + 1;
+          if(h.Black) nameCounts[h.Black] = (nameCounts[h.Black] || 0) + 1;
+        }
+      });
+    });
+
+    let maxCount = 0;
+    for (let name in nameCounts) {
+      if (nameCounts[name] > maxCount) {
+        maxCount = nameCounts[name];
+        mainPlayer = name;
+      }
+    }
+    $('#mainPlayerName').text(mainPlayer || "None");
+
+    tempGames.forEach(g => {
+      let isWhite = (g.White === mainPlayer);
+      let isBlack = (g.Black === mainPlayer);
+      
+      // Strict Check: Ignore games where main player isn't involved (e.g. tournament PGNs)
+      if (!isWhite && !isBlack) return;
+
+      let opp = isWhite ? g.Black : g.White;
+      allOpponents.add(opp);
+      allTerminations.add(g.Termination);
+
+      let w=0, l=0, d=0;
+      if (g.Result === '1/2-1/2') d = 1;
+      else if (isWhite && g.Result === '1-0') w = 1;
+      else if (isBlack && g.Result === '0-1') w = 1;
+      else if (g.Result === '*') { /* unfinished */ }
+      else l = 1; 
+
+      rawGamesData.push({
+        opponent: opp,
+        playerColor: isWhite ? 'white' : (isBlack ? 'black' : 'unknown'),
+        w: w, l: l, d: d,
+        term: g.Termination,
+        history: g.history
+      });
+    });
+
+    populateFilterUI();
+    rebuildTree();
+  }
+
+  function populateFilterUI() {
+    const oppList = $('#opponentList').empty();
+    if(allOpponents.size === 0) {
+      oppList.html('<div style="padding:4px; color:#666;">No opponents</div>');
+    } else {
+      Array.from(allOpponents).sort().forEach(opp => {
+        // DANGER FIXED: Appending DOM directly prevents String corruption if names have spaces or quotes
+        let label = $('<label></label>');
+        let cb = $('<input type="checkbox" class="opp-filter" checked>');
+        cb.val(opp);
+        label.append(cb).append(document.createTextNode(' ' + opp));
+        oppList.append(label);
+      });
+    }
+
+    const termList = $('#terminationList').empty();
+    if(allTerminations.size === 0) {
+      termList.html('<div style="padding:4px; color:#666;">No data</div>');
+    } else {
+      Array.from(allTerminations).sort().forEach(t => {
+        let label = $('<label></label>');
+        let cb = $('<input type="checkbox" class="term-filter" checked>');
+        cb.val(t);
+        label.append(cb).append(document.createTextNode(' ' + t));
+        termList.append(label);
+      });
+    }
+    updateSelectedCounts();
+  }
+
+  function createEmptyNode() {
+    return { w: 0, l: 0, d: 0, children: {}, terminations: {} };
+  }
+
+  function rebuildTree() {
+    $('#loader').css('display', 'flex');
+    $('#loaderText').text('Applying Filters & Building Tree...');
+    
+    setTimeout(() => {
+      globalTree = createEmptyNode();
+      
+      const cFilter = $('#colorFilter').val();
+      const rFilter = $('#resultFilter').val();
+      
+      const selOpp = new Set($('.opp-filter:checked').map(function(){ return $(this).val(); }).get());
+      const selTerm = new Set($('.term-filter:checked').map(function(){ return $(this).val(); }).get());
+
+      let validCount = 0;
+
+      rawGamesData.forEach(game => {
+        if (cFilter !== 'all' && game.playerColor !== cFilter) return;
+        if (rFilter === 'win' && game.w === 0) return;
+        if (rFilter === 'loss' && game.l === 0) return;
+        if (rFilter === 'draw' && game.d === 0) return;
+        if (!selOpp.has(game.opponent)) return; // Strictly evaluates true/false
+        if (!selTerm.has(game.term)) return;
+
+        validCount++;
+        let curr = globalTree;
+        curr.w += game.w; curr.l += game.l; curr.d += game.d;
+
+        game.history.forEach(m => {
+          if (!curr.children[m]) curr.children[m] = createEmptyNode();
+          curr = curr.children[m];
+          curr.w += game.w; curr.l += game.l; curr.d += game.d;
+        });
+        curr.terminations[game.term] = (curr.terminations[game.term] || 0) + 1;
+      });
+
+      $('#gameCount').text(validCount);
+
+      chessReader.reset();
+      mainBoardObj.position('start');
+      updateUiAfterMove();
+      currentTreeNode = globalTree;
+      
+      renderCandidates(currentTreeNode);
+      $('#loader').fadeOut(200);
+    }, 50);
+  }
+
+  function renderCandidates(node) {
+    const container = $('#candidateGrid');
+    container.empty();
+    $('#moveSearch').val(''); 
+
+    let candidates = Object.keys(node.children).map(san => ({
+      san: san,
+      node: node.children[san]
+    }));
+
+    if (candidates.length === 0) {
+      container.append('<div style="grid-column: 1 / -1; color: #888; text-align: center;">No further moves in database for this line.</div>');
+      return;
+    }
+
+    candidates.sort((a,b) => {
+      let tA = a.node.w + a.node.l + a.node.d;
+      let tB = b.node.w + b.node.l + b.node.d;
+      return tB - tA;
+    });
+
+    candidates.forEach((cand, idx) => {
+      let child = cand.node;
+      let total = child.w + child.l + child.d;
+      let wPct = total ? ((child.w / total) * 100).toFixed(1) : 0;
+      let dPct = total ? ((child.d / total) * 100).toFixed(1) : 0;
+      let lPct = total ? ((child.l / total) * 100).toFixed(1) : 0;
+
+      let termCounts = [];
+      for(let t in child.terminations) termCounts.push(`${t}:${child.terminations[t]}`);
+      let termHtml = termCounts.length > 0 ? `<div class="term-data">${termCounts.join(', ')}</div>` : '';
+
+      let boardId = `miniboard_${Date.now()}_${idx}`;
+
+      let card = $(`
+        <div class="candidate-card" data-san="${cand.san}">
+          <div class="candidate-san">${cand.san}</div>
+          <div id="${boardId}" class="mini-board-container"></div>
+          <div class="stats-info">${total} Games</div>
+          <div class="stats-bar-container">
+            <div class="bar-win" style="width: ${wPct}%"></div>
+            <div class="bar-draw" style="width: ${dPct}%"></div>
+            <div class="bar-loss" style="width: ${lPct}%"></div>
+          </div>
+          <div class="stats-percentages">
+            <span style="color:var(--win-color)">W:${wPct}%</span>
+            <span style="color:var(--draw-color)">D:${dPct}%</span>
+            <span style="color:var(--loss-color)">L:${lPct}%</span>
+          </div>
+          ${termHtml}
+        </div>
+      `);
+      
+      container.append(card);
+
+      chessReader.move(cand.san);
+      let candFen = chessReader.fen();
+      chessReader.undo();
+
+      // DANGER FIXED: Added staggered rendering (10ms * idx). Prevents browser freeze if there are 30+ boards!
+      setTimeout(() => {
+        Chessboard(boardId, {
+          position: candFen,
+          pieceTheme: pieceThemeUrl,
+          showNotation: false,
+          draggable: false
+        });
+      }, 10 + (idx * 15));
+    });
+
+    $('.candidate-card').on('click', function() {
+      let san = $(this).data('san');
+      playMove(san);
+    });
+  }
+
+  function playMove(san) {
+    chessReader.move(san);
+    mainBoardObj.position(chessReader.fen());
+    updateUiAfterMove();
+    currentTreeNode = currentTreeNode.children[san];
+    renderCandidates(currentTreeNode);
+  }
+</script>
+</body>
+</html>
