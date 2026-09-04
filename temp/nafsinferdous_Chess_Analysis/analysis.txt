@@ -1,0 +1,1453 @@
+CHESS.COM COMPLETE ANALYTICS - NAFSINFERDOUS
+Generated: 2026-09-03 23:51:40
+
+====================================================================================================
+OVERALL COLOR DISTRIBUTION
+====================================================================================================
+All Games: 826
+White Games: 415 (50.24%)
+Black Games: 411 (49.76%)
+
+====================================================================================================
+ALL GAMES - OVERALL
+====================================================================================================
+Total Games: 826
+Wins: 477 (57.75%) | Losses: 315 (38.14%) | Draws: 34 (4.12%)
+Score%: 59.81%
+Average User Rating: 1313.4
+Average Opponent Rating: 1198.3
+Average Rating Difference: 115.1
+Average Game Length: 30.3 moves
+Average Captures/Game: 15.12
+Average Checks/Game: 4.92
+Average Castles/Game: 1.52
+Average Promotions/Game: 0.160
+
+====================================================================================================
+WHITE - QUICK
+====================================================================================================
+Total Games: 415
+Wins: 231 (55.66%) | Losses: 166 (40.00%) | Draws: 18 (4.34%)
+Score%: 57.83%
+Average User Rating: 1306.1
+Average Opponent Rating: 1195.2
+Average Rating Difference: 110.9
+Average Game Length: 29.9 moves
+Average Captures/Game: 15.07
+Average Checks/Game: 5.04
+Average Castles/Game: 1.49
+Average Promotions/Game: 0.152
+
+====================================================================================================
+BLACK - QUICK
+====================================================================================================
+Total Games: 411
+Wins: 246 (59.85%) | Losses: 149 (36.25%) | Draws: 16 (3.89%)
+Score%: 61.80%
+Average User Rating: 1320.9
+Average Opponent Rating: 1201.4
+Average Rating Difference: 119.4
+Average Game Length: 30.8 moves
+Average Captures/Game: 15.17
+Average Checks/Game: 4.80
+Average Castles/Game: 1.55
+Average Promotions/Game: 0.168
+
+====================================================================================================
+ALL GAMES - ALL OPENINGS
+====================================================================================================
+B20    Sicilian Defense Bowdler Attack 2...e6                         G=20   W=11   L=8    D=1    W%=  55.0 L%=  40.0 D%=   5.0 Score=  57.5
+C45    Scotch Game 3...exd4 4.Nxd4 Nxd4 5.Qxd4                        G=17   W=12   L=5    D=0    W%=  70.6 L%=  29.4 D%=   0.0 Score=  70.6
+C40    Kings Pawn Opening Kings Knight Variation                      G=17   W=11   L=5    D=1    W%=  64.7 L%=  29.4 D%=   5.9 Score=  67.6
+B50    Sicilian Defense 2.Nf3 d6 3.Bc4 e6                             G=14   W=7    L=7    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C42    Petrovs Defense Classical Variation                            G=13   W=8    L=5    D=0    W%=  61.5 L%=  38.5 D%=   0.0 Score=  61.5
+B20    Sicilian Defense                                               G=13   W=6    L=6    D=1    W%=  46.2 L%=  46.2 D%=   7.7 Score=  50.0
+D00    Queens Pawn Opening Chigorin Irish Gambit                      G=11   W=7    L=4    D=0    W%=  63.6 L%=  36.4 D%=   0.0 Score=  63.6
+B23    Closed Sicilian Defense 2...d6                                 G=10   W=7    L=3    D=0    W%=  70.0 L%=  30.0 D%=   0.0 Score=  70.0
+C60    Ruy Lopez Opening                                              G=9    W=6    L=2    D=1    W%=  66.7 L%=  22.2 D%=  11.1 Score=  72.2
+C00    French Defense Knight Variation                                G=8    W=4    L=2    D=2    W%=  50.0 L%=  25.0 D%=  25.0 Score=  62.5
+B01    Scandinavian Defense                                           G=8    W=4    L=3    D=1    W%=  50.0 L%=  37.5 D%=  12.5 Score=  56.2
+C41    Philidor Defense Exchange Variation 4.Nxd4                     G=8    W=3    L=5    D=0    W%=  37.5 L%=  62.5 D%=   0.0 Score=  37.5
+B20    Sicilian Defense Bowdler Attack                                G=7    W=7    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B22    Alapin Sicilian Defense...3.d4 cxd4 4.cxd4 Nf6 5.Nc3           G=7    W=5    L=2    D=0    W%=  71.4 L%=  28.6 D%=   0.0 Score=  71.4
+B21    Sicilian Defense McDonnell Attack 2...d6 3.Nf3 Nc6             G=7    W=5    L=2    D=0    W%=  71.4 L%=  28.6 D%=   0.0 Score=  71.4
+D00    Queens Pawn Opening 1...d5 2.e3 c5                             G=7    W=3    L=3    D=1    W%=  42.9 L%=  42.9 D%=  14.3 Score=  50.0
+C41    Philidor Defense 3.d4                                          G=7    W=3    L=4    D=0    W%=  42.9 L%=  57.1 D%=   0.0 Score=  42.9
+B21    Sicilian Defense Smith Morra Gambit 2...cxd4 3.Qxd4 Nc6        G=6    W=6    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B20    Sicilian Defense 2.d3 d6                                       G=6    W=5    L=1    D=0    W%=  83.3 L%=  16.7 D%=   0.0 Score=  83.3
+B13    Caro Kann Defense Exchange Variation 3...cxd5 4.Nf3 Nc6        G=6    W=4    L=2    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+B33    Sicilian Defense Open 3...cxd4 4.Nxd4                          G=6    W=2    L=4    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+C62    Ruy Lopez Opening Old Steinitz Defense 4.d4                    G=5    W=5    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B30    Sicilian Defense Open                                          G=5    W=3    L=1    D=1    W%=  60.0 L%=  20.0 D%=  20.0 Score=  70.0
+C01    French Defense Exchange Variation 3...exd5 4.Nf3 Nf6           G=5    W=3    L=2    D=0    W%=  60.0 L%=  40.0 D%=   0.0 Score=  60.0
+B01    Scandinavian Defense Mieses Kotrc Variation 3.Nc3              G=5    W=3    L=2    D=0    W%=  60.0 L%=  40.0 D%=   0.0 Score=  60.0
+B50    Sicilian Defense 2.Nf3 d6                                      G=5    W=3    L=2    D=0    W%=  60.0 L%=  40.0 D%=   0.0 Score=  60.0
+D00    Queens Pawn Opening Accelerated London Steinitz Countergambit  G=5    W=2    L=3    D=0    W%=  40.0 L%=  60.0 D%=   0.0 Score=  40.0
+C62    Ruy Lopez Opening Old Steinitz Defense 4.O O                   G=5    W=2    L=3    D=0    W%=  40.0 L%=  60.0 D%=   0.0 Score=  40.0
+C45    Scotch Game 3...d6                                             G=5    W=1    L=3    D=1    W%=  20.0 L%=  60.0 D%=  20.0 Score=  30.0
+C70    Ruy Lopez Opening Morphy Defense Caro Variation 5.Bb3          G=4    W=4    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense 2.exd5                                    G=4    W=4    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C45    Scotch Game Classical Variation 5.Nxc6 bxc6                    G=4    W=4    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B22    Alapin Sicilian Defense 2...d6                                 G=4    W=3    L=1    D=0    W%=  75.0 L%=  25.0 D%=   0.0 Score=  75.0
+B56    Sicilian Defense Open Classical Variation 6.Bb5 Bd7 7.O O      G=4    W=3    L=1    D=0    W%=  75.0 L%=  25.0 D%=   0.0 Score=  75.0
+B76    Sicilian Defense Open Dragon Rauzer Variation                  G=4    W=3    L=1    D=0    W%=  75.0 L%=  25.0 D%=   0.0 Score=  75.0
+B50    Sicilian Defense...3.Bc4 Nf6 4.d3 e6                           G=4    W=3    L=1    D=0    W%=  75.0 L%=  25.0 D%=   0.0 Score=  75.0
+D02    Queens Pawn Opening Krause Variation                           G=4    W=2    L=1    D=1    W%=  50.0 L%=  25.0 D%=  25.0 Score=  62.5
+C20    Kings Pawn Opening 1...e5                                      G=4    W=2    L=2    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C45    Scotch Game                                                    G=4    W=2    L=2    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B40    Sicilian Defense French Variation 3.d4                         G=4    W=2    L=2    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B54    Sicilian Defense Open Variation 4...Nf6                        G=4    W=2    L=2    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B13    Caro Kann Defense Exchange Variation 3...cxd5 4.Nf3            G=4    W=1    L=3    D=0    W%=  25.0 L%=  75.0 D%=   0.0 Score=  25.0
+C45    Scotch Game...4.Nxd4 Nxd4 5.Qxd4 d6                            G=4    W=1    L=3    D=0    W%=  25.0 L%=  75.0 D%=   0.0 Score=  25.0
+A00    Van t Kruijs Opening 1...c5                                    G=4    W=1    L=3    D=0    W%=  25.0 L%=  75.0 D%=   0.0 Score=  25.0
+B10    Caro Kann Defense 2.Nf3                                        G=3    W=3    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense 2.Nf3 d6 3.Nc3                                G=3    W=3    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B52    Sicilian Defense Canal Main Line 4.Bxd7 Qxd7                   G=3    W=3    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense Delayed Alapin Variation 3...Nf6              G=3    W=3    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B33    Sicilian Defense Open 3...cxd4 4.Nxd4 d6 5.Nc3                 G=3    W=3    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B54    Sicilian Defense Open Variation 4...Nf6 5.Bd3                  G=3    W=3    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C75    Ruy Lopez Opening Morphy Defense Modern Steinitz Defense 5.c3  G=3    W=2    L=0    D=1    W%=  66.7 L%=   0.0 D%=  33.3 Score=  83.3
+B02    Alekhines Defense Normal Variation 3.Bc4 Nb6 4.Bb3             G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+C50    Italian Game                                                   G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+A00    Kings Fianchetto Opening 1...e5 2.Bg2 d5                       G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+A01    Nimzowitsch Larsen Attack Classical Variation 2.Bb2            G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+C41    Philidor Defense                                               G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+C65    Ruy Lopez Opening Berlin Defense 4.O O                         G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+C66    Ruy Lopez Opening Berlin Improved Steinitz Defense             G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+B70    Sicilian Defense Open Dragon Variation                         G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+B00    Nimzowitsch Defense 2.d4 e6 3.Nf3 d5 4.e5                      G=3    W=1    L=1    D=1    W%=  33.3 L%=  33.3 D%=  33.3 Score=  50.0
+B08    Pirc Defense Classical Variation 4...Bg7                       G=3    W=1    L=1    D=1    W%=  33.3 L%=  33.3 D%=  33.3 Score=  50.0
+B20    Sicilian Defense Bowdler Attack 2...e6 3.Nc3                   G=3    W=1    L=1    D=1    W%=  33.3 L%=  33.3 D%=  33.3 Score=  50.0
+B20    Sicilian Defense Staunton Cochrane Variation                   G=3    W=1    L=1    D=1    W%=  33.3 L%=  33.3 D%=  33.3 Score=  50.0
+B02    Alekhines Defense Scandinavian Variation 3.exd5 Nxd5 4.Nxd5 Qx G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+A30    English Opening Symmetrical Variation                          G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+C47    Four Knights Game Scotch Variation Accepted 5.Nxd4 Bb4         G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+C75    Ruy Lopez Opening Morphy Defense Modern Steinitz Defense 5.c3  G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+C62    Ruy Lopez Opening Old Steinitz Defense 4.d4 Bd7 5.O O          G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+C45    Scotch Game Classical Intermezzo Variation                     G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+B20    Sicilian Defense Mengarini Variation                           G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+B13    Caro Kann Defense Exchange Variation 3...cxd5 4.Nf3 Nf6        G=3    W=0    L=2    D=1    W%=   0.0 L%=  66.7 D%=  33.3 Score=  16.7
+C41    Philidor Defense Exchange Variation 4.Nxd4 Nf6 5.Nc3 Be7       G=3    W=0    L=3    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Variation 3.Nc3 Qe5 4.Be2    G=3    W=0    L=3    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B34    Sicilian Defense Open Accelerated Dragon Modern Variation 5... G=3    W=0    L=3    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B22    Alapin Sicilian Defense 2...d6 3.d4 cxd4 4.cxd4                G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C23    Bishops Opening                                                G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Mieses Opening 1...d5                                          G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Nimzowitsch Defense Kennedy Linksspringer Variation 3...Nce7   G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Nimzowitsch Defense Scandinavian Exchange Variation 4.Nf3 e5 5 G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Owens Defense...3.Nc3 e6 4.Nf3 Bb4                             G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C41    Philidor Defense Exchange Variation 4.Nxd4 Nf6 5.Nc3           G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D00    Queens Pawn Opening 1...d5 2.e3                                G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Zukertort Variation 2...e6 3.e3 c5         G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C64    Ruy Lopez Opening Berlin Beverwijk Zukertort Gambit            G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C67    Ruy Lopez Opening Berlin Rio Gambit Accepted 5.Re1             G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C77    Ruy Lopez Opening Morphy Defense Columbus Variation            G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C60    Ruy Lopez Opening Spanish Countergambit                        G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense 2.e5 c5                                   G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Mieses Kotrc Main Line 4.d4 c6            G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Mieses Kotrc Variation 3.Nc3 Qd8 4.Nf3    G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C45    Scotch Game 3...exd4 4.Nxd4                                    G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B27    Sicilian Defense 2.Nf3                                         G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense 2.Nf3 d6 3.Bc4 Nc6                            G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense 2.Nf3 d6 3.Bc4 Nf6 4.Nc3                      G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense Delayed Alapin Variation 3...Nf6 4.e5 dxe5 5. G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense McDonnell Attack 2...d6 3.Nf3                 G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B30    Sicilian Defense Old Sicilian Variation                        G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B56    Sicilian Defense Open Classical Variation 6.Bb5 Bd7            G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B33    Sicilian Defense Open Pelikan and Sveshnikov Retreat Variation G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B80    Sicilian Defense Open Scheveningen Sozin Attack 6...Be7 7.O O  G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Van t Kruijs Opening 1...d5                                    G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Van t Kruijs Opening 1...e5 2.Bc4                              G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C00    French Defense Knight Variation 2...d5 3.exd5                  G=2    W=1    L=0    D=1    W%=  50.0 L%=   0.0 D%=  50.0 Score=  75.0
+C62    Ruy Lopez Opening Old Steinitz Defense 4.c3                    G=2    W=1    L=0    D=1    W%=  50.0 L%=   0.0 D%=  50.0 Score=  75.0
+B56    Sicilian Defense Open Classical Variation 6.Nxc6 bxc6          G=2    W=1    L=0    D=1    W%=  50.0 L%=   0.0 D%=  50.0 Score=  75.0
+B22    Alapin Sicilian Defense 2...Nc6 3.Nf3 d6 4.d4                  G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+A20    English Opening Kings English Variation...3.Bg2 Be7 4.Nc3 O O  G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C01    French Defense Exchange Variation 3...exd5 4.Nf3               G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C33    Kings Gambit Accepted                                          G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B06    Modern Defense with 1 e4 2.d4 Bg7                              G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+A43    Old Benoni Defense 2.e3 cxd4                                   G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B00    Owens Defense 2.d4 Bb7 3.Nc3 e6 4.Nf3                          G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C41    Philidor Defense Exchange Variation...5.Nc3 Be7 6.Bd3 O O 7.O  G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C41    Philidor Defense Nimzowitsch Variation 4.dxe5 Nxe4             G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+D06    Queens Gambit Declined Austrian Variation                      G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+D31    Queens Gambit Declined Queens Knight Variation 3...dxc4 4.e4   G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+D00    Queens Pawn Opening 1...d5 2.c3                                G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+D00    Queens Pawn Opening Accelerated London Steinitz Countergambit  G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+D02    Queens Pawn Opening Krause Variation 3.dxc5 e6                 G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+D02    Queens Pawn Opening Zukertort Variation 2...e6                 G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+A06    Reti Opening 1...d5                                            G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C65    Ruy Lopez Opening Berlin Beverwijk Variation                   G=2    W=0    L=0    D=2    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+C64    Ruy Lopez Opening Classical Central Variation 4...Nf6 5.d4 exd G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C63    Ruy Lopez Opening Jaenisch Gambit                              G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+C62    Ruy Lopez Opening Old Steinitz Defense 4.O O Bd7               G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B76    Sicilian Defense Open Dragon Rauzer Variation 9...Nxd4 10.Bxd4 G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B32    Sicilian Defense Open Lowenthal Variation 5.Nf3 Nf6            G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+B50    Sicilian Defense...3.Bc4 Nf6 4.e5 dxe5 5.Nxe5 e6               G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+A03    Birds Opening Dutch Variation 2.Nf3 c5 3.e3                    G=2    W=0    L=1    D=1    W%=   0.0 L%=  50.0 D%=  50.0 Score=  25.0
+B02    Alekhines Defense                                              G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B23    Magnus Sicilian 3...cxd4 4.Qxd4 Nc6                            G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D00    Queens Pawn Opening Chigorin Variation 2...e6 3.Bf4            G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B50    Sicilian Defense 2.Nf3 d6 3.Nc3 Nf6                            G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B50    Sicilian Defense 2.Nf3 d6 3.d4 cxd4                            G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B53    Sicilian Defense Chekhover Variation 4...Nf6                   G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B50    Sicilian Defense Delayed Alapin Variation 3...Nf6 4.Bc4 e6     G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B34    Sicilian Defense Open Accelerated Dragon Modern Variation 5... G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B33    Sicilian Defense Open Pelikan and Sveshnikov Exchange Variatio G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B22    Alapin Sicilian Defense 2...d6 3.d4                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B22    Alapin Sicilian Defense...4.f4 d6 5.Nf3 g6                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B22    Alapin Sicilian Defense...5.Nc3 d6 6.Nf3 Nf6                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B02    Alekhines Defense Brooklyn Variation 3.d4 d6                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B02    Alekhines Defense Normal Variation 3.Bc4                       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A02    Birds Opening 1...c5 2.Nf3                                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C20    Bishops Opening Boi Variation                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B10    Caro Kann Defense 2.Nc3 d5                                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B12    Caro Kann Defense Advance Variation                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B13    Caro Kann Defense Exchange Variation 3...cxd5                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B13    Caro Kann Defense Exchange Variation...4.Bd3 Nf6 5.c3 Nc6      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B15    Caro Kann Defense Main Line 4...Nf6                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B13    Caro Kann Defense Panov Attack                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B13    Caro Kann Defense Panov Attack...5.Nc3 dxc4 6.Bxc4 e6          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+E04    Catalan Opening Closed 4...dxc4 5.Nf3 Nc6 6.O O                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C21    Center Game                                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C22    Center Game Accepted Normal Variation                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B23    Closed Sicilian Defense 2...d6 3.g3 Nf6                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B23    Closed Sicilian Defense 2...d6 3.g3 Nf6 4.Bg2                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B26    Closed Sicilian Defense Fianchetto Variation...6.Be3 Nf6 7.h3  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B23    Closed Sicilian Defense Traditional Line 3.Nf3 d6 4.Bb5        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B23    Closed Sicilian Defense Traditional Line 3.Nf3 d6 4.Bc4        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B23    Closed Sicilian Defense Traditional Line 3.Nf3 d6 4.d4         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C21    Danish Gambit Declined Sorensen Defense 4.exd5 Qxd5 5.cxd4     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A28    English Opening Four Knights Quiet Line 4...g6                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A20    English Opening Kings English Variation                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A30    English Opening Symmetrical Variation 2.g3                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A40    Englund Gambit 2.dxe5                                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A40    Englund Gambit 2.dxe5 Nc6                                      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C47    Four Knights Game Italian Variation                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C47    Four Knights Game Scotch Variation Accepted 5.Nxd4 d6 6.Bb5    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C01    French Defense Exchange Variation 3...exd5 4.Nf3 Nc6           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C00    French Defense Normal Variation                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C00    French Defense Normal Variation 2...d5                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C10    French Defense Normal Variation...4.Nf3 Nf6 5.exd5 exd5 6.Bb5  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C10    French Defense Rubinstein Variation 4.Nxe4                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C00    French Defense Steiner Variation 2...c5 3.Nf3                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C07    French Defense Tarrasch Open Suchting Line 4...cxd4 5.cxd4 dxe G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C50    Giuoco Piano Game                                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Grob Opening 1...d5 2.e4 dxe4                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A46    Indian Game Spielmann Indian Variation...4.Nxd4 e5 5.Nb3 d5 6. G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Kings Fianchetto Opening Sicilian Invitation 2.Bg2             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C30    Kings Gambit 2...d6                                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C30    Kings Gambit Declined Queens Knight Defense 3.Nf3              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A07    Kings Indian Attack Yugoslav Variation 3.Bg2 Nc6               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+E90    Kings Indian Defense Normal Variation 4.e4 d6 5.Nf3            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C40    Kings Pawn Opening Kings Knight Elephant Paulsen Countergambit G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C40    Kings Pawn Opening Latvian Gambit Accepted                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Kings Pawn Opening St George Defense                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Kings Pawn Opening St George Defense 2.d4 b5 3.Nf3 Bb7         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C20    Kings Pawn Opening Tortoise Opening                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B23    Magnus Sicilian 3...cxd4                                       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Nimzowitsch Defense Declined                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Nimzowitsch Defense Declined 2...g6                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A01    Nimzowitsch Larsen Attack Modern Variation 2.Bb2 Nc6           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A01    Nimzowitsch Larsen Attack Modern Variation 2.Bb2 Nc6 3.Nf3     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A01    Nimzowitsch Larsen Attack Modern Variation 2.Bb2 Nc6 3.e3 Nf6  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A43    Old Benoni Defense 2.d5 d6 3.e4                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A43    Old Benoni Defense 2.e3                                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Owens Defense 2.d4 Bb7                                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B00    Owens Defense...4.Nf3 Bb4 5.Bd3 Nf6                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C42    Petrovs Defense Classical Damiano Variation Kholmov Gambit 5.Q G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C42    Petrovs Defense Classical French Attack 5...Nf6 6.d4           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C43    Petrovs Defense Steinitz Attack 3...exd4                       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C43    Petrovs Defense Steinitz Attack Symmetrical Center Variation 4 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C43    Petrovs Defense Steinitz Attack Symmetrical Center Variation M G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C41    Philidor Defense Exchange Variation...5.Nc3 Be7 6.Bd3 O O      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B08    Pirc Defense Classical Variation 4...Bg7 5.Bc4 O O 6.O O       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B08    Pirc Defense Classical Variation 4...Bg7 5.Be3 O O 6.Qd2       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B07    Pirc Defense Main Line Byrne Variation 4...Bg7                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B07    Pirc Defense Maroczy Defense                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Polish Opening Kucharkowski Meybohm Gambit 3.Bxe5 Nf6          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D21    Queens Gambit Accepted Gunsberg Defense with 3 c5 4.e3 cxd4 5. G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D20    Queens Gambit Accepted Old Variation 3...Nf6 4.Bxc4 e6 5.Nc3   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D07    Queens Gambit Declined Chigorin Defense 3.e3                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A40    Queens Pawn Opening                                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D00    Queens Pawn Opening Accelerated London System 2...Bf5          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D00    Queens Pawn Opening Accelerated London System 2...e6 3.e3 c5   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D00    Queens Pawn Opening Amazon Attack                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D00    Queens Pawn Opening Chigorin Variation 2...e6                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Krause Variation 3.c3 e6 4.Bf4             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Krause Variation 3.e3                      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Krause Variation...4.dxc5 e6 5.c4 Bxc5     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D00    Queens Pawn Opening Levitsky Attack 2...c5                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D00    Queens Pawn Opening Levitsky Attack 2...f6 3.Bh4               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Pseudo Catalan Variation 3...c5 4.Bg2 cxd4 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D03    Queens Pawn Opening Torre Attack                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Zukertort Chigorin Variation 3.Bf4         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Zukertort Variation 2...e6 3.e3 c5 4.b3    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D02    Queens Pawn Opening Zukertort Variation 2...e6 3.g3 c5 4.Bg2   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A04    Reti Opening Sicilian Invitation...3.Nxd4 d5 4.g3 e5           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C64    Ruy Lopez Opening Berlin Beverwijk Zukertort Gambit 5...O O    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C66    Ruy Lopez Opening Berlin Improved Steinitz Defense 5.d4        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C61    Ruy Lopez Opening Birds Defense 4.Nxd4 exd4 5.O O              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C61    Ruy Lopez Opening Birds Defense 4.Nxd4 exd4 5.O O c6 6.Bc4     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C64    Ruy Lopez Opening Classical Central Variation                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C64    Ruy Lopez Opening Classical Defense                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C60    Ruy Lopez Opening Cozio Defense 4.O O a6 5.Ba4                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C60    Ruy Lopez Opening Cozio Defense 4.O O g6                       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C60    Ruy Lopez Opening Cozio Defense...5.c3 Bg7 6.d4 exd4 7.cxd4    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C60    Ruy Lopez Opening Cozio Defense...7.d4 exd4 8.cxd4 O O         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C63    Ruy Lopez Opening Jaenisch Exchange Variation                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C63    Ruy Lopez Opening Jaenisch Exchange Variation 4...dxc6         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C87    Ruy Lopez Opening Morphy Defense Closed Averbakh Romanovsky Va G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C87    Ruy Lopez Opening Morphy Defense Closed Averbakh Variation 7.c G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C78    Ruy Lopez Opening Morphy Defense Columbus Variation 4...Nf6 5. G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C78    Ruy Lopez Opening Morphy Defense Columbus Variation...5.O O b5 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C78    Ruy Lopez Opening Morphy Defense Columbus Variation...5.O O b5 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C78    Ruy Lopez Opening Morphy Defense Columbus Variation...5.O O b5 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C78    Ruy Lopez Opening Morphy Defense Columbus Variation...6.Bb3 Bc G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C79    Ruy Lopez Opening Morphy Defense Deferred Steinitz Defense 6.R G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C72    Ruy Lopez Opening Morphy Defense Modern Steinitz Defense 5.O O G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Closed 2...d4                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Mieses Kotrc Main Line 4.Nf3              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Mieses Kotrc Main Line 4.d4 Nf6 5.Bd2     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Mieses Kotrc Main Line...6.Ne5 c6 7.Bc4 e G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Mieses Kotrc Variation 3.Nc3 Qd8 4.d4     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B01    Scandinavian Defense Modern Icelandic Palme Gambit 4.dxe6 Bxe6 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C45    Scotch Game 3...exd4                                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C45    Scotch Game 3...exd4 4.Nxd4 Qf6 5.Nb5                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense 2.Nf3 d6 3.d4                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B20    Sicilian Defense 2.d3 Nc6                                      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense Anti Qxd4 Move Order 4.Nc3                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense Anti Qxd4 Move Order...6.Bb5 Bd7 7.Bxc6 Bxc6  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B52    Sicilian Defense Canal Main Line 4.Bxd7 Qxd7 5.O O Nf6         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B53    Sicilian Defense Chekhover Variation 4...Nc6                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B53    Sicilian Defense Chekhover Variation 4...Nc6 5.Bb5 Qa5 6.Nc3   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense Delayed Alapin Variation                      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense Delayed Alapin Variation...4.Be2 g6 5.O O Bg7 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B45    Sicilian Defense Four Knights Variation                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B43    Sicilian Defense Kan Knight Variation 5...d6 6.Be3             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B40    Sicilian Defense Marshall Counterattack 4.exd5 exd5 5.Bb5      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense McDonnell Attack 2...Nc6 3.Nf3 d6 4.Bb5       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense McDonnell Attack 2...d6                       G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B30    Sicilian Defense Old Sicilian Variation 3.Bc4 e6               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B34    Sicilian Defense Open Accelerated Dragon Exchange Variation 5. G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B60    Sicilian Defense Open Classical Richter Rauzer Dragon Variatio G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B76    Sicilian Defense Open Dragon Rauzer Variation 9...Bd7          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B70    Sicilian Defense Open Dragon Variation 6.Bg5 Bg7               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B75    Sicilian Defense Open Dragon Yugoslav Attack                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B76    Sicilian Defense Open Dragon Yugoslav Attack 7...O O 8.Qd2     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B32    Sicilian Defense Open Lowenthal Variation 5.Nxc6 bxc6          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B90    Sicilian Defense Open Najdorf Anti English Variation           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B86    Sicilian Defense Open Scheveningen Sozin Attack                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B89    Sicilian Defense Open Scheveningen Sozin Main Line             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B54    Sicilian Defense Open Variation 4...Nf6 5.Bd3 Nc6              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B56    Sicilian Defense Open Variation 4...Nf6 5.Nc3 e5               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense Smith Morra Gambit                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense Smith Morra Gambit Accepted                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense Smith Morra Gambit Accepted 4.Nxc3 Nc6 5.Nf3  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense Smith Morra Gambit Accepted 4.Nxc3 Nc6 5.Nf3  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B21    Sicilian Defense Smith Morra Gambit...3.Qxd4 Nc6 4.Qd1 Nf6     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense...3.Bc4 Nf6 4.d3 Nc6                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense...3.Bc4 e6 4.O O Nf6 5.Re1                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+B50    Sicilian Defense...6.O O O O 7.Re1 Nc6                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D10    Slav Defense                                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D10    Slav Defense Exchange Variation 3...cxd5 4.Nc3                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D10    Slav Defense Exchange Variation 3...cxd5 4.Nf3 Nc6             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+D13    Slav Defense Modern Exchange Variation 4...cxd5 5.Nc3          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C46    Three Knights Opening 3...Bc5                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Undefined                                                      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+A00    Van t Kruijs Opening                                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C27    Vienna Game Frankenstein Dracula Variation                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C25    Vienna Game Max Lange Vienna Gambit 3...exf4                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+C23    Bishops Opening 2...Nc6                                        G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+A07    Kings Indian Attack 2...Nc6 3.Bg2 e5 4.d3                      G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B06    Modern Defense with 1 e4 2.d4 Bg7 3.Nf3 c6                     G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B00    Nimzowitsch Defense Declined 2...d5 3.exd5 Qxd5 4.Nc3          G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B00    Nimzowitsch Defense Kennedy Variation 3.dxe5 Nxe5              G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B00    Nimzowitsch Defense Scandinavian Exchange Variation 4.Nf3      G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+C44    Ponziani Opening Jaenisch Counterattack 4.d4 exd4 5.e5         G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B50    Sicilian Defense 2.Nf3 d6 3.Be2 Nf6                            G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B52    Sicilian Defense Canal Main Line                               G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B50    Sicilian Defense Delayed Alapin Variation...4.Be2 Nc6 5.d3 g6  G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B70    Sicilian Defense Open Dragon Variation 6.Bc4                   G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+B22    Alapin Sicilian Defense...5.cxd4 g6 6.Nc3 Bg7                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B03    Alekhines Defense Normal Variation 3.d4                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B02    Alekhines Defense Scandinavian Variation 3.exd5 Nxd5           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C23    Bishops Opening 2...Nc6 3.d3 Nf6                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B12    Caro Kann Defense Advance Botvinnik Carls Defense 4.c3         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B12    Caro Kann Defense Advance Botvinnik Carls Defense 4.dxc5 e6 5. G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B13    Caro Kann Defense Exchange Variation...4.Bd3 Nc6 5.Nf3 Bg4     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B15    Caro Kann Defense Main Line                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C21    Center Game Accepted 3.Qxd4                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B26    Closed Sicilian Defense Fianchetto Variation...5.d3 d6 6.Be3 N G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B23    Closed Sicilian Defense Grand Prix Variation 3...Nf6 4.Nf3     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B23    Closed Sicilian Defense Traditional Line 3.Bb5 d6 4.Bxc6 bxc6  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B23    Closed Sicilian Defense Traditional Line 3.Nf3 d6 4.Bb5 Bd7 5. G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A10    English Opening Anglo Scandinavian Defense 2.cxd5 Qxd5 3.Nc3   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A35    English Opening Symmetrical Four Knights Variation 4.e3 g6     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A34    English Opening Symmetrical Three Knights System...7.Be2 O O 8 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A30    English Opening Symmetrical Variation...4.Bg2 Bg7 5.O O d6     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C47    Four Knights Game                                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C47    Four Knights Game Scotch Variation Accepted 5.Nxd4 Bc5 6.Nxc6  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C02    French Defense Advance Variation                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C01    French Defense Exchange Variation 3...exd5                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C01    French Defense Exchange Variation 3...exd5 4.Nf3 Bg4           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C00    French Defense Knight Variation 2...d5 3.exd5 exd5             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C10    French Defense Normal Variation 2...d5 3.Nc3                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C50    Giuoco Piano Game Giuoco Pianissimo Variation                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A00    Grob Opening                                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A46    Indian Game Knights Variation...4.Bg2 cxd4 5.Nxd4 d5           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A46    Indian Game Knights Variation...4.Bg2 cxd4 5.O O d5            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C55    Italian Game Two Knights Modern Bishops Opening...5.c3 O O 6.N G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A00    Kings Fianchetto Opening 1...e5 2.Bg2 Nf6                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C30    Kings Gambit                                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A07    Kings Indian Attack Yugoslav Variation...5.d3 O O 6.Nbd2 c5    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B00    Kings Pawn Opening                                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C20    Kings Pawn Opening Leonardis Variation 2...Nf6 3.Nf3           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D02    London System 3...c5 4.e3 cxd4 5.exd4                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B06    Modern Defense Standard Two Knights Variation                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A40    Modern Defense with 1 d4...3.Nf3 d6 4.e4 Nf6                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B06    Modern Defense with 1 e4 2.d4                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B06    Modern Defense with 1 e4 2.d4 Bg7 3.Nf3                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B00    Nimzowitsch Defense Declined...4.Nc3 Qa5 5.d4 Bg4              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B00    Nimzowitsch Defense Scandinavian Exchange Variation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A01    Nimzowitsch Larsen Attack Modern Variation...3.e3 d5 4.Bb5 Bd6 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A43    Old Benoni Defense 2.d5 d6 3.e4 Nf6                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A43    Old Benoni Defense Franco Benoni Defense...4.exd5 d6 5.Nf3 Nf6 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C42    Petrovs Defense                                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C42    Petrovs Defense Classical Cozio Attack 5...Qe7 6.d3            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C42    Petrovs Defense Classical Damiano Variation Kholmov Gambit 5.Q G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C41    Philidor Defense Hanham Lions Claw Variation                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C41    Philidor Defense Nimzowitsch Variation 4.dxe5                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B07    Pirc Defense 2.d4 c6 3.Nf3                                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B08    Pirc Defense Classical Quiet Chigorin Line 7.d5                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B08    Pirc Defense Classical Quiet Parma Defense 7.h3 Bxf3 8.Bxf3    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B08    Pirc Defense Classical Quiet System 5...O O 6.O O Nbd7         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B07    Pirc Defense Main Line Byrne Variation 4...Bg7 5.e5 dxe5 6.dxe G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B07    Pirc Defense Modern Defense Geller System 2...Nf6 3.Nc3 g6     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D26    Queens Gambit Accepted 3.Nf3 Nf6 4.e3 e6 5.Bxc4                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D20    Queens Gambit Accepted Old Variation 3...c5 4.Bxc4 cxd4 5.exd4 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D06    Queens Gambit Declined Austrian Variation 3.cxd5 Qxd5          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D06    Queens Gambit Declined Austrian Variation 3.cxd5 Qxd5 4.Nf3    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D06    Queens Gambit Declined Austrian Variation 3.cxd5 Qxd5 4.Nf3 cx G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D07    Queens Gambit Declined Chigorin Defense 3.e3 e5 4.cxd5         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D00    Queens Pawn Opening 1...d5                                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D00    Queens Pawn Opening Accelerated London System                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D00    Queens Pawn Opening Accelerated London System 2...e6 3.e3 c5 4 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D02    Queens Pawn Opening Zukertort Variation 2...e6 3.Bf4 c5 4.e3   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A04    Reti Opening Kingside Fianchetto Variation 2.e4 d6 3.d4        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+A09    Reti Opening Reti Gambit Accepted 3.Na3                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C65    Ruy Lopez Opening Berlin Defense 4.O O Be7 5.Re1 d6 6.c3       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C66    Ruy Lopez Opening Berlin Improved Steinitz Defense 5.Re1 Bd7   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C61    Ruy Lopez Opening Birds Defense                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C61    Ruy Lopez Opening Birds Defense 4.Nxd4 exd4                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C61    Ruy Lopez Opening Birds Defense 4.Nxd4 exd4 5.d3               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C64    Ruy Lopez Opening Classical Defense 4.O O d6 5.c3              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C60    Ruy Lopez Opening Cozio Defense 4.O O                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C60    Ruy Lopez Opening Fianchetto Defense 4.c3 a6 5.Ba4 d6 6.d4     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C70    Ruy Lopez Opening Morphy Defense Caro Graz Variation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C88    Ruy Lopez Opening Morphy Defense Closed 6.Re1 b5 7.Bb3 O O 8.c G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C91    Ruy Lopez Opening Morphy Defense Closed Yates Variation 9...ex G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C88    Ruy Lopez Opening Morphy Defense Closed...7.Bb3 d6 8.c3 Bg4    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C78    Ruy Lopez Opening Morphy Defense Columbus Variation...7.d4 d6  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C72    Ruy Lopez Opening Morphy Defense Modern Steinitz Defense 5.O O G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C71    Ruy Lopez Opening Morphy Defense Modern Steinitz Defense 5.d4  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C62    Ruy Lopez Opening Old Steinitz Defense 4.d4 Bd7                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C62    Ruy Lopez Opening Old Steinitz Defense 4.d4 exd4 5.Nxd4 Bd7    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense 2.e5                                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Main Line 4.d4 Nf6 5.Bd2 c6  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Main Line 4.d4 c6 5.Nf3 Bf5  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Main Line...6.Ne5 c6 7.Bc4 e G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Variation                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Variation 3.Nc3 Qd8 4.d4 Nf6 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Variation 3.Nc3 Qd8 4.d4 Nf6 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Variation 3.Nc3 Qd8 4.d4 Nf6 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Mieses Kotrc Variation...4.d4 Nf6 5.Nf3 B G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B01    Scandinavian Defense Modern Variation 3.Nf3                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C45    Scotch Game 3...exd4 4.Nxd4 Qf6                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C45    Scotch Game 3...exd4 4.Nxd4 Qf6 5.Nxc6                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C45    Scotch Game 3...exd4 4.Nxd4 d6                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C45    Scotch Game Scotch Gambit Dubois Reti Defense                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C45    Scotch Game Steinitz Variation                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B50    Sicilian Defense 2.Nf3 d6 3.Bc4 Nf6                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B20    Sicilian Defense Cowboy Attack 2...d6 3.Bb2 Nf6                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B50    Sicilian Defense Delayed Alapin Variation 3...Nf6 4.d3 g6      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B45    Sicilian Defense Four Knights Variation 6.Be3 Bb4              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B29    Sicilian Defense Nimzowitsch Variation                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B40    Sicilian Defense Normal Line 5.Nc3                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B34    Sicilian Defense Open Accelerated Dragon Exchange Variation 5. G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B35    Sicilian Defense Open Accelerated Dragon Modern Variation...7. G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B34    Sicilian Defense Open Accelerated Dragon Modern Variation...8. G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B56    Sicilian Defense Open Classical Variation 6.Be3 e5 7.Nf3 Be7   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B72    Sicilian Defense Open Dragon Classical Attack 7...Nc6          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B74    Sicilian Defense Open Dragon Classical Attack 7...Nc6 8.O O O  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B71    Sicilian Defense Open Dragon Levenfish Variation 6...Bg7 7.e5  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B72    Sicilian Defense Open Dragon Variation 6.Be3 Bg7 7.Qd2         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B70    Sicilian Defense Open Dragon Variation 6.Bg5 Bg7 7.Bb5 Bd7     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B32    Sicilian Defense Open Lowenthal Variation 5.Nf3                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B54    Sicilian Defense Open Variation                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B33    Sicilian Defense Open...4.Nxd4 a6 5.Nc3 e6                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B47    Sicilian Defense Taimanov Bastrikov Variation 6.f4 Nxd4 7.Qxd4 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B45    Sicilian Defense Taimanov Variation 5.Nc3 d6 6.Bc4 Nf6         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+B50    Sicilian Defense...3.Bc4 Nf6 4.d3 e6 5.O O                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D10    Slav Defense 3.e3 Nf6                                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D32    Tarrasch Defense                                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D32    Tarrasch Defense 4.Nf3 cxd4 5.Nxd4                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+D40    Tarrasch Defense Symmetrical Variation...7.Bxc4 a6 8.O O b5    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C25    Vienna Game Anderssen Defense 3.Nf3                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+C25    Vienna Game Max Lange Defense 3.Bc4 Bc5 4.d3 d6                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+
+--- MOST COMMON OPENINGS ---
+1. Sicilian Defense Bowdler Attack 2...e6 [B20] | G=20 | W/L/D=11/8/1 | W%=55.0% L%=40.0% D%=5.0% Score=57.5%
+2. Scotch Game 3...exd4 4.Nxd4 Nxd4 5.Qxd4 [C45] | G=17 | W/L/D=12/5/0 | W%=70.6% L%=29.4% D%=0.0% Score=70.6%
+3. Kings Pawn Opening Kings Knight Variation [C40] | G=17 | W/L/D=11/5/1 | W%=64.7% L%=29.4% D%=5.9% Score=67.6%
+4. Sicilian Defense 2.Nf3 d6 3.Bc4 e6 [B50] | G=14 | W/L/D=7/7/0 | W%=50.0% L%=50.0% D%=0.0% Score=50.0%
+5. Petrovs Defense Classical Variation [C42] | G=13 | W/L/D=8/5/0 | W%=61.5% L%=38.5% D%=0.0% Score=61.5%
+
+--- BEST COMMON OPENINGS ---
+1. Sicilian Defense Bowdler Attack [B20] | G=7 | W/L/D=7/0/0 | W%=100.0% L%=0.0% D%=0.0% Score=100.0%
+2. Sicilian Defense Smith Morra Gambit 2...cxd4 3.Qxd4 Nc6 [B21] | G=6 | W/L/D=6/0/0 | W%=100.0% L%=0.0% D%=0.0% Score=100.0%
+3. Ruy Lopez Opening Old Steinitz Defense 4.d4 [C62] | G=5 | W/L/D=5/0/0 | W%=100.0% L%=0.0% D%=0.0% Score=100.0%
+4. Ruy Lopez Opening Morphy Defense Caro Variation 5.Bb3 [C70] | G=4 | W/L/D=4/0/0 | W%=100.0% L%=0.0% D%=0.0% Score=100.0%
+5. Scandinavian Defense 2.exd5 [B01] | G=4 | W/L/D=4/0/0 | W%=100.0% L%=0.0% D%=0.0% Score=100.0%
+
+--- WORST COMMON OPENINGS ---
+1. Philidor Defense Exchange Variation 4.Nxd4 Nf6 5.Nc3 Be7 [C41] | G=3 | W/L/D=0/3/0 | W%=0.0% L%=100.0% D%=0.0% Score=0.0%
+2. Scandinavian Defense Mieses Kotrc Variation 3.Nc3 Qe5 4.Be2 [B01] | G=3 | W/L/D=0/3/0 | W%=0.0% L%=100.0% D%=0.0% Score=0.0%
+3. Sicilian Defense Open Accelerated Dragon Modern Variation 5...Bg7 6.Be3 [B34] | G=3 | W/L/D=0/3/0 | W%=0.0% L%=100.0% D%=0.0% Score=0.0%
+4. Caro Kann Defense Exchange Variation 3...cxd5 4.Nf3 Nf6 [B13] | G=3 | W/L/D=0/2/1 | W%=0.0% L%=66.7% D%=33.3% Score=16.7%
+5. Caro Kann Defense Exchange Variation 3...cxd5 4.Nf3 [B13] | G=4 | W/L/D=1/3/0 | W%=25.0% L%=75.0% D%=0.0% Score=25.0%
+
+====================================================================================================
+OVERALL - RESULT BY TIME CONTROL
+====================================================================================================
+5:00                                     G=355  W=179  L=164  D=12   W%=  50.4 L%=  46.2 D%=   3.4 Score=  52.1
+10:00                                    G=314  W=210  L=89   D=15   W%=  66.9 L%=  28.3 D%=   4.8 Score=  69.3
+3:00                                     G=34   W=13   L=21   D=0    W%=  38.2 L%=  61.8 D%=   0.0 Score=  38.2
+2:00 + 1s                                G=30   W=17   L=11   D=2    W%=  56.7 L%=  36.7 D%=   6.7 Score=  60.0
+15:00 + 10s                              G=28   W=19   L=5    D=4    W%=  67.9 L%=  17.9 D%=  14.3 Score=  75.0
+1:00                                     G=27   W=13   L=14   D=0    W%=  48.1 L%=  51.9 D%=   0.0 Score=  48.1
+1:00 + 1s                                G=24   W=16   L=8    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+-                                        G=8    W=6    L=1    D=1    W%=  75.0 L%=  12.5 D%=  12.5 Score=  81.2
+1/86400                                  G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+0:30                                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+1/259200                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+20:00                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+
+====================================================================================================
+OVERALL - RESULT BY TIME CLASS
+====================================================================================================
+Unknown                                  G=826  W=477  L=315  D=34   W%=  57.7 L%=  38.1 D%=   4.1 Score=  59.8
+
+====================================================================================================
+OVERALL - RESULT BY TERMINATION
+====================================================================================================
+NafsinFerdous won by resignation         G=228  W=228  L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+NafsinFerdous won by checkmate           G=173  W=173  L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+NafsinFerdous won on time                G=41   W=41   L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+NafsinFerdous won - game abandoned       G=35   W=35   L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+adnan5120 won by checkmate               G=11   W=0    L=11   D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Game drawn by stalemate                  G=9    W=0    L=0    D=9    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Game drawn by repetition                 G=8    W=0    L=0    D=8    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Game drawn by agreement                  G=7    W=0    L=0    D=7    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Game drawn by insufficient material      G=7    W=0    L=0    D=7    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+adnan5120 won by resignation             G=5    W=0    L=5    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+psycho_x_adnan won by resignation        G=5    W=0    L=5    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+adnan5120 won on time                    G=4    W=0    L=4    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+E255 won by resignation                  G=3    W=0    L=3    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Game drawn by timeout vs insufficient material G=3    W=0    L=0    D=3    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Lemon1620771 won by resignation          G=3    W=0    L=3    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+psycho_x_adnan won on time               G=3    W=0    L=3    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Adrlll97 won by resignation              G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Hououinkyouma88 won on time              G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Lemon1620771 won by checkmate            G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SMR8888 won on time                      G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+psycho_x_adnan won by checkmate          G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+058m won by resignation                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+08stevan08 won by checkmate              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+1nsaneMeister won by checkmate           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+451F won on time                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+72sweep72 won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+8RACHO won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+9Viking won by checkmate                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AEjraei88 won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ARA5959 won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Aclc00 won on time                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AdorableScience won by checkmate         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AhmedGoda87 won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Aldolaclasse1 won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alexandre_Sacha0 won by resignation      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alfen1005 won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alheta won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alisson-Br-ADL won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alittleyolo won on time                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AlwaysDoubledPawns won by resignation    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Andreas251 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Antiport won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AntonioRushing won on time               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Arrandi won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AshtuevInnokentiy won by resignation     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Asick001 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Assare won on time                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Azibor won on time                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+BRAVEHEARTH007 won on time               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Biggerthan_yourking won by resignation   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Blacktrombone won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+BlunderfulRookie won by checkmate        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Bootyvil won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Bouhouche1 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Brainseeker-2437 won by resignation      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Brieyan won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Buturki1 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Bychka won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+CMN01 won - game abandoned               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+CPU_LV5 won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Caro_Flan won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ChessMariano won by checkmate            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ChessMariano won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Chi_Zzy won - game abandoned             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Chivo_Inl won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Clemens972 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+CleverUpsetter13 won by resignation      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Coach-Hikaru won by checkmate            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+CoachHappyChess won by resignation       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Crugy won by checkmate                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+DENATOM_BREST won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+DOB8079 won by checkmate                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Dannytai0328 won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Daurjan won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Dreadofthehoods won by resignation       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+EXPERTMATH won on time                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+El_Loco1969 won on time                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Enam-E-Elahi won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+F0RAB0Z0 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+FIROZKABIR1 won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+FernetBirdBath won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Floccx won on time                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Foncillon31 won by checkmate             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Fortr355 won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+GajeelLance won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gil4321 won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gizmo962 won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Goblinshou won by checkmate              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+GrandmasterJohn15 won by checkmate       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gray-Beard won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gulzebo won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+HamoodTF won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+HappyHorse75 won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Harimatah won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Hoangviet8888 won by checkmate           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Hououinkyouma88 won by resignation       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Iam4theHippos won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+IcBlues won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Id_rather_be_sailing won by resignation  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+IguazuI won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+IsaacxROG won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Ishwar8504 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Ivan101110001 won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+JFKLima won by checkmate                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Jacafren60 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Jibs69007 won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+K284284 won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Karbofos89 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Kataneca won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Kataneca won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Keith_dunkin2 won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Khazaria-313 won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+KingTotor won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Kyralesov1983 won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+LeMerluche won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Lobsangoten won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Lopushok123 won by checkmate             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Lotte_schaak won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Luzzareo won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MAGABuildTheWall won by checkmate        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MBbognor won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MChaker01 won by checkmate               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MSabri001 won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Magnavolt won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MashiloaneAsh won by checkmate           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MasterYeet007 won by checkmate           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MasterYeet007 won on time                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Mateuss1966 won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Mawkle1 won by checkmate                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Merkur11 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Monky102 won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Mucho-20 won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+NOEL63 won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nanami14k won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Neumivenica won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nik26k won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Niniola1o won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nostra001 won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nxc10 won by resignation                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+PadreKDS won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Paparcanin won - game abandoned          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Paulus888 won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Pegfilgrastim won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Rajiranji won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Rampvnkk won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Razduha won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Romarik won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+RonARIG won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+RumGalloRum won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Rum_Enthusiast won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SMR8888 won by checkmate                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SNEAKYPEAKER77 won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SRThom won on time                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SS_87 won by resignation                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Satya786110 won by checkmate             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SeemsG0od won by checkmate               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Senseidea won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SergeWest won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Shishirmishra30 won on time              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Siegy957 won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Sinnlighet won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SofinityX won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Soft-ish won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SurajitGangai won by checkmate           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+T-Magnus-C won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Tahosin9000 won by checkmate             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+TeeTrismegistus won by resignation       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+TheGhost254 won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+TheTest16 won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+The_punisher44 won on time               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+VLADIMIRs028 won on time                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+VakirevicSale won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Valoral won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Vera-Idris won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Viktor8975 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Vinothkumarkvp won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ViswesA won by checkmate                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Wolfgangerl won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Yukidaruma-san won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Zalina_za won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+adamadame2288 won by checkmate           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+adenhans won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+adisaputra011084 won by resignation      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ahklnort2024 won by checkmate            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ammarmusa196 won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+anandapand won on time                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ananya2468 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+andrewmendonca9 won on time              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+andrey110011 won on time                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+anthony12321234 won by checkmate         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+aprillouis won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+arivero07 won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+baharlu won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+baki4783 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bar2000bar won by checkmate              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bateau1234 won by checkmate              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+beefjerkysnack won on time               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bhupaliboy won on time                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bigo6161 won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+chandrasekherreddy won by resignation    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+chiefump2003 won by checkmate            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+coach_deki won on time                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+conkz45 won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+dandydio won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+dhani_rmd12 won on time                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+dharthgiant won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+erha6 won by resignation                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+euomar won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+fglrd won by resignation                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+finetraphic won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+fiset911 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+flopy-bouncer won by checkmate           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+foolishtactics won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+garengkeod won by checkmate              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hansraj1977 won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hassannn999 won by checkmate             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hatemcctc won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hkowsari won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hmattio won by checkmate                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+holylockin73 won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hvush won on time                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+icajiogiddy won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+iliev1712 won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+inrigame won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+invisibleandy1980 won by resignation     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+isquinita76 won by checkmate             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+jakub6464 won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+jofspades5 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+john1shoe won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+jroark99 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kamyar86 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kevinmanager won by resignation          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kingofvirus won on time                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+krachmar9 won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kristofferSaltveit won on time           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+krs83 won by resignation                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kunaldhingra09 won by resignation        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+lacoste627 won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+lgmnexus won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+lordnivis won by checkmate               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+lucifer191-078-801 won by checkmate      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+madamaxim won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mansuor12 won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+maxwn1 won by checkmate                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mexmike1 won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+milan009 won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+moamen1167 won by checkmate              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+molitocrack won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mortad0 won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mslesarenko won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+newmonata won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nizuka7 won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nobodycare_lol won by checkmate          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nocheckspls won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nucho won by resignation                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nyrix07 won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ochesterD won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+omnamah21 won on time                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+orestgrabovskyi won by resignation       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+palenciam won by checkmate               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+parkyouwin won by resignation            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+pavlos13 won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+piotr-kozak won by resignation           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+practice-langg won by checkmate          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+prosperosalgadosoto won by checkmate     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+raffzilla won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+rajeshtnkottayam won by resignation      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+rcanum won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+renatosaltori22 won by resignation       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+rich_art won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+rodcourt won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ruchisinghania25 won - game abandoned    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+s777s4u won on time                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+saifvazir won by checkmate               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+samdilli won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+scottmbbps won on time                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+sebastianpava won by resignation         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+srijan8405 won on time                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+sudeshpanchal won on time                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+svidivok won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+usertc won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+vitoss79 won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+vtashkov won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+waelzid7 won on time                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+walterwhite1411 won by resignation       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+wanbot76 won by checkmate                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+waney62 won by resignation               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+wd2chess won by resignation              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+wsamilton won by resignation             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+yotupapi1308 won by checkmate            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+zgfndk won by resignation                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+zoominzoomout1234 won on time            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+
+====================================================================================================
+OVERALL - RESULT BY OPPONENT
+====================================================================================================
+adnan5120                                G=83   W=58   L=20   D=5    W%=  69.9 L%=  24.1 D%=   6.0 Score=  72.9
+psycho_x_adnan                           G=33   W=22   L=10   D=1    W%=  66.7 L%=  30.3 D%=   3.0 Score=  68.2
+Tahosin9000                              G=15   W=14   L=1    D=0    W%=  93.3 L%=   6.7 D%=   0.0 Score=  93.3
+Enam-E-Elahi                             G=12   W=10   L=1    D=1    W%=  83.3 L%=   8.3 D%=   8.3 Score=  87.5
+Lemon1620771                             G=10   W=5    L=5    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+Coach-Hikaru                             G=7    W=5    L=1    D=1    W%=  71.4 L%=  14.3 D%=  14.3 Score=  78.6
+Kingbodonti28                            G=6    W=6    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+bateau1234                               G=6    W=5    L=1    D=0    W%=  83.3 L%=  16.7 D%=   0.0 Score=  83.3
+lucifer191-078-801                       G=6    W=5    L=1    D=0    W%=  83.3 L%=  16.7 D%=   0.0 Score=  83.3
+ATIKSHARIAR                              G=5    W=5    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+SMR8888                                  G=5    W=2    L=3    D=0    W%=  40.0 L%=  60.0 D%=   0.0 Score=  40.0
+Hououinkyouma88                          G=4    W=1    L=3    D=0    W%=  25.0 L%=  75.0 D%=   0.0 Score=  25.0
+Orik44532                                G=4    W=3    L=0    D=1    W%=  75.0 L%=   0.0 D%=  25.0 Score=  87.5
+kelyktryana                              G=4    W=4    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+skypiaa                                  G=4    W=4    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Adrlll97                                 G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+E255                                     G=3    W=0    L=3    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+EnPassantFlow                            G=3    W=1    L=0    D=2    W%=  33.3 L%=   0.0 D%=  66.7 Score=  66.7
+Kataneca                                 G=3    W=1    L=2    D=0    W%=  33.3 L%=  66.7 D%=   0.0 Score=  33.3
+T-Magnus-C                               G=3    W=1    L=1    D=1    W%=  33.3 L%=  33.3 D%=  33.3 Score=  50.0
+Vinothkumarkvp                           G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+ViswesA                                  G=3    W=2    L=1    D=0    W%=  66.7 L%=  33.3 D%=   0.0 Score=  66.7
+AEjraei88                                G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+AdorableScience                          G=2    W=0    L=1    D=1    W%=   0.0 L%=  50.0 D%=  50.0 Score=  25.0
+Agus00777                                G=2    W=1    L=0    D=1    W%=  50.0 L%=   0.0 D%=  50.0 Score=  75.0
+Aldolaclasse1                            G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+AlekeraChess                             G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Bigbelush                                G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ChessMariano                             G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+DOB8079                                  G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+MasterYeet007                            G=2    W=0    L=2    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Niniola1o                                G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+Omarsharina23                            G=2    W=1    L=0    D=1    W%=  50.0 L%=   0.0 D%=  50.0 Score=  75.0
+TeeTrismegistus                          G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+The_punisher44                           G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+dtorbin123123                            G=2    W=1    L=0    D=1    W%=  50.0 L%=   0.0 D%=  50.0 Score=  75.0
+jeff_mason54                             G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kang_imann                               G=2    W=2    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+piotr-kozak                              G=2    W=1    L=1    D=0    W%=  50.0 L%=  50.0 D%=   0.0 Score=  50.0
+058m                                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+08stevan08                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+0fleix                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+131252fra                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+13Void13                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+18Eddi                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+1nsaneMeister                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+3bd00oo                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+451F                                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+72sweep72                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+8RACHO                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+9Viking                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ARA5959                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Abeeroff                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Aclc00                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Acts1339                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+AdamCharlize                             G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Adillicious                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Adrian_3427                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Afif_22                                  G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Agafari                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+AgusAmri77                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+AhmedGoda87                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AlaaKhodeir                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Alekszonder                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Alexandre_Sacha0                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alfen1005                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alheta                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alisson-Br-ADL                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Alittleyolo                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AlwaysDoubledPawns                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AmirZeinali98                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Andreas251                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Andrsaranda                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Ankit8109                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Antiport                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AntonioRushing                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AquileDBS                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Arahana2134                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Arbi999999                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Ariasthecheckmater142010                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Arrandi                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Artemios1981                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+AshtuevInnokentiy                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Asick001                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Assare                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+AvBots                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Aven0206                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Azibor                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+BRAVEHEARTH007                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Bakyt64                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Bar-DL                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+BenjaminThom                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Bigbossssoman                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Biggerthan_yourking                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Blacktrombone                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+BlunderfulRookie                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Bollo1                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Bootyvil                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Bouhouche1                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Brainseeker-2437                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Brieyan                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Brooklyn42                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+BushurovGroup                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Buturki1                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Bychka                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+CMN01                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+CPU_LV5                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Carlos1526                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Caro_Flan                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Cevich00n                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Ch3ckItOut                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Che2splay                                G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+ChessBot212223                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ChessM0nkey                              G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Chi_Zzy                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Chiranji5555                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Chivo_Inl                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Chjgykk                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Ciabatabata                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Clemens972                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+CleverUpsetter13                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Coach-Nadia                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+CoachHappyChess                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Crugy                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Cutlas70                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+DENATOM_BREST                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Damesocool                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Daniyar261090                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Dannytai0328                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Darkseid_77                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Darozglez2563                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Daurjan                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Dawn289                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Dimedra                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Dizta                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+DocentSerg                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Dreadofthehoods                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+DxD670                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+EWRB-2608_61                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+EXPERTMATH                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+EduardoGilberti                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Efe3s                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Eggdne                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+El_Loco1969                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ElemehnoP                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Elias_anfe                               G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+EmsaLSz                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Eros-74                                  G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+EssTee_15                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+F0RAB0Z0                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+FIROZKABIR1                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Fangio777                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+FernetBirdBath                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Floccx                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Foncillon31                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ForThePuzzleRush                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Fortr355                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+GENOCHS                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+GG-city                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+GLENDALE_BURBANK                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Gabriel_MacAdam                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Gagana7                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+GajeelLance                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gaucho_Argento                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Gh_C                                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Gil4321                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gizmo962                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gligorov-Lj                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Goblinshou                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+GrandmasterJohn15                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gray-Beard                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Gulzebo                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+HERMEZ2020                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+HamoodTF                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+HamzaKhan2007                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+HanaGemilli2                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+HappyHorse75                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Harimatah                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Heavenly_Prawns                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Henrycsept28                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Hilarygame                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Hoangviet8888                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+IIIelmagoIII                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+INGeborg43                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Iam4theHippos                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+IcBlues                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Id_rather_be_sailing                     G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+IguazuI                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+IsaacxROG                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Ishwar8504                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ItsNotMyKid                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ItsVedu                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Ivan101110001                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Ivellion                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+JDubbyDubby                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+JFKLima                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+JKentth                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+JOEL-1307                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Jacafren60                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+JahanbakhshQashangAsiabar                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Japocone                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Jeele1                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Jibs69007                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+JoanBeco                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+JusticeIduene                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+K284284                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Kabello32                                G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Kalashnikev16                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Karbofos89                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Kartik70070                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Keith_dunkin2                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Khazaria-313                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+KingAdde25                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+KingTotor                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+KubaJasinski                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Kyralesov1983                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+LIDER2027                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+LUDNatic                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Laksha08                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+LeMerluche                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Lobsangoten                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+LokilezJr                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Lopushok123                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Lotte_schaak                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Luzzareo                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MAGABuildTheWall                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MAGICIAN-SHAHRIAR                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+MAMA_NEEDS_BREAD                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+MBbognor                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MChaker01                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MGM11                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+MSabri001                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MTA777333                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Mac6003                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+MaggioloR                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Magnavolt                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MallenXYT                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Manideep1226                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Marvy765                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+MashiloaneAsh                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Mateuss1966                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MattDelcroix                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Mawkle1                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+MediSanti                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Merkur11                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Mike_rover                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Miladi7777                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+MohamadKer                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Molon74                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Monky102                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Moski1994                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+MozeRemis                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Mucho-20                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+NOEL63                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nanami14k                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nestor0988                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Neumivenica                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nezar1978                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Nik26k                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nostra001                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Nunneroaavan_shakkiguru                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Nuukipluto                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Nxc10                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+OcusPecus                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Oloyorda                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+P0ppaBluey                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+PK40here                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+PadreKDS                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Paparcanin                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Paulus888                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Pegfilgrastim                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+PleaseBuddhabloxfruits                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Powerful_Rook                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Psiles                                   G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+QandA201                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+RDEislameed                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+RDSH1970                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+RIK-A                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+RVIIR                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+R_a-g                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Rafiq_Ishaq                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Rajiranji                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Ramokolic                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Rampvnkk                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Rand1211                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+RastySaraswati                           G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+Razduha                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Razec90                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Roman_od                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Romarik                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+RonARIG                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Rookpoleon_Pawnaparte                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+RumGalloRum                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Rum_Enthusiast                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SAYRMAN777                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+SNEAKYPEAKER77                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SRThom                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SS_87                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Satya786110                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SeemsG0od                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Seidoncar                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Senseidea                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Serah_H                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+SergeWest                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Sesshomaru6                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Shishirmishra30                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Siegy957                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Sinnlighet                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Siswanto234                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+SofinityX                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Soft-ish                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Sonu_Yadav                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Spawn_0225                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Stakman1982                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Stilltheman                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+SumeetAnand                              G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+SurajMenon56                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+SurajitGangai                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+SuryaLinga                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Tanagra_Escarlata                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+TheGhost254                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+TheGranSonofMoses                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+TheTest16                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Tinohg                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Titoune240                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Tseren008                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Tumyza1234                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Ulugbekk7199                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+UvST                                     G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+VLADIMIRs028                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Vahan_arm                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+VakirevicSale                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Valoral                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Vanroyy                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Vasilio58                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Vera-Idris                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Viktor8975                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+VladimirPolovinkaua                      G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+VladoRed                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Voliyn                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Walfwanted                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Wolfgangerl                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Xasan_1980                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+YETILEPRO                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+YoussefJoe92                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Yovsha                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Yukidaruma-san                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+Za3bolla11                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+Zalina_za                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ZoranFfm                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+abdallah1hmid                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+adamadame2288                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+adenhans                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+adisaputra011084                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ahklnort2024                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ahmadifar                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+aish_jannat                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+alexey_fish                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ammarmusa196                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+an69di                                   G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+anandapand                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ananya2468                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+andrewmendonca9                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+andrey110011                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+aneesbalha77                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+anthony12321234                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+aprillouis                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+arivero07                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+asaf767                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+baboulir                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+baharlu                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bajo666                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+baki4783                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bar2000bar                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+barbej                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+beefjerkysnack                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bennycatur                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+bhupaliboy                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+bigo6161                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+black8white                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+bledilikaj                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+braulioparritasgmailco                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+brunokapiva                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+buckslayer17                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+busnj                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+byrontucker                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+cbosecke                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+chandrasekherreddy                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+chessermamii                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+chesssislove                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+chiefump2003                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+coach_deki                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+conkz45                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+contone                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+cronus52                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+dandydio                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+darsendract                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+deeman4real1981                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+delidumrulll                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+dento88iraq88                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+dhani_rmd12                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+dharthgiant                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+dipen321                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ditunia                                  G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+doc_sos                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+doubledoor                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ecmoraes1                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ehipster                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+enderksenobojca                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+erha6                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+esaa_eska                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+euomar                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+eyapim                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+fern5cr                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+fglrd                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+finetraphic                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+fiset911                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+flopy-bouncer                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+foolishtactics                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+forwornman                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+frankity69                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+fromsiverek                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+funkycrumble                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+gambito1725                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+garengkeod                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+gmarinov6                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+goku2o18                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+guillermoacostac                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+guruli1991                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+hakaoui                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+hanifhutabarat                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+hansraj1977                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hassannn999                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hatemcctc                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hepokatti                                G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+hhgffffgjh                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+hkowsari                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hmattio                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+holylockin73                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+hoppla73                                 G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+hvush                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+iamanlohan                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ibrahim5078                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+icajiogiddy                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+idirmerzak28gmail                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+igorgumush                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+iliev1712                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+imnoobbby                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+inrigame                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+invisibleandy1980                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+isquinita76                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ivanmarkos                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jakub6464                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+jebudas                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jeef007                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jeet4ndra                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jenaar                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jofspades5                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+john1shoe                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+joostwes                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jroark99                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+jsrikrish                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jujulketae                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+julian018391394                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+jwweenink                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kaedut                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kamel9092                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kamyar86                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+karolkoc1989                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kaszeyacassvitia                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kbn780                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kellygerms                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kevinmanager                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+khalidwalid2512                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+kingofvirus                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kjonnnn                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+krachmar9                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kristofferSaltveit                       G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+krs83                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kunaldhingra09                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+kurt0976542145786                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+lacoste627                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+lexi11111122                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+lgmnexus                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+light_cow                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+linathiMkhail                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+lordnivis                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+luciana_nazica                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+luigiBsAs                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+luke454545454545                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+madamaxim                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+madhusudanparwal                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+maine49                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+manbalec                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+mankenavenkatesh1                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+mansuor12                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mapleden                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+maria2022kyhtun                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+mathou755                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+maxwn1                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+me_good_guy                              G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+mene251159                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+metal_jps71                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+mexmike1                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mgrchess                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+mihailbachurin                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+milan009                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+moamen1167                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mohan_souza                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+molitocrack                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mortad0                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+mrpatrikpass                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+mslesarenko                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nader01                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+newcomer1999                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+newmonata                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nickslim97                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+nizuka7                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nobodycare_lol                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nocheckspls                              G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+northernElephant                         G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+npchalson                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+nucho                                    G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+nyrix07                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ochesterD                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+olidec                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+omnamah21                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+orestgrabovskyi                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+palenciam                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+parkyouwin                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+pavlos13                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ponelreston                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+popclins                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+posergjaec                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+practice-langg                           G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+prosperosalgadosoto                      G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+prsh10                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+pukimaiman                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+qiakkaiq                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+rafaelhaurissa                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+raffzilla                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+raimonchess                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+raiyenmark                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+rajeshtnkottayam                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+ramiz4765                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+ranrodriguez                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+rcanum                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+renatosaltori22                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+rich_art                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+rocstat                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+rodcourt                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+rolemb                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+rtehwi5673                               G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+ruchisinghania25                         G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+s777s4u                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+sagarrajpootpro                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+sage109                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+sahrul888                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+saifvazir                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+samdilli                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+samelcamel1324                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+scottmbbps                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+sebastianpava                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+seee_ya_layter                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+shamsdiaa                                G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+sheharyar88                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+skytown                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+sleeprunner                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+srijan8405                               G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+sudeepfoxy                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+sudeshpanchal                            G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+svidivok                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+takeandtakeandiftakestake                G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+tolgaozkann                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+topBunk                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+toxcey                                   G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+tusharkandpal1210                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+udhejejejzk                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+usertc                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+vishal-bhardwaj                          G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+vitoss79                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+vtashkov                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+waelzid7                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+walterwhite1411                          G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+wanbot76                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+waney62                                  G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+wd2chess                                 G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+wsamilton                                G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+wylie007coyote                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+x-1544823308                             G=1    W=0    L=0    D=1    W%=   0.0 L%=   0.0 D%= 100.0 Score=  50.0
+x-3649958934                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+x-4563695194                             G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+x_xAmmar                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+xchesshirecatx                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+xojiboqiyev-jasur                        G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+xploxxx                                  G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+yassinjbeli                              G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+yazanAbusamra                            G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+yohanborja                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+yotupapi1308                             G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+zaches2005                               G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+zaidh-naseem16                           G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+zak-aria                                 G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+zarzi                                    G=1    W=1    L=0    D=0    W%= 100.0 L%=   0.0 D%=   0.0 Score= 100.0
+zgfndk                                   G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+zoominzoomout1234                        G=1    W=0    L=1    D=0    W%=   0.0 L%= 100.0 D%=   0.0 Score=   0.0
+
+====================================================================================================
+SPECIAL RECORDS
+====================================================================================================
+Longest Win: 87 moves vs Tanagra_Escarlata | Sicilian Defense Open 3...cxd4 4.Nxd4 d6 5.Nc3
+Longest Loss: 79 moves vs Brieyan | Scotch Game Scotch Gambit Dubois Reti Defense
+Longest Draw: 75 moves vs Eros-74 | Queens Pawn Opening 1...d5 2.e3 c5
+Highest-rated win opponent: 2400 (Coach-Hikaru)
