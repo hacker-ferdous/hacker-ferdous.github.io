@@ -1,1439 +1,1581 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>📄 Student Profile JSON Extractor</title>
-
-    <!-- PDF.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js">
-    </script>
-
-    <!-- Google Font & Font Awesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-    <style>
-        /* ─── Reset & Base ─── */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0b0e14;
-            color: #e6edf3;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 30px 16px;
-        }
-
-        .app-wrapper {
-            max-width: 1280px;
-            width: 100%;
-        }
-
-        /* ─── Header ─── */
-        .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .app-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #58a6ff, #3fb950);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .app-header h1 i {
-            -webkit-text-fill-color: initial;
-            color: #f0883e;
-            font-size: 28px;
-        }
-
-        .badge {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            color: #8b949e;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .badge i {
-            color: #3fb950;
-            margin-right: 6px;
-        }
-
-        /* ─── Controls ─── */
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 16px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .controls .input-group {
-            flex: 1 1 260px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 10px;
-            padding: 0 14px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: border-color 0.25s;
-        }
-
-        .controls .input-group:focus-within {
-            border-color: #58a6ff;
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
-        }
-
-        .controls .input-group i {
-            color: #8b949e;
-            font-size: 15px;
-        }
-
-        .controls .input-group input {
-            background: transparent;
-            border: none;
-            padding: 12px 0;
-            font-size: 15px;
-            font-weight: 500;
-            color: #e6edf3;
-            width: 100%;
-            outline: none;
-            font-family: inherit;
-        }
-
-        .controls .input-group input::placeholder {
-            color: #484f58;
-            font-weight: 400;
-        }
-
-        .controls .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: rgba(255, 255, 255, 0.06);
-            color: #e6edf3;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .controls .btn i {
-            font-size: 14px;
-        }
-
-        .controls .btn-primary {
-            background: linear-gradient(135deg, #238636, #2ea043);
-            color: #fff;
-            border: none;
-        }
-
-        .controls .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(46, 160, 67, 0.3);
-        }
-
-        .controls .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .controls .btn-secondary {
-            background: rgba(88, 166, 255, 0.12);
-            color: #58a6ff;
-            border: 1px solid rgba(88, 166, 255, 0.2);
-        }
-
-        .controls .btn-secondary:hover {
-            background: rgba(88, 166, 255, 0.2);
-        }
-
-        .controls .btn-upload {
-            background: rgba(240, 135, 62, 0.12);
-            color: #f0883e;
-            border: 1px solid rgba(240, 135, 62, 0.2);
-        }
-
-        .controls .btn-upload:hover {
-            background: rgba(240, 135, 62, 0.2);
-        }
-
-        .controls .btn-danger {
-            background: rgba(248, 81, 73, 0.12);
-            color: #f85149;
-            border: 1px solid rgba(248, 81, 73, 0.2);
-        }
-
-        .controls .btn-danger:hover {
-            background: rgba(248, 81, 73, 0.2);
-        }
-
-        .controls .file-input-wrap {
-            display: none;
-        }
-
-        /* ─── Status / Progress ─── */
-        .status-bar {
-            padding: 12px 18px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            min-height: 52px;
-            transition: all 0.3s;
-        }
-
-        .status-bar .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2.5px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #58a6ff;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .status-bar .status-icon {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .status-bar .status-text {
-            flex: 1;
-        }
-
-        .status-bar .status-detail {
-            font-weight: 400;
-            color: #8b949e;
-            font-size: 13px;
-        }
-
-        .status-bar.success {
-            border-color: rgba(46, 160, 67, 0.3);
-            background: rgba(46, 160, 67, 0.06);
-        }
-
-        .status-bar.error {
-            border-color: rgba(248, 81, 73, 0.3);
-            background: rgba(248, 81, 73, 0.06);
-        }
-
-        .status-bar.info {
-            border-color: rgba(88, 166, 255, 0.2);
-            background: rgba(88, 166, 255, 0.06);
-        }
-
-        /* ─── Output Area ─── */
-        .output-area {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            overflow: hidden;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .output-area .output-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 14px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .output-area .output-header .title {
-            font-weight: 600;
-            font-size: 14px;
-            color: #8b949e;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .output-area .output-header .title i {
-            color: #f0883e;
-        }
-
-        .output-area .output-header .actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .output-area .output-header .actions .btn-sm {
-            padding: 5px 14px;
-            font-size: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.04);
-            color: #8b949e;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .output-area .output-header .actions .btn-sm:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #e6edf3;
-        }
-
-        .output-area .output-header .actions .btn-sm.copy-btn {
-            color: #58a6ff;
-        }
-
-        .output-area .output-header .actions .btn-sm.copy-btn:hover {
-            background: rgba(88, 166, 255, 0.12);
-        }
-
-        .output-area .output-header .actions .btn-sm.download-btn {
-            color: #3fb950;
-        }
-
-        .output-area .output-header .actions .btn-sm.download-btn:hover {
-            background: rgba(46, 160, 67, 0.12);
-        }
-
-        .output-area .output-body {
-            padding: 0;
-            max-height: 600px;
-            overflow: auto;
-            position: relative;
-        }
-
-        .output-area .output-body pre {
-            margin: 0;
-            padding: 20px 24px;
-            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-            font-size: 13px;
-            line-height: 1.7;
-            color: #e6edf3;
-            white-space: pre-wrap;
-            word-break: break-word;
-            tab-size: 2;
-            background: transparent;
-        }
-
-        .output-area .output-body .json-empty {
-            padding: 60px 24px;
-            text-align: center;
-            color: #484f58;
-            font-size: 15px;
-        }
-
-        .output-area .output-body .json-empty i {
-            font-size: 42px;
-            display: block;
-            margin-bottom: 16px;
-            color: #30363d;
-        }
-
-        .output-area .output-body .json-empty .hint {
-            font-size: 13px;
-            color: #484f58;
-            margin-top: 8px;
-        }
-
-        /* ─── JSON Syntax Highlighting (light-on-dark) ─── */
-        .json-key {
-            color: #f0883e;
-        }
-        .json-string {
-            color: #a5d6ff;
-        }
-        .json-number {
-            color: #79c0ff;
-        }
-        .json-boolean {
-            color: #ff7b72;
-        }
-        .json-null {
-            color: #ff7b72;
-        }
-        .json-brace {
-            color: #8b949e;
-        }
-        .json-colon {
-            color: #484f58;
-        }
-        .json-comma {
-            color: #484f58;
-        }
-
-        /* ─── Scrollbar ─── */
-        .output-area .output-body::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .output-area .output-body::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .output-area .output-body::-webkit-scrollbar-thumb {
-            background: #30363d;
-            border-radius: 4px;
-        }
-        .output-area .output-body::-webkit-scrollbar-thumb:hover {
-            background: #484f58;
-        }
-
-        /* ─── Toast ─── */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1c2333;
-            color: #e6edf3;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-            z-index: 999;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .toast i {
-            font-size: 18px;
-        }
-
-        .toast.success i {
-            color: #3fb950;
-        }
-        .toast.error i {
-            color: #f85149;
-        }
-        .toast.info i {
-            color: #58a6ff;
-        }
-
-        /* ─── Responsive ─── */
-        @media (max-width: 640px) {
-            .app-header h1 {
-                font-size: 19px;
-            }
-            .controls {
-                padding: 14px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .controls .input-group {
-                flex: 1 1 auto;
-            }
-            .controls .btn {
-                justify-content: center;
-            }
-            .output-area .output-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-            }
-            .output-area .output-header .actions {
-                flex-wrap: wrap;
-            }
-            .output-area .output-body pre {
-                padding: 14px 16px;
-                font-size: 12px;
-            }
-            .toast {
-                left: 16px;
-                right: 16px;
-                bottom: 16px;
-            }
-        }
-
-        /* ─── Hidden file input ─── */
-        #fileInput {
-            display: none;
-        }
-
-        /* ─── Proxy URL toggle ─── */
-        .proxy-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #8b949e;
-            cursor: pointer;
-            padding: 4px 0;
-        }
-
-        .proxy-toggle input[type="checkbox"] {
-            accent-color: #58a6ff;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        .proxy-url-wrap {
-            display: none;
-            flex: 1 1 100%;
-            margin-top: 6px;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .proxy-url-wrap.visible {
-            display: flex;
-        }
-
-        .proxy-url-wrap input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 13px;
-            color: #e6edf3;
-            font-family: inherit;
-            outline: none;
-            min-width: 200px;
-        }
-
-        .proxy-url-wrap input:focus {
-            border-color: #58a6ff;
-        }
-
-        .proxy-url-wrap .proxy-label {
-            font-size: 13px;
-            color: #8b949e;
-            white-space: nowrap;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Face AI</title>
+<style>
+  :root{
+    --panel:rgba(18,24,38,.9);
+    --border:rgba(255,255,255,.09);
+    --accent:#00e5a0;
+    --accent2:#00b3ff;
+    --warn:#ffb020;
+    --danger:#ff4d6d;
+    --text:#e6edf7;
+    --muted:#8b9bb4;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;min-height:100vh;
+    background:radial-gradient(1200px 700px at 50% -15%,#16233a 0%,#070a12 55%) fixed;
+    color:var(--text);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    display:flex;flex-direction:column;align-items:center;
+    padding:22px 14px 44px;
+  }
+  h1{font-size:clamp(19px,4.2vw,28px);margin:0 0 18px;letter-spacing:.3px;text-align:center}
+  h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .wrap{width:100%;max-width:1100px}
+
+  .stage{
+    position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;
+    background:#000;border:1px solid var(--border);
+    box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 0 1px rgba(0,229,160,.07);
+  }
+  video,canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  video{object-fit:cover;background:#000;transform-origin:center}
+  video.mirrored{transform:scaleX(-1)}
+  canvas{pointer-events:none;z-index:2}
+
+  .overlay{
+    position:absolute;inset:0;z-index:6;display:flex;
+    flex-direction:column;gap:16px;align-items:center;justify-content:center;
+    background:rgba(5,8,14,.88);backdrop-filter:blur(10px);
+    text-align:center;padding:24px;transition:opacity .3s;
+  }
+  .overlay.hidden{display:none}
+  .overlay h2{margin:0;font-size:clamp(18px,3.5vw,24px)}
+  .overlay p{margin:0;color:var(--muted);font-size:13.5px;max-width:460px;line-height:1.6}
+  .big-btn{
+    font:inherit;font-weight:700;font-size:15px;
+    color:#04170f;background:linear-gradient(135deg,var(--accent),#00c48a);
+    border:none;padding:14px 28px;border-radius:12px;cursor:pointer;
+    box-shadow:0 8px 30px rgba(0,229,160,.35);
+    display:inline-flex;align-items:center;gap:9px;transition:.2s;
+  }
+  .big-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,229,160,.5)}
+  .big-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+  .loader{
+    position:absolute;inset:0;z-index:5;display:none;
+    flex-direction:column;gap:14px;align-items:center;justify-content:center;
+    background:rgba(5,8,14,.85);backdrop-filter:blur(6px);
+  }
+  .loader.show{display:flex}
+  .spinner{
+    width:46px;height:46px;border-radius:50%;
+    border:3px solid rgba(0,229,160,.18);border-top-color:var(--accent);
+    animation:spin .9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loader p{margin:0;color:var(--muted);font-size:14px;text-align:center;padding:0 20px}
+
+  .hud{position:absolute;top:12px;left:12px;right:12px;z-index:4;
+    display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    background:rgba(8,12,20,.72);backdrop-filter:blur(8px);
+    border:1px solid var(--border);border-radius:999px;
+    padding:6px 13px;font-size:12.5px;font-weight:600;letter-spacing:.3px;
+  }
+  .chip b{color:var(--accent);font-variant-numeric:tabular-nums}
+  .dot{width:8px;height:8px;border-radius:50%;background:#5a6b82;transition:.3s}
+  .dot.live{background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 1.4s infinite}
+  .dot.error{background:var(--danger);box-shadow:0 0 10px var(--danger)}
+  .dot.loading{background:var(--warn);box-shadow:0 0 10px var(--warn)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+  .controls{
+    margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:12px;backdrop-filter:blur(10px);
+  }
+  button{
+    font:inherit;font-weight:600;font-size:13.5px;color:var(--text);
+    background:rgba(255,255,255,.05);border:1px solid var(--border);
+    padding:10px 16px;border-radius:10px;cursor:pointer;transition:.18s;
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  button:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+  button.primary{
+    background:linear-gradient(135deg,var(--accent),#00c48a);
+    color:#04170f;border-color:transparent;
+    box-shadow:0 6px 22px rgba(0,229,160,.3);
+  }
+  button.active{border-color:var(--accent);color:var(--accent)}
+  button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+  .slider{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-left:auto}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:120px;height:4px;border-radius:4px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));outline:none;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+    background:#fff;box-shadow:0 0 8px rgba(0,229,160,.8);cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:16px;height:16px;border:none;border-radius:50%;background:#fff;
+    box-shadow:0 0 8px rgba(0,229,160,.8);cursor:pointer;
+  }
+  .slider b{color:var(--accent);font-variant-numeric:tabular-nums;min-width:34px}
+
+  .faces-panel{
+    margin-top:16px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;
+  }
+  .face-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:12px;backdrop-filter:blur(10px);position:relative;
+    animation:cardIn .25s ease;
+  }
+  @keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .face-card .head{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+  .face-card .thumb{
+    width:52px;height:52px;border-radius:10px;object-fit:cover;
+    border:2px solid var(--accent);background:#000;flex:none;
+  }
+  .face-card .id-title{flex:1;min-width:0}
+  .face-card .name-input{
+    width:100%;font:inherit;font-weight:700;font-size:14px;
+    background:rgba(255,255,255,.05);border:1px solid var(--border);
+    color:var(--text);padding:5px 8px;border-radius:7px;outline:none;
+    margin-bottom:4px;
+  }
+  .face-card .name-input:focus{border-color:var(--accent)}
+  .face-card .name-input::placeholder{color:var(--muted);font-weight:500}
+  .face-card .id-title small{display:block;color:var(--muted);font-weight:500;font-size:11px}
+  .face-card .emoji{font-size:24px;margin-left:auto}
+
+  .badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .badge{
+    font-size:11px;font-weight:700;letter-spacing:.3px;
+    padding:4px 9px;border-radius:999px;border:1px solid transparent;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .badge.live{background:rgba(0,229,160,.14);color:var(--accent);border-color:rgba(0,229,160,.4)}
+  .badge.neutral{background:rgba(255,255,255,.06);color:var(--muted);border-color:var(--border)}
+
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11.5px}
+  .metric{background:rgba(255,255,255,.03);border-radius:8px;padding:7px 9px}
+  .metric .lbl{color:var(--muted);font-size:10.5px;margin-bottom:3px;letter-spacing:.2px}
+  .metric .val{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums}
+
+  .bar{height:5px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:5px}
+  .bar > i{display:block;height:100%;border-radius:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}
+
+  .error-msg{
+    color:var(--danger);font-size:13px;font-weight:600;
+    background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);
+    padding:10px 16px;border-radius:10px;max-width:480px;line-height:1.5;
+  }
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:16px;
+    border:1px dashed var(--border);border-radius:12px;grid-column:1/-1}
+
+  /* People list */
+  .section-title{
+    margin:24px 0 10px;font-size:14px;font-weight:700;
+    color:var(--muted);letter-spacing:.6px;text-transform:uppercase;
+  }
+  .people-panel{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;
+  }
+  .person-card{
+    display:flex;gap:10px;align-items:center;cursor:pointer;
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    padding:10px;transition:.18s;
+  }
+  .person-card:hover{border-color:var(--accent);transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(0,229,160,.12)}
+  .person-thumb{
+    width:48px;height:48px;border-radius:9px;object-fit:cover;
+    border:2px solid var(--accent);background:#0a0e17;flex:none;
+  }
+  .person-info{min-width:0;flex:1}
+  .person-name{font-weight:700;font-size:13.5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .person-meta-1{color:var(--muted);font-size:11px;margin-top:2px}
+  .person-meta-2{color:var(--muted);font-size:10.5px;margin-top:1px}
+
+  /* Modal */
+  .modal{
+    position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.78);
+    display:none;align-items:center;justify-content:center;padding:18px;
+    backdrop-filter:blur(6px);
+  }
+  .modal.show{display:flex}
+  .modal-box{
+    background:#101827;border:1px solid var(--border);border-radius:16px;
+    width:100%;max-width:560px;max-height:90vh;overflow-y:auto;
+    padding:20px;position:relative;
+    box-shadow:0 24px 70px rgba(0,0,0,.7);
+  }
+  .modal-close{
+    position:absolute;top:12px;right:12px;
+    width:32px;height:32px;padding:0;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;line-height:1;
+  }
+  .modal-head{display:flex;gap:14px;align-items:center;margin-bottom:18px;padding-right:36px}
+  .modal-thumb{
+    width:72px;height:72px;border-radius:12px;object-fit:cover;
+    border:2px solid var(--accent);background:#0a0e17;flex:none;
+  }
+  .modal-head h2{margin:0;font-size:19px}
+  .modal-head p{margin:3px 0;color:var(--muted);font-size:12px}
+  .modal-section{
+    border-top:1px solid var(--border);padding-top:14px;margin-top:14px;
+  }
+  .modal-section h3{
+    margin:0 0 8px;font-size:12px;font-weight:700;
+    color:var(--muted);letter-spacing:.5px;text-transform:uppercase;
+  }
+  .big-age{
+    font-size:42px;font-weight:800;line-height:1;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .big-age small{font-size:14px;color:var(--muted);font-weight:600;margin-left:6px;
+    -webkit-text-fill-color:var(--muted)}
+  .modal-hint{color:var(--muted);font-size:11px;margin:6px 0 0}
+  .modal-graph{
+    width:100%;height:auto;aspect-ratio:5/3;display:block;
+    background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:10px;
+  }
+  .session-list{list-style:none;padding:0;margin:0;max-height:180px;overflow-y:auto;
+    font-size:12.5px}
+  .session-list li{
+    display:flex;justify-content:space-between;gap:10px;
+    padding:7px 0;border-bottom:1px solid var(--border);
+  }
+  .session-list li:last-child{border-bottom:none}
+  .session-list li span{color:var(--accent);font-weight:700}
+  .session-list .active-session{color:var(--accent)}
+  .danger-btn{
+    width:100%;background:rgba(255,77,109,.12);color:var(--danger);
+    border-color:rgba(255,77,109,.35);
+  }
+  .danger-btn:hover{background:rgba(255,77,109,.2)}
+</style>
 </head>
-
 <body>
 
-    <div class="app-wrapper">
+<h1>🧠 <span>Face AI</span></h1>
 
-        <!-- ─── Header ─── -->
-        <header class="app-header">
-            <h1>
-                <i class="fas fa-file-pdf"></i>
-                Student Profile Extractor
-            </h1>
-            <span class="badge">
-                <i class="fas fa-check-circle"></i> PDF.js · 100% Schema
-            </span>
-        </header>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="overlay"></canvas>
 
-        <!-- ─── Controls ─── -->
-        <div class="controls">
-            <div class="input-group">
-                <i class="fas fa-id-badge"></i>
-                <input
-                type="text"
-                id="studentIdInput"
-                placeholder="Student ID (e.g. 12345)"
-                autofocus
-                />
-            </div>
-
-            <button class="btn btn-primary" id="fetchBtn">
-                <i class="fas fa-cloud-download-alt"></i> Extract
-            </button>
-
-            <button class="btn btn-upload" id="uploadBtn">
-                <i class="fas fa-upload"></i> Upload PDF
-            </button>
-
-            <button class="btn btn-secondary" id="sampleBtn">
-                <i class="fas fa-robot"></i> Sample
-            </button>
-
-            <button class="btn btn-danger" id="clearBtn">
-                <i class="fas fa-eraser"></i> Clear
-            </button>
-
-            <!-- hidden file input -->
-            <input type="file" id="fileInput" accept=".pdf" />
-
-            <!-- Proxy toggle -->
-            <div style="flex:1; min-width:100%; margin-top:6px; display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
-                <label class="proxy-toggle">
-                    <input type="checkbox" id="useProxyCheck" checked />
-                    <span>Use CORS proxy</span>
-                    <i class="fas fa-question-circle" style="color:#484f58; font-size:13px;" title="Helps bypass CORS when fetching from external server"></i>
-                </label>
-
-                <div class="proxy-url-wrap visible" id="proxyUrlWrap">
-                    <span class="proxy-label"><i class="fas fa-link"></i> Proxy:</span>
-                    <input
-                    type="text"
-                    id="proxyUrlInput"
-                    value="https://api.allorigins.win/raw?url="
-                    placeholder="https://corsproxy.io/?"
-                    />
-                </div>
-            </div>
-        </div>
-
-        <!-- ─── Status Bar ─── -->
-        <div class="status-bar" id="statusBar">
-            <i class="fas fa-circle status-icon" style="color:#484f58; font-size:12px;"></i>
-            <span class="status-text">Ready — enter a Student ID and click <strong>Extract</strong></span>
-            <span class="status-detail" id="statusDetail"></span>
-        </div>
-
-        <!-- ─── Output ─── -->
-        <div class="output-area">
-            <div class="output-header">
-                <span class="title">
-                    <i class="fas fa-code"></i>
-                    Extracted JSON
-                    <span style="font-weight:400; font-size:12px; color:#484f58;" id="fieldCount"></span>
-                </span>
-                <div class="actions">
-                    <button class="btn-sm copy-btn" id="copyBtn">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                    <button class="btn-sm download-btn" id="downloadBtn">
-                        <i class="fas fa-download"></i> Download
-                    </button>
-                    <button class="btn-sm" id="prettyToggle" style="color:#8b949e;">
-                        <i class="fas fa-align-left"></i> Pretty
-                    </button>
-                </div>
-            </div>
-            <div class="output-body" id="outputBody">
-                <div class="json-empty">
-                    <i class="fas fa-inbox"></i>
-                    No data yet
-                    <div class="hint">Enter a Student ID and click Extract, or upload a PDF.</div>
-                </div>
-            </div>
-        </div>
-
+    <div class="hud">
+      <div class="chip"><span class="dot" id="dot"></span><span id="status">Booting…</span></div>
+      <div class="chip">👤 <b id="faceCount">0</b></div>
+      <div class="chip">🆔 <b id="trackCount">0</b></div>
+      <div class="chip">⚡ <b id="fps">--</b></div>
     </div>
 
-    <!-- ─── Toast ─── -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMsg">Copied!</span>
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      <p id="loaderText">Booting…</p>
     </div>
 
-    <script>
-        (function() {
-            'use strict';
+    <div class="overlay" id="startOverlay">
+      <h2 id="overlayTitle">Starting…</h2>
+      <p id="overlayMsg">Requesting camera…</p>
+      <button class="big-btn" id="btnEnable">📷 Start</button>
+      <p id="permissionError" class="error-msg" style="display:none"></p>
+    </div>
+  </div>
 
-            // ─── DOM refs ───
-            const studentIdInput = document.getElementById('studentIdInput');
-            const fetchBtn = document.getElementById('fetchBtn');
-            const uploadBtn = document.getElementById('uploadBtn');
-            const sampleBtn = document.getElementById('sampleBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const fileInput = document.getElementById('fileInput');
-            const useProxyCheck = document.getElementById('useProxyCheck');
-            const proxyUrlInput = document.getElementById('proxyUrlInput');
-            const proxyUrlWrap = document.getElementById('proxyUrlWrap');
-            const statusBar = document.getElementById('statusBar');
-            const statusDetail = document.getElementById('statusDetail');
-            const outputBody = document.getElementById('outputBody');
-            const copyBtn = document.getElementById('copyBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const prettyToggle = document.getElementById('prettyToggle');
-            const fieldCount = document.getElementById('fieldCount');
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
+  <div class="controls">
+    <button class="primary" id="btnStart" disabled>▶ Start</button>
+    <button id="btnFlip" disabled>🔄 Flip</button>
+    <button id="btnMirror" class="active" disabled>🪞 Mirror</button>
+    <button id="btnReset" disabled>♻ Reset</button>
 
-            // ─── State ───
-            let currentJson = null;
-            let prettyMode = true;
-            let toastTimer = null;
+    <div class="slider">
+      <label for="conf">Conf</label>
+      <input type="range" id="conf" min="0.15" max="0.9" step="0.15" value="0.15">
+      <b id="confVal">0.15</b>
+    </div>
+  </div>
 
-            // ─── PDF.js worker ───
-            pdfjsLib.GlobalWorkerOptions.workerSrc =
-                'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  <div class="faces-panel" id="facesPanel">
+    <div class="empty">No faces yet.</div>
+  </div>
 
-            // ─── Toast helper ───
-            function showToast(msg, type = 'info') {
-                if (toastTimer) clearTimeout(toastTimer);
-                const iconMap = {
-                    success: 'fa-check-circle',
-                    error: 'fa-exclamation-circle',
-                    info: 'fa-info-circle'
-                };
-                toast.className = `toast ${type}`;
-                toast.querySelector('i').className = `fas ${iconMap[type] || 'fa-info-circle'}`;
-                toastMsg.textContent = msg;
-                toast.classList.add('show');
-                toastTimer = setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }
+  <h2 class="section-title">👥 People</h2>
+  <div class="people-panel" id="peoplePanel">
+    <div class="empty">No saved people yet.</div>
+  </div>
+</div>
 
-            // ─── Status updater ───
-            function setStatus(text, type = 'info', detail = '') {
-                statusBar.className = `status-bar ${type}`;
-                const iconMap = {
-                    info: 'fa-circle-info',
-                    success: 'fa-check-circle',
-                    error: 'fa-circle-exclamation',
-                    loading: 'fa-spinner fa-spin'
-                };
-                const iconEl = statusBar.querySelector('.status-icon');
-                iconEl.className = `status-icon fas ${iconMap[type] || 'fa-circle'}`;
-                statusBar.querySelector('.status-text').innerHTML = text;
-                statusDetail.textContent = detail;
-                if (type === 'loading') {
-                    iconEl.style.color = '#58a6ff';
-                } else if (type === 'success') {
-                    iconEl.style.color = '#3fb950';
-                } else if (type === 'error') {
-                    iconEl.style.color = '#f85149';
-                } else {
-                    iconEl.style.color = '#8b949e';
-                }
-            }
+<div class="modal" id="modal">
+  <div class="modal-box" id="modalBox"></div>
+</div>
 
-            function setLoading() {
-                setStatus('<span class="spinner"></span> Fetching PDF & extracting data…', 'loading', 'Please wait');
-            }
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/dist/face-api.js"></script>
+<script>
+/* ============================================================ */
+const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/model/';
 
-            function setReady() {
-                setStatus('Ready — enter a Student ID and click <strong>Extract</strong>', 'info');
-            }
+/* ---------- DOM ---------- */
+const stage        = document.getElementById('stage');
+const video        = document.getElementById('video');
+const canvas       = document.getElementById('overlay');
+const ctx          = canvas.getContext('2d');
+const dotEl        = document.getElementById('dot');
+const statusEl     = document.getElementById('status');
+const faceCountEl  = document.getElementById('faceCount');
+const trackCountEl = document.getElementById('trackCount');
+const fpsEl        = document.getElementById('fps');
+const btnStart     = document.getElementById('btnStart');
+const btnFlip      = document.getElementById('btnFlip');
+const btnMirror    = document.getElementById('btnMirror');
+const btnReset     = document.getElementById('btnReset');
+const btnEnable    = document.getElementById('btnEnable');
+const startOverlay = document.getElementById('startOverlay');
+const overlayTitle = document.getElementById('overlayTitle');
+const overlayMsg   = document.getElementById('overlayMsg');
+const permError    = document.getElementById('permissionError');
+const confRange    = document.getElementById('conf');
+const confVal      = document.getElementById('confVal');
+const loader       = document.getElementById('loader');
+const loaderText   = document.getElementById('loaderText');
+const facesPanel   = document.getElementById('facesPanel');
+const peoplePanel  = document.getElementById('peoplePanel');
+const modal        = document.getElementById('modal');
+const modalBox     = document.getElementById('modalBox');
 
-            // ─── Proxy toggle ───
-            useProxyCheck.addEventListener('change', function() {
-                proxyUrlWrap.classList.toggle('visible', this.checked);
-            });
+/* ---------- State ---------- */
+let stream = null, running = false, rafId = null;
+let facing = 'user', mirror = true;
+let confidence = 0.15;
+let lastDetectAt = 0, lastFrameTs = 0, fpsSmooth = 0;
+let modelReady = false, options = null;
+let listeners = [];
+let lastDetections = [];
+let videoReady = false;
 
-            // ─── Build URL ───
-            function buildPdfUrl(studentId) {
-                const base = 'http://202.5.56.65/CPSCR/Students/StudentReport/PrintRiportStudentProfile';
-                return `${base}/${studentId.trim()}`;
-            }
+/* ============================================================
+   Utility
+   ============================================================ */
+function cosineSim(a, b){
+  let d=0, na=0, nb=0;
+  for (let i=0;i<a.length;i++){ d+=a[i]*b[i]; na+=a[i]*a[i]; nb+=b[i]*b[i]; }
+  return d/(Math.sqrt(na)*Math.sqrt(nb)+1e-8);
+}
+function roundDescriptor(d){
+  const arr = Array.from(d);
+  return arr.map(v => Math.round(v * 1000) / 1000);
+}
+function fmtDuration(ms){
+  const s = Math.round(ms/1000);
+  if (s < 60) return s + 's';
+  const m = Math.floor(s/60), rs = s % 60;
+  if (m < 60) return m + 'm ' + rs + 's';
+  const h = Math.floor(m/60), rm = m % 60;
+  return h + 'h ' + rm + 'm';
+}
+function fmtTime(ts){
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2,'0');
+  return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+}
+function fmtAgo(ts){
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 60) return s + 's ago';
+  const m = Math.floor(s/60);
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m/60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h/24) + 'd ago';
+}
 
-            // ─── Fetch with proxy ───
-            async function fetchWithProxy(url, useProxy, proxyUrl) {
-                if (useProxy && proxyUrl) {
-                    // If proxy URL already contains '?url=' or similar, handle it
-                    let proxyFull = proxyUrl;
-                    if (!proxyFull.endsWith('=') && !proxyFull.endsWith('&') && !proxyFull.endsWith('?')) {
-                        // try to be smart: if it ends with '/', append '?url='
-                        if (proxyFull.endsWith('/')) {
-                            proxyFull += '?url=';
-                        } else {
-                            proxyFull += '?url=';
-                        }
-                    }
-                    const proxied = proxyFull + encodeURIComponent(url);
-                    const res = await fetch(proxied);
-                    if (!res.ok) throw new Error(`Proxy returned ${res.status} ${res.statusText}`);
-                    return await res.arrayBuffer();
-                } else {
-                    const res = await fetch(url, {
-                        mode: 'cors',
-                        credentials: 'omit',
-                    });
-                    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-                    return await res.arrayBuffer();
-                }
-            }
+/* ============================================================
+   People store (persistent, keyed by face descriptor)
+   ============================================================ */
+const PEOPLE_KEY = 'faceai_people_v1';
+const PERSON_MATCH_THRESHOLD = 0.55;
+const MAX_AGES    = 100;   // last 100 age samples
+const MAX_COORDS  = 10;    // last 10 coordinate samples
+const MAX_SESSIONS= 100;   // last 100 sessions
 
-            // ─── Extract from ArrayBuffer ───
-            async function extractFromArrayBuffer(buffer, sourceLabel = 'PDF') {
-                try {
-                    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
-                    const page = await pdf.getPage(1);
-                    const textContent = await page.getTextContent();
+let peopleCache = loadPeople();
+let peopleDirty = false;
 
-                    // ─── same algorithm as user's code ───
-                    const TOLERANCE = 7;
-                    const lines = [];
+function loadPeople(){
+  try { return JSON.parse(localStorage.getItem(PEOPLE_KEY) || '[]'); } catch { return []; }
+}
+function persistPeople(){
+  try { localStorage.setItem(PEOPLE_KEY, JSON.stringify(peopleCache)); }
+  catch(e){ console.warn('people save failed', e); }
+}
+function markPeopleDirty(){ peopleDirty = true; }
+function flushPeople(){ if (peopleDirty){ persistPeople(); peopleDirty = false; } }
+setInterval(flushPeople, 2000);
 
-                    textContent.items.forEach(item => {
-                        const str = item.str.trim();
-                        if (!str) return;
-                        const x = item.transform[4];
-                        const y = item.transform[5];
-                        let line = lines.find(l => Math.abs(l.y - y) <= TOLERANCE);
-                        if (!line) {
-                            line = { y, items: [] };
-                            lines.push(line);
-                        }
-                        line.items.push({ x, text: str });
-                    });
+function findPersonByDescriptor(desc){
+  if (!desc) return null;
+  let best = null, bestSim = PERSON_MATCH_THRESHOLD;
+  for (const p of peopleCache){
+    if (!p.descriptor || !p.descriptor.length) continue;
+    const s = cosineSim(p.descriptor, desc);
+    if (s > bestSim){ bestSim = s; best = p; }
+  }
+  return best;
+}
+function getPersonById(id){
+  return peopleCache.find(p => p.id === id) || null;
+}
+function createPerson(desc){
+  const p = {
+    id: 'p_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,6),
+    name: '',
+    descriptor: roundDescriptor(desc),
+    ages: [],
+    coords: [],
+    sessions: [],
+    totalMs: 0,
+    firstSeen: Date.now(),
+    lastSeen: Date.now(),
+    thumb: null
+  };
+  peopleCache.push(p);
+  markPeopleDirty();
+  return p;
+}
 
-                    lines.sort((a, b) => b.y - a.y);
+/* ============================================================
+   Sessions — per-person "in front of camera" tracking
+   ============================================================ */
+const currentSessions = new Map(); // personId -> { start, last }
+const SESSION_GAP_MS = 3000;
 
-                    const rawLines = lines.map(line => {
-                        line.items.sort((a, b) => a.x - b.x);
-                        return line.items.map(i => i.text).join(' ');
-                    });
+function tickSessions(activeTracks){
+  const now = Date.now();
+  for (const tr of activeTracks){
+    if (!tr.personId) continue;
+    let s = currentSessions.get(tr.personId);
+    if (!s){
+      s = { start: now, last: now };
+      currentSessions.set(tr.personId, s);
+    } else {
+      s.last = now;
+    }
+    const p = getPersonById(tr.personId);
+    if (p) p.lastSeen = now;
+  }
+  for (const [pid, s] of currentSessions){
+    if (now - s.last > SESSION_GAP_MS){
+      finalizeSession(pid, s);
+      currentSessions.delete(pid);
+    }
+  }
+  markPeopleDirty();
+}
 
-                    // ─── result schema ───
-                    const resultJSON = {
-                        "Student Details": {
-                            "Student ID": "",
-                            "Category": "",
-                            "Student Name (Bangla)": "",
-                            "Student Name (English)": "",
-                            "Date of Birth": "",
-                            "Sex": "",
-                            "Blood Group": "",
-                            "Identification Mark": "",
-                            "Religion": "",
-                            "Cast": "",
-                            "Nationality": "",
-                            "Residing With": "",
-                            "NID": "",
-                            "Academic Class": "",
-                            "Academic Section": "",
-                            "Academic Roll": "",
-                            "Academic Group": "",
-                            "Academic Year": "",
-                            "Admission Class": "",
-                            "Admission Roll": "",
-                            "Admission Date": "",
-                            "Previous School": "",
-                            "Extra Curricullam": ""
-                        },
-                        "Father Details": {
-                            "Father Name (Bangla)": "",
-                            "Father Name (English)": "",
-                            "Occupation": "",
-                            "Rank": "",
-                            "Designation": "",
-                            "Organization": "",
-                            "Office Address": "",
-                            "Mobile No": "",
-                            "Telephone No": "",
-                            "NID No": ""
-                        },
-                        "Mother Details": {
-                            "Mother Name (Bangla)": "",
-                            "Mother Name (English)": "",
-                            "Occupation": "",
-                            "Rank": "",
-                            "Designation": "",
-                            "Organization": "",
-                            "Office Address": "",
-                            "Mobile No": "",
-                            "Telephone No": "",
-                            "NID No": ""
-                        },
-                        "Present Address": {
-                            "House #": "",
-                            "Road": "",
-                            "Village": "",
-                            "Post": "",
-                            "Upozilla": "",
-                            "District": "",
-                            "Division": ""
-                        },
-                        "Permanent Address": {
-                            "House": "",
-                            "Road": "",
-                            "Village": "",
-                            "Post": "",
-                            "Upozilla": "",
-                            "District": "",
-                            "Division": ""
-                        },
-                        "Local Guardian Details": {
-                            "Name (Bangla)": "",
-                            "Name (English)": "",
-                            "House": "",
-                            "Road": "",
-                            "Village": "",
-                            "Post": "",
-                            "Upozilla": "",
-                            "District": "",
-                            "Division": "",
-                            "Mobile No": "",
-                            "Telephone": "",
-                            "Student's Relation With Local Guardian": "",
-                            "NID No": ""
-                        },
-                        "SMS Priority": {
-                            "First": "",
-                            "Second": "",
-                            "Third": ""
-                        }
-                    };
+function finalizeSession(pid, s){
+  const p = getPersonById(pid);
+  if (!p) return;
+  const dur = s.last - s.start;
+  if (dur < 500) return; // ignore very short blips
+  p.sessions.push({ start: s.start, end: s.last, duration: dur });
+  if (p.sessions.length > MAX_SESSIONS) p.sessions.shift();
+  p.totalMs += dur;
+  markPeopleDirty();
+}
 
-                    const SECTIONS = [
-                        "Student Details",
-                        "Father Details",
-                        "Mother Details",
-                        "Present Address",
-                        "Permanent Address",
-                        "Local Guardian Details",
-                        "Mobile No Priority for Sending Short Message Service"
-                    ];
+function currentSessionDuration(pid){
+  const s = currentSessions.get(pid);
+  return s ? Date.now() - s.start : 0;
+}
+function totalPersonTime(p){
+  return (p.totalMs || 0) + currentSessionDuration(p.id);
+}
+function avgAge(p){
+  if (!p.ages || !p.ages.length) return null;
+  return Math.round(p.ages.reduce((a,b)=>a+b,0) / p.ages.length);
+}
 
-                    const KNOWN_KEYS = [
-                        "Student Name (Bangla)", "Student Name (English)", "Father Name (Bangla)", "Father Name (English)",
-                        "Mother Name (Bangla)", "Mother Name (English)", "Student's Relation With Local Guardian",
-                        "Present Academic Status", "Admission Taken In", "Identification Mark", "Previous School",
-                        "Extra Curricullam", "Office Address", "Name (Bangla)", "Name (English)", "Telephone No",
-                        "Blood Group", "Residing With", "Student ID", "Category", "Date of Birth", "Religion",
-                        "Nationality", "Occupation", "Organization", "Designation", "Mobile No", "Telephone",
-                        "NID No", "House #", "Upozilla", "District", "Division", "Section", "Village",
-                        "House", "Class", "Group", "First", "Second", "Third", "Cast", "Rank", "Road",
-                        "Post", "Roll", "Year", "Date", "Sex", "NID"
-                    ].sort((a, b) => b.length - a.length);
+/* ============================================================
+   Live stats sampling (ages, coordinates)
+   ============================================================ */
+let lastAgeTick = 0, lastCoordTick = 0;
+const AGE_TICK_MS = 500;
+const COORD_TICK_MS = 1000;
 
-                    let currentSection = "Student Details";
+function tickPersonStats(activeTracks){
+  const now = Date.now();
+  if (now - lastAgeTick > AGE_TICK_MS){
+    lastAgeTick = now;
+    for (const tr of activeTracks){
+      if (!tr.personId || tr.age == null) continue;
+      const p = getPersonById(tr.personId);
+      if (!p) continue;
+      p.ages.push(Math.round(tr.age));
+      if (p.ages.length > MAX_AGES) p.ages.shift();
+      markPeopleDirty();
+    }
+  }
+  if (now - lastCoordTick > COORD_TICK_MS){
+    lastCoordTick = now;
+    const vw = video.videoWidth || 1, vh = video.videoHeight || 1;
+    for (const tr of activeTracks){
+      if (!tr.personId) continue;
+      const p = getPersonById(tr.personId);
+      if (!p) continue;
+      const cx = (tr.box.x + tr.box.w/2) / vw;
+      const cy = (tr.box.y + tr.box.h/2) / vh;
+      p.coords.push({ x: +cx.toFixed(3), y: +cy.toFixed(3), t: now });
+      if (p.coords.length > MAX_COORDS) p.coords.shift();
+      if (tr.thumb) p.thumb = tr.thumb;
+      markPeopleDirty();
+    }
+  }
+}
 
-                    rawLines.forEach(lineText => {
-                        let line = lineText.trim();
-                        if (!line) return;
+/* ============================================================
+   Web Worker — blur + texture
+   ============================================================ */
+const worker = (() => {
+  const code = `
+    self.onmessage = function(e){
+      const { id, buffer, width, height } = e.data;
+      const data = new Uint8ClampedArray(buffer);
+      const gray = new Float32Array(width*height);
+      for (let i=0;i<gray.length;i++){
+        const j=i*4;
+        gray[i] = 0.299*data[j] + 0.587*data[j+1] + 0.114*data[j+2];
+      }
+      let sum=0, sumSq=0, n=0;
+      for (let y=1;y<height-1;y++){
+        for (let x=1;x<width-1;x++){
+          const i=y*width+x;
+          const lap = -4*gray[i] + gray[i-1] + gray[i+1] + gray[i-width] + gray[i+width];
+          sum += lap; sumSq += lap*lap; n++;
+        }
+      }
+      const mean = sum/n;
+      const blur = sumSq/n - mean*mean;
+      let edges=0, total=0;
+      for (let y=1;y<height-1;y+=2){
+        for (let x=1;x<width-1;x+=2){
+          const i=y*width+x;
+          const c=gray[i];
+          let code=0;
+          if (gray[i-1]>c) code|=1;
+          if (gray[i+1]>c) code|=2;
+          if (gray[i-width]>c) code|=4;
+          if (gray[i+width]>c) code|=8;
+          let tr=0;
+          for (let b=0;b<4;b++){
+            const b1=(code>>b)&1, b2=(code>>((b+1)%4))&1;
+            if (b1!==b2) tr++;
+          }
+          if (tr>=2) edges++;
+          total++;
+        }
+      }
+      const texture = total ? edges/total : 0;
+      self.postMessage({ id, blur, texture });
+    };
+  `;
+  const blob = new Blob([code], { type: 'application/javascript' });
+  const w = new Worker(URL.createObjectURL(blob));
+  const pending = new Map();
+  let seq = 0;
+  w.onmessage = (e) => {
+    const cb = pending.get(e.data.id);
+    if (cb) { cb(e.data); pending.delete(e.data.id); }
+  };
+  return {
+    analyze(imageData){
+      return new Promise((resolve) => {
+        const id = ++seq;
+        pending.set(id, resolve);
+        const buf = imageData.data.buffer.slice(0);
+        w.postMessage({ id, buffer: buf, width: imageData.width, height: imageData.height }, [buf]);
+      });
+    }
+  };
+})();
 
-                        for (let sec of SECTIONS) {
-                            if (line.includes(sec)) {
-                                if (sec.includes("Short Message Service")) currentSection = "SMS Priority";
-                                else currentSection = sec;
-                                line = line.replace(sec, "").trim();
-                            }
-                        }
-                        if (!line) return;
+/* ============================================================
+   Tracker — IoU + descriptor re-ID
+   ============================================================ */
+class FaceTracker {
+  constructor(){
+    this.tracks = new Map();
+    this.lost = [];
+    this.nextId = 1;
+    this.iouThreshold = 0.25;
+    this.maxMissingFrames = 12;
+    this.lostTtlMs = 12000;
+    this.reIdThreshold = 0.55;
+  }
+  reset(){ this.tracks.clear(); this.lost = []; this.nextId = 1; }
+  iou(a,b){
+    const x1=Math.max(a.x,b.x), y1=Math.max(a.y,b.y);
+    const x2=Math.min(a.x+a.w,b.x+b.w), y2=Math.min(a.y+a.h,b.y+b.h);
+    const inter=Math.max(0,x2-x1)*Math.max(0,y2-y1);
+    const uni=a.w*a.h + b.w*b.h - inter;
+    return uni>0 ? inter/uni : 0;
+  }
+  update(dets, ts){
+    this.lost = this.lost.filter(l => ts - l.lostAt < this.lostTtlMs);
+    const used = new Set();
+    const active = [];
+    for (const [id, tr] of this.tracks){
+      let bestIdx = -1, bestIou = this.iouThreshold;
+      dets.forEach((d, i) => {
+        if (used.has(i)) return;
+        const v = this.iou(tr.box, d.box);
+        if (v > bestIou){ bestIou = v; bestIdx = i; }
+      });
+      if (bestIdx >= 0){
+        used.add(bestIdx);
+        this._refresh(tr, dets[bestIdx], ts);
+        active.push(tr);
+      } else {
+        tr.missing++;
+        if (tr.missing > this.maxMissingFrames){
+          tr.lostAt = ts;
+          this.lost.push(tr);
+          this.tracks.delete(id);
+        }
+      }
+    }
+    dets.forEach((d, i) => {
+      if (used.has(i)) return;
+      let match = null;
+      if (d.descriptor){
+        for (let j=0;j<this.lost.length;j++){
+          const l = this.lost[j];
+          if (l.descriptor){
+            const sim = cosineSim(l.descriptor, d.descriptor);
+            if (sim > this.reIdThreshold){ match = j; break; }
+          }
+        }
+      }
+      if (match !== null){
+        const l = this.lost.splice(match,1)[0];
+        l.box = d.box; l.missing = 0; l.reIdCount = (l.reIdCount||0) + 1;
+        this._refresh(l, d, ts);
+        this.tracks.set(l.id, l);
+        active.push(l);
+      } else {
+        const t = this._create(d, ts);
+        this.tracks.set(t.id, t);
+        active.push(t);
+      }
+    });
+    return active;
+  }
+  _create(d, ts){
+    return {
+      id: this.nextId++,
+      box: d.box,
+      descriptor: d.descriptor,
+      landmarks: d.landmarks,
+      firstSeen: ts, lastSeen: ts, missing: 0,
+      frames: 0,
+      reIdCount: 0,
+      name: null,
+      personId: null,
+      personChecked: false,
+      earHistory: [], blinkCount: 0, eyesClosed: false,
+      poseHistory: [], textureScores: [],
+      blurScore: 0, brightnessScore: 0, sizeScore: 0, poseScore: 0,
+      emotion: null, emotionScores: null,
+      age: null, gender: null, genderProb: 0,
+      quality: 0,
+      liveness: 'live', livenessScore: 1,
+      thumb: null, thumbAt: 0
+    };
+  }
+  _refresh(tr, d, ts){
+    tr.box = d.box;
+    tr.landmarks = d.landmarks;
+    tr.lastSeen = ts;
+    tr.missing = 0;
+    tr.frames++;
+    if (d.descriptor) tr.descriptor = d.descriptor;
+    if (d.emotion) tr.emotion = d.emotion;
+    if (d.emotionScores) tr.emotionScores = d.emotionScores;
+    if (d.age != null) tr.age = d.age;
+    if (d.gender) { tr.gender = d.gender; tr.genderProb = d.genderProb; }
+  }
+}
+const tracker = new FaceTracker();
 
-                        let matches = [];
-                        KNOWN_KEYS.forEach(key => {
-                            const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                            const regex = new RegExp(`(?:^|\\s)(${escapedKey})\\s*:`, 'g');
-                            let m;
-                            while ((m = regex.exec(line)) !== null) {
-                                matches.push({
-                                    key: key,
-                                    startIndex: m.index + m[0].indexOf(m[1]),
-                                    endIndex: m.index + m[0].length
-                                });
-                            }
-                        });
+/* ============================================================
+   Model loading
+   ============================================================ */
+async function loadModels(){
+  if (modelReady) return;
+  showLoader(true, 'Loading models…');
+  const nets = [
+    ['tinyFaceDetector',      faceapi.nets.tinyFaceDetector],
+    ['faceLandmark68TinyNet', faceapi.nets.faceLandmark68TinyNet],
+    ['faceExpressionNet',     faceapi.nets.faceExpressionNet],
+    ['ageGenderNet',          faceapi.nets.ageGenderNet],
+    ['faceRecognitionNet',    faceapi.nets.faceRecognitionNet],
+  ];
+  for (let i=0;i<nets.length;i++){
+    const [name, net] = nets[i];
+    showLoader(true, `Loading ${name}… (${i+1}/${nets.length})`);
+    await net.loadFromUri(MODEL_URL);
+  }
+  options = new faceapi.TinyFaceDetectorOptions({
+    inputSize: 320, scoreThreshold: confidence
+  });
+  modelReady = true;
+}
 
-                        matches.sort((a, b) => a.startIndex - b.startIndex);
+/* ============================================================
+   Camera
+   ============================================================ */
+function applyMirror(){ video.classList.toggle('mirrored', mirror); }
+async function startCamera(){
+  if (stream) return;
+  showLoader(true, 'Requesting camera…');
+  stream = await navigator.mediaDevices.getUserMedia({
+    video: { facingMode: facing, width:{ideal:1280}, height:{ideal:720} },
+    audio: false
+  });
+  video.srcObject = stream;
+  await new Promise(res => {
+    if (video.readyState >= 1) return res();
+    video.onloadedmetadata = () => res();
+  });
+  await video.play();
+  videoReady = true;
+  applyMirror();
+  syncCanvasSize();
+  showLoader(false);
+}
+function syncCanvasSize(){
+  if (!video.videoWidth) return;
+  if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight){
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+  }
+  stage.style.aspectRatio = `${video.videoWidth} / ${video.videoHeight}`;
+}
 
-                        let filtered = [];
-                        matches.forEach(m => {
-                            if (!filtered.some(f => (m.startIndex >= f.startIndex && m.startIndex < f
-                                    .endIndex))) {
-                                filtered.push(m);
-                            }
-                        });
+/* ============================================================
+   Detection loop
+   ============================================================ */
+const DETECT_INTERVAL = 60;
+let frameCounter = 0;
 
-                        for (let i = 0; i < filtered.length; i++) {
-                            const k = filtered[i];
-                            const valStart = k.endIndex;
-                            const valEnd = (i + 1 < filtered.length) ? filtered[i + 1].startIndex : line.length;
-                            let val = line.substring(valStart, valEnd).trim();
-                            val = val.replace(/^:\s*/, '').trim();
+async function detectLoop(){
+  if (!running) return;
+  rafId = requestAnimationFrame(detectLoop);
 
-                            if (currentSection in resultJSON) {
-                                let keyToSave = k.key;
+  const now = performance.now();
+  if (now - lastDetectAt < DETECT_INTERVAL) return;
+  if (video.readyState < 2 || !videoReady) return;
+  if (!modelReady || !options) return;
+  lastDetectAt = now;
+  frameCounter++;
 
-                                if (lineText.includes("Present Academic Status")) {
-                                    if (k.key === "Class") keyToSave = "Academic Class";
-                                    if (k.key === "Roll") keyToSave = "Academic Roll";
-                                    if (k.key === "Section") keyToSave = "Academic Section";
-                                    if (k.key === "Group") keyToSave = "Academic Group";
-                                    if (k.key === "Year") keyToSave = "Academic Year";
-                                } else if (lineText.includes("Admission Taken In")) {
-                                    if (k.key === "Class") keyToSave = "Admission Class";
-                                    if (k.key === "Roll") keyToSave = "Admission Roll";
-                                    if (k.key === "Date") keyToSave = "Admission Date";
-                                }
+  syncCanvasSize();
 
-                                if (resultJSON[currentSection] && resultJSON[currentSection][keyToSave] !== undefined) {
-                                    resultJSON[currentSection][keyToSave] = val;
-                                }
-                            }
-                        }
-                    });
+  let results = [];
+  try {
+    const task = faceapi.detectAllFaces(video, options).withFaceLandmarks(true);
+    const heavy = frameCounter % 4 === 0;
+    const fullTask = heavy
+      ? task.withFaceExpressions().withAgeAndGender().withFaceDescriptors()
+      : task;
+    results = await fullTask;
+  } catch (e){ console.warn('detect error', e); return; }
 
-                    return resultJSON;
-                } catch (err) {
-                    throw new Error(`Extraction failed: ${err.message}`);
-                }
-            }
+  if (lastFrameTs){
+    const inst = 1000 / Math.max(1, now - lastFrameTs);
+    fpsSmooth = fpsSmooth ? fpsSmooth*0.85 + inst*0.15 : inst;
+  }
+  lastFrameTs = now;
 
-            // ─── Render JSON ───
-            function renderJSON(json, pretty = true) {
-                const str = JSON.stringify(json, null, pretty ? 2 : 0);
-                const highlighted = syntaxHighlight(str);
-                outputBody.innerHTML = `<pre>${highlighted}</pre>`;
-                currentJson = json;
-                const total = countFields(json);
-                fieldCount.textContent = `● ${total} fields`;
-            }
+  const dets = results.map(r => ({
+    box: {
+      x: r.detection.box.x,
+      y: r.detection.box.y,
+      w: r.detection.box.width,
+      h: r.detection.box.height
+    },
+    score: r.detection.score,
+    landmarks: r.landmarks || null,
+    descriptor: r.descriptor ? Array.from(r.descriptor) : null,
+    emotion: r.expressions ? topEmotion(r.expressions) : null,
+    emotionScores: r.expressions ? { ...r.expressions } : null,
+    age: r.age != null ? r.age : null,
+    gender: r.gender || null,
+    genderProb: r.genderProbability || 0
+  }));
 
-            function countFields(obj) {
-                let count = 0;
-                for (const key in obj) {
-                    if (obj.hasOwnProperty(key)) {
-                        if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-                            count += countFields(obj[key]);
-                        } else {
-                            count++;
-                        }
-                    }
-                }
-                return count;
-            }
+  const activeTracks = tracker.update(dets, now);
 
-            function syntaxHighlight(json) {
-                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                let output = '';
-                let inString = false;
-                let escape = false;
-                let i = 0;
-                while (i < json.length) {
-                    const ch = json[i];
-                    if (escape) {
-                        output += ch;
-                        escape = false;
-                        i++;
-                        continue;
-                    }
-                    if (ch === '\\') {
-                        escape = true;
-                        output += ch;
-                        i++;
-                        continue;
-                    }
-                    if (ch === '"') {
-                        inString = !inString;
-                        output += ch;
-                        i++;
-                        continue;
-                    }
-                    if (!inString) {
-                        if (ch === '{' || ch === '}' || ch === '[' || ch === ']') {
-                            output += `<span class="json-brace">${ch}</span>`;
-                        } else if (ch === ':') {
-                            output += `<span class="json-colon">${ch}</span>`;
-                        } else if (ch === ',') {
-                            output += `<span class="json-comma">${ch}</span>`;
-                        } else if (ch === 't' && json.substr(i, 4) === 'true') {
-                            output += `<span class="json-boolean">true</span>`;
-                            i += 3;
-                        } else if (ch === 'f' && json.substr(i, 5) === 'false') {
-                            output += `<span class="json-boolean">false</span>`;
-                            i += 4;
-                        } else if (ch === 'n' && json.substr(i, 4) === 'null') {
-                            output += `<span class="json-null">null</span>`;
-                            i += 3;
-                        } else if (ch >= '0' && ch <= '9' || ch === '-') {
-                            let num = ch;
-                            let j = i + 1;
-                            while (j < json.length && (json[j] >= '0' && json[j] <= '9' || json[j] === '.' || json[j] ===
-                                    'e' || json[j] === 'E' || json[j] === '+' || json[j] === '-')) {
-                                num += json[j];
-                                j++;
-                            }
-                            output += `<span class="json-number">${num}</span>`;
-                            i = j - 1;
-                        } else {
-                            output += ch;
-                        }
-                    } else {
-                        // inside string – check for key pattern
-                        const isKey = (json[i - 1] === '{' || json[i - 1] === ',' || json[i - 1] === '\n' || json[i - 1] ===
-                            ' ') &&
-                            json.slice(i).match(/^"[^"]+"/) &&
-                            json.slice(i + json.slice(i).indexOf('"') + 1).trim().startsWith(':');
-                        if (isKey) {
-                            // find the closing quote
-                            let end = i + 1;
-                            while (end < json.length && json[end] !== '"') {
-                                if (json[end] === '\\') end++;
-                                end++;
-                            }
-                            const keyContent = json.slice(i, end + 1);
-                            output += `<span class="json-key">${keyContent}</span>`;
-                            i = end;
-                        } else {
-                            output += ch;
-                        }
-                    }
-                    i++;
-                }
-                return output;
-            }
+  // Link tracks to persistent people
+  for (const tr of activeTracks){
+    if (tr.personId || tr.personChecked) continue;
+    if (!tr.descriptor) continue;
+    tr.personChecked = true;
+    let p = findPersonByDescriptor(tr.descriptor);
+    if (!p) p = createPerson(tr.descriptor);
+    tr.personId = p.id;
+    if (p.name) tr.name = p.name;
+  }
 
-            // ─── Show empty ───
-            function showEmpty() {
-                outputBody.innerHTML = `
-                        <div class="json-empty">
-                            <i class="fas fa-inbox"></i>
-                            No data yet
-                            <div class="hint">Enter a Student ID and click Extract, or upload a PDF.</div>
-                        </div>
-                    `;
-                currentJson = null;
-                fieldCount.textContent = '';
-            }
+  // Analytics
+  for (const tr of activeTracks){
+    if (tr.landmarks) { computeEAR(tr); computePose(tr); }
+    if (now - tr.thumbAt > 600){
+      tr.thumbAt = now;
+      tr.thumb = makeThumb(tr.box);
+    }
+  }
+  if (frameCounter % 6 === 0 && activeTracks.length){
+    const tr = activeTracks.reduce((a,b) =>
+      (a.box.w*a.box.h > b.box.w*b.box.h) ? a : b);
+    analyzeFace(tr).catch(()=>{});
+  }
+  for (const tr of activeTracks) computeQuality(tr);
 
-            // ─── Main extract flow ───
-            async function handleExtract(studentId) {
-                if (!studentId || !studentId.trim()) {
-                    showToast('Please enter a Student ID.', 'error');
-                    setStatus('⚠️ Please enter a Student ID.', 'error');
-                    return;
-                }
+  // Sessions + person stats
+  tickSessions(activeTracks);
+  tickPersonStats(activeTracks);
 
-                const id = studentId.trim();
-                const url = buildPdfUrl(id);
-                const useProxy = useProxyCheck.checked;
-                const proxyUrl = proxyUrlInput.value.trim();
+  draw(activeTracks);
 
-                setLoading();
-                fetchBtn.disabled = true;
+  faceCountEl.textContent  = activeTracks.length;
+  trackCountEl.textContent = tracker.tracks.size;
+  fpsEl.textContent        = fpsSmooth ? fpsSmooth.toFixed(0) : '--';
 
-                try {
-                    const buffer = await fetchWithProxy(url, useProxy, proxyUrl);
-                    const json = await extractFromArrayBuffer(buffer, `Student ID: ${id}`);
-                    renderJSON(json, prettyMode);
-                    setStatus(
-                        `✅ Extracted successfully for <strong>ID: ${id}</strong>`,
-                        'success',
-                        `${countFields(json)} fields extracted`
-                    );
-                    showToast(`Data extracted for Student ID: ${id}`, 'success');
-                } catch (err) {
-                    console.error('Extraction error:', err);
-                    const msg = err.message || 'Unknown error';
-                    setStatus(`❌ Failed: ${msg}`, 'error');
-                    showToast(`Error: ${msg}`, 'error');
-                    // If it looks like a CORS error, show helpful message
-                    if (msg.includes('fetch') || msg.includes('CORS') || msg.includes('NetworkError') || msg.includes(
-                            'Failed to fetch')) {
-                        setStatus(
-                            `❌ CORS / network error — try using the proxy or upload a PDF manually.`,
-                            'error',
-                            msg
-                        );
-                        showToast('CORS error: enable proxy or upload PDF manually', 'error');
-                    }
-                } finally {
-                    fetchBtn.disabled = false;
-                }
-            }
+  renderFacesPanel(activeTracks);
 
-            // ─── Handle file upload ───
-            async function handleFileUpload(file) {
-                if (!file || file.type !== 'application/pdf') {
-                    showToast('Please select a valid PDF file.', 'error');
-                    return;
-                }
+  lastDetections = activeTracks.map(tr => ({
+    id: tr.id,
+    x: tr.box.x, y: tr.box.y, width: tr.box.w, height: tr.box.h,
+    emotion: tr.emotion, age: tr.age, gender: tr.gender,
+    quality: tr.quality, name: tr.name,
+    reIdCount: tr.reIdCount, blinkCount: tr.blinkCount
+  }));
+  listeners.forEach(cb => { try { cb(lastDetections, video); } catch(e){ console.error(e); } });
+}
 
-                setLoading();
-                uploadBtn.disabled = true;
+/* ============================================================
+   Analytics helpers
+   ============================================================ */
+function topEmotion(expr){
+  let best = 'neutral', bestV = 0;
+  for (const k in expr){
+    if (expr[k] > bestV){ bestV = expr[k]; best = k; }
+  }
+  return best;
+}
+function eyeAspectRatio(pts){
+  const d = (a,b) => Math.hypot(a.x-b.x, a.y-b.y);
+  return (d(pts[1],pts[5]) + d(pts[2],pts[4])) / (2 * d(pts[0],pts[3]) + 1e-6);
+}
+function computeEAR(tr){
+  const p = tr.landmarks.positions;
+  const left  = eyeAspectRatio([p[36],p[37],p[38],p[39],p[40],p[41]]);
+  const right = eyeAspectRatio([p[42],p[43],p[44],p[45],p[46],p[47]]);
+  const ear = (left + right) / 2;
+  tr.earHistory.push(ear);
+  if (tr.earHistory.length > 90) tr.earHistory.shift();
+  const BLINK_TH = 0.19;
+  if (ear < BLINK_TH && !tr.eyesClosed){
+    tr.eyesClosed = true;
+  } else if (ear > BLINK_TH && tr.eyesClosed){
+    tr.eyesClosed = false;
+    tr.blinkCount++;
+  }
+}
+function computePose(tr){
+  const p = tr.landmarks.positions;
+  const leftEye = p[36], rightEye = p[45];
+  const nose = p[30];
+  const mouthL = p[48], mouthR = p[54];
+  const eyeMidX = (leftEye.x + rightEye.x) / 2;
+  const faceW = Math.hypot(rightEye.x-leftEye.x, rightEye.y-leftEye.y) + 1e-6;
+  const yaw = (nose.x - eyeMidX) / faceW;
+  const pitch = (nose.y - (leftEye.y + mouthL.y)/2) / (Math.abs(mouthL.y-leftEye.y)+1e-6);
+  tr.poseHistory.push({ yaw, pitch });
+  if (tr.poseHistory.length > 60) tr.poseHistory.shift();
+}
+async function analyzeFace(tr){
+  const { x, y, w, h } = tr.box;
+  const cw = 64, ch = 64;
+  const c = document.createElement('canvas');
+  c.width = cw; c.height = ch;
+  const cx = c.getContext('2d', { willReadFrequently: true });
+  cx.drawImage(video, x, y, w, h, 0, 0, cw, ch);
+  const img = cx.getImageData(0, 0, cw, ch);
+  const { blur, texture } = await worker.analyze(img);
+  tr.blurScore = blur;
+  tr.textureScores.push(texture);
+  if (tr.textureScores.length > 20) tr.textureScores.shift();
+  let sum = 0;
+  for (let i=0;i<img.data.length;i+=4){
+    sum += 0.299*img.data[i] + 0.587*img.data[i+1] + 0.114*img.data[i+2];
+  }
+  tr.brightnessScore = sum / (img.data.length/4);
+}
+function computeQuality(tr){
+  const { w, h } = tr.box;
+  const vw = video.videoWidth || 1, vh = video.videoHeight || 1;
+  tr.sizeScore = Math.min(1, (w*h) / (vw*vh) / 0.25);
+  const b = Math.max(0, tr.blurScore || 0);
+  const blurN = Math.min(1, Math.log10(b + 1) / 3);
+  const br = tr.brightnessScore || 0;
+  const brN = 1 - Math.min(1, Math.abs(br - 120) / 120);
+  let poseN = 1;
+  if (tr.poseHistory.length){
+    const avg = tr.poseHistory.reduce((a,p)=>({yaw:a.yaw+Math.abs(p.yaw),pitch:a.pitch+Math.abs(p.pitch)}),{yaw:0,pitch:0});
+    const n = tr.poseHistory.length;
+    poseN = Math.max(0, 1 - ((avg.yaw/n)*1.6 + (avg.pitch/n)*0.8));
+  }
+  tr.quality = Math.round(100 * (0.30*blurN + 0.25*brN + 0.25*tr.sizeScore + 0.20*poseN));
+}
+function makeThumb(box){
+  try {
+    const size = 96;
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const cx = c.getContext('2d');
+    cx.drawImage(video, box.x, box.y, box.w, box.h, 0, 0, size, size);
+    return c.toDataURL('image/jpeg', 0.7);
+  } catch { return null; }
+}
 
-                try {
-                    const buffer = await file.arrayBuffer();
-                    const json = await extractFromArrayBuffer(buffer, file.name);
-                    renderJSON(json, prettyMode);
-                    setStatus(
-                        `✅ Extracted from <strong>${file.name}</strong>`,
-                        'success',
-                        `${countFields(json)} fields extracted`
-                    );
-                    showToast(`Extracted from ${file.name}`, 'success');
-                } catch (err) {
-                    console.error('File extraction error:', err);
-                    const msg = err.message || 'Unknown error';
-                    setStatus(`❌ Failed to parse PDF: ${msg}`, 'error');
-                    showToast(`Error: ${msg}`, 'error');
-                } finally {
-                    uploadBtn.disabled = false;
-                    fileInput.value = '';
-                }
-            }
+/* ============================================================
+   Drawing
+   ============================================================ */
+function roundRect(c,x,y,w,h,r){
+  r=Math.min(r,w/2,h/2);
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.arcTo(x+w,y,x+w,y+h,r);
+  c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);
+  c.arcTo(x,y,x+w,y,r);
+  c.closePath();
+}
+const EMOTION_EMOJI = {
+  neutral:'😐', happy:'😊', sad:'😢', angry:'😠',
+  fearful:'😨', disgusted:'🤢', surprised:'😲'
+};
+function draw(tracks){
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const s = Math.max(1, W/700);
+  const color = '#00e5a0';
+  for (const tr of tracks){
+    const bb = tr.box;
+    let x = bb.x, y = bb.y, w = bb.w, h = bb.h;
+    if (mirror) x = W - x - w;
 
-            // ─── Sample data ───
-            function loadSample() {
-                const sample = {
-                    "Student Details": {
-                        "Student ID": "12345",
-                        "Category": "General",
-                        "Student Name (Bangla)": "রহিম উদ্দিন",
-                        "Student Name (English)": "Rahim Uddin",
-                        "Date of Birth": "15-08-2005",
-                        "Sex": "Male",
-                        "Blood Group": "O+",
-                        "Identification Mark": "Mole on left cheek",
-                        "Religion": "Islam",
-                        "Cast": "Sunni",
-                        "Nationality": "Bangladeshi",
-                        "Residing With": "Parents",
-                        "NID": "1234567890123",
-                        "Academic Class": "10",
-                        "Academic Section": "A",
-                        "Academic Roll": "01",
-                        "Academic Group": "Science",
-                        "Academic Year": "2025",
-                        "Admission Class": "6",
-                        "Admission Roll": "45",
-                        "Admission Date": "01-01-2020",
-                        "Previous School": "ABC High School",
-                        "Extra Curricullam": "Football, Debate"
-                    },
-                    "Father Details": {
-                        "Father Name (Bangla)": "আব্দুল করিম",
-                        "Father Name (English)": "Abdul Karim",
-                        "Occupation": "Business",
-                        "Rank": "Owner",
-                        "Designation": "Manager",
-                        "Organization": "Karim Traders",
-                        "Office Address": "23, Motijheel, Dhaka",
-                        "Mobile No": "01712345678",
-                        "Telephone No": "02-1234567",
-                        "NID No": "1234567890124"
-                    },
-                    "Mother Details": {
-                        "Mother Name (Bangla)": "ফাতেমা বেগম",
-                        "Mother Name (English)": "Fatema Begum",
-                        "Occupation": "Housewife",
-                        "Rank": "",
-                        "Designation": "",
-                        "Organization": "",
-                        "Office Address": "",
-                        "Mobile No": "01812345678",
-                        "Telephone No": "",
-                        "NID No": "1234567890125"
-                    },
-                    "Present Address": {
-                        "House #": "12/A",
-                        "Road": "5",
-                        "Village": "Uttara",
-                        "Post": "Dhaka-1230",
-                        "Upozilla": "Uttara",
-                        "District": "Dhaka",
-                        "Division": "Dhaka"
-                    },
-                    "Permanent Address": {
-                        "House": "15",
-                        "Road": "2",
-                        "Village": "Savar",
-                        "Post": "Savar-1340",
-                        "Upozilla": "Savar",
-                        "District": "Dhaka",
-                        "Division": "Dhaka"
-                    },
-                    "Local Guardian Details": {
-                        "Name (Bangla)": "মো. ইব্রাহিম",
-                        "Name (English)": "Md. Ibrahim",
-                        "House": "22",
-                        "Road": "3",
-                        "Village": "Mirpur",
-                        "Post": "Dhaka-1216",
-                        "Upozilla": "Mirpur",
-                        "District": "Dhaka",
-                        "Division": "Dhaka",
-                        "Mobile No": "01912345678",
-                        "Telephone": "",
-                        "Student's Relation With Local Guardian": "Uncle",
-                        "NID No": "1234567890126"
-                    },
-                    "SMS Priority": {
-                        "First": "Father",
-                        "Second": "Mother",
-                        "Third": "Guardian"
-                    }
-                };
-                renderJSON(sample, prettyMode);
-                setStatus('📋 Sample data loaded', 'info', `${countFields(sample)} fields`);
-                showToast('Sample data loaded', 'info');
-            }
+    ctx.save();
+    ctx.fillStyle = color + '1a';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = color + '66';
+    ctx.lineWidth = 1.5 * s;
+    ctx.setLineDash([7*s, 7*s]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.setLineDash([]);
 
-            // ─── Copy ───
-            function copyJson() {
-                if (!currentJson) {
-                    showToast('Nothing to copy — extract data first.', 'error');
-                    return;
-                }
-                const str = JSON.stringify(currentJson, null, prettyMode ? 2 : 0);
-                navigator.clipboard.writeText(str).then(() => {
-                    showToast('Copied to clipboard!', 'success');
-                }).catch(() => {
-                    // fallback
-                    const area = document.createElement('textarea');
-                    area.value = str;
-                    document.body.appendChild(area);
-                    area.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(area);
-                    showToast('Copied to clipboard!', 'success');
-                });
-            }
+    const c = Math.min(w,h)*0.26;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4*s;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 14*s;
+    ctx.beginPath();
+    ctx.moveTo(x, y+c);      ctx.lineTo(x, y);        ctx.lineTo(x+c, y);
+    ctx.moveTo(x+w-c, y);    ctx.lineTo(x+w, y);      ctx.lineTo(x+w, y+c);
+    ctx.moveTo(x+w, y+h-c);  ctx.lineTo(x+w, y+h);    ctx.lineTo(x+w-c, y+h);
+    ctx.moveTo(x+c, y+h);    ctx.lineTo(x, y+h);      ctx.lineTo(x, y+h-c);
+    ctx.stroke();
+    ctx.restore();
 
-            // ─── Download ───
-            function downloadJson() {
-                if (!currentJson) {
-                    showToast('Nothing to download — extract data first.', 'error');
-                    return;
-                }
-                const str = JSON.stringify(currentJson, null, prettyMode ? 2 : 0);
-                const blob = new Blob([str], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                const id = studentIdInput.value.trim() || 'student';
-                a.download = `student-profile-${id}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showToast('Downloaded!', 'success');
-            }
+    const emoji = tr.emotion ? (EMOTION_EMOJI[tr.emotion]||'') : '';
+    const title = (tr.name ? tr.name : `#${tr.id}`) + `  ${emoji} ${tr.emotion||''}`.trim();
+    const p = tr.personId ? getPersonById(tr.personId) : null;
+    const liveAvg = p ? avgAge(p) : null;
+    const sub = [
+      liveAvg != null ? `age:${liveAvg}` : (tr.age != null ? `~${Math.round(tr.age)}y` : null),
+      tr.gender ? `${tr.gender[0].toUpperCase()} ${(tr.genderProb*100).toFixed(0)}%` : null,
+      `Q:${tr.quality}`,
+      tr.blinkCount ? `blink:${tr.blinkCount}` : null
+    ].filter(Boolean).join(' · ');
 
-            // ─── Event listeners ───
-            fetchBtn.addEventListener('click', () => {
-                handleExtract(studentIdInput.value);
-            });
+    const fs1 = 13*s, fs2 = 11*s;
+    ctx.save();
+    ctx.font = `700 ${fs1}px ui-monospace,Menlo,monospace`;
+    const w1 = ctx.measureText(title).width;
+    ctx.font = `600 ${fs2}px ui-monospace,Menlo,monospace`;
+    const w2 = ctx.measureText(sub).width;
+    const padX = 9*s, padY = 5*s;
+    const bw = Math.max(w1, w2) + padX*2;
+    const bh = fs1 + fs2 + padY*2 + 4*s;
 
-            studentIdInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleExtract(studentIdInput.value);
-                }
-            });
+    let lx = x;
+    let ly = y - bh - 8*s;
+    if (ly < 0) ly = y + 8*s;
+    if (lx + bw > W) lx = W - bw;
+    if (lx < 0) lx = 0;
 
-            uploadBtn.addEventListener('click', () => {
-                fileInput.click();
-            });
+    ctx.fillStyle = 'rgba(4,10,18,.85)';
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5*s;
+    roundRect(ctx, lx, ly, bw, bh, 8*s);
+    ctx.fill(); ctx.stroke();
 
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length) {
-                    handleFileUpload(e.target.files[0]);
-                }
-            });
+    ctx.fillStyle = color;
+    ctx.textBaseline = 'top';
+    ctx.font = `700 ${fs1}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(title, lx + padX, ly + padY);
+    ctx.fillStyle = 'rgba(230,237,247,.85)';
+    ctx.font = `600 ${fs2}px ui-monospace,Menlo,monospace`;
+    ctx.fillText(sub, lx + padX, ly + padY + fs1 + 3*s);
+    ctx.restore();
+  }
+}
 
-            sampleBtn.addEventListener('click', loadSample);
+/* ============================================================
+   Faces panel
+   ============================================================ */
+const faceCardCache = new Map();
 
-            clearBtn.addEventListener('click', () => {
-                showEmpty();
-                setReady();
-                studentIdInput.value = '';
-                showToast('Cleared', 'info');
-            });
+function createFaceCard(tr){
+  const card = document.createElement('div');
+  card.className = 'face-card';
+  card.innerHTML = `
+    <div class="head">
+      <img class="thumb" alt="">
+      <div class="id-title">
+        <input class="name-input" placeholder="Name…" type="text" />
+        <small class="meta"></small>
+      </div>
+      <div class="emoji"></div>
+    </div>
+    <div class="badges">
+      <span class="badge live">✓ LIVE</span>
+      <span class="badge neutral emo-badge"></span>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="lbl">Avg age</div><div class="val age-val">—</div></div>
+      <div class="metric"><div class="lbl">Gender</div><div class="val gender-val">—</div></div>
+      <div class="metric" style="grid-column:1/-1">
+        <div class="lbl">Quality <span class="q-val">0</span>/100</div>
+        <div class="bar"><i></i></div>
+      </div>
+      <div class="metric" style="grid-column:1/-1">
+        <div class="lbl">Blinks</div><div class="val blink-val">0</div>
+      </div>
+    </div>
+  `;
+  const input = card.querySelector('.name-input');
+  input.addEventListener('input', () => {
+    const v = input.value.trim();
+    tr.name = v || null;
+    if (tr.personId){
+      const p = getPersonById(tr.personId);
+      if (p && p.name !== v){ p.name = v; markPeopleDirty(); renderPeoplePanel(); }
+    }
+  });
+  return card;
+}
 
-            copyBtn.addEventListener('click', copyJson);
-            downloadBtn.addEventListener('click', downloadJson);
+function updateFaceCard(card, tr){
+  const img = card.querySelector('.thumb');
+  if (tr.thumb && img.src !== tr.thumb) img.src = tr.thumb;
 
-            prettyToggle.addEventListener('click', () => {
-                prettyMode = !prettyMode;
-                prettyToggle.innerHTML = prettyMode ?
-                    '<i class="fas fa-align-left"></i> Pretty' :
-                    '<i class="fas fa-compress-alt"></i> Compact';
-                if (currentJson) {
-                    renderJSON(currentJson, prettyMode);
-                }
-                showToast(prettyMode ? 'Pretty mode' : 'Compact mode', 'info');
-            });
+  const input = card.querySelector('.name-input');
+  if (document.activeElement !== input){
+    const v = tr.name || '';
+    if (input.value !== v) input.value = v;
+  }
 
-            // ─── Init ───
-            setReady();
-            showEmpty();
+  const durationS = ((tr.lastSeen - tr.firstSeen)/1000).toFixed(1);
+  card.querySelector('.meta').textContent =
+    `#${tr.id} · ${tr.frames}f · ${durationS}s`;
+  card.querySelector('.emoji').textContent = EMOTION_EMOJI[tr.emotion] || '👤';
+  card.querySelector('.emo-badge').textContent = tr.emotion || '—';
 
-            // focus input
-            studentIdInput.focus();
+  const p = tr.personId ? getPersonById(tr.personId) : null;
+  const liveAvg = p ? avgAge(p) : null;
+  card.querySelector('.age-val').textContent =
+    liveAvg != null ? `~${liveAvg}` : (tr.age != null ? `~${Math.round(tr.age)}` : '—');
 
-            // ─── Drag & drop on output area ───
-            outputBody.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                outputBody.style.borderColor = '#58a6ff';
-                outputBody.style.backgroundColor = 'rgba(88,166,255,0.04)';
-            });
+  card.querySelector('.gender-val').textContent =
+    tr.gender ? `${tr.gender} ${(tr.genderProb*100).toFixed(0)}%` : '—';
+  card.querySelector('.q-val').textContent = tr.quality;
+  card.querySelector('.bar > i').style.width = tr.quality + '%';
+  card.querySelector('.blink-val').textContent = tr.blinkCount;
+}
 
-            outputBody.addEventListener('dragleave', () => {
-                outputBody.style.borderColor = 'transparent';
-                outputBody.style.backgroundColor = 'transparent';
-            });
+function renderFacesPanel(tracks){
+  if (!tracks.length){
+    if (!facesPanel.querySelector('.empty')){
+      facesPanel.innerHTML = '<div class="empty">No faces yet.</div>';
+    }
+    faceCardCache.clear();
+    return;
+  }
+  const empty = facesPanel.querySelector('.empty');
+  if (empty) empty.remove();
 
-            outputBody.addEventListener('drop', (e) => {
-                e.preventDefault();
-                outputBody.style.borderColor = 'transparent';
-                outputBody.style.backgroundColor = 'transparent';
-                const files = e.dataTransfer.files;
-                if (files.length && files[0].type === 'application/pdf') {
-                    handleFileUpload(files[0]);
-                } else {
-                    showToast('Please drop a PDF file.', 'error');
-                }
-            });
+  const seen = new Set();
+  for (const tr of tracks){
+    seen.add(tr.id);
+    let card = faceCardCache.get(tr.id);
+    if (!card){
+      card = createFaceCard(tr);
+      facesPanel.appendChild(card);
+      faceCardCache.set(tr.id, card);
+    }
+    updateFaceCard(card, tr);
+  }
+  for (const [id, card] of faceCardCache){
+    if (!seen.has(id)){ card.remove(); faceCardCache.delete(id); }
+  }
+}
 
-            // ─── Also allow drop on entire page ───
-            document.addEventListener('dragover', (e) => e.preventDefault());
-            document.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const files = e.dataTransfer.files;
-                if (files.length && files[0].type === 'application/pdf') {
-                    handleFileUpload(files[0]);
-                }
-            });
+/* ============================================================
+   People panel
+   ============================================================ */
+const personCardCache = new Map();
 
-        })();
-    </script>
+function createPersonCard(p){
+  const card = document.createElement('div');
+  card.className = 'person-card';
+  card.dataset.id = p.id;
+  card.innerHTML = `
+    <img class="person-thumb" alt="">
+    <div class="person-info">
+      <div class="person-name"></div>
+      <div class="person-meta-1"></div>
+      <div class="person-meta-2"></div>
+    </div>
+  `;
+  card.addEventListener('click', () => openPersonModal(p.id));
+  return card;
+}
 
+function updatePersonCard(card, p){
+  const img = card.querySelector('.person-thumb');
+  if (p.thumb && img.src !== p.thumb) img.src = p.thumb;
+  card.querySelector('.person-name').textContent = p.name || 'Unknown';
+  const total = totalPersonTime(p);
+  const sessionCount = p.sessions.length + (currentSessions.has(p.id) ? 1 : 0);
+  card.querySelector('.person-meta-1').textContent =
+    `${fmtDuration(total)} · ${sessionCount} session${sessionCount===1?'':'s'}`;
+  card.querySelector('.person-meta-2').textContent = `Last seen ${fmtAgo(p.lastSeen)}`;
+}
+
+function renderPeoplePanel(){
+  const list = peopleCache.slice().sort((a,b) => b.lastSeen - a.lastSeen);
+  if (!list.length){
+    if (!peoplePanel.querySelector('.empty')){
+      peoplePanel.innerHTML = '<div class="empty">No saved people yet.</div>';
+    }
+    personCardCache.clear();
+    return;
+  }
+  const empty = peoplePanel.querySelector('.empty');
+  if (empty) empty.remove();
+
+  const seen = new Set();
+  for (const p of list){
+    seen.add(p.id);
+    let card = personCardCache.get(p.id);
+    if (!card){
+      card = createPersonCard(p);
+      peoplePanel.appendChild(card);
+      personCardCache.set(p.id, card);
+    }
+    updatePersonCard(card, p);
+  }
+  for (const [id, card] of personCardCache){
+    if (!seen.has(id)){ card.remove(); personCardCache.delete(id); }
+  }
+}
+
+/* ============================================================
+   Person modal
+   ============================================================ */
+let modalPersonId = null;
+
+function openPersonModal(pid){
+  modalPersonId = pid;
+  modal.classList.add('show');
+  renderPersonModal();
+}
+function closePersonModal(){
+  modalPersonId = null;
+  modal.classList.remove('show');
+}
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closePersonModal();
+});
+modalBox.addEventListener('click', (e) => {
+  if (e.target.id === 'modalClose') closePersonModal();
+  if (e.target.id === 'deletePerson'){
+    const p = getPersonById(modalPersonId);
+    if (p && confirm(`Delete "${p.name || 'Unknown'}"?`)){
+      peopleCache = peopleCache.filter(x => x.id !== p.id);
+      // Clear references on active tracks
+      for (const tr of tracker.tracks.values()){
+        if (tr.personId === p.id){ tr.personId = null; tr.personChecked = false; }
+      }
+      currentSessions.delete(p.id);
+      markPeopleDirty();
+      personCardCache.delete(p.id);
+      const c = personCardCache.get(p.id); if (c) c.remove();
+      flushPeople();
+      closePersonModal();
+      renderPeoplePanel();
+    }
+  }
+});
+
+function renderPersonModal(){
+  if (!modalPersonId) return;
+  const p = getPersonById(modalPersonId);
+  if (!p){ closePersonModal(); return; }
+
+  const total = totalPersonTime(p);
+  const liveAvg = avgAge(p);
+  const active = currentSessions.has(p.id);
+  const sessionCount = p.sessions.length + (active ? 1 : 0);
+
+  const sessionsHtml = (() => {
+    const items = [];
+    if (active){
+      const s = currentSessions.get(p.id);
+      items.push(`<li class="active-session">
+        <span>● ${fmtTime(s.start)} → now</span>
+        <span>${fmtDuration(Date.now()-s.start)}</span>
+      </li>`);
+    }
+    const recent = p.sessions.slice().reverse();
+    for (const s of recent){
+      items.push(`<li>
+        <span>${fmtTime(s.start)} → ${fmtTime(s.end)}</span>
+        <span>${fmtDuration(s.duration)}</span>
+      </li>`);
+    }
+    if (!items.length) return '<li style="color:var(--muted)">No sessions yet</li>';
+    return items.join('');
+  })();
+
+  modalBox.innerHTML = `
+    <button class="modal-close" id="modalClose">×</button>
+    <div class="modal-head">
+      <img class="modal-thumb" src="${p.thumb || ''}" alt="">
+      <div>
+        <h2>${escapeHtml(p.name || 'Unknown')}</h2>
+        <p>Total: ${fmtDuration(total)} · ${sessionCount} session${sessionCount===1?'':'s'}</p>
+        <p>Last seen: ${fmtAgo(p.lastSeen)}</p>
+        ${active ? '<span class="badge live">● Active</span>' : ''}
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h3>Live average age</h3>
+      ${liveAvg != null
+        ? `<div class="big-age">${liveAvg}<small>from last ${p.ages.length} samples</small></div>`
+        : '<p class="modal-hint">Not enough data yet</p>'}
+    </div>
+
+    <div class="modal-section">
+      <h3>Recent movement</h3>
+      <canvas class="modal-graph" id="modalGraph" width="500" height="300"></canvas>
+      <p class="modal-hint">Last ${p.coords.length} position${p.coords.length===1?'':'s'}</p>
+    </div>
+
+    <div class="modal-section">
+      <h3>Sessions (last ${p.sessions.length})</h3>
+      <ul class="session-list">${sessionsHtml}</ul>
+    </div>
+
+    <div class="modal-section">
+      <button class="danger-btn" id="deletePerson">Delete person</button>
+    </div>
+  `;
+
+  drawMovementGraph(p.coords);
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
+}
+
+function drawMovementGraph(coords){
+  const cvs = document.getElementById('modalGraph');
+  if (!cvs) return;
+  const W = cvs.width, H = cvs.height;
+  const g = cvs.getContext('2d');
+  g.clearRect(0,0,W,H);
+
+  // Background grid
+  g.strokeStyle = 'rgba(255,255,255,.06)';
+  g.lineWidth = 1;
+  for (let i=1;i<4;i++){
+    g.beginPath(); g.moveTo(W*i/4, 0); g.lineTo(W*i/4, H); g.stroke();
+    g.beginPath(); g.moveTo(0, H*i/4); g.lineTo(W, H*i/4); g.stroke();
+  }
+
+  if (!coords || !coords.length){
+    g.fillStyle = 'rgba(139,155,180,.9)';
+    g.font = '13px system-ui';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('No movement data yet', W/2, H/2);
+    return;
+  }
+
+  const pad = 24;
+  const xOf = v => pad + v.x * (W - pad*2);
+  const yOf = v => pad + v.y * (H - pad*2);
+
+  // Path
+  if (coords.length > 1){
+    g.strokeStyle = 'rgba(0,229,160,.75)';
+    g.lineWidth = 2.5;
+    g.lineJoin = 'round';
+    g.beginPath();
+    for (let i=0;i<coords.length;i++){
+      const x = xOf(coords[i]), y = yOf(coords[i]);
+      if (i === 0) g.moveTo(x, y); else g.lineTo(x, y);
+    }
+    g.stroke();
+  }
+
+  // Dots
+  for (let i=0;i<coords.length;i++){
+    const x = xOf(coords[i]), y = yOf(coords[i]);
+    const isLast = i === coords.length - 1;
+    const r = isLast ? 7 : 4;
+    g.fillStyle = isLast ? '#00e5a0' : 'rgba(0,179,255,.85)';
+    g.beginPath(); g.arc(x, y, r, 0, Math.PI*2); g.fill();
+    if (isLast){
+      g.strokeStyle = '#fff'; g.lineWidth = 2;
+      g.beginPath(); g.arc(x, y, r+3, 0, Math.PI*2); g.stroke();
+    }
+  }
+}
+
+/* ============================================================
+   Start / Stop / Errors
+   ============================================================ */
+function setStatus(text, kind=''){
+  statusEl.textContent = text;
+  dotEl.className = 'dot ' + kind;
+}
+function showLoader(show, text){
+  loader.classList.toggle('show', show);
+  if (text) loaderText.textContent = text;
+}
+function showOverlay(title, msg, btnLabel, showBtn){
+  overlayTitle.textContent = title;
+  overlayMsg.textContent = msg;
+  btnEnable.textContent = btnLabel;
+  btnEnable.style.display = showBtn ? '' : 'none';
+  startOverlay.classList.remove('hidden');
+}
+function hideOverlay(){ startOverlay.classList.add('hidden'); }
+function showPermissionError(msg){
+  permError.textContent = msg;
+  permError.style.display = msg ? 'block' : 'none';
+}
+function setControlsEnabled(enabled){
+  btnStart.disabled = !enabled;
+  btnFlip.disabled  = !enabled;
+  btnMirror.disabled= !enabled;
+  btnReset.disabled = !enabled;
+}
+
+async function start(){
+  if (running) return;
+  try {
+    btnEnable.disabled = true;
+    showPermissionError('');
+    setStatus('Loading…', 'loading');
+    await loadModels();
+    await startCamera();
+
+    running = true;
+    lastDetectAt = 0;
+    lastFrameTs = 0;
+    fpsSmooth = 0;
+    frameCounter = 0;
+
+    hideOverlay();
+    setControlsEnabled(true);
+    setStatus('Live', 'live');
+    btnStart.textContent = '⏹ Stop';
+    btnStart.classList.remove('primary');
+    btnEnable.disabled = false;
+    detectLoop();
+  } catch (err){
+    console.error(err);
+    showLoader(false);
+    btnEnable.disabled = false;
+    setStatus('Error', 'error');
+    setControlsEnabled(false);
+    let msg = 'Could not start. ' + (err.message || '');
+    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError'){
+      msg = 'Camera permission denied.';
+    } else if (err.name === 'NotFoundError'){
+      msg = 'No camera found.';
+    } else if (err.name === 'NotReadableError'){
+      msg = 'Camera in use by another app.';
+    } else if (!window.isSecureContext){
+      msg = 'Camera requires HTTPS or localhost.';
+    }
+    showOverlay('Camera needed', msg, '🔄 Retry', true);
+    showPermissionError(msg);
+  }
+}
+
+function stop(){
+  running = false;
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  video.srcObject = null;
+  videoReady = false;
+  // Close any open sessions
+  const now = Date.now();
+  for (const [pid, s] of currentSessions){
+    s.last = Math.min(s.last, now);
+    finalizeSession(pid, s);
+  }
+  currentSessions.clear();
+  flushPeople();
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  faceCountEl.textContent = '0';
+  fpsEl.textContent = '--';
+  setStatus('Stopped', '');
+  btnStart.textContent = '▶ Start';
+  btnStart.classList.add('primary');
+  showOverlay('Camera needed', 'Click to start.', '📷 Start', true);
+  btnEnable.disabled = false;
+  facesPanel.innerHTML = '<div class="empty">No faces yet.</div>';
+  faceCardCache.clear();
+}
+
+/* ============================================================
+   UI events
+   ============================================================ */
+btnEnable.addEventListener('click', start);
+btnStart.addEventListener('click', () => running ? stop() : start());
+
+btnMirror.addEventListener('click', () => {
+  mirror = !mirror;
+  btnMirror.classList.toggle('active', mirror);
+  applyMirror();
+});
+
+btnFlip.addEventListener('click', async () => {
+  facing = facing === 'user' ? 'environment' : 'user';
+  if (!running) return;
+  if (stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
+  video.srcObject = null;
+  try {
+    await startCamera();
+    lastDetectAt = 0;
+  } catch (e){
+    showPermissionError('Could not switch camera: ' + e.message);
+  }
+});
+
+btnReset.addEventListener('click', () => {
+  // Close current sessions cleanly
+  const now = Date.now();
+  for (const [pid, s] of currentSessions){
+    s.last = Math.min(s.last, now);
+    finalizeSession(pid, s);
+  }
+  currentSessions.clear();
+  flushPeople();
+  tracker.reset();
+  faceCardCache.clear();
+  facesPanel.innerHTML = '<div class="empty">Reset.</div>';
+  renderPeoplePanel();
+});
+
+confRange.addEventListener('input', e => {
+  confidence = parseFloat(e.target.value);
+  confVal.textContent = confidence.toFixed(2);
+  if (options) options = new faceapi.TinyFaceDetectorOptions({
+    inputSize: 320, scoreThreshold: confidence
+  });
+});
+
+/* ============================================================
+   Periodic UI refresh
+   ============================================================ */
+setInterval(() => {
+  renderPeoplePanel();
+  if (modalPersonId) renderPersonModal();
+}, 1000);
+
+/* ============================================================
+   Public API
+   ============================================================ */
+window.FaceAI = {
+  start, stop,
+  isRunning: () => running,
+  onDetect(cb){ listeners.push(cb); return () => { listeners = listeners.filter(f=>f!==cb); }; },
+  getDetections: () => lastDetections,
+  getTracks: () => Array.from(tracker.tracks.values()),
+  getPeople: () => peopleCache,
+  resetTracks: () => {
+    for (const [pid, s] of currentSessions){ finalizeSession(pid, s); }
+    currentSessions.clear();
+    tracker.reset();
+    faceCardCache.clear();
+    renderPeoplePanel();
+  },
+  setConfidence(v){
+    confidence = Math.min(0.9, Math.max(0.15, v));
+    confRange.value = confidence;
+    confVal.textContent = confidence.toFixed(2);
+    if (options) options = new faceapi.TinyFaceDetectorOptions({
+      inputSize: 320, scoreThreshold: confidence
+    });
+  },
+  setMirror(v){ mirror = !!v; btnMirror.classList.toggle('active', mirror); applyMirror(); },
+  get video(){ return video; },
+  get tracker(){ return tracker; }
+};
+
+window.addEventListener('beforeunload', () => {
+  flushPeople();
+  if (stream) stream.getTracks().forEach(t => t.stop());
+});
+
+(async function bootstrap(){
+  renderPeoplePanel();
+  if (!window.isSecureContext){
+    showOverlay('Insecure context', 'Camera requires HTTPS or localhost.', 'Unavailable', false);
+    setStatus('Insecure', 'error');
+    return;
+  }
+  try { await start(); } catch (e){ console.error(e); }
+})();
+</script>
 </body>
 </html>
