@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart EV Charging Station Using Solar Energy - Professional Poster</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/@zumer/snapdom/dist/snapdom.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --accent-color: #2b6cb0;
+            --text-main: #2d3748;
+            --text-muted: #4a5568;
+            --bg-white: #ffffff;
+            --border-light: #e2e8f0;
+            --bg-light-gray: #f7fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+
+        body {
+            background-color: #1a202c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .poster-container {
+            width: 100vw; height: 56.25vw;
+            max-height: 100vh; max-width: 177.78vh;
+            background-color: var(--bg-white);
+            display: flex; flex-direction: column;
+            overflow: hidden; position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+
+        .watermark {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('icon.png');
+            background-size: contain; background-repeat: no-repeat;
+            background-position: center; opacity: 0.1;
+            z-index: 0; pointer-events: none;
+        }
+
+        .header {
+            background-color: var(--bg-white);
+            color: var(--primary-color);
+            padding: 1.5vh 2vw;
+            display: flex; align-items: center;
+            border-bottom: 3px solid var(--primary-color);
+            position: relative; z-index: 2;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            min-height: 12vh;
+        }
+
+        .logo-left { width: 9vh; height: 9vh; object-fit: contain; margin-right: 1.5vw; flex-shrink: 0; }
+
+        .logo-placeholder {
+            display: none;
+            width: 9vh; height: 9vh;
+            margin-right: 1.5vw; flex-shrink: 0;
+            background: transparent;
+        }
+
+        .header-text { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .header h1 {
+            font-size: 1.7vw; margin-bottom: 0.4vh; line-height: 1.2;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .header p { font-size: 0.8vw; color: var(--text-muted); font-weight: 500; }
+        .header p strong { color: var(--primary-color); }
+
+        .main-content {
+            display: flex; flex: 1;
+            padding: 1.5vh 1.5vw; gap: 1.5vw;
+            position: relative; z-index: 2;
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        .column { flex: 1; display: flex; flex-direction: column; gap: 1.2vh; }
+        .column.middle { flex: 1.3; }
+
+        .section {
+            background-color: var(--bg-white);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 1vh 1vw;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            flex-shrink: 0;
+            transition: box-shadow 0.2s ease, outline 0.15s ease;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 0.95vw; font-weight: 700;
+            margin-bottom: 0.6vh;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.3vh;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .section p, .section ul {
+            font-size: 0.7vw; line-height: 1.5;
+            color: var(--text-main); text-align: justify;
+        }
+
+        .section ul { padding-left: 1.2vw; margin-bottom: 0.3vh; }
+        .section li { margin-bottom: 0.4vh; }
+
+        .flowchart-wrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; width: 100%;
+            background-color: var(--bg-light-gray);
+            border-radius: 4px; padding: 0.5vh 0.5vw;
+            border: 1px dashed var(--border-light);
+        }
+        .flowchart-wrapper svg { width: 100%; height: 100%; max-height: 72vh; object-fit: contain; }
+
+        /* ============================================================
+           TOP TOOLBAR (triple-dot toggle + hidden items)
+           ============================================================ */
+        .toolbar-container {
+            position: fixed;
+            top: 1.8vh;
+            right: 1.5vw;
+            z-index: 500;
+            display: inline-block;
+        }
+
+        .toolbar-toggle {
+            position: relative;
+            width: 2.4vw; height: 2.4vw;
+            min-width: 34px; min-height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            color: #4a5568;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10),
+                        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background 0.25s ease,
+                        color 0.25s ease,
+                        box-shadow 0.25s ease,
+                        transform 0.25s ease;
+            z-index: 2;
+        }
+
+        .toolbar-toggle:hover {
+            background: #ffffff;
+            color: #1a365d;
+            box-shadow: 0 6px 22px rgba(0,0,0,0.15);
+            transform: scale(1.06);
+        }
+
+        .toolbar-toggle.active {
+            background: #1a365d;
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(26,54,93,0.45);
+        }
+
+        .toolbar-toggle i {
+            font-size: 0.9vw;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .toolbar-toggle.active i {
+            transform: rotate(90deg);
+        }
+
+        .toolbar-items {
+            position: absolute;
+            top: 0;
+            right: calc(100% + 0.5vw);
+            display: flex; align-items: center;
+            gap: 0.15vw;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 0.45vh 0.45vw;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10),
+                        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transform-origin: right center;
+            transform: scale(0.5) translateX(28px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        opacity 0.28s ease;
+        }
+
+        .toolbar-items.open {
+            transform: scale(1) translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .toolbar-items .btn {
+            position: relative;
+            width: 2.4vw; height: 2.4vw;
+            min-width: 34px; min-height: 34px;
+            border-radius: 50%;
+            background: transparent;
+            color: #4a5568;
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.18s ease,
+                        color 0.18s ease,
+                        opacity 0.22s ease,
+                        transform 0.22s ease;
+            opacity: 0;
+            transform: translateX(14px) scale(0.7);
+        }
+
+        .toolbar-items.open .btn {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        .toolbar-items.open .btn:nth-child(1) { transition-delay: 0.08s, 0.08s, 0.08s, 0.08s; }
+        .toolbar-items.open .btn:nth-child(2) { transition-delay: 0.12s, 0.12s, 0.12s, 0.12s; }
+        .toolbar-items.open .btn:nth-child(3) { transition-delay: 0.16s, 0.16s, 0.16s, 0.16s; }
+        .toolbar-items.open .btn:nth-child(4) { transition-delay: 0.20s, 0.20s, 0.20s, 0.20s; }
+        .toolbar-items.open .btn:nth-child(5) { transition-delay: 0.24s, 0.24s, 0.24s, 0.24s; }
+        .toolbar-items.open .btn:nth-child(6) { transition-delay: 0.28s, 0.28s, 0.28s, 0.28s; }
+
+        .toolbar-items .btn i { font-size: 0.9vw; pointer-events: none; }
+        .toolbar-items .btn:hover { background: rgba(26, 54, 93, 0.08); color: #1a365d; }
+        .toolbar-items .btn.active {
+            background: #1a365d; color: #ffffff;
+            box-shadow: 0 2px 8px rgba(26, 54, 93, 0.35);
+        }
+
+        .toolbar-items .btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 0.8vh);
+            left: 50%;
+            transform: translateX(-50%) translateY(-4px);
+            background: #1a202c; color: #ffffff;
+            padding: 0.4vh 0.6vw;
+            border-radius: 4px;
+            font-size: 0.55vw; font-weight: 500;
+            white-space: nowrap;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            z-index: 700;
+        }
+
+        .toolbar-items .btn[data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============================================================
+           FORMAT FAB (bottom-left, only visible in Edit Mode)
+           ============================================================ */
+        .format-fab {
+            position: fixed;
+            bottom: 3.5vh; left: 2vw;
+            width: 4vw; height: 4vw;
+            min-width: 64px; min-height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+            color: #ffffff;
+            border: none; cursor: pointer;
+            display: none; align-items: center; justify-content: center;
+            box-shadow: 0 12px 36px rgba(26,54,93,0.45),
+                        0 0 0 0 rgba(43,108,176,0.55),
+                        0 0 0 1px rgba(255,255,255,0.15) inset;
+            z-index: 9999;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            animation: fabPulse 2.6s infinite;
+        }
+
+        .edit-mode-on .format-fab { display: flex; }
+
+        @keyframes fabPulse {
+            0%   { box-shadow: 0 12px 36px rgba(26,54,93,0.45), 0 0 0 0 rgba(43,108,176,0.55), 0 0 0 1px rgba(255,255,255,0.15) inset; }
+            70%  { box-shadow: 0 12px 36px rgba(26,54,93,0.45), 0 0 0 22px rgba(43,108,176,0), 0 0 0 1px rgba(255,255,255,0.15) inset; }
+            100% { box-shadow: 0 12px 36px rgba(26,54,93,0.45), 0 0 0 0 rgba(43,108,176,0), 0 0 0 1px rgba(255,255,255,0.15) inset; }
+        }
+
+        .format-fab:hover { transform: scale(1.08); animation-play-state: paused; }
+        .format-fab i {
+            font-size: 1.8vw; pointer-events: none;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .format-fab.open i { transform: rotate(90deg); }
+
+        /* ============================================================
+           FORMAT DOCK
+           ============================================================ */
+        .format-dock {
+            position: fixed;
+            bottom: 3.5vh; left: 50%;
+            transform: translateX(-50%) translateY(180%) scale(0.85);
+            display: flex; align-items: center;
+            gap: 0.1vw;
+            padding: 0.85vh 0.9vw;
+            background: linear-gradient(180deg, rgba(26, 32, 44, 0.96) 0%, rgba(15, 20, 30, 0.98) 100%);
+            border-radius: 18px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.55),
+                        0 0 0 1px rgba(255,255,255,0.06) inset,
+                        0 1px 0 rgba(255,255,255,0.12) inset;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 9998;
+            opacity: 0; pointer-events: none;
+            transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        opacity 0.35s ease;
+        }
+
+        .format-dock.open {
+            transform: translateX(-50%) translateY(0) scale(1);
+            opacity: 1; pointer-events: auto;
+        }
+
+        .dock-group {
+            display: flex; align-items: center;
+            gap: 0.08vw;
+            padding: 0 0.55vw;
+            border-right: 1px solid rgba(255,255,255,0.09);
+        }
+        .dock-group:last-child { border-right: none; padding-right: 0.2vw; }
+        .dock-group:first-child { padding-left: 0.2vw; }
+
+        .dock-btn {
+            position: relative;
+            width: 2.5vw; height: 2.5vw;
+            min-width: 38px; min-height: 38px;
+            border-radius: 10px;
+            background: transparent;
+            color: rgba(255,255,255,0.82);
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+        }
+
+        .dock-btn i { font-size: 0.95vw; pointer-events: none; transition: transform 0.18s ease; }
+        .dock-btn:hover { background: rgba(255,255,255,0.10); color: #ffffff; transform: translateY(-2px); }
+        .dock-btn:hover i { transform: scale(1.1); }
+        .dock-btn:active { transform: translateY(0); }
+        .dock-btn.active { background: #2b6cb0; color: #ffffff; box-shadow: 0 4px 12px rgba(43,108,176,0.5); }
+
+        .dock-btn .badge {
+            position: absolute;
+            bottom: 4px; right: 4px;
+            font-size: 0.5vw; font-weight: 800; line-height: 1;
+            color: rgba(255,255,255,0.9);
+            letter-spacing: 0;
+        }
+
+        .dock-btn[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 12px); left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #0a0f18; color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.6vw; font-weight: 500;
+            letter-spacing: 0.2px; white-space: nowrap;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.10);
+            z-index: 10000;
+        }
+        .dock-btn[data-tooltip]:hover::after {
+            opacity: 1; transform: translateX(-50%) translateY(0);
+        }
+
+        .dock-color {
+            position: relative;
+            width: 2.5vw; height: 2.5vw;
+            min-width: 38px; min-height: 38px;
+            border-radius: 10px;
+            background: transparent;
+            color: rgba(255,255,255,0.82);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .dock-color i { font-size: 0.95vw; pointer-events: none; }
+        .dock-color:hover { background: rgba(255,255,255,0.10); color: #ffffff; transform: translateY(-2px); }
+        .dock-color input[type="color"] {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            opacity: 0; cursor: pointer;
+            border: none; padding: 0;
+        }
+        .dock-color[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 12px); left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #0a0f18; color: #ffffff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.6vw; font-weight: 500;
+            white-space: nowrap;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.10);
+            z-index: 10000;
+        }
+        .dock-color:hover::after {
+            opacity: 1; transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============================================================
+           SELECTED SECTION + EDITABLE + DRAGGABLE
+           ============================================================ */
+        .selected-section {
+            outline: 2px solid #1a365d !important;
+            outline-offset: 3px;
+            box-shadow: 0 0 0 6px rgba(26, 54, 93, 0.10),
+                        0 8px 24px rgba(26, 54, 93, 0.15) !important;
+            z-index: 50;
+        }
+
+        .draggable { cursor: grab; position: relative; user-select: none; }
+        .draggable:active { cursor: grabbing; }
+        .draggable.dragging { opacity: 0.85; z-index: 9999; cursor: grabbing; }
+
+        .editable-active [contenteditable="true"] {
+            outline: 1px dashed rgba(26, 54, 93, 0.35);
+            outline-offset: 2px;
+            cursor: text;
+            user-select: text;
+            border-radius: 3px;
+        }
+        .editable-active [contenteditable="true"]:focus {
+            outline: 2px solid #1a365d;
+            background-color: rgba(26, 54, 93, 0.04);
+        }
+
+        .draggable.positioned { position: absolute !important; z-index: 100; }
+
+        .remove-btn {
+            position: absolute;
+            top: -9px; right: -9px;
+            width: 20px; height: 20px;
+            background: #c53030; color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            font-size: 10px; cursor: pointer;
+            display: none;
+            align-items: center; justify-content: center;
+            z-index: 10000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.15s ease;
+        }
+        .remove-btn:hover { transform: scale(1.15); background: #9b2c2c; }
+        .editable-active .draggable:hover .remove-btn { display: flex; }
+
+        .toast {
+            position: fixed;
+            bottom: 11vh; left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: #1a202c; color: white;
+            padding: 1vh 1.8vw;
+            border-radius: 8px;
+            font-size: 0.75vw; font-weight: 500;
+            z-index: 99999; opacity: 0;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            pointer-events: none;
+            display: flex; align-items: center; gap: 0.6vw;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast i { font-size: 0.85vw; color: #90cdf4; }
+
+        .add-text-btn {
+            position: fixed;
+            bottom: 3.5vh; right: 2vw;
+            background: #1a365d; color: white;
+            border: none;
+            padding: 1.2vh 1.4vw;
+            font-size: 0.75vw; font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(26, 54, 93, 0.4);
+            z-index: 9999;
+            display: none;
+            align-items: center; gap: 0.5vw;
+            transition: all 0.25s ease;
+        }
+        .add-text-btn i { font-size: 0.85vw; }
+        .add-text-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26, 54, 93, 0.55); }
+        .edit-mode-on .add-text-btn { display: flex; }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         TOP TOOLBAR — Toggle button + hidden items
+         ============================================================ -->
+    <div class="toolbar-container">
+
+        <button class="toolbar-toggle" id="toolbarToggle" onclick="toggleToolbar()" title="Tools">
+            <i class="fa-solid fa-ellipsis-vertical" id="toolbarIcon"></i>
+        </button>
+
+        <div class="toolbar-items" id="toolbarItems">
+            <button class="btn" id="editToggleBtn" onclick="toggleEditMode()" data-tooltip="Edit Mode">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn" onclick="undo()" data-tooltip="Undo">
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button class="btn" onclick="resetPoster()" data-tooltip="Reset">
+                <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+            <button class="btn" onclick="downloadPDF()" data-tooltip="Download PDF">
+                <i class="fa-solid fa-file-pdf"></i>
+            </button>
+            <button class="btn" onclick="downloadPNG()" data-tooltip="Download PNG">
+                <i class="fa-solid fa-image"></i>
+            </button>
+            <button class="btn" onclick="downloadSVG()" data-tooltip="Download SVG">
+                <i class="fa-solid fa-vector-square"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Format FAB -->
+    <button class="format-fab" id="formatFab" onclick="toggleFormatDock()" title="Format Tools">
+        <i class="fa-solid fa-ellipsis"></i>
+    </button>
+
+    <!-- Format Dock -->
+    <div class="format-dock" id="formatDock">
+
+        <div class="dock-group">
+            <button class="dock-btn" onclick="fmt('bold')" data-tooltip="Bold"><i class="fa-solid fa-bold"></i></button>
+            <button class="dock-btn" onclick="fmt('italic')" data-tooltip="Italic"><i class="fa-solid fa-italic"></i></button>
+            <button class="dock-btn" onclick="fmt('underline')" data-tooltip="Underline"><i class="fa-solid fa-underline"></i></button>
+            <button class="dock-btn" onclick="fmt('strikeThrough')" data-tooltip="Strikethrough"><i class="fa-solid fa-strikethrough"></i></button>
+        </div>
+
+        <div class="dock-group">
+            <button class="dock-btn" onclick="fmt('justifyLeft')" data-tooltip="Align Left"><i class="fa-solid fa-align-left"></i></button>
+            <button class="dock-btn" onclick="fmt('justifyCenter')" data-tooltip="Align Center"><i class="fa-solid fa-align-center"></i></button>
+            <button class="dock-btn" onclick="fmt('justifyRight')" data-tooltip="Align Right"><i class="fa-solid fa-align-right"></i></button>
+            <button class="dock-btn" onclick="fmt('justifyFull')" data-tooltip="Justify"><i class="fa-solid fa-align-justify"></i></button>
+        </div>
+
+        <div class="dock-group">
+            <button class="dock-btn" onclick="changeFontSize(-1)" data-tooltip="Decrease Font"><i class="fa-solid fa-minus"></i></button>
+            <button class="dock-btn" onclick="changeFontSize(1)" data-tooltip="Increase Font"><i class="fa-solid fa-plus"></i></button>
+        </div>
+
+        <div class="dock-group">
+            <button class="dock-btn" onclick="applyHeading('h1')" data-tooltip="Heading 1"><i class="fa-solid fa-heading"></i><span class="badge">1</span></button>
+            <button class="dock-btn" onclick="applyHeading('h2')" data-tooltip="Heading 2"><i class="fa-solid fa-heading"></i><span class="badge">2</span></button>
+            <button class="dock-btn" onclick="applyHeading('h3')" data-tooltip="Heading 3"><i class="fa-solid fa-heading"></i><span class="badge">3</span></button>
+            <button class="dock-btn" onclick="applyHeading('p')" data-tooltip="Paragraph"><i class="fa-solid fa-paragraph"></i></button>
+        </div>
+
+        <div class="dock-group">
+            <button class="dock-btn" onclick="fmt('insertUnorderedList')" data-tooltip="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
+            <button class="dock-btn" onclick="fmt('insertOrderedList')" data-tooltip="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+        </div>
+
+        <div class="dock-group">
+            <label class="dock-color" data-tooltip="Text Color">
+                <i class="fa-solid fa-font"></i>
+                <input type="color" value="#2d3748" oninput="applyTextColor(this.value)">
+            </label>
+            <label class="dock-color" data-tooltip="Section Background">
+                <i class="fa-solid fa-fill-drip"></i>
+                <input type="color" value="#ffffff" oninput="applySectionBg(this.value)">
+            </label>
+            <label class="dock-color" data-tooltip="Poster Background">
+                <i class="fa-solid fa-palette"></i>
+                <input type="color" value="#ffffff" oninput="applyPosterBg(this.value)">
+            </label>
+        </div>
+
+        <div class="dock-group">
+            <button class="dock-btn" onclick="resetSectionStyle()" data-tooltip="Reset Section Style"><i class="fa-solid fa-eraser"></i></button>
+            <button class="dock-btn" onclick="deselectSection()" data-tooltip="Deselect"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <button class="add-text-btn" onclick="addNewTextElement()">
+        <i class="fa-solid fa-plus"></i> Add Text
+    </button>
+
+    <div class="toast" id="toast">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <!-- Main Poster -->
+    <div class="poster-container" id="poster">
+
+        <div class="watermark"></div>
+
+        <div class="header draggable" data-selectable>
+            <img src="icon.png" alt="BAUST Logo" class="logo-left" id="mainLogo" onerror="this.style.display='none';">
+            <div class="logo-placeholder" id="logoPlaceholder"></div>
+            <div class="header-text">
+                <h1 contenteditable="false" class="editable-content">Smart Electric Vehicle Charging Station Using Solar Energy</h1>
+                <p contenteditable="false" class="editable-content"><strong>Author:</strong> Shomrat Mohammad Yousuf Ali Shibli | <strong>Institute:</strong> Bangladesh Army University of Science & Technology (BAUST), Saidpur</p>
+            </div>
+            <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="main-content">
+            <div class="column left">
+                <div class="section draggable" data-selectable>
+                    <div class="section-title editable-content" contenteditable="false">Abstract</div>
+                    <p class="editable-content" contenteditable="false">The growing demand for electricity and electric vehicles (EVs) has increased the need for sustainable and intelligent charging infrastructure. This project proposes a solar-powered wireless EV charging system utilizing parking spaces in offices, university campuses, and shopping malls. The system integrates wireless power transfer with solar photovoltaic technology for convenient and eco-friendly charging. It features automated entry and exit gates, RFID-based access control, and an LCD for displaying system information. A battery monitoring system tracks battery conditions, while an emergency power cutoff system enhances operational safety. Siren lights and sound provide emergency alerts, and smart road lighting improves visibility and energy efficiency. The proposed system aims to combine renewable energy, automation, safety, and smart parking management to promote sustainable transportation.</p>
+                    <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="section draggable" data-selectable>
+                    <div class="section-title editable-content" contenteditable="false">Objectives</div>
+                    <ul class="editable-content" contenteditable="false">
+                        <li>To develop a solar-powered wireless EV charging system by integrating solar photovoltaic technology with wireless power transfer.</li>
+                        <li>To utilize available parking spaces in offices, university campuses, and shopping malls as convenient wireless EV charging stations.</li>
+                        <li>To improve charging convenience and efficiency by enabling cable-free charging of electric vehicles while parked.</li>
+                        <li>To promote sustainable transportation and renewable energy utilization by reducing dependence on fossil fuels and minimizing carbon emissions.</li>
+                        <li>To develop an automated parking system with RFID access, automatic gates, LCD monitoring, battery monitoring, emergency cutoff, siren alerts, and smart lighting.</li>
+                    </ul>
+                    <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+
+            <div class="column middle">
+                <div class="section draggable" data-selectable style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="section-title editable-content" contenteditable="false">System Flowchart</div>
+                    <div class="flowchart-wrapper">
+                        <svg viewBox="0 0 850 1350" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#333333" />
+                                </marker>
+                            </defs>
+                            <style>
+                                .box-pink { fill: #FFD6D6; stroke: #333333; stroke-width: 1.5; }
+                                .box-blue { fill: #DDE6F5; stroke: #333333; stroke-width: 1.5; }
+                                .box-green { fill: #DDF4D9; stroke: #333333; stroke-width: 1.5; }
+                                .box-yellow { fill: #FFF5CC; stroke: #333333; stroke-width: 1.5; }
+                                .line { fill: none; stroke: #333333; stroke-width: 1.5; marker-end: url(#arrow); }
+                                .text-main { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #222222; text-anchor: middle; dominant-baseline: middle; }
+                                .text-label { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; fill: #333333; text-anchor: middle; }
+                            </style>
+                            <path class="line" d="M415,70 L415,100" />
+                            <path class="line" d="M415,160 L415,190" />
+                            <path class="line" d="M415,250 L415,280" />
+                            <path class="line" d="M415,360 L415,390" />
+                            <path class="line" d="M415,440 L415,470" />
+                            <path class="line" d="M415,550 L415,580" />
+                            <path class="line" d="M415,640 L415,670" />
+                            <path class="line" d="M415,730 L415,760" />
+                            <path class="line" d="M415,840 L415,870" />
+                            <path class="line" d="M415,930 L415,960" />
+                            <path class="line" d="M415,1040 L415,1070" />
+                            <path class="line" d="M415,1120 L415,1150" />
+                            <path class="line" d="M555,320 L730,320 L730,220 L615,220" />
+                            <path class="line" d="M555,510 L630,510" />
+                            <path class="line" d="M555,800 L680,800 L680,700 L615,700" />
+                            <path class="line" d="M555,1000 L630,1000" />
+                            <path class="line" d="M275,1190 L180,1190" />
+                            <path class="line" d="M555,1190 L630,1190" />
+                            <path class="line" d="M95,1230 L95,1295 L315,1295" />
+                            <path class="line" d="M725,1230 L725,1295 L515,1295" />
+                            <path class="line" d="M725,1230 L725,1320 L50,1320 L50,220 L215,220" />
+                            <rect class="box-pink" x="315" y="20" width="200" height="50" rx="25" />
+                            <text class="text-main" x="415" y="45">START</text>
+                            <polygon class="box-blue" points="285,100 545,100 525,160 265,160" />
+                            <text class="text-main" x="405" y="130">
+                                <tspan x="405" dy="-0.5em">Initialize IR sensor</tspan>
+                                <tspan x="405" dy="1.2em">and system</tspan>
+                            </text>
+                            <rect class="box-green" x="215" y="190" width="400" height="60" rx="2" />
+                            <text class="text-main" x="415" y="220">
+                                <tspan x="415" dy="-0.5em">Scan for EV using</tspan>
+                                <tspan x="415" dy="1.2em">ENTRY IR Sensor</tspan>
+                            </text>
+                            <polygon class="box-yellow" points="415,280 555,320 415,360 275,320" />
+                            <text class="text-main" x="415" y="320">EV Detected?</text>
+                            <rect class="box-blue" x="245" y="390" width="340" height="50" rx="2" />
+                            <text class="text-main" x="415" y="415">RFID Authentication</text>
+                            <polygon class="box-yellow" points="415,470 555,510 415,550 275,510" />
+                            <text class="text-main" x="415" y="510">RFID Authenticated?</text>
+                            <rect class="box-pink" x="630" y="485" width="180" height="50" rx="2" />
+                            <text class="text-main" x="720" y="510">Access Denied</text>
+                            <rect class="box-green" x="215" y="580" width="400" height="60" rx="2" />
+                            <text class="text-main" x="415" y="610">
+                                <tspan x="415" dy="-0.5em">Automatic Gate Control</tspan>
+                                <tspan x="415" dy="1.2em">(Open Gate)</tspan>
+                            </text>
+                            <rect class="box-green" x="215" y="670" width="400" height="60" rx="2" />
+                            <text class="text-main" x="415" y="700">
+                                <tspan x="415" dy="-0.5em">EV EXIT Detection using</tspan>
+                                <tspan x="415" dy="1.2em">EXIT IR Sensor</tspan>
+                            </text>
+                            <polygon class="box-yellow" points="415,760 555,800 415,840 275,800" />
+                            <text class="text-main" x="415" y="800">EV Exited?</text>
+                            <rect class="box-green" x="235" y="870" width="360" height="60" rx="2" />
+                            <text class="text-main" x="415" y="900">
+                                <tspan x="415" dy="-0.5em">Gate Release</tspan>
+                                <tspan x="415" dy="1.2em">(Close Gate)</tspan>
+                            </text>
+                            <polygon class="box-yellow" points="415,960 555,1000 415,1040 275,1000" />
+                            <text class="text-main" x="415" y="1000">Flame Detected?</text>
+                            <rect class="box-pink" x="630" y="975" width="210" height="50" rx="2" />
+                            <text class="text-main" x="735" y="1000">
+                                <tspan x="735" dy="-0.5em">Activate Emergency Siren</tspan>
+                            </text>
+                            <rect class="box-blue" x="265" y="1070" width="300" height="50" rx="2" />
+                            <text class="text-main" x="415" y="1095">LDR Sensor Check</text>
+                            <polygon class="box-yellow" points="415,1150 555,1190 415,1230 275,1190" />
+                            <text class="text-main" x="415" y="1190">Light Available?</text>
+                            <rect class="box-green" x="10" y="1170" width="170" height="60" rx="2" />
+                            <text class="text-main" x="95" y="1200">
+                                <tspan x="95" dy="-0.5em">Keep Street Lights</tspan>
+                                <tspan x="95" dy="1.2em">OFF</tspan>
+                            </text>
+                            <rect class="box-green" x="630" y="1170" width="190" height="60" rx="2" />
+                            <text class="text-main" x="725" y="1200">
+                                <tspan x="725" dy="-0.5em">Turn ON Street Lights</tspan>
+                                <tspan x="725" dy="1.2em">Automatically</tspan>
+                            </text>
+                            <rect class="box-pink" x="315" y="1270" width="200" height="50" rx="25" />
+                            <text class="text-main" x="415" y="1295">END</text>
+                            <text class="text-label" x="640" y="310">No</text>
+                            <text class="text-label" x="435" y="375">Yes</text>
+                            <text class="text-label" x="590" y="495">No</text>
+                            <text class="text-label" x="435" y="565">Yes</text>
+                            <text class="text-label" x="620" y="790">No</text>
+                            <text class="text-label" x="435" y="855">Yes</text>
+                            <text class="text-label" x="595" y="990">Yes</text>
+                            <text class="text-label" x="435" y="1055">No</text>
+                            <text class="text-label" x="225" y="1180">Yes</text>
+                            <text class="text-label" x="595" y="1180">No</text>
+                        </svg>
+                    </div>
+                    <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+
+            <div class="column right">
+                <div class="section draggable" data-selectable>
+                    <div class="section-title editable-content" contenteditable="false">Result & Discussion</div>
+                    <p class="editable-content" contenteditable="false">The proposed system integrates solar photovoltaic energy with wireless power transfer for cable-free EV charging. Parking spaces function as smart charging zones, while RFID-based access control and automated gates support organized vehicle entry. LCD monitoring provides real-time system information, while battery monitoring and an emergency power cut-off system improve operational safety. Signal lights and audible alerts provide warnings, and smart lighting enhances visibility. Overall, integrating renewable energy, automation, and safety features demonstrates a feasible smart charging infrastructure model, reducing dependence on conventional grid electricity.</p>
+                    <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="section draggable" data-selectable>
+                    <div class="section-title editable-content" contenteditable="false">Conclusion</div>
+                    <p class="editable-content" contenteditable="false">The proposed smart electric vehicle charging station using solar energy provides an integrated approach to sustainable, intelligent EV charging. By combining renewable energy with wireless power transfer, the system enables convenient, cable-free charging. RFID access, automated gates, monitoring, emergency protection, and smart lighting improve automation and safety. By utilizing existing parking spaces, this approach reduces fossil fuel dependence and supports cleaner transportation. Overall, it offers a safe, efficient, and environmentally sustainable charging infrastructure concept.</p>
+                    <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="section draggable" data-selectable>
+                    <div class="section-title editable-content" contenteditable="false">Reference</div>
+                    <p class="editable-content" contenteditable="false" style="font-size: 0.65vw; font-style: italic; color: var(--text-muted);">Solar Based Wireless Electric Vehicle Charging Station [International Journal of Advanced Research in Science, Communication and Technology]</p>
+                    <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div style="flex: 1;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================================
+           TOP TOOLBAR TOGGLE
+           ============================================================ */
+        let toolbarOpen = false;
+
+        function toggleToolbar() {
+            toolbarOpen = !toolbarOpen;
+            const items = document.getElementById('toolbarItems');
+            const toggle = document.getElementById('toolbarToggle');
+            const icon = document.getElementById('toolbarIcon');
+
+            if (toolbarOpen) {
+                items.classList.add('open');
+                toggle.classList.add('active');
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                items.classList.remove('open');
+                toggle.classList.remove('active');
+                icon.className = 'fa-solid fa-ellipsis-vertical';
+            }
+        }
+
+        /* ============================================================
+           UNDO / RESET
+           ============================================================ */
+        let undoStack = [];
+        const MAX_UNDO = 50;
+
+        function saveSnapshot() {
+            const poster = document.getElementById('poster');
+            undoStack.push(poster.innerHTML);
+            if (undoStack.length > MAX_UNDO) undoStack.shift();
+        }
+
+        function undo() {
+            if (undoStack.length > 1) {
+                undoStack.pop();
+                document.getElementById('poster').innerHTML = undoStack[undoStack.length - 1];
+                reinitialize();
+                showToast('Undone', 'fa-rotate-left');
+            } else if (undoStack.length === 1) {
+                document.getElementById('poster').innerHTML = undoStack[0];
+                reinitialize();
+                showToast('Undone', 'fa-rotate-left');
+            } else {
+                showToast('Nothing to undo', 'fa-circle-info');
+            }
+        }
+
+        function resetPoster() {
+            if (confirm('Reset poster to original state? All edits will be lost.')) {
+                location.reload();
+            }
+        }
+
+        /* ============================================================
+           EDIT MODE
+           ============================================================ */
+        let editMode = false;
+        let selectedSection = null;
+
+        function toggleEditMode() {
+            editMode = !editMode;
+            const btn = document.getElementById('editToggleBtn');
+
+            if (editMode) {
+                btn.classList.add('active');
+                document.body.classList.add('edit-mode-on');
+                document.getElementById('poster').classList.add('editable-active');
+                enableEditing();
+                showToast('Edit Mode ON — Click a section to edit, drag to move', 'fa-pen-to-square');
+                saveSnapshot();
+            } else {
+                btn.classList.remove('active');
+                document.body.classList.remove('edit-mode-on');
+                document.getElementById('poster').classList.remove('editable-active');
+                closeFormatDock();
+                disableEditing();
+                deselectSection();
+                showToast('Edit Mode OFF', 'fa-check');
+                saveSnapshot();
+            }
+        }
+
+        function enableEditing() {
+            document.querySelectorAll('.editable-content').forEach(el => el.setAttribute('contenteditable', 'true'));
+            document.querySelectorAll('.draggable').forEach(el => {
+                el.setAttribute('draggable', 'false');
+                if (!el.dataset.dragInit) {
+                    makeDraggable(el);
+                    el.dataset.dragInit = '1';
+                }
+            });
+        }
+
+        function disableEditing() {
+            document.querySelectorAll('.editable-content').forEach(el => el.setAttribute('contenteditable', 'false'));
+        }
+
+        /* ============================================================
+           DRAG
+           ============================================================ */
+        function makeDraggable(el) {
+            let isDragging = false;
+            let startX, startY, startLeft, startTop;
+            let startDragTimer = null;
+
+            let handle = el.querySelector('.drag-handle');
+            if (!handle) {
+                handle = document.createElement('div');
+                handle.className = 'drag-handle';
+                handle.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;cursor:grab;z-index:1;pointer-events:none;';
+                el.style.position = 'relative';
+                el.insertBefore(handle, el.firstChild);
+            }
+
+            el.addEventListener('mousedown', onMouseDown);
+            el.addEventListener('touchstart', onTouchStart, { passive: false });
+
+            function onMouseDown(e) {
+                if (!editMode) return;
+                if (e.target.isContentEditable) return;
+                if (e.target.closest('.remove-btn')) return;
+                if (e.target.closest('.toolbar-container, .toolbar-items, .toolbar-toggle, .format-dock, .format-fab, .add-text-btn')) return;
+
+                selectSection(el);
+
+                startDragTimer = setTimeout(() => {
+                    beginDrag(e.clientX, e.clientY);
+                    startDragTimer = null;
+                }, 120);
+
+                function onMouseMoveEarly() {
+                    if (startDragTimer) {
+                        clearTimeout(startDragTimer);
+                        startDragTimer = null;
+                        beginDrag(e.clientX, e.clientY);
+                    }
+                }
+                function onMouseUpEarly() {
+                    if (startDragTimer) { clearTimeout(startDragTimer); startDragTimer = null; }
+                    document.removeEventListener('mousemove', onMouseMoveEarly);
+                    document.removeEventListener('mouseup', onMouseUpEarly);
+                }
+
+                document.addEventListener('mousemove', onMouseMoveEarly);
+                document.addEventListener('mouseup', onMouseUpEarly);
+            }
+
+            function onTouchStart(e) {
+                if (!editMode) return;
+                if (e.target.isContentEditable) return;
+                if (e.target.closest('.remove-btn')) return;
+                if (e.target.closest('.toolbar-container, .toolbar-items, .toolbar-toggle, .format-dock, .format-fab, .add-text-btn')) return;
+                selectSection(el);
+                const touch = e.touches[0];
+                beginDrag(touch.clientX, touch.clientY);
+            }
+
+            function beginDrag(clientX, clientY) {
+                isDragging = true;
+                const rect = el.getBoundingClientRect();
+                const parentRect = el.parentElement.getBoundingClientRect();
+                startX = clientX; startY = clientY;
+                startLeft = rect.left - parentRect.left;
+                startTop = rect.top - parentRect.top;
+                el.classList.add('dragging');
+                el.style.position = 'absolute';
+                el.style.width = rect.width + 'px';
+                el.style.left = startLeft + 'px';
+                el.style.top = startTop + 'px';
+                el.style.zIndex = '10000';
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+                document.addEventListener('touchmove', onTouchMove, { passive: false });
+                document.addEventListener('touchend', onTouchEnd);
+            }
+
+            function onMouseMove(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                moveDrag(e.clientX, e.clientY);
+            }
+
+            function onTouchMove(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+            }
+
+            function moveDrag(clientX, clientY) {
+                el.style.left = (startLeft + clientX - startX) + 'px';
+                el.style.top = (startTop + clientY - startY) + 'px';
+            }
+
+            function onMouseUp() { endDrag(); }
+            function onTouchEnd() { endDrag(); }
+
+            function endDrag() {
+                if (!isDragging) return;
+                isDragging = false;
+                el.classList.remove('dragging');
+                el.classList.add('positioned');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                document.removeEventListener('touchmove', onTouchMove);
+                document.removeEventListener('touchend', onTouchEnd);
+                saveSnapshot();
+            }
+        }
+
+        /* ============================================================
+           SECTION SELECTION
+           ============================================================ */
+        function selectSection(el) {
+            if (!editMode) return;
+            if (selectedSection === el) return;
+            if (selectedSection) selectedSection.classList.remove('selected-section');
+            selectedSection = el;
+            el.classList.add('selected-section');
+        }
+
+        function deselectSection() {
+            if (selectedSection) {
+                selectedSection.classList.remove('selected-section');
+                selectedSection = null;
+            }
+        }
+
+        /* ============================================================
+           FORMAT DOCK TOGGLE
+           ============================================================ */
+        let dockOpen = false;
+
+        function toggleFormatDock() {
+            if (!editMode) return;
+            dockOpen ? closeFormatDock() : openFormatDock();
+        }
+
+        function openFormatDock() {
+            dockOpen = true;
+            document.getElementById('formatDock').classList.add('open');
+            document.getElementById('formatFab').classList.add('open');
+        }
+
+        function closeFormatDock() {
+            dockOpen = false;
+            document.getElementById('formatDock').classList.remove('open');
+            document.getElementById('formatFab').classList.remove('open');
+        }
+
+        /* ============================================================
+           FORMATTING FUNCTIONS
+           ============================================================ */
+        function fmt(cmd) {
+            if (!editMode) { showToast('Turn on Edit Mode first', 'fa-circle-exclamation'); return; }
+            document.execCommand(cmd, false, null);
+            saveSnapshot();
+        }
+
+        function applyTextColor(color) {
+            if (!editMode) return;
+            if (selectedSection) {
+                selectedSection.querySelectorAll('p, li, .section-title, h1, h2, h3, span, strong, em').forEach(el => {
+                    el.style.color = color;
+                });
+            } else {
+                document.execCommand('foreColor', false, color);
+            }
+            saveSnapshot();
+        }
+
+        function applySectionBg(color) {
+            if (!editMode) return;
+            if (!selectedSection) { showToast('Select a section first', 'fa-circle-exclamation'); return; }
+            selectedSection.style.backgroundColor = color;
+            saveSnapshot();
+        }
+
+        function applyPosterBg(color) {
+            if (!editMode) return;
+            const poster = document.getElementById('poster');
+            poster.style.backgroundColor = color;
+            const mainContent = poster.querySelector('.main-content');
+            if (mainContent) mainContent.style.backgroundColor = color;
+            saveSnapshot();
+        }
+
+        let currentFontScale = 1;
+
+        function changeFontSize(direction) {
+            if (!editMode) return;
+            if (!selectedSection) { showToast('Select a section first', 'fa-circle-exclamation'); return; }
+            currentFontScale = Math.max(0.5, Math.min(2.5, currentFontScale + direction * 0.15));
+            selectedSection.querySelectorAll('.editable-content').forEach(el => {
+                el.style.fontSize = (currentFontScale * 1) + 'em';
+            });
+            saveSnapshot();
+        }
+
+        function applyHeading(level) {
+            if (!editMode) return;
+            if (!selectedSection) { showToast('Select a section first', 'fa-circle-exclamation'); return; }
+            const title = selectedSection.querySelector('.section-title');
+            if (!title) return;
+            const sizes = { h1: '1.4vw', h2: '1.15vw', h3: '1vw', p: '0.9vw' };
+            const weights = { h1: '800', h2: '700', h3: '700', p: '600' };
+            title.style.fontSize = sizes[level];
+            title.style.fontWeight = weights[level];
+            saveSnapshot();
+        }
+
+        function resetSectionStyle() {
+            if (!editMode || !selectedSection) return;
+            selectedSection.style.backgroundColor = '';
+            selectedSection.style.color = '';
+            selectedSection.querySelectorAll('.editable-content').forEach(el => {
+                el.style.fontSize = '';
+                el.style.color = '';
+            });
+            const title = selectedSection.querySelector('.section-title');
+            if (title) { title.style.fontSize = ''; title.style.fontWeight = ''; }
+            currentFontScale = 1;
+            saveSnapshot();
+            showToast('Section style reset', 'fa-eraser');
+        }
+
+        /* ============================================================
+           REMOVE & ADD
+           ============================================================ */
+        function removeElement(btn) {
+            if (!editMode) return;
+            const el = btn.closest('.draggable');
+            if (el && confirm('Remove this element?')) {
+                el.remove();
+                if (selectedSection === el) selectedSection = null;
+                saveSnapshot();
+                showToast('Element removed', 'fa-trash');
+            }
+        }
+
+        function addNewTextElement() {
+            if (!editMode) { showToast('Turn on Edit Mode first', 'fa-circle-exclamation'); return; }
+            const poster = document.getElementById('poster');
+            const newEl = document.createElement('div');
+            newEl.className = 'section draggable';
+            newEl.setAttribute('data-selectable', '');
+            newEl.style.cssText = 'position:absolute; left:35vw; top:20vh; width:22vw; background:white; border:1px solid var(--border-light); border-radius:6px; padding:1vh 1vw;';
+            newEl.innerHTML = `
+                <div class="section-title editable-content" contenteditable="true">New Section</div>
+                <p class="editable-content" contenteditable="true">Click to edit this text...</p>
+                <button class="remove-btn" onclick="removeElement(this)" title="Remove"><i class="fa-solid fa-xmark"></i></button>
+            `;
+            poster.appendChild(newEl);
+            makeDraggable(newEl);
+            saveSnapshot();
+            showToast('New text added — drag to move, click to edit', 'fa-plus');
+        }
+
+        /* ============================================================
+           LOGO FOR EXPORT
+           ============================================================ */
+        function hideLogoForExport() {
+            const logo = document.getElementById('mainLogo');
+            const ph = document.getElementById('logoPlaceholder');
+            if (logo) logo.style.display = 'none';
+            if (ph) ph.style.display = 'block';
+        }
+
+        function showLogoAfterExport() {
+            const logo = document.getElementById('mainLogo');
+            const ph = document.getElementById('logoPlaceholder');
+            if (logo) logo.style.display = '';
+            if (ph) ph.style.display = 'none';
+        }
+
+        /* ============================================================
+           PDF / PNG / SVG DOWNLOAD
+           ============================================================ */
+        function downloadPDF() {
+            const element = document.getElementById('poster');
+            if (editMode) { deselectSection(); closeFormatDock(); }
+            showToast('Generating PDF...', 'fa-file-pdf');
+            hideLogoForExport();
+
+            setTimeout(() => {
+                const opt = {
+                    margin: [0, 0, 0, 0],
+                    filename: 'Smart_EV_Charging_Poster.pdf',
+                    image: { type: 'jpeg', quality: 0.95 },
+                    html2canvas: {
+                        scale: 1.5, useCORS: true, allowTaint: false,
+                        logging: false, letterRendering: true,
+                        windowWidth: element.scrollWidth,
+                        windowHeight: element.scrollHeight
+                    },
+                    jsPDF: { unit: 'in', format: [16, 9], orientation: 'landscape' },
+                    pagebreak: { mode: ['avoid-all', 'css'] }
+                };
+                html2pdf().set(opt).from(element).save().then(() => {
+                    showToast('PDF downloaded!', 'fa-check');
+                    showLogoAfterExport();
+                }).catch(err => {
+                    console.error(err);
+                    showToast('PDF download failed', 'fa-triangle-exclamation');
+                    showLogoAfterExport();
+                });
+            }, 500);
+        }
+
+        function downloadPNG() {
+            const element = document.getElementById('poster');
+            if (editMode) { deselectSection(); closeFormatDock(); }
+            showToast('Generating PNG...', 'fa-image');
+            hideLogoForExport();
+
+            setTimeout(() => {
+                snapdom.toPng(element, { scale: 2, backgroundColor: '#ffffff', useProxy: 'https://corsproxy.io/?url=' })
+                    .then(img => {
+                        const a = document.createElement('a');
+                        a.download = 'Smart_EV_Charging_Poster.png';
+                        a.href = img.src;
+                        a.click();
+                        showToast('PNG downloaded!', 'fa-check');
+                        showLogoAfterExport();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showToast('PNG download failed', 'fa-triangle-exclamation');
+                        showLogoAfterExport();
+                    });
+            }, 300);
+        }
+
+        function downloadSVG() {
+            const element = document.getElementById('poster');
+            if (editMode) { deselectSection(); closeFormatDock(); }
+            showToast('Generating SVG...', 'fa-vector-square');
+            hideLogoForExport();
+
+            setTimeout(() => {
+                snapdom.toSvg(element, { useProxy: 'https://corsproxy.io/?url=' })
+                    .then(svg => {
+                        const a = document.createElement('a');
+                        a.download = 'Smart_EV_Charging_Poster.svg';
+                        a.href = svg.src;
+                        a.click();
+                        showToast('SVG downloaded!', 'fa-check');
+                        showLogoAfterExport();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showToast('SVG download failed — try Chrome/Edge', 'fa-triangle-exclamation');
+                        showLogoAfterExport();
+                    });
+            }, 300);
+        }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        let toastTimeout;
+        function showToast(msg, icon = 'fa-circle-info') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.querySelector('i').className = `fa-solid ${icon}`;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        /* ============================================================
+           REINIT
+           ============================================================ */
+        function reinitialize() {
+            if (editMode) enableEditing();
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.onclick = function() { removeElement(this); };
+            });
+        }
+
+        window.addEventListener('load', saveSnapshot);
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault(); undo();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault(); downloadPDF();
+            }
+            if (e.key === 'Escape') {
+                deselectSection();
+                closeFormatDock();
+                if (toolbarOpen) toggleToolbar();
+            }
+        });
+    </script>
+</body>
+</html>
