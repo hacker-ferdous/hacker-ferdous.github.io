@@ -372,6 +372,138 @@
         .add-text-btn i { font-size: 0.85vw; }
         .add-text-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26, 54, 93, 0.55); }
         .edit-mode-on .add-text-btn { display: flex; }
+
+        /* ============================================================
+           RESOLUTION PICKER MODAL
+           ============================================================ */
+        .resolution-modal {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        .resolution-modal.show { display: flex; opacity: 1; }
+
+        .resolution-dialog {
+            background: linear-gradient(180deg, #1e2531 0%, #0f141e 100%);
+            border-radius: 20px;
+            padding: 32px 36px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.7),
+                        0 0 0 1px rgba(255,255,255,0.08) inset,
+                        0 1px 0 rgba(255,255,255,0.10) inset;
+            width: 92%;
+            max-width: 740px;
+            transform: scale(0.92);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .resolution-modal.show .resolution-dialog { transform: scale(1); }
+
+        .resolution-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .resolution-header h2 {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .resolution-header h2 i {
+            color: #63b3ed;
+            font-size: 20px;
+        }
+        .close-modal {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.75);
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        .close-modal:hover { background: rgba(255,255,255,0.14); color: #ffffff; }
+
+        .resolution-subtitle {
+            color: rgba(255,255,255,0.55);
+            font-size: 13px;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+
+        .resolution-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        @media (max-width: 700px) {
+            .resolution-grid { grid-template-columns: repeat(2, 1fr); }
+            .resolution-dialog { padding: 24px 20px; }
+            .resolution-header h2 { font-size: 18px; }
+        }
+
+        .resolution-option {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px 10px;
+            cursor: pointer;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 4px;
+            transition: all 0.2s ease;
+            color: #ffffff;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        .resolution-option::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(43,108,176,0.15) 0%, rgba(26,54,93,0.15) 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .resolution-option:hover {
+            background: rgba(43, 108, 176, 0.18);
+            border-color: rgba(99, 179, 237, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(43, 108, 176, 0.35),
+                        0 0 0 1px rgba(99, 179, 237, 0.3) inset;
+        }
+        .resolution-option:hover::before { opacity: 1; }
+        .resolution-option:active { transform: translateY(-1px); }
+
+        .resolution-option > * { position: relative; z-index: 1; }
+
+        .res-label {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+        }
+        .res-dim {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+        }
+        .res-quality {
+            font-size: 9.5px;
+            color: #63b3ed;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
     </style>
 </head>
 <body>
@@ -463,6 +595,58 @@
     <div class="toast" id="toast">
         <i class="fa-solid fa-circle-info"></i>
         <span id="toastMsg"></span>
+    </div>
+
+    <!-- ============================================================
+         RESOLUTION PICKER MODAL
+         ============================================================ -->
+    <div class="resolution-modal" id="resolutionModal" onclick="if(event.target===this) closeResolutionDialog()">
+        <div class="resolution-dialog">
+            <div class="resolution-header">
+                <h2><i class="fa-solid fa-image"></i> Select PNG Resolution</h2>
+                <button class="close-modal" onclick="closeResolutionDialog()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="resolution-subtitle">Choose your desired output resolution. Higher resolutions produce larger, sharper files — ideal for printing and detailed viewing.</p>
+            <div class="resolution-grid">
+                <button class="resolution-option" onclick="chooseResolution(360, '360p')">
+                    <span class="res-label">360p</span>
+                    <span class="res-dim">640 × 360</span>
+                    <span class="res-quality">SD</span>
+                </button>
+                <button class="resolution-option" onclick="chooseResolution(480, '480p')">
+                    <span class="res-label">480p</span>
+                    <span class="res-dim">854 × 480</span>
+                    <span class="res-quality">SD+</span>
+                </button>
+                <button class="resolution-option" onclick="chooseResolution(720, '720p')">
+                    <span class="res-label">720p</span>
+                    <span class="res-dim">1280 × 720</span>
+                    <span class="res-quality">HD</span>
+                </button>
+                <button class="resolution-option" onclick="chooseResolution(1080, '1080p')">
+                    <span class="res-label">1080p</span>
+                    <span class="res-dim">1920 × 1080</span>
+                    <span class="res-quality">Full HD</span>
+                </button>
+                <button class="resolution-option" onclick="chooseResolution(1440, '1440p')">
+                    <span class="res-label">1440p</span>
+                    <span class="res-dim">2560 × 1440</span>
+                    <span class="res-quality">QHD</span>
+                </button>
+                <button class="resolution-option" onclick="chooseResolution(2160, '4K')">
+                    <span class="res-label">4K</span>
+                    <span class="res-dim">3840 × 2160</span>
+                    <span class="res-quality">Ultra HD</span>
+                </button>
+                <button class="resolution-option" onclick="chooseResolution(4320, '8K')">
+                    <span class="res-label">8K</span>
+                    <span class="res-dim">7680 × 4320</span>
+                    <span class="res-quality">Ultra HD</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Main Poster -->
@@ -990,25 +1174,59 @@
             }, 500);
         }
 
-        /* PNG DOWNLOAD */
+        /* ============================================================
+           RESOLUTION PICKER — for PNG
+           ============================================================ */
         function downloadPNG() {
-            const element = document.getElementById('poster');
             if (editMode) { deselectSection(); closeFormatDock(); }
-            showToast('Generating PNG...', 'fa-image');
+            openResolutionDialog();
+        }
+
+        function openResolutionDialog() {
+            const modal = document.getElementById('resolutionModal');
+            modal.style.display = 'flex';
+            void modal.offsetWidth;
+            modal.classList.add('show');
+        }
+
+        function closeResolutionDialog() {
+            const modal = document.getElementById('resolutionModal');
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 250);
+        }
+
+        function chooseResolution(targetHeight, label) {
+            closeResolutionDialog();
+            setTimeout(() => {
+                generatePNGWithResolution(targetHeight, label);
+            }, 280);
+        }
+
+        function generatePNGWithResolution(targetHeight, label) {
+            const element = document.getElementById('poster');
+            showToast(`Generating ${label} PNG...`, 'fa-image');
+
+            // Adaptive scale: current rendered height → target height
+            const currentHeight = element.offsetHeight;
+            const scale = targetHeight / currentHeight;
 
             setTimeout(() => {
-                snapdom.toPng(element, { scale: 2, backgroundColor: '#ffffff', useProxy: 'https://corsproxy.io/?url=' })
-                    .then(img => {
-                        const a = document.createElement('a');
-                        a.download = 'Smart_EV_Charging_Poster.png';
-                        a.href = img.src;
-                        a.click();
-                        showToast('PNG downloaded with logo!', 'fa-check');
-                    })
-                    .catch(err => {
-                        console.error('PNG Error:', err);
-                        showToast('PNG download failed', 'fa-triangle-exclamation');
-                    });
+                snapdom.toPng(element, {
+                    scale: scale,
+                    backgroundColor: '#ffffff',
+                    useProxy: 'https://corsproxy.io/?url='
+                })
+                .then(img => {
+                    const a = document.createElement('a');
+                    a.download = `Smart_EV_Charging_Poster_${label}.png`;
+                    a.href = img.src;
+                    a.click();
+                    showToast(`${label} PNG downloaded with logo!`, 'fa-check');
+                })
+                .catch(err => {
+                    console.error('PNG Error:', err);
+                    showToast(`${label} PNG failed — try a lower resolution`, 'fa-triangle-exclamation');
+                });
             }, 300);
         }
 
@@ -1063,6 +1281,12 @@
                 e.preventDefault(); downloadPDF();
             }
             if (e.key === 'Escape') {
+                // Close modal if open
+                const modal = document.getElementById('resolutionModal');
+                if (modal.classList.contains('show')) {
+                    closeResolutionDialog();
+                    return;
+                }
                 deselectSection();
                 closeFormatDock();
                 if (toolbarOpen) toggleToolbar();
