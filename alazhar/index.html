@@ -324,30 +324,130 @@ body.lang-bn .stat .num{font-family:'Noto Serif Bengali',serif}
 .aim-goal h3{color:#fff;font-size:1.35rem}
 .aim-goal p{color:rgba(255,255,255,.9);line-height:1.9;font-size:1rem;font-weight:500}
 
-/* Voices */
+/* ============================================================
+   Voices  —  redesigned
+   ============================================================ */
 .voices{background:linear-gradient(180deg,#ffffff 0%, #fbf9f4 100%)}
 .voices-grid{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:1.4rem;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:stretch;
+  gap:1.5rem;
 }
+
+/* Card shell: image + quote, alternating sides */
 .quote{
-  position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;
-  padding:2rem 1.7rem 1.7rem;transition:.3s;overflow:hidden;
-  flex:0 1 calc(33.333% - 1rem);min-width:250px;max-width:400px;
-  display:flex;flex-direction:column;
+  position:relative;
+  display:flex;
+  flex:0 1 calc(50% - .75rem);
+  min-width:300px;
+  max-width:580px;
+  min-height:320px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
+  transition:transform .38s ease, box-shadow .38s ease, border-color .38s ease;
 }
-.quote::before{
-  content:'\201C';position:absolute;top:-.4rem;right:1rem;
-  font-family:'Cormorant Garamond',serif;font-size:5.5rem;line-height:1;
-  color:var(--gold-soft);pointer-events:none;
+.quote:hover{
+  transform:translateY(-6px);
+  border-color:transparent;
+  box-shadow:var(--shadow);
 }
-.quote:hover{transform:translateY(-6px);border-color:transparent;box-shadow:var(--shadow)}
-.quote p{color:var(--ink-soft);line-height:1.75;font-size:.92rem;margin-bottom:1.3rem;position:relative;z-index:1;flex:1}
-.quote .author{display:flex;align-items:center;gap:.75rem;padding-top:1rem;border-top:1px solid var(--line)}
-.quote .author img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft);flex:none}
-.quote .author-info{display:flex;flex-direction:column;min-width:0}
-.quote .author-info strong{font-family:'Inter','Hind Siliguri',sans-serif;font-weight:700;font-size:.92rem;color:var(--ink);line-height:1.3}
-body.lang-bn .quote .author-info strong{font-family:'Hind Siliguri',sans-serif}
-.quote .author-info span{font-size:.74rem;color:var(--gold-deep);font-weight:600;letter-spacing:.03em;margin-top:.12rem}
+
+/* Alternate: even children put the photo on the right */
+.quote:nth-child(even){flex-direction:row-reverse}
+
+/* Photo column */
+.quote-media{
+  position:relative;
+  flex:0 0 41%;
+  min-width:0;
+  overflow:hidden;
+  background:var(--bg-soft);
+}
+.quote-media img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center 20%;
+  transition:transform .8s cubic-bezier(.2,.8,.3,1);
+}
+.quote:hover .quote-media img{transform:scale(1.06)}
+/* soft blend of the photo into the white text panel (image on the left) */
+.quote-media::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(to right, rgba(255,255,255,0) 72%, rgba(255,255,255,.9) 100%);
+}
+/* flipped blend for reversed cards (image on the right) */
+.quote:nth-child(even) .quote-media::after{
+  background:linear-gradient(to left, rgba(255,255,255,0) 72%, rgba(255,255,255,.9) 100%);
+}
+
+/* Text column */
+.quote-body{
+  position:relative;
+  flex:1 1 auto;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:2.1rem 1.9rem;
+}
+.quote-inner{display:flex;flex-direction:column;gap:1rem}
+
+.quote-mark{
+  display:block;
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.2rem;
+  line-height:.55;
+  color:var(--gold);
+  opacity:.42;
+  user-select:none;
+}
+
+.quote-text{
+  margin:0;
+  font-family:'Cormorant Garamond','Noto Serif Bengali',serif;
+  font-weight:500;
+  font-size:1.14rem;
+  line-height:1.72;
+  color:var(--ink);
+}
+body.lang-bn .quote-text{
+  font-family:'Noto Serif Bengali',serif;
+  font-size:1.02rem;
+  line-height:1.9;
+}
+
+.quote-author{
+  display:flex;
+  flex-direction:column;
+  gap:.18rem;
+  margin-top:.35rem;
+  padding-left:.85rem;
+  border-left:3px solid var(--gold);
+}
+.quote-author strong{
+  font-family:'Inter','Hind Siliguri',sans-serif;
+  font-weight:700;
+  font-size:.95rem;
+  line-height:1.35;
+  color:var(--ink);
+}
+body.lang-bn .quote-author strong{font-family:'Hind Siliguri',sans-serif}
+.quote-author span{
+  font-size:.74rem;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--gold-deep);
+}
 
 /* Notice Board */
 .notice-grid {
@@ -580,7 +680,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
   .card{flex:0 1 calc(50% - .7rem);}
   .notice{flex:0 1 calc(50% - .7rem);max-width:none;}
   
-  .quote{flex:0 1 calc(50% - .7rem);max-width:none}
+  .quote{flex:1 1 100%;max-width:640px;min-width:0;}
   .stats-grid{grid-template-columns:1fr 1fr;gap:1.8rem}
   .stat + .stat::before{display:none}
   .map-container{height:320px}
@@ -591,6 +691,88 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
   .slide-caption{padding:2rem 2.4rem}
 }
 
+/* ============================================================
+   Voices — small devices: circular avatar next to the author
+   ============================================================ */
+@media(max-width:760px){
+  .quote{
+    display:block;
+    flex:1 1 100%;
+    min-width:0;
+    max-width:none;
+    min-height:0;
+    background:#fff;
+    padding:1.6rem 1.4rem 1.5rem;
+  }
+  /* kill the alternating flip on mobile — always same layout */
+  .quote:nth-child(even){flex-direction:initial}
+
+  /* Photo becomes a medium circular avatar anchored near the author row */
+  .quote-media{
+    position:absolute;
+    bottom:1.5rem;
+    left:1.4rem;
+    width:84px;
+    height:84px;
+    flex:none;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid var(--gold-soft);
+    box-shadow:0 10px 22px rgba(176,141,62,.22);
+    background:var(--bg-soft);
+    z-index:3;
+  }
+  .quote-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 18%;
+    transform:none !important;
+  }
+  .quote-media::after,
+  .quote:nth-child(even) .quote-media::after{
+    display:none;
+  }
+  .quote:hover .quote-media img{transform:none}
+
+  .quote-body{
+    position:static;
+    min-height:0;
+    padding:0;
+    justify-content:flex-start;
+  }
+  .quote-inner{
+    gap:.7rem;
+    padding:0;
+    background:transparent;
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+    border:none;
+    box-shadow:none;
+    border-radius:0;
+  }
+  .quote-mark{
+    font-size:2.5rem;
+    color:var(--gold);
+    opacity:.5;
+  }
+  .quote-text{font-size:1.02rem;line-height:1.72}
+  body.lang-bn .quote-text{font-size:.98rem;line-height:1.88}
+
+  /* Author row sits next to the circular avatar */
+  .quote-author{
+    margin-top:1.15rem;
+    padding-left:100px; /* 84px avatar + 16px gap */
+    padding-top:0;
+    border-left:0;
+    min-height:84px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:.16rem;
+  }
+}
+
 @media(max-width:600px){
   :root{--nav-header-height:64px}
   header,section,footer{padding-inline:1rem}
@@ -599,7 +781,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
   
   .card{flex:1 1 100%;}
   .notice{flex:1 1 100%;max-width:none;}
-  .quote{flex:1 1 100%;max-width:none}
+  .quote{flex:1 1 100%;max-width:none;}
   
   .slide-caption{padding:1.6rem 1.6rem 2rem}
   .slide-caption h2{font-size:1.6rem}
@@ -633,7 +815,27 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
   .aim-card{padding:1.6rem 1.3rem}
   .aim-card h3{font-size:1.15rem}
   .aim-goal p{font-size:.94rem}
+
+  /* Voices — compact mobile */
+  .quote{padding:1.35rem 1.15rem 1.3rem}
+  .quote-media{
+    width:72px;
+    height:72px;
+    bottom:1.3rem;
+    left:1.15rem;
+    border-width:2.5px;
+  }
+  .quote-mark{font-size:2.2rem}
+  .quote-text{font-size:.97rem;line-height:1.72}
+  .quote-author{
+    padding-left:88px; /* 72px avatar + 16px gap */
+    min-height:72px;
+    margin-top:1rem;
+  }
+  .quote-author strong{font-size:.92rem}
+  .quote-author span{font-size:.68rem}
 }
+
 </style>
 </head>
 <body>
@@ -971,28 +1173,27 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
 
 const HERO_SLIDES = [
   {
-    img: "https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/505111808_4120741108195741_7015586527799349603_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1269&ctp=s2048x1269&_nc_cat=111&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeF1Z0s965Zx-jB5lVJ7pTnt8M3vS_flcgbwze9L9-VyBl9AZA3M5JWHYAB3V9JermpDUPDvEamkWCpJhecPeSbz&_nc_ohc=Oz5wqtKkdc4Q7kNvwGEl7VA&_nc_oc=Adp-OObXG0oewfWMytY3vsK9sKGKkjxNjdR0cvj06QbTdj0MKPDPqgsJj_V6auliPTk&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=bEP8WgS8gPLLKjILY_21ow&_nc_ss=7b2a8&oh=00_AQMqG_0OfCFEBtnajuW1SnpNd1vaz13Nn9gRH8-tbtGLmA&oe=6AD477AD",
+    img: "https://plain-apac-prod-public.komododecks.com/202610/15/XEcd3qheJiAH8CoXRwAz/image.jpg",
     alt: "img1",
     tag:   { en: "Welcome to Al Azhar", bn: "আল আজহারে স্বাগতম" },
     title: { en: "Nurturing Knowledge & Character", bn: "জ্ঞান ও সুন্দর চরিত্রের বিকাশ" },
     text:  { 
       en: "A premier sanctuary where timeless Quranic values meet modern educational standards to build leaders of faith and wisdom.", 
-      bn: "ঐতিহ্যবাহী কুরআনী শিক্ষার সাথে আধুনিক মানসম্পন্ন শিক্ষার এক অনন্য সমন্বয়, যা গড়ে তোলে নৈতিকতা ও মেধাভিত্তিক ভবিষ্যৎ নেতৃত্ব।" 
+      bn: "ঐতিহ্যবাহী কুরআনী শিক্ষার সাথে আধুনিক মানসম্পন্ন শিক্ষার এক অনন্য সমন্বয়, যা গড়ে তোলে নৈতিকতা ও মেধাভিত্তিক ভবিষ্যৎ নেতৃত্ব।" 
     }
   },
   {
-    img: "https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/788001871_4581686542101193_4392501305277680151_n.jpg?stp=dst-jpg_tt6&cstp=mx1280x575&ctp=s1280x575&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHLJCtboOmo9BIgcBgLMCk9wuXb4eWL2uvC5dvh5Yva6ywj71MbFGGgn7dY8yAGAhHFDSvvs6BWsVn6sNXADCYB&_nc_ohc=PrA6UOe8H8wQ7kNvwHHe7HO&_nc_oc=AdqOAZEVWKXkVCBk8G5HKgbhlcwBlK0x11HQIunIuH8EkyIMECCUhyZg2D2UBsw2uzY&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=QFEU1Qgwmot6F869frzpWw&_nc_ss=7b2a8&oh=00_AQP8zCMjZQ7ocVXL6M0jZk4uZxBHOIwshbbqs9Xro9ZEbg&oe=6AD4985E",
+    img: "https://plain-apac-prod-public.komododecks.com/202610/15/IKNOBxkOGaqNhz56oXaD/image.jpg",
     alt: "img2",
     tag:   { en: "Admissions Open 2026", bn: "২০২৬ শিক্ষাবর্ষে ভর্তি চলছে" },
     title: { en: "Begin the Journey Today", bn: "আপনার সন্তানকে আজই ভর্তি করান" },
     text:  { 
       en: "Seats are limited for the new academic session — secure your child's spot early to gift them a bright and principled foundation.", 
-      bn: "নতুন সেশনের জন্য আসন সংখ্যা অত্যন্ত সীমিত — আজই ভর্তি নিশ্চিত করে আপনার সন্তানের জন্য একটি সুন্দর ও সুশৃঙ্খল ভবিষ্যৎ গড়ে তুলুন।" 
+      bn: "নতুন সেশনের জন্য আসন সংখ্যা অত্যন্ত সীমিত — আজই ভর্তি নিশ্চিত করে আপনার সন্তানের জন্য একটি সুন্দর ও সুশৃঙ্খল ভবিষ্যৎ গড়ে তুলুন।" 
     }
   },
   {
-    img: "https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/688173873_4460735910862924_8307784556855332119_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1204&ctp=s1600x1204&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeE3DRYRsXaGdl_QhcLrAzC0Pr0dviKCm0M-vR2-IoKbQxxQAavLW19hxUcgKHay1Eym8hSDofKUfD5FWFqqe3Nx&_nc_ohc=QwOtKGXThcAQ7kNvwHDgNC4&_nc_oc=Adpx5Sq97sbS88uAuUwj90PcQyyXW8j9iHQehXMn3-Kb2U8ponkVVfr9ToF7g2DLmOo&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=u8nx51YhCLEPwJvJCvShDw&_nc_ss=7b2a8&oh=00_AQPnJEOdQwNPJTZwkF_492AQikg3jocnn8aFPWuj6X4NuQ&oe=6AD4688D",
-    alt: "img3",
+    img: "https://plain-apac-prod-public.komododecks.com/202610/15/vAQNVS4mqK6UI17oXGfL/image.jpg",
     tag:   { en: "Enroll Your Child Today", bn: "আপনার সন্তানের জন্য সেরা পছন্দ" },
     title: { en: "Dedicated Care & Excellence", bn: "সুনিবিড় যত্ন ও গুণগত শিক্ষা" },
     text:  { 
@@ -1009,28 +1210,20 @@ const ABOUT_IMAGE = {
 
 const VOICES = [
   {
-    img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80",
+    img: "https://plain-apac-prod-public.komododecks.com/202610/15/TGNoVxYjLem8Y2un6AlI/image.png",
     alt: "Principal",
     text: { en: "Our mission is not merely to teach the Quran, but to plant its light deep in every heart that walks through our doors.", bn: "আমাদের লক্ষ্য শুধু কুরআন শেখানো নয়, বরং আমাদের দ্বারে আসা প্রতিটি অন্তরে তার আলো গেঁথে দেওয়া।" },
-    name: { en: "Mufti Abdur Rahman", bn: "মুফতি আব্দুর রহমান" },
+    name: { en: "Belal Hossain Billah", bn: "বেলাল হোসাইন বিল্লাহ" },
     role: { en: "Principal", bn: "প্রধান শিক্ষক" }
   },
   {
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
-    alt: "Hifz Head",
-    text: { en: "Every huffaz who completes the Quran is a lamp for their family — and we take pride in lighting as many lamps as we can.", bn: "প্রতিটি হাফেজ যিনি কুরআন সম্পূর্ণ করেন, তিনি তাঁর পরিবারের জন্য একটি প্রদীপ — আমরা যত বেশি প্রদীপ জ্বালাতে পারি, ততই গর্বিত।" },
-    name: { en: "Hafez Muhammad Yusuf", bn: "হাফেজ মুহাম্মদ ইউসুফ" },
-    role: { en: "Head of Hifz Department", bn: "হিফজ বিভাগের প্রধান" }
-  },
-  {
-    img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80",
+    img: "https://plain-apac-prod-public.komododecks.com/202610/15/ty9AjlcYngX1xIClWfA6/image.png",
     alt: "Academic Head",
-    text: { en: "Islamic values and modern knowledge are not rivals — together they raise a complete human being, ready for both worlds.", bn: "ইসলামী মূল্যবোধ ও আধুনিক জ্ঞান পরস্পরের প্রতিদ্বন্দ্বী নয় — একসাথে তারা গড়ে তোলে একজন পূর্ণাঙ্গ মানুষ, দুই জগতের জন্য প্রস্তুত।" },
-    name: { en: "Mrs. Fatima Khatun", bn: "মিসেস ফাতিমা খাতুন" },
-    role: { en: "Academic Coordinator", bn: "একাডেমিক সমন্বয়ক" }
+    text: { en: "Every huffaz who completes the Quran is a lamp for their family — and we take pride in lighting as many lamps as we can.", bn: "প্রতিটি হাফেজ যিনি কুরআন সম্পূর্ণ করেন, তিনি তাঁর পরিবারের জন্য একটি প্রদীপ — আমরা যত বেশি প্রদীপ জ্বালাতে পারি, ততই গর্বিত।" },
+    name: { en: "HM Muntasim Billah Rishat", bn: "এইচ এম মুনতাসিম বিল্লাহ রিসাদ" },
+    role: { en: "Head of Hifz Department", bn: "হিফজ বিভাগের প্রধান" }
   }
 ];
-
 /* =========================================================
     SECTION 2 — i18n (other texts)
    ========================================================= */
@@ -1183,16 +1376,21 @@ function renderAboutImage(){
 
 function renderVoices(){
   document.getElementById('voicesGrid').innerHTML = VOICES.map(v => `
-    <div class="quote">
-      <p>${v.text[lang]}</p>
-      <div class="author">
-        <img src="${v.img}" alt="${v.alt}">
-        <div class="author-info">
-          <strong>${v.name[lang]}</strong>
-          <span>${v.role[lang]}</span>
+    <article class="quote">
+      <div class="quote-media">
+        <img src="${v.img}" alt="${v.alt}" loading="lazy">
+      </div>
+      <div class="quote-body">
+        <div class="quote-inner">
+          <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+          <p class="quote-text">${v.text[lang]}</p>
+          <div class="quote-author">
+            <strong>${v.name[lang]}</strong>
+            <span>${v.role[lang]}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </article>
   `).join('');
 }
 
