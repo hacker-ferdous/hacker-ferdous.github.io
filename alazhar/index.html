@@ -58,6 +58,10 @@ nav{position:relative;z-index:1;display:flex;align-items:center;justify-content:
 .nav-links a:hover::after{width:100%}
 .nav-links .mobile-only{display:none}
 
+/* Active nav */
+.nav-links a.active{color:var(--ink);font-weight:600}
+.nav-links a.active::after{width:100%}
+
 .nav-right{display:flex;align-items:center;gap:.75rem}
 .lang-toggle{display:flex;border:1px solid var(--line);border-radius:999px;background:var(--bg-soft);padding:3px}
 .lang-toggle button{border:0;background:transparent;padding:.4rem .95rem;border-radius:999px;cursor:pointer;font-weight:600;font-size:.8rem;color:var(--ink-soft);transition:.25s;font-family:inherit}
@@ -639,6 +643,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
   .nav-links a{display:block;font-size:.98rem;padding:.7rem .55rem;border-radius:10px}
   .nav-links a:hover{background:var(--bg-soft)}
   .nav-links a::after{display:none}
+  .nav-links a.active{background:var(--bg-soft);color:var(--ink)}
 
   .hamburger{display:block}
   .nav-cta{display:none}
@@ -861,7 +866,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
       <li><a href="#voices" data-i18n="nav_voices">Voices</a></li>
       <li><a href="#notices" data-i18n="nav_notices">Notices</a></li>
       <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
-      <li class="mobile-only"><a href="admission.html" data-i18n="nav_cta">Admission</a></li>
+      <li class="mobile-only"><a href="admission_info.html" data-i18n="nav_cta">Admission Info</a></li>
     </ul>
 
     <div class="nav-right">
@@ -870,8 +875,8 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
         <button id="btnBN">বাং</button>
       </div>
       <span class="nav-cta">
-        <a href="admission.html" class="btn btn-admission">
-          <span data-i18n="nav_cta">Admission</span>
+        <a href="admission_info.html" class="btn btn-admission">
+          <span data-i18n="nav_cta">Admission Info</span>
         </a>
       </span>
       <button class="hamburger" id="hamburger" aria-label="Menu" aria-controls="navLinks" aria-expanded="false" type="button">
@@ -1059,7 +1064,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
   <div class="cta">
     <h2 data-i18n="cta_title">Enroll Your Child Today</h2>
     <p data-i18n="cta_p">Grant your child the gift of the Quran and a radiant future. Seats are limited — apply now for the upcoming session.</p>
-    <a href="admission.html" class="btn btn-gold">
+    <a href="admission_info.html" class="btn btn-gold">
       <span data-i18n="cta_btn">View Admission Details</span>
     </a>
   </div>
@@ -1161,14 +1166,6 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
 <script>
 /* =========================================================
    SECTION 1 — IMAGE & CONTENT CONFIGURATION
-   =========================================================
-   এই section এ সব ছবি ও তাদের টেক্সট একসাথে রাখা আছে।
-   যা পরিবর্তন করতে চান, শুধু এখানে এডিট করুন।
-
-   ছবি বদলাতে   → img: "নতুন URL" পরিবর্তন করুন
-   টেক্সট বদলাতে → en: "..."  bn: "..." পরিবর্তন করুন
-   নতুন slide    → { ... } ব্লক কপি করে array-তে যোগ করুন
-   slide মুছতে   → পুরো { ... } ব্লক ডিলিট করুন
    ========================================================= */
 
 const HERO_SLIDES = [
@@ -1233,7 +1230,7 @@ const I18N = {
     brand_name:"Al Azhar Madrasah",
     brand_sub:"A faith-based institute blending Islamic & modern education",
     nav_home:"Home", nav_about:"About", nav_programs:"Programs",
-    nav_voices:"Voices", nav_notices:"Notices", nav_contact:"Contact", nav_cta:"Admission",
+    nav_voices:"Voices", nav_notices:"Notices", nav_contact:"Contact", nav_cta:"Admission Info",
     about_eyebrow:"About Us",
     about_title:"A Sanctuary of Quranic Learning & Modern Education",
     about_p1:"Al Azhar Madrasah unites traditional Islamic education — Hifz, Nazira, Fiqh and Akhlaq — with modern academic subjects, so our students flourish in both Deen and Dunya.",
@@ -1291,7 +1288,7 @@ const I18N = {
     brand_name:"আল আজহার মাদরাসা",
     brand_sub:"ইসলামী ও আধুনিক শিক্ষার সমন্বয়ে একটি দ্বীনি শিক্ষা প্রতিষ্ঠান",
     nav_home:"হোম", nav_about:"পরিচিতি", nav_programs:"বিভাগসমূহ",
-    nav_voices:"কণ্ঠস্বর", nav_notices:"নোটিশ", nav_contact:"যোগাযোগ", nav_cta:"ভর্তি",
+    nav_voices:"কণ্ঠস্বর", nav_notices:"নোটিশ", nav_contact:"যোগাযোগ", nav_cta:"ভর্তি তথ্য",
     about_eyebrow:"আমাদের সম্পর্কে",
     about_title:"কুরআনী শিক্ষা ও আধুনিক শিক্ষার এক পবিত্র ঠিকানা",
     about_p1:"আল আজহার মাদরাসায় হিফজ, নাজেরা, ফিকহ ও আখলাকের পাশাপাশি আধুনিক শিক্ষার বিষয়গুলো পড়ানো হয়, যাতে ছাত্ররা দ্বীন ও দুনিয়া উভয় ক্ষেত্রেই সমৃদ্ধ হয়।",
@@ -1342,7 +1339,7 @@ const I18N = {
     foot_about:"২০২২ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।",
     copy_rights:"© ২০২৬ আল আজহার মাদরাসা · সর্বস্বত্ব সংরক্ষিত",
     developed_by:"ডেভেলপ করেছে",
-    ai_msg:"আমি এখনো তৈরি হচ্ছে। খুব শীঘ্রই ভর্তি, বিভাগ ও সময়সূচি সম্পর্কে আপনার প্রশ্নের উত্তর দিতে পারব ইনশাআল্লাহ।",
+    ai_msg:"আমি এখনো তৈরি হচ্ছি। খুব শীঘ্রই ভর্তি, বিভাগ ও সময়সূচি সম্পর্কে আপনার প্রশ্নের উত্তর দিতে পারব ইনশাআল্লাহ।",
     ai_soon:"শীঘ্রই আসছে"
   }
 };
@@ -1534,6 +1531,74 @@ const io = new IntersectionObserver(entries=>{
   });
 },{threshold:.15});
 document.querySelectorAll('.stat').forEach(el=> io.observe(el));
+
+/* =========================================================
+   ACTIVE NAV (SCROLL SPY)  —  keeps the current section highlighted
+   ========================================================= */
+
+const navAnchors = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+const spySections = navAnchors
+  .map(a => document.getElementById(a.getAttribute('href').slice(1)))
+  .filter(Boolean);
+
+let spyLocked = false;
+let spyLockTimer = null;
+
+function setActiveNav(id){
+  navAnchors.forEach(a=>{
+    const on = a.getAttribute('href') === '#' + id;
+    a.classList.toggle('active', on);
+    if(on) a.setAttribute('aria-current','true');
+    else a.removeAttribute('aria-current');
+  });
+}
+
+function updateActiveNav(){
+  if(spyLocked || !spySections.length) return;
+
+  /* probe = a point slightly below the top of the viewport */
+  const probe = window.scrollY + Math.max(window.innerHeight * 0.28, 120);
+
+  let activeId = spySections[0].id;
+  for(const sec of spySections){
+    if(sec.offsetTop <= probe) activeId = sec.id;
+  }
+
+  /* at the very bottom → last section always wins */
+  if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4){
+    activeId = spySections[spySections.length - 1].id;
+  }
+
+  setActiveNav(activeId);
+}
+
+/* rAF-throttled scroll listener */
+let spyTicking = false;
+window.addEventListener('scroll', ()=>{
+  if(spyTicking) return;
+  spyTicking = true;
+  requestAnimationFrame(()=>{ spyTicking = false; updateActiveNav(); });
+}, {passive:true});
+window.addEventListener('resize', updateActiveNav, {passive:true});
+
+/* Clicking a link → immediately mark it active and lock the spy
+   for the duration of the smooth-scroll, so nothing flickers. */
+navAnchors.forEach(a=>{
+  a.addEventListener('click', ()=>{
+    const id = a.getAttribute('href').slice(1);
+    spyLocked = true;
+    setActiveNav(id);
+    clearTimeout(spyLockTimer);
+    spyLockTimer = setTimeout(()=>{
+      spyLocked = false;
+      updateActiveNav();
+    }, 900);
+  });
+});
+
+/* Init on load (also handles a #hash in the URL) */
+updateActiveNav();
+window.addEventListener('load', updateActiveNav);
 
 /* Mobile menu & backdrop */
 const navLinks = document.getElementById('navLinks');
