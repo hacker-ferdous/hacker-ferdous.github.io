@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Admission Information</title>
+<link rel="icon" type="image/png" sizes="32x32" href="https://plain-apac-prod-public.komododecks.com/202610/15/MmBhtIgH8Icyl9XBk1qi/image.png">
+<link rel="apple-touch-icon" href="https://plain-apac-prod-public.komododecks.com/202610/15/MmBhtIgH8Icyl9XBk1qi/image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;
+  --bg-soft:#faf9f6;
+  --ink:#171a20;
+  --ink-soft:#5c616b;
+  --gold:#b08d3e;
+  --gold-deep:#93752c;
+  --gold-soft:#f0e7d2;
+  --green:#0d5c43;
+  --green-deep:#093e2d;
+  --line:rgba(23,26,32,.09);
+  --shadow:0 24px 70px rgba(23,26,32,.08);
+  --shadow-sm:0 10px 30px rgba(23,26,32,.07);
+  --nav-header-height:78px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:'Inter','Hind Siliguri',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.nav-menu-open{overflow:hidden}
+body.lang-bn{font-family:'Hind Siliguri','Inter',sans-serif}
+h1,h2,h3,h4,.serif{font-family:'Cormorant Garamond','Noto Serif Bengali',serif;font-weight:600}
+body.lang-bn h1,body.lang-bn h2,body.lang-bn h3,body.lang-bn h4,body.lang-bn .serif{font-family:'Noto Serif Bengali','Cormorant Garamond',serif}
+svg{display:block}
+img{max-width:100%}
+
+header,section,footer{padding-inline:max(1.5rem, calc((100% - 1200px) / 2))}
+
+/* Header */
+header{position:sticky;top:0;z-index:100;background:transparent;border-bottom:1px solid var(--line);transition:box-shadow .3s}
+header::before{content:'';position:absolute;inset:0;z-index:0;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);pointer-events:none}
+header.scrolled{box-shadow:0 8px 34px rgba(23,26,32,.07)}
+nav{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;height:78px}
+
+.brand{display:flex;align-items:center;gap:.85rem;text-decoration:none;color:var(--ink);min-width:0}
+.brand img{flex:none;width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft);box-shadow:0 4px 14px rgba(176,141,62,.25)}
+.brand-text{display:flex;flex-direction:column;min-width:0}
+.brand .name{font-weight:700;font-size:clamp(.98rem,2.4vw,1.12rem);line-height:1.25;white-space:nowrap}
+.brand .sub{font-size:.7rem;color:var(--gold-deep);font-weight:600;line-height:1.45;margin-top:.18rem;max-width:34ch}
+
+.nav-links{display:flex;gap:1.9rem;list-style:none;align-items:center}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-size:.92rem;font-weight:500;position:relative;padding:.3rem 0;transition:color .25s}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-2px;height:2px;width:0;background:var(--gold);transition:width .3s;border-radius:2px}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{width:100%}
+.nav-links .mobile-only{display:none}
+
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.lang-toggle{display:flex;border:1px solid var(--line);border-radius:999px;background:var(--bg-soft);padding:3px}
+.lang-toggle button{border:0;background:transparent;padding:.4rem .95rem;border-radius:999px;cursor:pointer;font-weight:600;font-size:.8rem;color:var(--ink-soft);transition:.25s;font-family:inherit}
+.lang-toggle button.active{background:var(--ink);color:#fff}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.55rem;padding:.8rem 1.7rem;border-radius:999px;text-decoration:none;font-weight:600;font-size:.9rem;transition:.3s;cursor:pointer;border:0;font-family:inherit;white-space:nowrap}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-gold{background:var(--bg-soft);color:var(--ink);border:1px solid var(--line)}
+.btn-gold:hover{background:#f0f0f0;border-color:var(--ink-soft);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:var(--green);transform:translateY(-2px)}
+.btn-outline{background:var(--bg-soft);color:var(--ink);border:1px solid var(--line)}
+.btn-outline:hover{border-color:var(--ink-soft);background:#f0f0f0;transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.btn-outline svg{transition:transform .3s}
+.btn-outline:hover svg{transform:translateX(4px)}
+
+.hamburger{display:none;background:none;border:0;cursor:pointer;color:var(--ink);padding:.2rem}
+.hamburger svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* Nav Backdrop */
+.nav-backdrop{
+  position:fixed;inset:0;
+  background:rgba(12,22,18,.5);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .35s ease, visibility .35s;
+  z-index:98;
+}
+.nav-backdrop.active{opacity:1;visibility:visible;pointer-events:auto}
+
+/* Page Hero */
+.page-hero{
+  position:relative;overflow:hidden;color:#fff;
+  background:linear-gradient(120deg,#0e6b4e 0%,#0a4b36 58%,#093e2d 100%);
+  padding-block:4.4rem 3.8rem;
+}
+.page-hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 10% 18%, rgba(228,201,126,.20), transparent 46%),
+    radial-gradient(circle at 90% 88%, rgba(255,255,255,.10), transparent 44%);
+}
+.page-hero::after{
+  content:'';position:absolute;right:-90px;top:-90px;width:340px;height:340px;border-radius:50%;
+  border:1px solid rgba(228,201,126,.22);pointer-events:none;
+}
+.ph-inner{position:relative;z-index:1;max-width:780px}
+.cap-tag{
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:rgba(0,0,0,.22);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.28);
+  padding:.42rem 1rem;border-radius:999px;
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;
+  color:#fff;margin-bottom:1.1rem;
+}
+body.lang-bn .cap-tag{letter-spacing:.06em;text-transform:none;font-size:.78rem}
+.page-hero h1{font-size:clamp(1.9rem,4.6vw,3.1rem);line-height:1.14;color:#fff;margin-bottom:.85rem}
+.page-hero p{color:rgba(255,255,255,.84);line-height:1.8;font-size:.98rem;max-width:640px}
+
+/* Hero apply button */
+.ph-cta{margin-top:1.8rem}
+.btn-hero{
+  background:#faf9f6;
+  color:var(--green-deep);
+  border:1px solid rgba(255,255,255,.25);
+  padding:.9rem 1.8rem;
+  font-weight:700;
+  font-size:.94rem;
+  box-shadow:0 14px 34px rgba(0,0,0,.16);
+}
+.btn-hero:hover{
+  background:#ffffff;
+  color:var(--green-deep);
+  transform:translateY(-2px);
+  box-shadow:0 20px 44px rgba(0,0,0,.24);
+}
+.btn-hero svg{transition:transform .3s}
+.btn-hero:hover svg{transform:translateX(4px)}
+
+.crumbs{display:flex;gap:.55rem;align-items:center;margin-top:1.5rem;font-size:.82rem;color:rgba(255,255,255,.68);flex-wrap:wrap}
+.crumbs a{color:rgba(255,255,255,.92);text-decoration:none;transition:color .25s}
+.crumbs a:hover{color:#e4c97e}
+.crumbs .sep{opacity:.5}
+
+/* Sections */
+section{padding-block:3.5rem}
+.section-head{text-align:center;max-width:660px;margin:0 auto 2rem}
+.eyebrow{color:var(--gold-deep);letter-spacing:.24em;text-transform:uppercase;font-size:.74rem;font-weight:700}
+.eyebrow::before,.eyebrow::after{content:'';display:inline-block;width:26px;height:1px;background:var(--gold);vertical-align:middle;margin:0 .7rem;opacity:.6}
+body.lang-bn .eyebrow{letter-spacing:.1em}
+.section-head h2{font-size:clamp(1.8rem,3.4vw,2.6rem);margin:.6rem 0 .7rem}
+.section-head p{color:var(--ink-soft);line-height:1.7;font-size:.95rem}
+
+.sec-cta{display:flex;justify-content:center;margin-top:2rem}
+
+/* Info cards */
+.info-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem}
+.info-card{
+  background:#fff;border:1px solid var(--line);border-radius:20px;
+  padding:1.9rem 1.7rem;position:relative;overflow:hidden;
+  box-shadow:var(--shadow-sm);transition:transform .35s, box-shadow .35s, border-color .35s;
+}
+.info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent)}
+.info-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:transparent}
+.info-card .ic{width:48px;height:48px;border-radius:14px;background:var(--gold-soft);display:grid;place-items:center;margin-bottom:1rem}
+.info-card .ic svg{width:22px;height:22px;stroke:var(--gold-deep);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.info-card h3{font-size:1.15rem;margin-bottom:.4rem}
+
+.info-card .big{
+  font-size:clamp(1.75rem,3vw,2.15rem);
+  font-weight:700;
+  color:var(--green);
+  font-family:'Inter','Hind Siliguri',sans-serif;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;
+  line-height:1.25;
+}
+body.lang-bn .info-card .big{
+  font-family:'Hind Siliguri','Inter',sans-serif;
+  font-size:1.5rem;
+  letter-spacing:0;
+}
+
+.info-card p{color:var(--ink-soft);font-size:.9rem;line-height:1.72;margin-top:.55rem}
+
+/* ============================================================
+   Fee Tables
+   ============================================================ */
+.table-wrap{
+  background:#fff;border:1px solid var(--line);border-radius:20px;
+  overflow:hidden;box-shadow:var(--shadow-sm);
+}
+.table-wrap + .table-wrap{margin-top:1.4rem}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.fee{width:100%;border-collapse:collapse;min-width:560px}
+table.fee thead th{
+  background:linear-gradient(120deg,#0e6b4e,#093e2d);color:#fff;
+  padding:1.05rem 1.4rem;text-align:left;
+  font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  font-family:'Inter',sans-serif;
+}
+table.fee thead th:last-child{text-align:right}
+table.fee tbody td{
+  padding:1rem 1.4rem;border-top:1px solid var(--line);
+  font-size:.94rem;vertical-align:middle;
+}
+table.fee tbody tr:nth-child(even){background:var(--bg-soft)}
+table.fee tbody tr:hover{background:#f6f3ea}
+table.fee .item{color:var(--ink);font-weight:500;line-height:1.62}
+table.fee .item small{display:block;color:var(--ink-soft);font-size:.79rem;font-weight:400;line-height:1.65;margin-top:.3rem}
+table.fee .amt{
+  text-align:right;font-weight:700;color:var(--green);white-space:nowrap;
+  font-variant-numeric:tabular-nums;font-size:1rem;
+}
+
+body.lang-bn .table-wrap{font-family:'Noto Serif Bengali','Hind Siliguri',serif}
+body.lang-bn table.fee thead th{
+  font-family:'Hind Siliguri',sans-serif;
+  letter-spacing:.06em;text-transform:none;font-size:.86rem;
+}
+body.lang-bn table.fee tbody td{font-size:.95rem;line-height:1.9}
+body.lang-bn table.fee .item{font-weight:600}
+body.lang-bn table.fee .item small{font-size:.82rem;line-height:1.85;font-weight:400}
+
+/* ✅ Number-only font override — Bangla amounts use Hind Siliguri */
+body.lang-bn table.fee .amt{
+  font-family:'Hind Siliguri','Inter',sans-serif;
+  font-size:1.02rem;
+  font-weight:700;
+  letter-spacing:.01em;
+}
+
+/* Sub-heading between two tables */
+.table-title{
+  display:flex;align-items:center;justify-content:center;gap:.9rem;
+  margin:1.9rem 0 1rem;
+  font-family:'Cormorant Garamond','Noto Serif Bengali',serif;
+  font-weight:600;
+  font-size:1.25rem;
+  color:var(--ink);
+  text-align:center;
+}
+.table-title::before,
+.table-title::after{
+  content:'';width:36px;height:1px;background:var(--gold);opacity:.55;flex:none;
+}
+body.lang-bn .table-title{
+  font-family:'Noto Serif Bengali',serif;
+  font-size:1.08rem;
+}
+
+/* Requirements & Rules */
+.req-grid{display:grid;gap:.9rem;margin-top:.4rem}
+.req-item{
+  display:flex;gap:.9rem;align-items:flex-start;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:1.15rem 1.25rem;transition:.3s;
+}
+.req-item:hover{border-color:transparent;box-shadow:var(--shadow-sm);transform:translateY(-3px)}
+.req-item .ck{flex:none;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);display:grid;place-items:center;margin-top:.12rem}
+.req-item .ck svg{width:13px;height:13px;stroke:var(--gold-deep);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.req-item p{color:var(--ink-soft);font-size:.93rem;line-height:1.75}
+
+.rules{list-style:none;display:grid;gap:.9rem;margin-top:.4rem;counter-reset:rule}
+.rules li{
+  counter-increment:rule;display:flex;gap:1rem;align-items:flex-start;
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:1.15rem 1.25rem;transition:.3s;
+}
+.rules li:hover{border-color:transparent;box-shadow:var(--shadow-sm);transform:translateY(-3px)}
+.rules li::before{
+  content:counter(rule);
+  flex:none;width:32px;height:32px;border-radius:10px;
+  background:linear-gradient(135deg,#127a59,#093e2d);color:#fff;
+  display:grid;place-items:center;font-weight:700;font-size:.85rem;
+  font-family:'Inter',sans-serif;
+}
+body.lang-bn .rules li::before{content:counter(rule,bengali);font-family:'Hind Siliguri',sans-serif;font-size:.9rem}
+.rules li p{color:var(--ink-soft);font-size:.93rem;line-height:1.78}
+
+.note{
+  display:flex;gap:.85rem;align-items:flex-start;
+  background:var(--gold-soft);border:1px solid rgba(176,141,62,.28);
+  border-radius:16px;padding:1.1rem 1.3rem;margin-top:1.3rem;
+}
+.note svg{width:20px;height:20px;flex:none;stroke:var(--gold-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-top:.15rem}
+.note p{font-size:.9rem;color:var(--gold-deep);line-height:1.72;font-weight:600}
+body.lang-bn .note p{font-weight:600;line-height:1.85}
+
+/* CTA */
+.cta{position:relative;border-radius:24px;padding:3rem 2.5rem;text-align:center;color:#fff;overflow:hidden;background:linear-gradient(120deg,#0e6b4e,#093e2d)}
+.cta h2{font-size:clamp(1.6rem,3.2vw,2.4rem);margin-bottom:.8rem;position:relative}
+.cta p{opacity:.85;max-width:560px;margin:0 auto 1.7rem;line-height:1.75;position:relative;font-size:.95rem}
+.cta-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;position:relative}
+
+/* Footer */
+footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align:center;border-top:1px solid var(--line)}
+.footer-content{display:flex;flex-direction:column;align-items:center;gap:.9rem;margin-bottom:1.6rem}
+.foot-brand{display:flex;align-items:center;gap:.75rem}
+.foot-brand img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft)}
+.foot-brand .name{color:var(--ink);font-weight:700;font-size:1rem;font-family:'Hind Siliguri',sans-serif}
+.foot-desc{font-size:.85rem;line-height:1.7;color:var(--ink-soft);max-width:600px;margin:0 auto;font-family:'Hind Siliguri',sans-serif}
+.social-links{display:flex;gap:1.1rem;justify-content:center;margin-top:.4rem}
+.social-links a{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(23,26,32,.06);transition:.3s;color:var(--ink-soft);text-decoration:none}
+.social-links a:hover{background:var(--gold);color:#fff;transform:translateY(-3px)}
+.social-links svg{width:17px;height:17px;fill:currentColor}
+.copy{border-top:1px solid rgba(23,26,32,.09);padding-top:1.4rem;text-align:center;font-size:13px;color:var(--ink-soft);line-height:1.6;font-family:'Inter','Hind Siliguri',sans-serif}
+.copy a{color:inherit;text-decoration:none;font-weight:600;transition:color .3s}
+.copy a:hover{color:var(--gold-deep);text-decoration:underline}
+
+/* AI Assistant */
+.ai-widget{position:fixed;right:1.2rem;bottom:1.2rem;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:.7rem}
+.ai-fab{
+  position:relative;width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
+  background:linear-gradient(135deg,#127a59,#093e2d);color:#fff;
+  display:grid;place-items:center;
+  box-shadow:0 14px 34px rgba(13,92,67,.4);
+  transition:transform .3s;
+}
+.ai-fab:hover{transform:translateY(-3px) scale(1.04)}
+.ai-fab::before{content:'';position:absolute;inset:0;border-radius:50%;background:rgba(13,92,67,.4);animation:aiPulse 2.6s infinite;z-index:-1}
+@keyframes aiPulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(1.5);opacity:0}100%{transform:scale(1.5);opacity:0}}
+.ai-fab svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ai-fab .online{position:absolute;top:4px;right:4px;width:12px;height:12px;border-radius:50%;background:#3ddc84;border:2px solid #0d5c43}
+.ai-card{
+  width:min(300px,calc(100vw - 2.8rem));background:#fff;border:1px solid var(--line);border-radius:20px;
+  padding:1.1rem 1.2rem 1.25rem;box-shadow:0 24px 60px rgba(23,26,32,.18);
+  transform:translateY(14px) scale(.96);opacity:0;pointer-events:none;
+  transition:.32s cubic-bezier(.2,.8,.3,1);transform-origin:bottom right;
+}
+.ai-card.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}
+.ai-head{display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem}
+.ai-head strong{font-size:.95rem;font-family:'Inter','Hind Siliguri',sans-serif}
+.ai-head .dot{width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.18);flex:none}
+.ai-close{margin-left:auto;border:0;background:var(--bg-soft);width:26px;height:26px;border-radius:50%;cursor:pointer;color:var(--ink-soft);font-size:1rem;line-height:1;font-family:inherit;transition:.25s}
+.ai-close:hover{background:var(--gold-soft);color:var(--ink)}
+.ai-card p{font-size:.85rem;color:var(--ink-soft);line-height:1.65}
+.ai-badge{display:inline-block;margin-top:.85rem;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);background:var(--gold-soft);padding:.35rem .75rem;border-radius:999px}
+body.lang-bn .ai-badge{letter-spacing:.06em}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media(max-width:980px){
+  :root{--nav-header-height:70px}
+  .nav-links{
+    position:fixed;
+    top:var(--nav-header-height);
+    right:0;bottom:0;
+    width:min(270px, 72vw);
+    height:auto;max-height:none;
+    background:#fff;
+    flex-direction:column;
+    padding:1.3rem 1.2rem;
+    gap:.3rem;
+    border-left:1px solid var(--line);
+    transform:translate3d(110%,0,0);
+    visibility:hidden;pointer-events:none;
+    transition:transform .36s cubic-bezier(.3,.7,.3,1), visibility 0s linear .36s;
+    box-shadow:-14px 0 40px rgba(23,26,32,.12);
+    align-items:flex-start;
+    z-index:101;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    will-change:transform;
+  }
+  .nav-links.open{
+    transform:translate3d(0,0,0);
+    visibility:visible;pointer-events:auto;
+    transition:transform .36s cubic-bezier(.3,.7,.3,1), visibility 0s;
+  }
+  .nav-links .mobile-only{display:block}
+  .nav-links li{width:100%}
+  .nav-links a{display:block;font-size:.98rem;padding:.7rem .55rem;border-radius:10px}
+  .nav-links a:hover{background:var(--bg-soft)}
+  .nav-links a::after{display:none}
+
+  .hamburger{display:block}
+  .brand .sub{display:none}
+  nav{height:70px}
+  section{padding-block:2.5rem}
+  .page-hero{padding-block:3.2rem 2.8rem}
+}
+
+@media(max-width:760px){
+  .info-cards{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   MOBILE FEE TABLES → CARD LAYOUT
+   ============================================================ */
+@media(max-width:700px){
+  .table-wrap{
+    background:transparent;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    overflow:visible;
+  }
+  .table-wrap + .table-wrap{margin-top:1rem}
+  .table-scroll{overflow:visible}
+
+  table.fee{
+    min-width:0;
+    display:block;
+    width:100%;
+  }
+  table.fee thead{display:none}
+  table.fee tbody{display:block;width:100%}
+
+  table.fee tbody tr{
+    display:block;
+    background:#fff !important;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:1.05rem 1.15rem;
+    margin-bottom:.75rem;
+    box-shadow:var(--shadow-sm);
+    transition:transform .25s, box-shadow .25s, border-color .25s;
+  }
+  table.fee tbody tr:hover{
+    background:#fff !important;
+    border-color:transparent;
+    box-shadow:var(--shadow);
+    transform:translateY(-2px);
+  }
+  table.fee tbody tr:last-child{margin-bottom:0}
+
+  table.fee tbody td{
+    display:block;
+    padding:0;
+    border:0 !important;
+    text-align:left !important;
+  }
+  table.fee tbody td.item{
+    font-size:.94rem;
+    font-weight:600;
+    color:var(--ink);
+    line-height:1.55;
+  }
+  table.fee tbody td.item small{
+    margin-top:.4rem;
+    font-size:.79rem;
+    line-height:1.7;
+  }
+  table.fee tbody td.amt{
+    margin-top:.6rem;
+    padding-top:.65rem;
+    border-top:1px dashed var(--line) !important;
+    text-align:left !important;
+    font-size:1.18rem;
+    font-weight:700;
+    color:var(--green);
+    letter-spacing:.01em;
+  }
+
+  /* Bangla typography tweaks for mobile cards */
+  body.lang-bn table.fee tbody td.item{font-size:.95rem;line-height:1.75}
+  body.lang-bn table.fee tbody td.item small{font-size:.82rem;line-height:1.85}
+
+  /* ✅ Bangla amount font on mobile cards */
+  body.lang-bn table.fee tbody td.amt{
+    font-family:'Hind Siliguri','Inter',sans-serif;
+    font-size:1.1rem;
+    font-weight:700;
+    letter-spacing:.01em;
+  }
+
+  /* Sub-title between tables */
+  .table-title{
+    margin:1.5rem 0 .9rem;
+    font-size:1.1rem;
+  }
+  body.lang-bn .table-title{font-size:1rem}
+}
+
+@media(max-width:600px){
+  :root{--nav-header-height:64px}
+  header,section,footer{padding-inline:1rem}
+  section{padding-block:2rem}
+  nav{height:64px}
+  .lang-toggle button{padding:.32rem .68rem;font-size:.74rem}
+  .brand img{width:42px;height:42px}
+  .brand .name{font-size:.95rem}
+  .ai-widget{right:.8rem;bottom:.8rem}
+  .ai-fab{width:50px;height:50px}
+
+  .page-hero{padding-block:2.6rem 2.4rem}
+  .page-hero h1{font-size:1.65rem}
+  .page-hero p{font-size:.9rem}
+  .cap-tag{font-size:.64rem;padding:.34rem .8rem;margin-bottom:.85rem}
+
+  .ph-cta{margin-top:1.4rem}
+  .btn-hero{
+    padding:.8rem 1.5rem;
+    font-size:.88rem;
+    width:100%;
+    justify-content:center;
+  }
+
+  .section-head{margin:0 auto 1.5rem}
+  .section-head h2{font-size:1.5rem}
+
+  .info-card{padding:1.5rem 1.3rem}
+  .info-card .big{font-size:1.55rem}
+  body.lang-bn .info-card .big{font-size:1.35rem}
+
+  .req-item,.rules li{padding:1rem 1.05rem}
+  .cta{padding:2.4rem 1.4rem}
+  .cta h2{font-size:1.35rem}
+  .cta p{font-size:.88rem;margin-bottom:1.3rem}
+  .cta-actions .btn{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav Backdrop -->
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<!-- Header -->
+<header id="header">
+  <nav>
+    <a href="index.html" class="brand">
+      <img src="https://plain-apac-prod-public.komododecks.com/202610/15/MmBhtIgH8Icyl9XBk1qi/image.png" alt="Al Azhar Madrasah">
+      <span class="brand-text">
+        <span class="name" data-i18n="brand_name">Al Azhar Madrasah</span>
+        <span class="sub" data-i18n="brand_sub">A faith-based institute blending Islamic &amp; modern education</span>
+      </span>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#home" data-i18n="nav_home">Home</a></li>
+      <li><a href="index.html#about" data-i18n="nav_about">About</a></li>
+      <li><a href="index.html#programs" data-i18n="nav_programs">Programs</a></li>
+      <li><a href="index.html#voices" data-i18n="nav_voices">Voices</a></li>
+      <li><a href="index.html#notices" data-i18n="nav_notices">Notices</a></li>
+      <li><a href="index.html#contact" data-i18n="nav_contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button id="btnEN" class="active">EN</button>
+        <button id="btnBN">বাং</button>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-controls="navLinks" aria-expanded="false" type="button">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Page Hero -->
+<section class="page-hero">
+  <div class="ph-inner">
+    <span class="cap-tag" data-i18n="page_tag">Admission 2027</span>
+    <h1 data-i18n="page_title">Admission Information</h1>
+    <p data-i18n="page_sub">Everything you need to know before joining Al Azhar Madrasah — form price &amp; dates, complete fee structure, required documents and our madrasah rules.</p>
+
+    <div class="ph-cta">
+      <a href="admission_form.html" class="btn btn-hero">
+        <span data-i18n="cta_btn2">Apply for Admission</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
+
+    <div class="crumbs">
+      <a href="index.html" data-i18n="crumb_home">Home</a>
+      <span class="sep">/</span>
+      <span data-i18n="crumb_current">Admission Information</span>
+    </div>
+  </div>
+</section>
+
+<!-- Form Price & Date -->
+<section id="form">
+  <div class="section-head">
+    <span class="eyebrow" data-i18n="form_eyebrow">Application Form</span>
+    <h2 data-i18n="form_title">Form Price &amp; Distribution</h2>
+    <p data-i18n="form_sub">Collect the admission form from the madrasah office within the announced period.</p>
+  </div>
+
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="ic">
+        <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2.6"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+      </div>
+      <h3 data-i18n="form_price_t">Admission Form Price</h3>
+      <div class="big" data-i18n="form_price_v">Tk 300</div>
+      <p data-i18n="form_price_p">The admission form is available for 300/- Taka only. The price is non-refundable.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="ic">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg>
+      </div>
+      <h3 data-i18n="form_date_t">Distribution Begins</h3>
+      <div class="big" data-i18n="form_date_v">1 November</div>
+      <p data-i18n="form_date_p">Form distribution starts from the 1st of November. Seats are limited, so please apply early.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Academic & Hifz cum Academic -->
+<section id="academic" style="background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="section-head">
+    <span class="eyebrow" data-i18n="ac_eyebrow">a. Fee Structure</span>
+    <h2 data-i18n="ac_title">Academic &amp; Hifz cum Academic</h2>
+    <p data-i18n="ac_sub">All-inclusive fee structure for the Academic and Hifz cum Academic programmes.</p>
+  </div>
+
+  <!-- Table 1: Admission / Session / Hifz cum Academic -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table class="fee">
+        <thead>
+          <tr>
+            <th data-i18n="th_item">Particulars</th>
+            <th data-i18n="th_amount">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item" data-i18n="ac_k1">Admission Fee (all fees included)</td>
+            <td class="amt" data-i18n="ac_v1">13,000/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k2">Session Fee (old students)</td>
+            <td class="amt" data-i18n="ac_v2">8,000/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k3">Monthly Tuition Fee (Hifz cum Academic)</td>
+            <td class="amt" data-i18n="ac_v3">8,000/=</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Divider title -->
+  <div class="table-title" data-i18n="ac_group">Monthly Tuition Fee (Academic)</div>
+
+  <!-- Table 2: Monthly Tuition Fee (Academic) -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table class="fee">
+        <thead>
+          <tr>
+            <th data-i18n="th_item">Particulars</th>
+            <th data-i18n="th_amount">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item" data-i18n="ac_k4">Play</td>
+            <td class="amt" data-i18n="ac_v4">1,500/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k5">Nursery + KG</td>
+            <td class="amt" data-i18n="ac_v5">1,600/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k6">Class 1 – 2</td>
+            <td class="amt" data-i18n="ac_v6">1,700/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k7">Class 3 – 4</td>
+            <td class="amt" data-i18n="ac_v7">1,900/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k8">Class 5</td>
+            <td class="amt" data-i18n="ac_v8">2,100/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k9">Class 6 – 7</td>
+            <td class="amt" data-i18n="ac_v9">2,200/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k10">Class 8</td>
+            <td class="amt" data-i18n="ac_v10">2,400/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="ac_k11">Class 9 – 10</td>
+            <td class="amt" data-i18n="ac_v11">2,500/=</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="note">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg>
+    <p data-i18n="ac_note">Admission fee is all-inclusive. Session fee is applicable for returning (old) students only.</p>
+  </div>
+</section>
+
+<!-- Residential & Day-care -->
+<section id="residential">
+  <div class="section-head">
+    <span class="eyebrow" data-i18n="rs_eyebrow">b. Fee Structure</span>
+    <h2 data-i18n="rs_title">Residential &amp; Day-care</h2>
+    <p data-i18n="rs_sub">Complete hostel, day-care and meal packages — with and without food.</p>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table class="fee">
+        <thead>
+          <tr>
+            <th data-i18n="th_item">Particulars</th>
+            <th data-i18n="th_amount">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item">
+              <span data-i18n="rs_k1">Admission Fee (hostel items)</span>
+              <small data-i18n="rs_k1s">Cot, bed, mattress, box desk, hifz desk, rehal, food items etc.</small>
+            </td>
+            <td class="amt" data-i18n="rs_v1">20,000/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="rs_k2">Session Fee (old students)</td>
+            <td class="amt" data-i18n="rs_v2">8,000/=</td>
+          </tr>
+          <tr>
+            <td class="item">
+              <span data-i18n="rs_k3">Full-time Residential Monthly Package</span>
+              <small data-i18n="rs_k3s">Tuition fee, accommodation &amp; care, breakfast, morning snack, lunch, evening snack, dinner, extra-care</small>
+            </td>
+            <td class="amt" data-i18n="rs_v3">10,000/=</td>
+          </tr>
+          <tr>
+            <td class="item">
+              <span data-i18n="rs_k4">Day-care Monthly Package</span>
+              <small data-i18n="rs_k4s">Tuition fee, accommodation &amp; care, morning snack, lunch, evening snack</small>
+            </td>
+            <td class="amt" data-i18n="rs_v4">8,500/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="rs_k5">Full-time Residential Monthly Package (without food)</td>
+            <td class="amt" data-i18n="rs_v5">7,500/=</td>
+          </tr>
+          <tr>
+            <td class="item" data-i18n="rs_k6">Day-care Monthly Package (without food)</td>
+            <td class="amt" data-i18n="rs_v6">5,500/=</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="note">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg>
+    <p data-i18n="rs_note">Monthly packages include tuition fee, accommodation &amp; care. Food-included and food-excluded options are both available.</p>
+  </div>
+</section>
+
+<!-- Requirements -->
+<section id="requirements" style="background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="section-head">
+    <span class="eyebrow" data-i18n="req_eyebrow">Documents</span>
+    <h2 data-i18n="req_title">What You Need to Apply</h2>
+    <p data-i18n="req_sub">Please bring the following documents along with the completed admission form.</p>
+  </div>
+
+  <div class="req-grid">
+    <div class="req-item">
+      <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>
+      <p data-i18n="req_1">2 copies of passport-size colour photographs of the student and a photocopy of the birth registration certificate.</p>
+    </div>
+    <div class="req-item">
+      <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>
+      <p data-i18n="req_2">Photocopy of the National ID (NID) card of the father or mother.</p>
+    </div>
+    <div class="req-item">
+      <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>
+      <p data-i18n="req_3">Transfer certificate (release letter) from the previous institution for students of Class 3 to Class 9.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Rules -->
+<section id="rules">
+  <div class="section-head">
+    <span class="eyebrow" data-i18n="rule_eyebrow">Guidelines</span>
+    <h2 data-i18n="rule_title">Madrasah Rules</h2>
+    <p data-i18n="rule_sub">To ensure smooth academic discipline, all guardians are requested to follow the tuition fee schedule below.</p>
+  </div>
+
+  <ol class="rules">
+    <li><p data-i18n="rule_1">The tuition fee for the current month must be paid between the 1st and 7th of every English month.</p></li>
+    <li><p data-i18n="rule_2">In case of special difficulty, the tuition fee may be paid without any penalty up to the 10th.</p></li>
+    <li><p data-i18n="rule_3">From the 11th onwards, an additional 10 (ten) Taka per day will be charged as a late fine along with the regular tuition fee.</p></li>
+  </ol>
+
+  <div class="note">
+    <svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.4 8.4-8 9-4.6-.6-8-4-8-9V7z"></path><path d="M9.5 12l1.8 1.8L15 10"></path></svg>
+    <p data-i18n="rule_note">Timely payment helps us maintain the quality of education, meals and residential care for every student.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="cta">
+    <h2 data-i18n="cta_title">Ready to Enroll Your Child?</h2>
+    <p data-i18n="cta_p">Visit the madrasah office from 1 November to collect the admission form. Seats are limited — we look forward to welcoming your family.</p>
+    <div class="cta-actions">
+      <a href="index.html#contact" class="btn btn-gold">
+        <span data-i18n="cta_btn1">Contact Us</span>
+      </a>
+      <a href="admission_form.html" class="btn btn-outline">
+        <span data-i18n="cta_btn2">Apply for Admission</span>
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-content">
+    <div class="foot-brand">
+      <img src="https://plain-apac-prod-public.komododecks.com/202610/15/MmBhtIgH8Icyl9XBk1qi/image.png" alt="Logo">
+      <span class="name" data-i18n="brand_name">আল আজহার মাদরাসা</span>
+    </div>
+    <p class="foot-desc" data-i18n="foot_about">২০২২ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।</p>
+    <div class="social-links">
+      <a href="mailto:alazhar.rangpur@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+      <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+        <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+      <a href="https://wa.me/8801987307236" target="_blank" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="copy">
+    <span data-i18n="copy_rights">© 2026 আল আজহার মাদরাসা · All rights reserved</span><br>
+    <span data-i18n="developed_by">Developed by</span> <a href="https://hacker-ferdous.github.io/" target="_blank">Nafsin Ferdous</a>
+  </div>
+</footer>
+
+<!-- AI Assistant -->
+<div class="ai-widget">
+  <div class="ai-card" id="aiCard">
+    <div class="ai-head">
+      <span class="dot"></span>
+      <strong>AI Assistant</strong>
+      <button class="ai-close" id="aiClose" aria-label="Close">×</button>
+    </div>
+    <p data-i18n="ai_msg">I'm still being prepared. Very soon I'll be able to answer your questions about admission, programs and timings.</p>
+    <span class="ai-badge" data-i18n="ai_soon">Coming Soon</span>
+  </div>
+
+  <button class="ai-fab" id="aiFab" aria-label="AI Assistant">
+    <span class="online"></span>
+    <svg viewBox="0 0 24 24">
+      <path d="M21 11.5a8.4 8.4 0 0 1-8.6 8.4 9.4 9.4 0 0 1-2.9-.4L4 21.2l1.4-3.9A8.2 8.2 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"></path>
+      <circle cx="8.6" cy="11.5" r=".95" fill="currentColor" stroke="none"></circle>
+      <circle cx="12" cy="11.5" r=".95" fill="currentColor" stroke="none"></circle>
+      <circle cx="15.4" cy="11.5" r=".95" fill="currentColor" stroke="none"></circle>
+    </svg>
+  </button>
+</div>
+
+<script>
+/* =========================================================
+   SECTION 1 — i18n DICTIONARY
+   ========================================================= */
+const I18N = {
+  en: {
+    brand_name:"Al Azhar Madrasah",
+    brand_sub:"A faith-based institute blending Islamic & modern education",
+    nav_home:"Home", nav_about:"About", nav_programs:"Programs",
+    nav_voices:"Voices", nav_notices:"Notices", nav_contact:"Contact", nav_cta:"Admission",
+
+    /* Page hero */
+    page_tag:"Admission 2027",
+    page_title:"Admission Information",
+    page_sub:"Everything you need to know before joining Al Azhar Madrasah — form price & dates, complete fee structure, required documents and our madrasah rules.",
+    crumb_home:"Home",
+    crumb_current:"Admission Information",
+
+    /* Form price & date */
+    form_eyebrow:"Application Form",
+    form_title:"Form Price & Distribution",
+    form_sub:"Collect the admission form from the madrasah office within the announced period.",
+    form_price_t:"Admission Form Price",
+    form_price_v:"Tk 300",
+    form_price_p:"The admission form is available for 300/- Taka only. The price is non-refundable.",
+    form_date_t:"Distribution Begins",
+    form_date_v:"1 November",
+    form_date_p:"Form distribution starts from the 1st of November. Seats are limited, so please apply early.",
+
+    /* Academic table */
+    ac_eyebrow:"a. Fee Structure",
+    ac_title:"Academic & Hifz cum Academic",
+    ac_sub:"All-inclusive fee structure for the Academic and Hifz cum Academic programmes.",
+    th_item:"Particulars",
+    th_amount:"Amount",
+    ac_k1:"Admission Fee (all fees included)",
+    ac_v1:"13,000/=",
+    ac_k2:"Session Fee (old students)",
+    ac_v2:"8,000/=",
+    ac_k3:"Monthly Tuition Fee (Hifz cum Academic)",
+    ac_v3:"8,000/=",
+    ac_group:"Monthly Tuition Fee (Academic)",
+    ac_k4:"Play", ac_v4:"1,500/=",
+    ac_k5:"Nursery + KG", ac_v5:"1,600/=",
+    ac_k6:"Class 1 – 2", ac_v6:"1,700/=",
+    ac_k7:"Class 3 – 4", ac_v7:"1,900/=",
+    ac_k8:"Class 5", ac_v8:"2,100/=",
+    ac_k9:"Class 6 – 7", ac_v9:"2,200/=",
+    ac_k10:"Class 8", ac_v10:"2,400/=",
+    ac_k11:"Class 9 – 10", ac_v11:"2,500/=",
+    ac_note:"Admission fee is all-inclusive. Session fee is applicable for returning (old) students only.",
+
+    /* Residential table */
+    rs_eyebrow:"b. Fee Structure",
+    rs_title:"Residential & Day-care",
+    rs_sub:"Complete hostel, day-care and meal packages — with and without food.",
+    rs_k1:"Admission Fee (hostel items)",
+    rs_k1s:"Cot, bed, mattress, box desk, hifz desk, rehal, food items etc.",
+    rs_v1:"20,000/=",
+    rs_k2:"Session Fee (old students)",
+    rs_v2:"8,000/=",
+    rs_k3:"Full-time Residential Monthly Package",
+    rs_k3s:"Tuition fee, accommodation & care, breakfast, morning snack, lunch, evening snack, dinner, extra-care",
+    rs_v3:"10,000/=",
+    rs_k4:"Day-care Monthly Package",
+    rs_k4s:"Tuition fee, accommodation & care, morning snack, lunch, evening snack",
+    rs_v4:"8,500/=",
+    rs_k5:"Full-time Residential Monthly Package (without food)",
+    rs_v5:"7,500/=",
+    rs_k6:"Day-care Monthly Package (without food)",
+    rs_v6:"5,500/=",
+    rs_note:"Monthly packages include tuition fee, accommodation & care. Food-included and food-excluded options are both available.",
+
+    /* Requirements */
+    req_eyebrow:"Documents",
+    req_title:"What You Need to Apply",
+    req_sub:"Please bring the following documents along with the completed admission form.",
+    req_1:"2 copies of passport-size colour photographs of the student and a photocopy of the birth registration certificate.",
+    req_2:"Photocopy of the National ID (NID) card of the father or mother.",
+    req_3:"Transfer certificate (release letter) from the previous institution for students of Class 3 to Class 9.",
+
+    /* Rules */
+    rule_eyebrow:"Guidelines",
+    rule_title:"Madrasah Rules",
+    rule_sub:"To ensure smooth academic discipline, all guardians are requested to follow the tuition fee schedule below.",
+    rule_1:"The tuition fee for the current month must be paid between the 1st and 7th of every English month.",
+    rule_2:"In case of special difficulty, the tuition fee may be paid without any penalty up to the 10th.",
+    rule_3:"From the 11th onwards, an additional 10 (ten) Taka per day will be charged as a late fine along with the regular tuition fee.",
+    rule_note:"Timely payment helps us maintain the quality of education, meals and residential care for every student.",
+
+    /* CTA */
+    cta_title:"Ready to Enroll Your Child?",
+    cta_p:"Visit the madrasah office from 1 November to collect the admission form. Seats are limited — we look forward to welcoming your family.",
+    cta_btn1:"Contact Us",
+    cta_btn2:"Apply for Admission",
+
+    /* Footer & AI */
+    foot_about:"A center of Quranic education and character development, serving the ummah with sincerity since 2022.",
+    copy_rights:"© 2026 Al Azhar Madrasah · All rights reserved",
+    developed_by:"Developed by",
+    ai_msg:"I'm still being prepared. Very soon I'll be able to answer your questions about admission, programs and timings.",
+    ai_soon:"Coming Soon"
+  },
+
+  bn: {
+    brand_name:"আল আজহার মাদরাসা",
+    brand_sub:"ইসলামী ও আধুনিক শিক্ষার সমন্বয়ে একটি দ্বীনি শিক্ষা প্রতিষ্ঠান",
+    nav_home:"হোম", nav_about:"পরিচিতি", nav_programs:"বিভাগসমূহ",
+    nav_voices:"কণ্ঠস্বর", nav_notices:"নোটিশ", nav_contact:"যোগাযোগ", nav_cta:"ভর্তি",
+
+    /* Page hero */
+    page_tag:"ভর্তি — ২০২৭ শিক্ষাবর্ষ",
+    page_title:"ভর্তি সংক্রান্ত তথ্য",
+    page_sub:"আল আজহার মাদরাসায় ভর্তির আগে যা যা জানা প্রয়োজন — ফরমের মূল্য ও সময়, সম্পূর্ণ ফি কাঠামো, প্রয়োজনীয় কাগজপত্র এবং মাদরাসার নিয়মাবলী।",
+    crumb_home:"হোম",
+    crumb_current:"ভর্তি তথ্য",
+
+    /* Form price & date */
+    form_eyebrow:"ভর্তি ফরম",
+    form_title:"ফরমের মূল্য ও বিতরণ",
+    form_sub:"নির্ধারিত সময়ের মধ্যে মাদরাসা অফিস থেকে ভর্তি ফরম সংগ্রহ করুন।",
+    form_price_t:"ভর্তি ফরমের মূল্য",
+    form_price_v:"৩০০ টাকা",
+    form_price_p:"ভর্তি ফরমের মূল্য ৩০০/- টাকা। ফরমের মূল্য অফেরতযোগ্য।",
+    form_date_t:"বিতরণ শুরু",
+    form_date_v:"১লা নভেম্বর",
+    form_date_p:"১লা নভেম্বর থেকে ভর্তি ফরম বিতরণ শুরু হবে। আসন সংখ্যা সীমিত, তাই দ্রুত আবেদন করুন।",
+
+    /* Academic table */
+    ac_eyebrow:"ক. ফি কাঠামো",
+    ac_title:"একাডেমিক ও হিফয কাম একাডেমিক",
+    ac_sub:"একাডেমিক ও হিফয কাম একাডেমিক বিভাগের সম্পূর্ণ ফি কাঠামো।",
+    th_item:"খরচের বিবরণ",
+    th_amount:"পরিমাণ",
+    ac_k1:"ভর্তি ফি (যাবতীয় ফি সহ)",
+    ac_v1:"১৩,০০০/=",
+    ac_k2:"সেশন ফি (পুরাতন শিক্ষার্থী)",
+    ac_v2:"৮,০০০/=",
+    ac_k3:"মাসিক টিউশন ফি (হিফয কাম একাডেমিক)",
+    ac_v3:"৮,০০০/=",
+    ac_group:"মাসিক টিউশন ফি (একাডেমিক)",
+    ac_k4:"প্লে শ্রেণি", ac_v4:"১,৫০০/=",
+    ac_k5:"নার্সারি + কেজি শ্রেণি", ac_v5:"১,৬০০/=",
+    ac_k6:"১ম – ২য় শ্রেণি", ac_v6:"১,৭০০/=",
+    ac_k7:"৩য় – ৪র্থ শ্রেণি", ac_v7:"১,৯০০/=",
+    ac_k8:"৫ম শ্রেণি", ac_v8:"২,১০০/=",
+    ac_k9:"৬ষ্ঠ – ৭ম শ্রেণি", ac_v9:"২,২০০/=",
+    ac_k10:"৮ম শ্রেণি", ac_v10:"২,৪০০/=",
+    ac_k11:"৯ম – ১০ম শ্রেণি", ac_v11:"২,৫০০/=",
+    ac_note:"ভর্তি ফি যাবতীয় খরচসহ। সেশন ফি কেবল পুরাতন শিক্ষার্থীদের জন্য প্রযোজ্য।",
+
+    /* Residential table */
+    rs_eyebrow:"খ. ফি কাঠামো",
+    rs_title:"আবাসিক ও ডে-কেয়ার",
+    rs_sub:"সম্পূর্ণ আবাসিক, ডে-কেয়ার ও খাবারের প্যাকেজ — খাবারসহ ও খাবার ব্যতীত।",
+    rs_k1:"ভর্তি ফি (আবাসন উপকরণ)",
+    rs_k1s:"খাট, বেড, তোষক, বক্স ডেক্স, হিফয ডেক্স, রেহাল, খাদ্য-উপকরণ ইত্যাদি",
+    rs_v1:"২০,০০০/=",
+    rs_k2:"সেশন ফি (পুরাতন শিক্ষার্থী)",
+    rs_v2:"৮,০০০/=",
+    rs_k3:"ফুল-টাইম রেসিডেন্সিয়াল মাসিক প্যাকেজ",
+    rs_k3s:"টিউশন ফি, আবাসন ব্যবস্থা ও পরিচর্যা, প্রাতঃরাশ, সকালের নাস্তা, দুপুরের খাবার, সন্ধ্যার নাস্তা ও রাতের খাবার, এক্সট্রা-কেয়ার",
+    rs_v3:"১০,০০০/=",
+    rs_k4:"ডে-কেয়ার মাসিক প্যাকেজ",
+    rs_k4s:"টিউশন ফি, আবাসন ব্যবস্থা ও পরিচর্যা, সকালের নাস্তা, দুপুরের খাবার, সন্ধ্যার নাস্তা",
+    rs_v4:"৮,৫০০/=",
+    rs_k5:"ফুল-টাইম রেসিডেন্সিয়াল মাসিক প্যাকেজ (খাবার ব্যতীত)",
+    rs_v5:"৭,৫০০/=",
+    rs_k6:"ডে-কেয়ার মাসিক প্যাকেজ (খাবার ব্যতীত)",
+    rs_v6:"৫,৫০০/=",
+    rs_note:"মাসিক প্যাকেজে টিউশন ফি, আবাসন ব্যবস্থা ও পরিচর্যা অন্তর্ভুক্ত। খাবারসহ ও খাবার ব্যতীত — উভয় সুবিধা রয়েছে।",
+
+    /* Requirements */
+    req_eyebrow:"কাগজপত্র",
+    req_title:"ভর্তির জন্য যা যা প্রয়োজন",
+    req_sub:"পূরণকৃত ভর্তি ফরমের সাথে নিম্নলিখিত কাগজপত্র সঙ্গে আনুন।",
+    req_1:"শিক্ষার্থীদের পাসপোর্ট সাইজের ২ কপি রঙিন ছবি এবং জন্ম নিবন্ধনের ফটোকপি।",
+    req_2:"পিতা অথবা মাতার এনআইডি (NID) কার্ডের ফটোকপি।",
+    req_3:"৩য় শ্রেণি থেকে ৯ম শ্রেণি পর্যন্ত শিক্ষার্থীর পূর্ববর্তী প্রতিষ্ঠানের ছাড়পত্র।",
+
+    /* Rules */
+    rule_eyebrow:"নির্দেশনা",
+    rule_title:"মাদরাসার নিয়মাবলী",
+    rule_sub:"শৃঙ্খলাপূর্ণ শিক্ষা পরিবেশ নিশ্চিত করতে সকল অভিভাবকের প্রতি অনুরোধ — নিচের টিউশন ফি সময়সূচি অনুসরণ করুন।",
+    rule_1:"প্রত্যেক ইংরেজি মাসের ১ থেকে ৭ তারিখের মধ্যে চলতি মাসের টিউশন ফি প্রদান করতে হবে।",
+    rule_2:"বিশেষ অপারগতায় ১০ তারিখ পর্যন্ত বিনা জরিমানায় টিউশন ফি প্রদান করা যাবে।",
+    rule_3:"১০ তারিখের পর থেকে প্রত্যেক দিনের জন্য নির্ধারিত টিউশন ফি'র সাথে অতিরিক্ত ১০ (দশ) টাকা করে জরিমানা প্রদান করতে হবে।",
+    rule_note:"সময়মতো ফি প্রদান আমাদের প্রতিটি শিক্ষার্থীর শিক্ষা, খাবার ও আবাসিক পরিচর্যার মান বজায় রাখতে সহায়তা করে।",
+
+    /* CTA */
+    cta_title:"আপনার সন্তানের ভর্তি করতে প্রস্তুত?",
+    cta_p:"১লা নভেম্বর থেকে মাদরাসা অফিসে এসে ভর্তি ফরম সংগ্রহ করুন। আসন সীমিত — আপনার পরিবারকে স্বাগত জানাতে আমরা প্রস্তুত।",
+    cta_btn1:"যোগাযোগ করুন",
+    cta_btn2:"ভর্তির জন্য আবেদন করুন",
+
+    /* Footer & AI */
+    foot_about:"২০২২ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।",
+    copy_rights:"© ২০২৬ আল আজহার মাদরাসা · সর্বস্বত্ব সংরক্ষিত",
+    developed_by:"ডেভেলপ করেছে",
+    ai_msg:"আমি এখনো তৈরি হচ্ছি। খুব শীঘ্রই ভর্তি, বিভাগ ও সময়সূচি সম্পর্কে আপনার প্রশ্নের উত্তর দিতে পারব ইনশাআল্লাহ।",
+    ai_soon:"শীঘ্রই আসছে"
+  }
+};
+
+/* =========================================================
+   SECTION 2 — LANGUAGE SWITCHER
+   ========================================================= */
+let lang = 'en';
+
+function setLang(l){
+  lang = l;
+  document.documentElement.lang = (l === 'bn') ? 'bn' : 'en';
+  document.body.classList.toggle('lang-bn', l === 'bn');
+
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const v = I18N[l][el.dataset.i18n];
+    if(v !== undefined) el.textContent = v;
+  });
+
+  document.getElementById('btnEN').classList.toggle('active', l === 'en');
+  document.getElementById('btnBN').classList.toggle('active', l === 'bn');
+
+  try{ localStorage.setItem('alazhar_lang', l); }catch(e){}
+}
+
+document.getElementById('btnEN').addEventListener('click', ()=> setLang('en'));
+document.getElementById('btnBN').addEventListener('click', ()=> setLang('bn'));
+
+/* =========================================================
+   SECTION 3 — BOOT
+   ========================================================= */
+let saved = null;
+try{ saved = localStorage.getItem('alazhar_lang'); }catch(e){}
+setLang(saved === 'bn' ? 'bn' : 'en');
+
+/* Header scroll shadow */
+const header = document.getElementById('header');
+window.addEventListener('scroll', ()=> header.classList.toggle('scrolled', window.scrollY > 10));
+
+/* =========================================================
+   SECTION 4 — MOBILE MENU
+   ========================================================= */
+const navLinks = document.getElementById('navLinks');
+const navBackdrop = document.getElementById('navBackdrop');
+const hamburger = document.getElementById('hamburger');
+const mobileNavQuery = window.matchMedia('(max-width: 980px)');
+
+function openMenu(){
+  if(!mobileNavQuery.matches) return;
+  navLinks.classList.add('open');
+  navBackdrop.classList.add('active');
+  hamburger.setAttribute('aria-expanded', 'true');
+  document.body.classList.add('nav-menu-open');
+}
+function closeMenu(){
+  navLinks.classList.remove('open');
+  navBackdrop.classList.remove('active');
+  hamburger.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('nav-menu-open');
+}
+
+closeMenu();
+
+hamburger.addEventListener('click', event=>{
+  event.preventDefault();
+  if(navLinks.classList.contains('open')) closeMenu();
+  else openMenu();
+});
+navBackdrop.addEventListener('click', closeMenu);
+navLinks.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
+document.addEventListener('keydown', event=>{ if(event.key === 'Escape') closeMenu(); });
+window.addEventListener('resize', closeMenu, {passive:true});
+
+if(typeof mobileNavQuery.addEventListener === 'function'){
+  mobileNavQuery.addEventListener('change', closeMenu);
+}else if(typeof mobileNavQuery.addListener === 'function'){
+  mobileNavQuery.addListener(closeMenu);
+}
+
+if(window.visualViewport){
+  let previousViewportScale = window.visualViewport.scale;
+  window.visualViewport.addEventListener('resize', ()=>{
+    const currentScale = window.visualViewport.scale;
+    if(Math.abs(currentScale - previousViewportScale) > 0.01) closeMenu();
+    previousViewportScale = currentScale;
+  }, {passive:true});
+}
+
+/* =========================================================
+   SECTION 5 — AI ASSISTANT
+   ========================================================= */
+const aiCard = document.getElementById('aiCard');
+document.getElementById('aiFab').addEventListener('click', ()=> aiCard.classList.toggle('open'));
+document.getElementById('aiClose').addEventListener('click', ()=> aiCard.classList.remove('open'));
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.ai-widget')) aiCard.classList.remove('open');
+});
+</script>
+
+</body>
+</html>
