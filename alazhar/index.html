@@ -123,6 +123,7 @@ nav{position:relative;z-index:1;display:flex;align-items:center;justify-content:
    radial-gradient(circle at 8% 10%, rgba(255,255,255,.14), transparent 34%),
    radial-gradient(circle at 92% 88%, rgba(228,201,126,.16), transparent 40%);
 }
+#heroSlides{position:absolute;inset:0;z-index:1}
 .slide{
   position:absolute;inset:0;opacity:0;
   transition:opacity 1.15s ease;
@@ -134,7 +135,6 @@ nav{position:relative;z-index:1;display:flex;align-items:center;justify-content:
   content:'';position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(12,22,18,.18) 0%,rgba(12,22,18,0) 35%,rgba(10,18,14,.78) 100%);
 }
-/* Caption: rise + fade only — no blur on the text itself */
 .slide-caption{
   position:absolute;left:0;right:0;bottom:0;
   padding:2.4rem max(2.8rem, calc((100% - 1200px) / 2));
@@ -147,7 +147,6 @@ nav{position:relative;z-index:1;display:flex;align-items:center;justify-content:
   transform:translateY(0);opacity:1;
 }
 
-/* Tag with a softly blurred glass background */
 .cap-tag{
   display:inline-flex;align-items:center;gap:.6rem;
   background:rgba(0, 0, 0, 0.25);
@@ -200,6 +199,7 @@ section{padding-block:3.5rem}
   background: var(--bg);
   overflow: hidden;
   padding-block: 3.5rem;
+  margin-top: 2rem;
 }
 .about-visual-bg {
   position: absolute;
@@ -551,6 +551,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
     min-height: auto;
     padding-top: 0;
     padding-bottom: 2.5rem;
+    margin-top: 0;
   }
   .about-visual-bg {
     position: relative;
@@ -683,38 +684,8 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
     <div class="hero-frame" id="gallery">
       <div class="hero-pattern"></div>
 
-      <div class="slide">
-        <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/788001871_4581686542101193_4392501305277680151_n.jpg?stp=dst-jpg_tt6&cstp=mx1280x575&ctp=s1280x575&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHLJCtboOmo9BIgcBgLMCk9wuXb4eWL2uvC5dvh5Yva6ywj71MbFGGgn7dY8yAGAhHFDSvvs6BWsVn6sNXADCYB&_nc_ohc=PrA6UOe8H8wQ7kNvwHHe7HO&_nc_oc=AdqOAZEVWKXkVCBk8G5HKgbhlcwBlK0x11HQIunIuH8EkyIMECCUhyZg2D2UBsw2uzY&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=QFEU1Qgwmot6F869frzpWw&_nc_ss=7b2a8&oh=00_AQP8zCMjZQ7ocVXL6M0jZk4uZxBHOIwshbbqs9Xro9ZEbg&oe=6AD4985E" alt="Campus">
-        <div class="slide-caption">
-          <span class="cap-tag" data-i18n="hero1_tag">Welcome to Al Azhar</span>
-          <div class="caption-text">
-            <h2 data-i18n="hero1_title">Nurturing Iman, Knowledge &amp; Noble Character</h2>
-            <p data-i18n="hero1_p">A sanctum of Quranic learning where tradition meets excellence — shaping the huffaz and scholars of tomorrow.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="slide">
-        <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/688173873_4460735910862924_8307784556855332119_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1204&ctp=s1600x1204&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeE3DRYRsXaGdl_QhcLrAzC0Pr0dviKCm0M-vR2-IoKbQxxQAavLW19hxUcgKHay1Eym8hSDofKUfD5FWFqqe3Nx&_nc_ohc=QwOtKGXThcAQ7kNvwHDgNC4&_nc_oc=Adpx5Sq97sbS88uAuUwj90PcQyyXW8j9iHQehXMn3-Kb2U8ponkVVfr9ToF7g2DLmOo&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=u8nx51YhCLEPwJvJCvShDw&_nc_ss=7b2a8&oh=00_AQPnJEOdQwNPJTZwkF_492AQikg3jocnn8aFPWuj6X4NuQ&oe=6AD4688D" alt="Hifz">
-        <div class="slide-caption">
-          <span class="cap-tag" data-i18n="hero2_tag">Hifz &amp; Nazira Department</span>
-          <div class="caption-text">
-            <h2 data-i18n="hero2_title">Where the Quran Finds a Home in the Heart</h2>
-            <p data-i18n="hero2_p">Individual attention, daily sabaq–sabqi–manzil and devoted ustadhs — a complete memorization journey.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="slide">
-        <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/505111808_4120741108195741_7015586527799349603_n.jpg?stp=dst-jpg_tt6&amp;cstp=mx2048x1269&amp;ctp=s2048x1269&amp;_nc_cat=111&amp;_nc_map=urlgen_bucketless&amp;ccb=1-7&amp;_nc_sid=cc71e4&amp;_nc_eui2=AeF1Z0s965Zx-jB5lVJ7pTnt8M3vS_flcgbwze9L9-VyBl9AZA3M5JWHYAB3V9JermpDUPDvEamkWCpJhecPeSbz&amp;_nc_ohc=Oz5wqtKkdc4Q7kNvwGEl7VA&amp;_nc_oc=Adp-OObXG0oewfWMytY3vsK9sKGKkjxNjdR0cvj06QbTdj0MKPDPqgsJj_V6auliPTk&amp;_nc_zt=23&amp;_nc_ht=scontent.fjsr11-1.fna&amp;_nc_gid=bEP8WgS8gPLLKjILY_21ow&amp;_nc_ss=7b2a8&amp;oh=00_AQMqG_0OfCFEBtnajuW1SnpNd1vaz13Nn9gRH8-tbtGLmA&amp;oe=6AD477AD" alt="Admissions">
-        <div class="slide-caption">
-          <span class="cap-tag" data-i18n="hero3_tag">Admissions Open 2026</span>
-          <div class="caption-text">
-            <h2 data-i18n="hero3_title">Begin Your Child's Sacred Journey of Deen</h2>
-            <p data-i18n="hero3_p">Limited seats for the upcoming session — enroll today and gift your child a luminous future.</p>
-          </div>
-        </div>
-      </div>
+      <!-- Slides rendered by JS from HERO_SLIDES array -->
+      <div id="heroSlides"></div>
 
       <button class="hero-nav prev" id="prevBtn" aria-label="Previous">
         <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"></path></svg>
@@ -731,9 +702,8 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
 
 <!-- About -->
 <section id="about" class="about-section">
-  <div class="about-visual-bg">
-    <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/497468479_4093534024249783_6339037596427117676_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1542&ctp=s2048x1542&_nc_cat=108&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHFrA8al9wCh1_sxxj-44zhGYMZKRp7CIUZgxkpGnsIhQL0JQ57yogz5gv1wfRdQBaELytIaRJzn-bbjo9y1UXm&_nc_ohc=r80j3nBpgwYQ7kNvwG2ylEr&_nc_oc=Adq8BTuSuKykz2bjYFM6Y9jLKkSMYayVgE-s6kI7hLZjl2QOd_qtFlTv2BxCLtiGuIA&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=n5Pcer9wdoWNhY5AANidZw&_nc_ss=7b2a8&oh=00_AQNyTH7Iz5bCsdr8L_DrVzdqWyjexU2o3bZ3QKfs7TBLYg&oe=6AD47935" alt="About Al Azhar">
-  </div>
+  <!-- About image rendered by JS from ABOUT_IMAGE object -->
+  <div class="about-visual-bg" id="aboutImage"></div>
   
   <div class="exp-badge-floating">
     <strong data-i18n="about_badge_num">5+</strong>
@@ -845,40 +815,8 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
     <p data-i18n="voices_sub">Guided by sincerity and devotion — hear from those who shape our students every day.</p>
   </div>
 
-  <div class="voices-grid">
-    <div class="quote">
-      <p data-i18n="q1_text">"Our mission is not merely to teach the Quran, but to plant its light deep in every heart that walks through our doors."</p>
-      <div class="author">
-        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&amp;q=80" alt="Principal">
-        <div class="author-info">
-          <strong data-i18n="q1_name">Mufti Abdur Rahman</strong>
-          <span data-i18n="q1_role">Principal</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="quote">
-      <p data-i18n="q2_text">"Every huffaz who completes the Quran is a lamp for their family — and we take pride in lighting as many lamps as we can."</p>
-      <div class="author">
-        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&amp;q=80" alt="Hifz Head">
-        <div class="author-info">
-          <strong data-i18n="q2_name">Hafez Muhammad Yusuf</strong>
-          <span data-i18n="q2_role">Head of Hifz Department</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="quote">
-      <p data-i18n="q3_text">"Islamic values and modern knowledge are not rivals — together they raise a complete human being, ready for both worlds."</p>
-      <div class="author">
-        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&amp;q=80" alt="Academic Head">
-        <div class="author-info">
-          <strong data-i18n="q3_name">Mrs. Fatima Khatun</strong>
-          <span data-i18n="q3_role">Academic Coordinator</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Quotes rendered by JS from VOICES array -->
+  <div class="voices-grid" id="voicesGrid"></div>
 </section>
 
 <!-- Notices -->
@@ -1018,19 +956,90 @@ footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align
 </div>
 
 <script>
-/* i18n */
+/* =========================================================
+   SECTION 1 — IMAGE & CONTENT CONFIGURATION
+   =========================================================
+   এই section এ সব ছবি ও তাদের টেক্সট একসাথে রাখা আছে।
+   যা পরিবর্তন করতে চান, শুধু এখানে এডিট করুন।
+
+   ছবি বদলাতে   → img: "নতুন URL" পরিবর্তন করুন
+   টেক্সট বদলাতে → en: "..."  bn: "..." পরিবর্তন করুন
+   নতুন slide    → { ... } ব্লক কপি করে array-তে যোগ করুন
+   slide মুছতে   → পুরো { ... } ব্লক ডিলিট করুন
+   ========================================================= */
+
+const HERO_SLIDES = [
+  {
+    img: "https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/505111808_4120741108195741_7015586527799349603_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1269&ctp=s2048x1269&_nc_cat=111&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeF1Z0s965Zx-jB5lVJ7pTnt8M3vS_flcgbwze9L9-VyBl9AZA3M5JWHYAB3V9JermpDUPDvEamkWCpJhecPeSbz&_nc_ohc=Oz5wqtKkdc4Q7kNvwGEl7VA&_nc_oc=Adp-OObXG0oewfWMytY3vsK9sKGKkjxNjdR0cvj06QbTdj0MKPDPqgsJj_V6auliPTk&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=bEP8WgS8gPLLKjILY_21ow&_nc_ss=7b2a8&oh=00_AQMqG_0OfCFEBtnajuW1SnpNd1vaz13Nn9gRH8-tbtGLmA&oe=6AD477AD",
+    alt: "img1",
+    tag:   { en: "Welcome to Al Azhar", bn: "আল আজহারে স্বাগতম" },
+    title: { en: "Nurturing Knowledge & Character", bn: "জ্ঞান ও সুন্দর চরিত্রের বিকাশ" },
+    text:  { 
+      en: "A premier sanctuary where timeless Quranic values meet modern educational standards to build leaders of faith and wisdom.", 
+      bn: "ঐতিহ্যবাহী কুরআনী শিক্ষার সাথে আধুনিক মানসম্পন্ন শিক্ষার এক অনন্য সমন্বয়, যা গড়ে তোলে নৈতিকতা ও মেধাভিত্তিক ভবিষ্যৎ নেতৃত্ব।" 
+    }
+  },
+  {
+    img: "https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/788001871_4581686542101193_4392501305277680151_n.jpg?stp=dst-jpg_tt6&cstp=mx1280x575&ctp=s1280x575&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHLJCtboOmo9BIgcBgLMCk9wuXb4eWL2uvC5dvh5Yva6ywj71MbFGGgn7dY8yAGAhHFDSvvs6BWsVn6sNXADCYB&_nc_ohc=PrA6UOe8H8wQ7kNvwHHe7HO&_nc_oc=AdqOAZEVWKXkVCBk8G5HKgbhlcwBlK0x11HQIunIuH8EkyIMECCUhyZg2D2UBsw2uzY&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=QFEU1Qgwmot6F869frzpWw&_nc_ss=7b2a8&oh=00_AQP8zCMjZQ7ocVXL6M0jZk4uZxBHOIwshbbqs9Xro9ZEbg&oe=6AD4985E",
+    alt: "img2",
+    tag:   { en: "Admissions Open 2026", bn: "২০২৬ শিক্ষাবর্ষে ভর্তি চলছে" },
+    title: { en: "Begin the Journey Today", bn: "আপনার সন্তানকে আজই ভর্তি করান" },
+    text:  { 
+      en: "Seats are limited for the new academic session — secure your child's spot early to gift them a bright and principled foundation.", 
+      bn: "নতুন সেশনের জন্য আসন সংখ্যা অত্যন্ত সীমিত — আজই ভর্তি নিশ্চিত করে আপনার সন্তানের জন্য একটি সুন্দর ও সুশৃঙ্খল ভবিষ্যৎ গড়ে তুলুন।" 
+    }
+  },
+  {
+    img: "https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/688173873_4460735910862924_8307784556855332119_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1204&ctp=s1600x1204&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeE3DRYRsXaGdl_QhcLrAzC0Pr0dviKCm0M-vR2-IoKbQxxQAavLW19hxUcgKHay1Eym8hSDofKUfD5FWFqqe3Nx&_nc_ohc=QwOtKGXThcAQ7kNvwHDgNC4&_nc_oc=Adpx5Sq97sbS88uAuUwj90PcQyyXW8j9iHQehXMn3-Kb2U8ponkVVfr9ToF7g2DLmOo&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=u8nx51YhCLEPwJvJCvShDw&_nc_ss=7b2a8&oh=00_AQPnJEOdQwNPJTZwkF_492AQikg3jocnn8aFPWuj6X4NuQ&oe=6AD4688D",
+    alt: "img3",
+    tag:   { en: "Enroll Your Child Today", bn: "আপনার সন্তানের জন্য সেরা পছন্দ" },
+    title: { en: "Dedicated Care & Excellence", bn: "সুনিবিড় যত্ন ও গুণগত শিক্ষা" },
+    text:  { 
+      en: "Ensuring individual attention through highly qualified mentors to foster moral growth and academic achievements.", 
+      bn: "অভিজ্ঞ শিক্ষকমণ্ডলীর সার্বক্ষণিক পর্যবেক্ষণ ও ব্যক্তিগত যত্নে প্রতিটি শিক্ষার্থীর মেধা, আখলাক ও মানসিক মেধার পূর্ণ বিকাশ।" 
+    }
+  }
+];
+
+const ABOUT_IMAGE = {
+  img: "https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/497468479_4093534024249783_6339037596427117676_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1542&ctp=s2048x1542&_nc_cat=108&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHFrA8al9wCh1_sxxj-44zhGYMZKRp7CIUZgxkpGnsIhQL0JQ57yogz5gv1wfRdQBaELytIaRJzn-bbjo9y1UXm&_nc_ohc=r80j3nBpgwYQ7kNvwG2ylEr&_nc_oc=Adq8BTuSuKykz2bjYFM6Y9jLKkSMYayVgE-s6kI7hLZjl2QOd_qtFlTv2BxCLtiGuIA&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=n5Pcer9wdoWNhY5AANidZw&_nc_ss=7b2a8&oh=00_AQNyTH7Iz5bCsdr8L_DrVzdqWyjexU2o3bZ3QKfs7TBLYg&oe=6AD47935",
+  alt: "About Al Azhar"
+};
+
+const VOICES = [
+  {
+    img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80",
+    alt: "Principal",
+    text: { en: "Our mission is not merely to teach the Quran, but to plant its light deep in every heart that walks through our doors.", bn: "আমাদের লক্ষ্য শুধু কুরআন শেখানো নয়, বরং আমাদের দ্বারে আসা প্রতিটি অন্তরে তার আলো গেঁথে দেওয়া।" },
+    name: { en: "Mufti Abdur Rahman", bn: "মুফতি আব্দুর রহমান" },
+    role: { en: "Principal", bn: "প্রধান শিক্ষক" }
+  },
+  {
+    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
+    alt: "Hifz Head",
+    text: { en: "Every huffaz who completes the Quran is a lamp for their family — and we take pride in lighting as many lamps as we can.", bn: "প্রতিটি হাফেজ যিনি কুরআন সম্পূর্ণ করেন, তিনি তাঁর পরিবারের জন্য একটি প্রদীপ — আমরা যত বেশি প্রদীপ জ্বালাতে পারি, ততই গর্বিত।" },
+    name: { en: "Hafez Muhammad Yusuf", bn: "হাফেজ মুহাম্মদ ইউসুফ" },
+    role: { en: "Head of Hifz Department", bn: "হিফজ বিভাগের প্রধান" }
+  },
+  {
+    img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80",
+    alt: "Academic Head",
+    text: { en: "Islamic values and modern knowledge are not rivals — together they raise a complete human being, ready for both worlds.", bn: "ইসলামী মূল্যবোধ ও আধুনিক জ্ঞান পরস্পরের প্রতিদ্বন্দ্বী নয় — একসাথে তারা গড়ে তোলে একজন পূর্ণাঙ্গ মানুষ, দুই জগতের জন্য প্রস্তুত।" },
+    name: { en: "Mrs. Fatima Khatun", bn: "মিসেস ফাতিমা খাতুন" },
+    role: { en: "Academic Coordinator", bn: "একাডেমিক সমন্বয়ক" }
+  }
+];
+
+/* =========================================================
+    SECTION 2 — i18n (other texts)
+   ========================================================= */
+
 const I18N = {
   en: {
     brand_name:"Al Azhar Madrasah",
     brand_sub:"A faith-based institute blending Islamic & modern education",
     nav_home:"Home", nav_about:"About", nav_programs:"Programs",
     nav_voices:"Voices", nav_notices:"Notices", nav_contact:"Contact", nav_cta:"Admission",
-    hero1_tag:"Welcome to Al Azhar", hero1_title:"Nurturing Iman, Knowledge & Noble Character",
-    hero1_p:"A sanctum of Quranic learning where tradition meets excellence — shaping the huffaz and scholars of tomorrow.",
-    hero2_tag:"Hifz & Nazira Department", hero2_title:"Where the Quran Finds a Home in the Heart",
-    hero2_p:"Individual attention, daily sabaq–sabqi–manzil and devoted ustadhs — a complete memorization journey.",
-    hero3_tag:"Admissions Open 2026", hero3_title:"Begin Your Child's Sacred Journey of Deen",
-    hero3_p:"Limited seats for the upcoming session — enroll today and gift your child a luminous future.",
     about_eyebrow:"About Us",
     about_title:"A Sanctuary of Quranic Learning & Modern Education",
     about_p1:"Al Azhar Madrasah unites traditional Islamic education — Hifz, Nazira, Fiqh and Akhlaq — with modern academic subjects, so our students flourish in both Deen and Dunya.",
@@ -1046,12 +1055,10 @@ const I18N = {
     about_li10:"24-hour CCTV security & class monitoring; projectors and smart monitors in every classroom",
     about_li11:"Own transport service for students",
     about_li12:"All forms of corporal punishment strictly prohibited",
-    about_btn:"See Details",
     about_badge_num:"5+", about_badge_txt:"Years of Excellence",
     stat1:"Students", stat2:"Teachers & Ustadhs", stat3:"Huffaz Graduated", stat4:"Years of Service",
     prog_eyebrow:"Our Programs", prog_title:"Paths of Learning",
     prog_sub:"From the first letters of the Quran to complete Hifz and higher Islamic studies — a path for every age.",
-    prog_btn:"View All Programs",
     card1_t:"Maktab", card1_p:"An introduction to basic Quran reading, daily duas and Islamic manners for young children.",
     card2_t:"Nurani", card2_p:"Easy and accurate Quran recitation through the Nurani method in a short span of time.",
     card3_t:"Nazira", card3_p:"Reading practice from the Quran with correct makhraj, tajwid and pronunciation.",
@@ -1068,12 +1075,6 @@ const I18N = {
     voices_eyebrow:"Voices of Al Azhar",
     voices_title:"Words from Our Family",
     voices_sub:"Guided by sincerity and devotion — hear from those who shape our students every day.",
-    q1_text:"\"Our mission is not merely to teach the Quran, but to plant its light deep in every heart that walks through our doors.\"",
-    q1_name:"Mufti Abdur Rahman", q1_role:"Principal",
-    q2_text:"\"Every huffaz who completes the Quran is a lamp for their family — and we take pride in lighting as many lamps as we can.\"",
-    q2_name:"Hafez Muhammad Yusuf", q2_role:"Head of Hifz Department",
-    q3_text:"\"Islamic values and modern knowledge are not rivals — together they raise a complete human being, ready for both worlds.\"",
-    q3_name:"Mrs. Fatima Khatun", q3_role:"Academic Coordinator",
     notice_eyebrow:"Notice Board", notice_title:"Latest Updates",
     notice_btn:"View All Notices",
     n1_t:"Admissions Open — 2027 Session", n1_p:"Applications are now open for Nazira, Hifz and Academic departments. Seats are limited.",
@@ -1082,13 +1083,11 @@ const I18N = {
     cta_p:"Grant your child the gift of the Quran and a radiant future. Seats are limited — apply now for the upcoming session.",
     cta_btn:"View Admission Details",
     contact_eyebrow:"Get in Touch", contact_title:"Contact Us",
-    contact_btn:"Full Contact Details",
     ci_title:"We would be honored to hear from you",
     ci_addr:"Sarkar Bari 2, Ideal Mor, Rangpur",
     ci_time:"Office: Sat–Thu, 8:00 AM – 2:00 PM",
     f_name:"Your Name", f_phone:"Phone Number", f_msg:"Message", f_btn:"Send Message",
     foot_about:"A center of Quranic education and character development, serving the ummah with sincerity since 2022.",
-    foot_links:"Quick Links", foot_contact:"Contact", foot_rights:"All rights reserved",
     copy_rights:"© 2026 Al Azhar Madrasah · All rights reserved",
     developed_by:"Developed by",
     ai_msg:"I'm still being prepared. Very soon I'll be able to answer your questions about admission, programs and timings.",
@@ -1099,12 +1098,6 @@ const I18N = {
     brand_sub:"ইসলামী ও আধুনিক শিক্ষার সমন্বয়ে একটি দ্বীনি শিক্ষা প্রতিষ্ঠান",
     nav_home:"হোম", nav_about:"পরিচিতি", nav_programs:"বিভাগসমূহ",
     nav_voices:"কণ্ঠস্বর", nav_notices:"নোটিশ", nav_contact:"যোগাযোগ", nav_cta:"ভর্তি",
-    hero1_tag:"আল আজহারে স্বাগতম", hero1_title:"ঈমান, জ্ঞান ও সুউচ্চ চরিত্রের বিকাশ",
-    hero1_p:"ঐতিহ্য ও উৎকর্ষের মিলনস্থল এই কুরআনী শিক্ষাঙ্গন — যেখানে গড়ে ওঠে আগামীর হাফেজ ও আলেমগণ।",
-    hero2_tag:"হিফজ ও নাজেরা বিভাগ", hero2_title:"যেখানে কুরআন মিলিয়ে নেয় অন্তরের ঠিকানা",
-    hero2_p:"ব্যক্তিগত যত্ন, প্রতিদিনের সবক–সাবেকি–মানজিল আর নিবেদিত উস্তাদদের তত্ত্বাবধানে একটি পূর্ণাঙ্গ হিফজ যাত্রা।",
-    hero3_tag:"২০২৬ ভর্তি চলছে", hero3_title:"আপনার সন্তানের দ্বীনী জীবনের পবিত্র যাত্রা শুরু হোক",
-    hero3_p:"আসন সীমিত — আজই ভর্তি করান এবং আপনার সন্তানকে উপহার দিন একটি উজ্জ্বল ভবিষ্যৎ।",
     about_eyebrow:"আমাদের সম্পর্কে",
     about_title:"কুরআনী শিক্ষা ও আধুনিক শিক্ষার এক পবিত্র ঠিকানা",
     about_p1:"আল আজহার মাদরাসায় হিফজ, নাজেরা, ফিকহ ও আখলাকের পাশাপাশি আধুনিক শিক্ষার বিষয়গুলো পড়ানো হয়, যাতে ছাত্ররা দ্বীন ও দুনিয়া উভয় ক্ষেত্রেই সমৃদ্ধ হয়।",
@@ -1120,12 +1113,10 @@ const I18N = {
     about_li10:"২৪ ঘণ্টা CCTV দ্বারা নিরাপত্তা ও পাঠদান পর্যবেক্ষণ; শ্রেণিকক্ষে প্রজেক্টর ও স্মার্ট মনিটর",
     about_li11:"শিক্ষার্থীদের জন্য নিজস্ব পরিবহন ব্যবস্থা",
     about_li12:"সর্বপ্রকার প্রহার সম্পূর্ণ নিষিদ্ধ",
-    about_btn:"বিস্তারিত দেখুন",
     about_badge_num:"৫+", about_badge_txt:"বছরের অভিজ্ঞতা",
     stat1:"শিক্ষার্থী", stat2:"শিক্ষক ও উস্তাদ", stat3:"হাফেজে কুরআন", stat4:"বছরের সেবা",
     prog_eyebrow:"আমাদের বিভাগসমূহ", prog_title:"শিক্ষার পথসমূহ",
     prog_sub:"কুরআনের প্রথম হরফ থেকে সম্পূর্ণ হিফজ ও উচ্চতর ইসলামী শিক্ষা — প্রতিটি বয়সের জন্য একটি পথ।",
-    prog_btn:"সব বিভাগ দেখুন",
     card1_t:"মক্তব", card1_p:"কোমলমতি শিশুদের জন্য প্রাথমিক কুরআন শিক্ষা, দৈনিক দুআ ও ইসলামী আদবের সূচনা।",
     card2_t:"নূরানী", card2_p:"নূরানী পদ্ধতিতে অল্প সময়ে সহজ ও শুদ্ধ কুরআন তিলাওয়াত শিক্ষা।",
     card3_t:"নাজেরা", card3_p:"সঠিক মাখরাজ, তাজবিদ ও উচ্চারণে দেখে দেখে কুরআন তিলাওয়াতের অনুশীলন।",
@@ -1142,12 +1133,6 @@ const I18N = {
     voices_eyebrow:"আল আজহারের কণ্ঠস্বর",
     voices_title:"আমাদের পরিবারের কথা",
     voices_sub:"আন্তরিকতা ও নিষ্ঠায় গড়া — যাঁরা প্রতিদিন আমাদের শিক্ষার্থীদের গড়ে তোলেন, তাঁদের কথা শুনুন।",
-    q1_text:"\"আমাদের লক্ষ্য শুধু কুরআন শেখানো নয়, বরং আমাদের দ্বারে আসা প্রতিটি অন্তরে তার আলো গেঁথে দেওয়া।\"",
-    q1_name:"মুফতি আব্দুর রহমান", q1_role:"প্রধান শিক্ষক",
-    q2_text:"\"প্রতিটি হাফেজ যিনি কুরআন সম্পূর্ণ করেন, তিনি তাঁর পরিবারের জন্য একটি প্রদীপ — আমরা যত বেশি প্রদীপ জ্বালাতে পারি, ততই গর্বিত।\"",
-    q2_name:"হাফেজ মুহাম্মদ ইউসুফ", q2_role:"হিফজ বিভাগের প্রধান",
-    q3_text:"\"ইসলামী মূল্যবোধ ও আধুনিক জ্ঞান পরস্পরের প্রতিদ্বন্দ্বী নয় — একসাথে তারা গড়ে তোলে একজন পূর্ণাঙ্গ মানুষ, দুই জগতের জন্য প্রস্তুত।\"",
-    q3_name:"মিসেস ফাতিমা খাতুন", q3_role:"একাডেমিক সমন্বয়ক",
     notice_eyebrow:"নোটিশ বোর্ড", notice_title:"সাম্প্রতিক আপডেট",
     notice_btn:"সব নোটিশ দেখুন",
     n1_t:"ভর্তি চলছে — ২০২৭ শিক্ষাবর্ষ", n1_p:"নাজেরা, হিফজ ও একাডেমিক বিভাগে আবেদন গ্রহণ চলছে। আসন সীমিত।",
@@ -1156,13 +1141,11 @@ const I18N = {
     cta_p:"আপনার সন্তানকে কুরআনের উপহার ও উজ্জ্বল ভবিষ্যৎ উপহার দিন। আসন সীমিত — এখনই আবেদন করুন।",
     cta_btn:"ভর্তি সংক্রান্ত তথ্য দেখুন",
     contact_eyebrow:"যোগাযোগ করুন", contact_title:"আমাদের সাথে যোগাযোগ",
-    contact_btn:"বিস্তারিত যোগাযোগ",
     ci_title:"আপনার মতামত জানাতে আমরা সম্মানিত",
     ci_addr:"সরকার বাড়ি ২, আইডিয়াল মোড়, রংপুর",
     ci_time:"অফিস: শনি–বৃহঃ, সকাল ৮টা – দুপুর ২টা",
     f_name:"আপনার নাম", f_phone:"মোবাইল নম্বর", f_msg:"বার্তা", f_btn:"বার্তা পাঠান",
     foot_about:"২০২২ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।",
-    foot_links:"দ্রুত লিংক", foot_contact:"যোগাযোগ", foot_rights:"সর্বস্বত্ব সংরক্ষিত",
     copy_rights:"© ২০২৬ আল আজহার মাদরাসা · সর্বস্বত্ব সংরক্ষিত",
     developed_by:"ডেভেলপ করেছে",
     ai_msg:"আমি এখনো তৈরি হচ্ছে। খুব শীঘ্রই ভর্তি, বিভাগ ও সময়সূচি সম্পর্কে আপনার প্রশ্নের উত্তর দিতে পারব ইনশাআল্লাহ।",
@@ -1170,47 +1153,118 @@ const I18N = {
   }
 };
 
+/* =========================================================
+   ⚙️ SECTION 3 — RENDER FUNCTIONS (images & dynamic sections)
+   ========================================================= */
+
 let lang = 'en';
+
+function renderHeroSlides(){
+  const wrap = document.getElementById('heroSlides');
+  wrap.innerHTML = HERO_SLIDES.map(s => `
+    <div class="slide">
+      <img src="${s.img}" alt="${s.alt}">
+      <div class="slide-caption">
+        <span class="cap-tag">${s.tag[lang]}</span>
+        <div class="caption-text">
+          <h2>${s.title[lang]}</h2>
+          <p>${s.text[lang]}</p>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAboutImage(){
+  document.getElementById('aboutImage').innerHTML =
+    `<img src="${ABOUT_IMAGE.img}" alt="${ABOUT_IMAGE.alt}">`;
+}
+
+function renderVoices(){
+  document.getElementById('voicesGrid').innerHTML = VOICES.map(v => `
+    <div class="quote">
+      <p>${v.text[lang]}</p>
+      <div class="author">
+        <img src="${v.img}" alt="${v.alt}">
+        <div class="author-info">
+          <strong>${v.name[lang]}</strong>
+          <span>${v.role[lang]}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* =========================================================
+   ⚙️ SECTION 4 — LANGUAGE SWITCHER
+   ========================================================= */
+
 function setLang(l){
   lang = l;
   document.documentElement.lang = l === 'bn' ? 'bn' : 'en';
   document.body.classList.toggle('lang-bn', l === 'bn');
+
+  /* Static i18n elements */
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const v = I18N[l][el.dataset.i18n];
     if(v !== undefined) el.textContent = v;
   });
+
+  /* Re-render image-dependent sections */
+  renderHeroSlides();
+  renderVoices();
+
+  /* Re-init slider (new DOM) */
+  initSlider();
+
   document.getElementById('btnEN').classList.toggle('active', l==='en');
   document.getElementById('btnBN').classList.toggle('active', l==='bn');
   try{ localStorage.setItem('alazhar_lang', l); }catch(e){}
 }
 document.getElementById('btnEN').addEventListener('click',()=>setLang('en'));
 document.getElementById('btnBN').addEventListener('click',()=>setLang('bn'));
-let saved = null;
-try{ saved = localStorage.getItem('alazhar_lang'); }catch(e){}
-setLang(saved === 'bn' ? 'bn' : 'en');
 
-/* Hero gallery */
-const slides = document.querySelectorAll('.slide');
-const dotsWrap = document.getElementById('dots');
-const progress = document.getElementById('progress');
+/* =========================================================
+   ⚙️ SECTION 5 — HERO SLIDER
+   ========================================================= */
+
+let slides, dots, current = 0, startTime = null, rafId = null;
 const SLIDE_MS = 5500;
-let current = 0, startTime = null, rafId = null;
 
-slides.forEach((_, i)=>{
-  const d = document.createElement('button');
-  d.className = 'dot' + (i===0 ? ' active' : '');
-  d.setAttribute('aria-label','Slide '+(i+1));
-  d.addEventListener('click', ()=>{ goTo(i); restart(); });
-  dotsWrap.appendChild(d);
-});
-const dots = dotsWrap.querySelectorAll('.dot');
+function initSlider(){
+  if(rafId) cancelAnimationFrame(rafId);
+  const dotsWrap = document.getElementById('dots');
+  const progress = document.getElementById('progress');
+
+  dotsWrap.innerHTML = '';
+  slides = document.querySelectorAll('.slide');
+  current = 0;
+  startTime = null;
+
+  slides.forEach((_, i)=>{
+    const d = document.createElement('button');
+    d.className = 'dot' + (i===0 ? ' active' : '');
+    d.setAttribute('aria-label','Slide '+(i+1));
+    d.addEventListener('click', ()=>{ goTo(i); restart(); });
+    dotsWrap.appendChild(d);
+  });
+  dots = dotsWrap.querySelectorAll('.dot');
+
+  progress.style.width = '0%';
+  if(slides.length){
+    slides[0].classList.add('active');
+    if(dots[0]) dots[0].classList.add('active');
+  }
+  restart();
+}
 
 function goTo(i){
+  if(!slides || !slides.length) return;
   slides[current].classList.remove('active');
-  dots[current].classList.remove('active');
+  if(dots[current]) dots[current].classList.remove('active');
   current = (i + slides.length) % slides.length;
   slides[current].classList.add('active');
-  dots[current].classList.add('active');
+  if(dots[current]) dots[current].classList.add('active');
 }
 function next(){ goTo(current+1); }
 function prev(){ goTo(current-1); }
@@ -1218,23 +1272,25 @@ function prev(){ goTo(current-1); }
 function tick(ts){
   if(!startTime) startTime = ts;
   const p = Math.min((ts - startTime) / SLIDE_MS, 1);
+  const progress = document.getElementById('progress');
   progress.style.width = (p*100) + '%';
   if(p >= 1){ startTime = null; next(); }
   rafId = requestAnimationFrame(tick);
 }
 function restart(){
-  cancelAnimationFrame(rafId);
+  if(rafId) cancelAnimationFrame(rafId);
   startTime = null;
-  progress.style.width = '0%';
+  const progress = document.getElementById('progress');
+  if(progress) progress.style.width = '0%';
   rafId = requestAnimationFrame(tick);
 }
+
 document.getElementById('nextBtn').addEventListener('click', ()=>{ next(); restart(); });
 document.getElementById('prevBtn').addEventListener('click', ()=>{ prev(); restart(); });
 
 const gallery = document.getElementById('gallery');
-
 let touchX = null;
-gallery.addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; cancelAnimationFrame(rafId); }, {passive:true});
+gallery.addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; if(rafId) cancelAnimationFrame(rafId); }, {passive:true});
 gallery.addEventListener('touchend', e=>{
   if(touchX === null) return;
   const dx = e.changedTouches[0].clientX - touchX;
@@ -1242,8 +1298,17 @@ gallery.addEventListener('touchend', e=>{
   touchX = null; restart();
 }, {passive:true});
 
-goTo(0);
-restart();
+/* =========================================================
+   ⚙️ SECTION 6 — BOOT
+   ========================================================= */
+
+/* Render static-image sections once */
+renderAboutImage();
+
+/* Initial language setup (also renders hero + voices + slider) */
+let saved = null;
+try{ saved = localStorage.getItem('alazhar_lang'); }catch(e){}
+setLang(saved === 'bn' ? 'bn' : 'en');
 
 /* Scroll effects */
 const header = document.getElementById('header');
