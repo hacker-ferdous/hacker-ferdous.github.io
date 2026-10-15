@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Al Azhar Madrasah</title>
 <link rel="icon" href="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/346055488_797738058166711_6914726485682693445_n.jpg?stp=dst-jpg_tt6&amp;cstp=mx515x515&amp;ctp=s515x515&amp;_nc_cat=102&amp;_nc_map=urlgen_bucketless&amp;ccb=1-7&amp;_nc_sid=6ee11a&amp;_nc_eui2=AeG59AbP-S0gRHAASuS6NkGR3BLPb3Y2JcvcEs9vdjYlywaDGbDpVw0ldJzjvZ-8mo5QSyPAYzGXs0haNfSrURXg&amp;_nc_ohc=syUNOzhlkGAQ7kNvwFxw19x&amp;_nc_oc=AdoOUZAWLJ_dAmfyl6s_gVEpICP2ZJt74heuKq2hcg79Q_1agCtn2-g-hgBBoylTF5w&amp;_nc_zt=23&amp;_nc_ht=scontent.fjsr11-1.fna&amp;_nc_gid=ns60QudKI-tic5M1le-llg&amp;_nc_ss=7b2a8&amp;oh=00_AQNhFM51RdZc_NcCiAZtj-ClYQwMaAF1GkP54WhLFapJiQ&amp;oe=6AD45C15">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,10 +22,12 @@
   --line:rgba(23,26,32,.09);
   --shadow:0 24px 70px rgba(23,26,32,.08);
   --shadow-sm:0 10px 30px rgba(23,26,32,.07);
+  --nav-header-height:78px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:96px}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
 body{font-family:'Inter','Hind Siliguri',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.nav-menu-open{overflow:hidden}
 body.lang-bn{font-family:'Hind Siliguri','Inter',sans-serif}
 h1,h2,h3,.serif{font-family:'Cormorant Garamond','Noto Serif Bengali',serif;font-weight:600}
 body.lang-bn h1,body.lang-bn h2,body.lang-bn h3,body.lang-bn .serif{font-family:'Noto Serif Bengali','Cormorant Garamond',serif}
@@ -37,9 +39,10 @@ header,section,footer{
 }
 
 /* Header */
-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);transition:box-shadow .3s}
+header{position:sticky;top:0;z-index:100;background:transparent;border-bottom:1px solid var(--line);transition:box-shadow .3s}
+header::before{content:'';position:absolute;inset:0;z-index:0;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);pointer-events:none}
 header.scrolled{box-shadow:0 8px 34px rgba(23,26,32,.07)}
-nav{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;height:78px}
+nav{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;height:78px}
 
 .brand{display:flex;align-items:center;gap:.85rem;text-decoration:none;color:var(--ink);min-width:0}
 .brand img{flex:none;width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft);box-shadow:0 4px 14px rgba(176,141,62,.25)}
@@ -92,17 +95,27 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;hei
 .hamburger{display:none;background:none;border:0;cursor:pointer;color:var(--ink);padding:.2rem}
 .hamburger svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-/* Hero */
-#home{padding-block:1.6rem 3.4rem;padding-inline:max(1.2rem, calc((100% - 1360px) / 2))}
+/* Nav Backdrop */
+.nav-backdrop{
+  position:fixed;inset:0;
+  background:rgba(12,22,18,.5);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .35s ease, visibility .35s;
+  z-index:98;
+}
+.nav-backdrop.active{opacity:1;visibility:visible;pointer-events:auto}
+
+/* Hero (full-bleed) */
+#home{padding:0}
 .hero{position:relative}
 .hero-frame{
-  position:relative;height:min(78vh,640px);border-radius:28px;overflow:hidden;
-  box-shadow:0 40px 100px rgba(23,26,32,.16);
+  position:relative;
+  height:calc(100vh - var(--nav-header-height));
+  min-height:520px;
+  overflow:hidden;
   isolation:isolate;
-}
-.hero-frame::before{
-  content:'';position:absolute;inset:14px;border:1px solid rgba(255,255,255,.35);
-  border-radius:18px;z-index:4;pointer-events:none;
 }
 .hero-pattern{
   position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.5;
@@ -121,34 +134,33 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;hei
   content:'';position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(12,22,18,.18) 0%,rgba(12,22,18,0) 35%,rgba(10,18,14,.78) 100%);
 }
+/* Caption: rise + fade only — no blur on the text itself */
 .slide-caption{
-  position:absolute;left:0;right:0;bottom:0;padding:3rem 3.4rem;z-index:5;color:#fff;
-  transform:translateY(26px);opacity:0;
-  transition:transform 0.9s ease, opacity 0.9s ease;
+  position:absolute;left:0;right:0;bottom:0;
+  padding:2.4rem max(2.8rem, calc((100% - 1200px) / 2));
+  z-index:5;color:#fff;
+  transform:translateY(20px);opacity:0;
+  transition:transform .9s ease, opacity .9s ease;
+  will-change:transform, opacity;
 }
 .slide.active .slide-caption{
   transform:translateY(0);opacity:1;
 }
-.caption-text{
-  filter:blur(12px);
-  transition:filter 0.9s ease 0.4s;
-}
-.slide.active .caption-text{
-  filter:blur(0);
-}
 
+/* Tag with a softly blurred glass background */
 .cap-tag{
   display:inline-flex;align-items:center;gap:.6rem;
-  background:rgba(255, 255, 255, 0.1);
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,.4);
+  background:rgba(0, 0, 0, 0.25);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.3);
   padding:.42rem 1rem;border-radius:999px;
-  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin-bottom:1.1rem;
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;margin-bottom:1rem;
   color:#fff;
 }
 
-.slide-caption h2{font-size:clamp(2rem,4.4vw,3.6rem);line-height:1.12;max-width:700px;font-weight:600}
-.slide-caption p{margin-top:.9rem;max-width:520px;color:rgba(255,255,255,.82);line-height:1.7;font-size:1rem}
+.slide-caption h2{font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.12;max-width:680px;font-weight:600}
+.slide-caption p{margin-top:.8rem;max-width:520px;color:rgba(255,255,255,.82);line-height:1.65;font-size:.98rem}
 
 .hero-nav{
   position:absolute;top:50%;transform:translateY(-50%);z-index:6;
@@ -164,30 +176,30 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;hei
 .hero-nav.prev{left:1.4rem}
 .hero-nav.next{right:1.4rem}
 
-.hero-dots{position:absolute;bottom:1.6rem;right:3.2rem;z-index:6;display:flex;gap:.6rem;align-items:center}
+.hero-dots{position:absolute;bottom:1.6rem;right:max(2.6rem, calc((100% - 1200px) / 2));z-index:6;display:flex;gap:.6rem;align-items:center}
 .dot{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.45);cursor:pointer;transition:.4s;border:0;padding:0}
 .dot.active{width:32px;background:#e4c97e}
 .hero-progress{position:absolute;bottom:0;left:0;height:4px;background:linear-gradient(90deg,#e4c97e,#c6a355);width:0;z-index:7;border-radius:0 4px 4px 0}
 
 /* Sections */
-section{padding-block:5.5rem}
-.section-head{text-align:center;max-width:640px;margin:0 auto 3.2rem}
+section{padding-block:3.5rem}
+.section-head{text-align:center;max-width:640px;margin:0 auto 2rem}
 .eyebrow{color:var(--gold-deep);letter-spacing:.24em;text-transform:uppercase;font-size:.74rem;font-weight:700}
 .eyebrow::before,.eyebrow::after{content:'';display:inline-block;width:26px;height:1px;background:var(--gold);vertical-align:middle;margin:0 .7rem;opacity:.6}
-.section-head h2{font-size:clamp(1.9rem,3.4vw,2.7rem);margin:.7rem 0 .9rem}
-.section-head p{color:var(--ink-soft);line-height:1.75}
+.section-head h2{font-size:clamp(1.8rem,3.4vw,2.6rem);margin:.6rem 0 .7rem}
+.section-head p{color:var(--ink-soft);line-height:1.7;font-size:.95rem}
 
-.sec-cta{display:flex;justify-content:center;margin-top:2.8rem}
+.sec-cta{display:flex;justify-content:center;margin-top:2rem}
 
 /* About Section */
 .about-section {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 520px;
+  min-height: 460px;
   background: var(--bg);
   overflow: hidden;
-  padding-block: 5.5rem;
+  padding-block: 3.5rem;
 }
 .about-visual-bg {
   position: absolute;
@@ -212,55 +224,55 @@ section{padding-block:5.5rem}
   width: 55%;
   padding-right: 2rem;
 }
-.about-text-wrapper .eyebrow{display:block;text-align:left;margin-bottom:.6rem}
+.about-text-wrapper .eyebrow{display:block;text-align:left;margin-bottom:.5rem}
 .about-text-wrapper .eyebrow::before{display:none}
-.about-text-wrapper h2{font-size:clamp(1.8rem,3vw,2.4rem);margin-bottom:1.2rem}
-.about-text-wrapper p{color:var(--ink-soft);line-height:1.85;margin-bottom:1rem}
-.check-list{list-style:none;margin:1.5rem 0 0;display:grid;gap:.9rem}
-.check-list li{display:flex;gap:.8rem;align-items:flex-start;color:var(--ink-soft)}
-.check-list .ck{flex:none;width:24px;height:24px;border-radius:50%;background:var(--gold-soft);display:grid;place-items:center;margin-top:.05rem}
+.about-text-wrapper h2{font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:1rem}
+.about-text-wrapper p{color:var(--ink-soft);line-height:1.75;margin-bottom:.9rem;font-size:.95rem}
+.check-list{list-style:none;margin:1.2rem 0 0;display:grid;gap:.7rem}
+.check-list li{display:flex;gap:.7rem;align-items:flex-start;color:var(--ink-soft);font-size:.92rem}
+.check-list .ck{flex:none;width:22px;height:22px;border-radius:50%;background:var(--gold-soft);display:grid;place-items:center;margin-top:.05rem}
 .check-list .ck svg{width:12px;height:12px;stroke:var(--gold-deep);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .exp-badge-floating {
   position: absolute;
-  bottom: 3rem;
-  right: 3rem;
+  bottom: 2rem;
+  right: 2rem;
   z-index: 3;
   background: #fff;
-  border-radius: 18px;
-  padding: 1.2rem 1.6rem;
+  border-radius: 16px;
+  padding: 1rem 1.4rem;
   box-shadow: var(--shadow);
   text-align: center;
   border: 1px solid var(--line);
 }
-.exp-badge-floating strong{font-size:2rem;color:var(--green);display:block;font-family:'Cormorant Garamond',serif}
+.exp-badge-floating strong{font-size:1.7rem;color:var(--green);display:block;font-family:'Cormorant Garamond',serif}
 body.lang-bn .exp-badge-floating strong{font-family:'Noto Serif Bengali',serif}
-.exp-badge-floating small{color:var(--ink-soft);font-size:.8rem}
+.exp-badge-floating small{color:var(--ink-soft);font-size:.75rem}
 
 /* Stats */
-.stats{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:4rem}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;text-align:center}
+.stats{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding-block:2.5rem}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;text-align:center}
 .stat{position:relative}
-.stat + .stat::before{content:'';position:absolute;left:-.8rem;top:15%;bottom:15%;width:1px;background:var(--line)}
-.stat .num{font-size:clamp(2.4rem,4vw,3.4rem);font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;font-family:'Cormorant Garamond',serif}
+.stat + .stat::before{content:'';position:absolute;left:-.6rem;top:15%;bottom:15%;width:1px;background:var(--line)}
+.stat .num{font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;font-family:'Cormorant Garamond',serif}
 body.lang-bn .stat .num{font-family:'Noto Serif Bengali',serif}
-.stat .lbl{color:var(--ink-soft);font-weight:500;margin-top:.3rem;font-size:.92rem}
+.stat .lbl{color:var(--ink-soft);font-weight:500;margin-top:.25rem;font-size:.88rem}
 
 /* Programs */
 .cards {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.7rem;
+  gap: 1.4rem;
 }
 .card {
-  flex: 0 1 calc(33.333% - 1.15rem);
-  min-width: 260px;
+  flex: 0 1 calc(33.333% - 1rem);
+  min-width: 240px;
   max-width: 400px;
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 2.4rem 2rem;
-  transition: .4s;
+  border-radius: 20px;
+  padding: 2rem 1.7rem;
+  transition: .35s;
   position: relative;
   overflow: hidden;
 }
@@ -268,60 +280,98 @@ body.lang-bn .stat .num{font-family:'Noto Serif Bengali',serif}
   content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
   background: linear-gradient(90deg, var(--gold), transparent); transform: scaleX(0); transform-origin: left; transition: .4s;
 }
-.card:hover { transform: translateY(-10px); box-shadow: var(--shadow); border-color: transparent; }
+.card:hover { transform: translateY(-8px); box-shadow: var(--shadow); border-color: transparent; }
 .card:hover::after { transform: scaleX(1); }
-.card h3 { font-size: 1.35rem; margin-bottom: .7rem; }
-.card p { color: var(--ink-soft); line-height: 1.75; font-size: .93rem; }
+.card h3 { font-size: 1.25rem; margin-bottom: .6rem; }
+.card p { color: var(--ink-soft); line-height: 1.7; font-size: .9rem; }
+
+/* Objectives & Ultimate Goal */
+.aims{
+  display:grid;
+  grid-template-columns:1.45fr .85fr;
+  gap:1.4rem;
+  margin-top:2.6rem;
+  align-items:stretch;
+}
+.aim-card{
+  position:relative;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:2rem 1.7rem;
+}
+.aim-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+.aim-card h3{font-size:1.3rem;margin-bottom:1.1rem}
+.aim-list{list-style:none;display:grid;gap:.9rem}
+.aim-list li{display:flex;gap:.7rem;align-items:flex-start;color:var(--ink-soft);font-size:.92rem;line-height:1.75}
+.aim-list .ck{flex:none;width:22px;height:22px;border-radius:50%;background:var(--gold-soft);display:grid;place-items:center;margin-top:.15rem}
+.aim-list .ck svg{width:12px;height:12px;stroke:var(--gold-deep);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.aim-goal{
+  background:linear-gradient(140deg,#0e6b4e,#093e2d);
+  border-color:transparent;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  text-align:center;
+}
+.aim-goal::before{display:none}
+.aim-goal h3{color:#fff;font-size:1.35rem}
+.aim-goal p{color:rgba(255,255,255,.9);line-height:1.9;font-size:1rem;font-weight:500}
 
 /* Voices */
 .voices{background:linear-gradient(180deg,#ffffff 0%, #fbf9f4 100%)}
 .voices-grid{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:1.7rem;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:1.4rem;
 }
 .quote{
-  position:relative;background:#fff;border:1px solid var(--line);border-radius:22px;
-  padding:2.4rem 1.9rem 2rem;transition:.35s;overflow:hidden;
-  flex:0 1 calc(33.333% - 1.15rem);min-width:260px;max-width:400px;
+  position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;
+  padding:2rem 1.7rem 1.7rem;transition:.3s;overflow:hidden;
+  flex:0 1 calc(33.333% - 1rem);min-width:250px;max-width:400px;
   display:flex;flex-direction:column;
 }
 .quote::before{
-  content:'\201C';position:absolute;top:-.4rem;right:1.2rem;
-  font-family:'Cormorant Garamond',serif;font-size:6.5rem;line-height:1;
+  content:'\201C';position:absolute;top:-.4rem;right:1rem;
+  font-family:'Cormorant Garamond',serif;font-size:5.5rem;line-height:1;
   color:var(--gold-soft);pointer-events:none;
 }
-.quote:hover{transform:translateY(-8px);border-color:transparent;box-shadow:var(--shadow)}
-.quote p{color:var(--ink-soft);line-height:1.8;font-size:.95rem;margin-bottom:1.6rem;position:relative;z-index:1;flex:1}
-.quote .author{display:flex;align-items:center;gap:.85rem;padding-top:1.2rem;border-top:1px solid var(--line)}
-.quote .author img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft);flex:none}
+.quote:hover{transform:translateY(-6px);border-color:transparent;box-shadow:var(--shadow)}
+.quote p{color:var(--ink-soft);line-height:1.75;font-size:.92rem;margin-bottom:1.3rem;position:relative;z-index:1;flex:1}
+.quote .author{display:flex;align-items:center;gap:.75rem;padding-top:1rem;border-top:1px solid var(--line)}
+.quote .author img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft);flex:none}
 .quote .author-info{display:flex;flex-direction:column;min-width:0}
-.quote .author-info strong{font-family:'Inter','Hind Siliguri',sans-serif;font-weight:700;font-size:.95rem;color:var(--ink);line-height:1.3}
+.quote .author-info strong{font-family:'Inter','Hind Siliguri',sans-serif;font-weight:700;font-size:.92rem;color:var(--ink);line-height:1.3}
 body.lang-bn .quote .author-info strong{font-family:'Hind Siliguri',sans-serif}
-.quote .author-info span{font-size:.78rem;color:var(--gold-deep);font-weight:600;letter-spacing:.03em;margin-top:.15rem}
+.quote .author-info span{font-size:.74rem;color:var(--gold-deep);font-weight:600;letter-spacing:.03em;margin-top:.12rem}
 
 /* Notice Board */
 .notice-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.7rem;
-  margin-top: 2rem;
+  gap: 1.4rem;
+  margin-top: 1.5rem;
 }
 .notice {
   position: relative;
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 2.4rem 2rem;
-  transition: .35s;
-  flex: 0 1 calc(33.333% - 1.15rem);
-  min-width: 260px;
+  border-radius: 20px;
+  padding: 2rem 1.7rem;
+  transition: .3s;
+  flex: 0 1 calc(33.333% - 1rem);
+  min-width: 250px;
   max-width: 400px;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);
 }
 .notice:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   border-color: transparent;
   box-shadow: var(--shadow);
 }
@@ -332,48 +382,47 @@ body.lang-bn .quote .author-info strong{font-family:'Hind Siliguri',sans-serif}
   justify-content: center;
   background: var(--gold-soft);
   color: var(--gold-deep);
-  padding: 0.6rem 0.9rem;
-  border-radius: 14px;
-  margin-bottom: 1.2rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
   align-self: flex-start;
   font-weight: 700;
   line-height: 1.1;
   font-family: 'Inter', sans-serif;
 }
-.notice .date b { font-size: 1.5rem; }
-.notice .date small { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
-.notice h4 { font-size: 1.15rem; margin-bottom: 0.6rem; color: var(--ink); }
-.notice p { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.65; margin: 0; }
+.notice .date b { font-size: 1.35rem; }
+.notice .date small { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.notice h4 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--ink); }
+.notice p { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; margin: 0; }
 
 /* CTA */
-.cta{position:relative;border-radius:26px;padding:4rem 3rem;text-align:center;color:#fff;overflow:hidden;background:linear-gradient(120deg,#0e6b4e,#093e2d)}
-.cta .ornament{position:absolute;inset:0;opacity:.14;pointer-events:none}
-.cta h2{font-size:clamp(1.8rem,3.2vw,2.6rem);margin-bottom:.9rem;position:relative}
-.cta p{opacity:.85;max-width:540px;margin:0 auto 2rem;line-height:1.75;position:relative}
+.cta{position:relative;border-radius:24px;padding:3rem 2.5rem;text-align:center;color:#fff;overflow:hidden;background:linear-gradient(120deg,#0e6b4e,#093e2d)}
+.cta h2{font-size:clamp(1.6rem,3.2vw,2.4rem);margin-bottom:.8rem;position:relative}
+.cta p{opacity:.85;max-width:540px;margin:0 auto 1.7rem;line-height:1.7;position:relative;font-size:.95rem}
 
 /* Contact */
-.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:3.5rem;align-items:start}
-.contact-info h3{font-size:1.5rem;margin-bottom:1.4rem}
-.contact-line{display:flex;gap:1rem;align-items:center;margin-bottom:1.2rem;color:var(--ink-soft)}
-.contact-line .ic{width:44px;height:44px;border-radius:13px;background:var(--bg-soft);border:1px solid var(--line);display:grid;place-items:center;flex:none}
-.contact-line .ic svg{width:19px;height:19px;stroke:var(--gold-deep);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-form{display:grid;gap:1.1rem}
-.field{display:grid;gap:.45rem}
-.field label{font-size:.84rem;font-weight:600;color:var(--ink-soft)}
+.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:2.5rem;align-items:start}
+.contact-info h3{font-size:1.35rem;margin-bottom:1.2rem}
+.contact-line{display:flex;gap:.9rem;align-items:center;margin-bottom:1rem;color:var(--ink-soft);font-size:.92rem}
+.contact-line .ic{width:42px;height:42px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--line);display:grid;place-items:center;flex:none}
+.contact-line .ic svg{width:18px;height:18px;stroke:var(--gold-deep);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+form{display:grid;gap:1rem}
+.field{display:grid;gap:.4rem}
+.field label{font-size:.82rem;font-weight:600;color:var(--ink-soft)}
 .field input,.field textarea{
-  border:1px solid var(--line);border-radius:13px;padding:.9rem 1.05rem;font:inherit;font-size:.93rem;
+  border:1px solid var(--line);border-radius:12px;padding:.85rem 1rem;font:inherit;font-size:.9rem;
   background:#fff;transition:.25s;outline:none;resize:vertical;
 }
 .field input:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(176,141,62,.13)}
 
 /* Google Maps Embed */
 .map-container {
-  margin-top: 2rem;
-  border-radius: 22px;
+  margin-top: 1.5rem;
+  border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--line);
-  height: 450px;
+  height: 400px;
 }
 .map-container iframe {
   width: 100%;
@@ -383,26 +432,26 @@ form{display:grid;gap:1.1rem}
 }
 
 /* Footer */
-footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-align:center;border-top:1px solid var(--line)}
-.footer-content{display:flex;flex-direction:column;align-items:center;gap:1rem;margin-bottom:2rem}
-.foot-brand{display:flex;align-items:center;gap:.8rem}
-.foot-brand img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft)}
-.foot-brand .name{color:var(--ink);font-weight:700;font-size:1.05rem;font-family:'Hind Siliguri',sans-serif}
-.foot-desc{font-size:.88rem;line-height:1.75;color:var(--ink-soft);max-width:600px;margin:0 auto;font-family:'Hind Siliguri',sans-serif}
-.social-links{display:flex;gap:1.2rem;justify-content:center;margin-top:.5rem}
-.social-links a{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:rgba(23,26,32,.06);transition:.3s;color:var(--ink-soft);text-decoration:none}
+footer{background:#f9f9f9;color:var(--ink);padding:3rem 1.5rem 1.5rem;text-align:center;border-top:1px solid var(--line)}
+.footer-content{display:flex;flex-direction:column;align-items:center;gap:.9rem;margin-bottom:1.6rem}
+.foot-brand{display:flex;align-items:center;gap:.75rem}
+.foot-brand img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-soft)}
+.foot-brand .name{color:var(--ink);font-weight:700;font-size:1rem;font-family:'Hind Siliguri',sans-serif}
+.foot-desc{font-size:.85rem;line-height:1.7;color:var(--ink-soft);max-width:600px;margin:0 auto;font-family:'Hind Siliguri',sans-serif}
+.social-links{display:flex;gap:1.1rem;justify-content:center;margin-top:.4rem}
+.social-links a{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(23,26,32,.06);transition:.3s;color:var(--ink-soft);text-decoration:none}
 .social-links a:hover{background:var(--gold);color:#fff;transform:translateY(-3px)}
-.social-links svg{width:18px;height:18px;fill:currentColor}
+.social-links svg{width:17px;height:17px;fill:currentColor}
 
-/* Footer Copy - Fixed Size */
+/* Footer Copy */
 .copy {
   border-top:1px solid rgba(23,26,32,.09);
-  padding-top:1.5rem;
+  padding-top:1.4rem;
   text-align:center;
-  font-size: 13px; /* Fixed pixel size to prevent language-based size shift */
+  font-size: 13px;
   color:var(--ink-soft);
   line-height:1.6;
-  font-family: 'Inter', 'Hind Siliguri', sans-serif; /* Force stable font */
+  font-family: 'Inter', 'Hind Siliguri', sans-serif;
 }
 .copy a {
   color: inherit;
@@ -416,9 +465,9 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
 }
 
 /* AI Assistant */
-.ai-widget{position:fixed;right:1.4rem;bottom:1.4rem;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:.85rem}
+.ai-widget{position:fixed;right:1.2rem;bottom:1.2rem;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:.7rem}
 .ai-fab{
-  position:relative;width:58px;height:58px;border-radius:50%;border:0;cursor:pointer;
+  position:relative;width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
   background:linear-gradient(135deg,#127a59,#093e2d);color:#fff;
   display:grid;place-items:center;
   box-shadow:0 14px 34px rgba(13,92,67,.4);
@@ -430,7 +479,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
   animation:aiPulse 2.6s infinite;z-index:-1;
 }
 @keyframes aiPulse{0%{transform:scale(1);opacity:.5}70%{transform:scale(1.5);opacity:0}100%{transform:scale(1.5);opacity:0}}
-.ai-fab svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ai-fab svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ai-fab .online{position:absolute;top:4px;right:4px;width:12px;height:12px;border-radius:50%;background:#3ddc84;border:2px solid #0d5c43}
 .ai-card{
   width:min(300px,calc(100vw - 2.8rem));background:#fff;border:1px solid var(--line);border-radius:20px;
@@ -448,99 +497,147 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
 .ai-badge{display:inline-block;margin-top:.85rem;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);background:var(--gold-soft);padding:.35rem .75rem;border-radius:999px}
 
 /* Reveal */
-.reveal{opacity:0;transform:translateY(36px);transition:opacity .85s ease,transform .85s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal.d1{transition-delay:.12s}.reveal.d2{transition-delay:.24s}.reveal.d3{transition-delay:.36s}
+.reveal{opacity:1;transform:none;transition:none}
 
 /* Responsive */
 @media(max-width:980px){
+  :root{--nav-header-height:70px}
   .nav-links{
     position:fixed;
-    top:100%;
+    top:var(--nav-header-height);
     right:0;
-    width:min(300px, 82vw);
-    height:100vh;
+    bottom:0;
+    width:min(270px, 72vw);
+    height:auto;
+    max-height:none;
     background:#fff;
     flex-direction:column;
-    padding:1.5rem 1.5rem;
-    gap:.35rem;
+    padding:1.3rem 1.2rem;
+    gap:.3rem;
     border-left:1px solid var(--line);
-    transform:translateX(105%);
-    transition:transform .42s cubic-bezier(.3,.7,.3,1);
+    transform:translate3d(110%,0,0);
+    visibility:hidden;
+    pointer-events:none;
+    transition:transform .36s cubic-bezier(.3,.7,.3,1), visibility 0s linear .36s;
     box-shadow:-14px 0 40px rgba(23,26,32,.12);
     align-items:flex-start;
-    z-index:99;
+    z-index:101;
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    will-change:transform;
   }
-  .nav-links.open{transform:translateX(0)}
+  .nav-links.open{
+    transform:translate3d(0,0,0);
+    visibility:visible;
+    pointer-events:auto;
+    transition:transform .36s cubic-bezier(.3,.7,.3,1), visibility 0s;
+  }
   .nav-links .mobile-only{display:block}
   .nav-links li{width:100%}
-  .nav-links a{display:block;font-size:1rem;padding:.75rem .55rem;border-radius:10px}
+  .nav-links a{display:block;font-size:.98rem;padding:.7rem .55rem;border-radius:10px}
   .nav-links a:hover{background:var(--bg-soft)}
   .nav-links a::after{display:none}
 
   .hamburger{display:block}
   .nav-cta{display:none}
   .brand .sub{display:none}
-  .contact-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr;gap:2rem}
+
+  section{padding-block:2.5rem}
   
   .about-section {
     flex-direction: column;
     min-height: auto;
     padding-top: 0;
-    padding-bottom: 4rem;
+    padding-bottom: 2.5rem;
   }
   .about-visual-bg {
     position: relative;
-    width: 100%;
-    height: 320px;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+    width: calc(100% + 3rem);
+    margin-inline: -1.5rem;
+    margin-top: 1.5rem;
+    height: 260px;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 100%);
   }
   .about-text-wrapper {
     width: 100%;
-    margin-top: -4rem;
-    padding-inline: 1rem;
-    padding-right: 1rem;
+    margin-top: -3rem;
+    padding-inline: .5rem;
+    padding-right: .5rem;
   }
   .exp-badge-floating {
-    bottom: 1rem;
+    top: 1rem;
     right: 1rem;
-    padding: 0.8rem 1.2rem;
+    bottom: auto;
+    padding: 0.7rem 1rem;
   }
+  .exp-badge-floating strong{font-size:1.4rem}
 
-  .card{flex:0 1 calc(50% - 1.15rem);}
-  .notice{flex:0 1 calc(50% - 1.15rem);max-width:none;}
+  .card{flex:0 1 calc(50% - .7rem);}
+  .notice{flex:0 1 calc(50% - .7rem);max-width:none;}
   
-  .quote{flex:0 1 calc(50% - 0.85rem);max-width:none}
-  .stats-grid{grid-template-columns:1fr 1fr;gap:2.4rem}
+  .quote{flex:0 1 calc(50% - .7rem);max-width:none}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:1.8rem}
   .stat + .stat::before{display:none}
-  .hero-frame{height:62vh}
+  .map-container{height:320px}
   nav{height:70px}
+
+  .aims{grid-template-columns:1fr;gap:1.2rem}
+
+  .slide-caption{padding:2rem 2.4rem}
 }
+
 @media(max-width:600px){
-  header,section,footer{padding-inline:1.1rem}
-  #home{padding-inline:.9rem}
+  :root{--nav-header-height:64px}
+  header,section,footer{padding-inline:1rem}
+  
+  section{padding-block:2rem}
   
   .card{flex:1 1 100%;}
   .notice{flex:1 1 100%;max-width:none;}
-  
   .quote{flex:1 1 100%;max-width:none}
-  .hero-frame{height:56vh;border-radius:20px}
-  .slide-caption{padding:2rem 1.6rem 3rem}
-  .hero-dots{right:1.4rem;bottom:1.2rem}
-  .hero-nav svg{width:30px;height:30px}
-  .hero-nav.prev{left:.6rem}
-  .hero-nav.next{right:.6rem}
+  
+  .slide-caption{padding:1.6rem 1.6rem 2rem}
+  .slide-caption h2{font-size:1.6rem}
+  .slide-caption p{font-size:.88rem;margin-top:.5rem}
+  .cap-tag{font-size:.65rem;padding:.35rem .8rem;margin-bottom:.8rem}
+  .hero-dots{right:1.2rem;bottom:1rem}
+  .hero-nav{padding:.4rem .25rem}
+  .hero-nav svg{width:28px;height:28px}
+  .hero-nav.prev{left:0}
+  .hero-nav.next{right:0}
   .lang-toggle button{padding:.32rem .68rem;font-size:.74rem}
-  .brand img{width:44px;height:44px}
-  .ai-widget{right:1rem;bottom:1rem}
-  .ai-fab{width:54px;height:54px}
+  .brand img{width:42px;height:42px}
+  .brand .name{font-size:.95rem}
+  .ai-widget{right:.8rem;bottom:.8rem}
+  .ai-fab{width:50px;height:50px}
   nav{height:64px}
+  
+  .about-visual-bg{height:220px;width:calc(100% + 2rem);margin-inline:-1rem;margin-top:1.5rem}
+  .about-text-wrapper{margin-top:-2.5rem;padding-inline:.3rem}
+  .exp-badge-floating{top:.7rem;right:.7rem;bottom:auto;padding:.6rem .9rem}
+  .exp-badge-floating strong{font-size:1.2rem}
+  .exp-badge-floating small{font-size:.68rem}
+  
+  .section-head{margin:0 auto 1.5rem}
+  .section-head h2{font-size:1.5rem}
+  .cta{padding:2.5rem 1.5rem}
+  .cta h2{font-size:1.4rem}
+  .cta p{font-size:.88rem;margin-bottom:1.3rem}
+  .map-container{height:260px;margin-top:1rem}
+
+  .aim-card{padding:1.6rem 1.3rem}
+  .aim-card h3{font-size:1.15rem}
+  .aim-goal p{font-size:.94rem}
 }
 </style>
 </head>
 <body>
+
+<!-- Nav Backdrop -->
+<div class="nav-backdrop" id="navBackdrop"></div>
 
 <!-- Header -->
 <header id="header">
@@ -573,7 +670,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
           <span data-i18n="nav_cta">Admission</span>
         </a>
       </span>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-controls="navLinks" aria-expanded="false" type="button">
         <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
       </button>
     </div>
@@ -586,7 +683,6 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
     <div class="hero-frame" id="gallery">
       <div class="hero-pattern"></div>
 
-      <!-- Slide 1 -->
       <div class="slide">
         <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/788001871_4581686542101193_4392501305277680151_n.jpg?stp=dst-jpg_tt6&cstp=mx1280x575&ctp=s1280x575&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHLJCtboOmo9BIgcBgLMCk9wuXb4eWL2uvC5dvh5Yva6ywj71MbFGGgn7dY8yAGAhHFDSvvs6BWsVn6sNXADCYB&_nc_ohc=PrA6UOe8H8wQ7kNvwHHe7HO&_nc_oc=AdqOAZEVWKXkVCBk8G5HKgbhlcwBlK0x11HQIunIuH8EkyIMECCUhyZg2D2UBsw2uzY&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=QFEU1Qgwmot6F869frzpWw&_nc_ss=7b2a8&oh=00_AQP8zCMjZQ7ocVXL6M0jZk4uZxBHOIwshbbqs9Xro9ZEbg&oe=6AD4985E" alt="Campus">
         <div class="slide-caption">
@@ -598,7 +694,6 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
         </div>
       </div>
 
-      <!-- Slide 2 -->
       <div class="slide">
         <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/688173873_4460735910862924_8307784556855332119_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1204&ctp=s1600x1204&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeE3DRYRsXaGdl_QhcLrAzC0Pr0dviKCm0M-vR2-IoKbQxxQAavLW19hxUcgKHay1Eym8hSDofKUfD5FWFqqe3Nx&_nc_ohc=QwOtKGXThcAQ7kNvwHDgNC4&_nc_oc=Adpx5Sq97sbS88uAuUwj90PcQyyXW8j9iHQehXMn3-Kb2U8ponkVVfr9ToF7g2DLmOo&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=u8nx51YhCLEPwJvJCvShDw&_nc_ss=7b2a8&oh=00_AQPnJEOdQwNPJTZwkF_492AQikg3jocnn8aFPWuj6X4NuQ&oe=6AD4688D" alt="Hifz">
         <div class="slide-caption">
@@ -610,7 +705,6 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
         </div>
       </div>
 
-      <!-- Slide 3 -->
       <div class="slide">
         <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/505111808_4120741108195741_7015586527799349603_n.jpg?stp=dst-jpg_tt6&amp;cstp=mx2048x1269&amp;ctp=s2048x1269&amp;_nc_cat=111&amp;_nc_map=urlgen_bucketless&amp;ccb=1-7&amp;_nc_sid=cc71e4&amp;_nc_eui2=AeF1Z0s965Zx-jB5lVJ7pTnt8M3vS_flcgbwze9L9-VyBl9AZA3M5JWHYAB3V9JermpDUPDvEamkWCpJhecPeSbz&amp;_nc_ohc=Oz5wqtKkdc4Q7kNvwGEl7VA&amp;_nc_oc=Adp-OObXG0oewfWMytY3vsK9sKGKkjxNjdR0cvj06QbTdj0MKPDPqgsJj_V6auliPTk&amp;_nc_zt=23&amp;_nc_ht=scontent.fjsr11-1.fna&amp;_nc_gid=bEP8WgS8gPLLKjILY_21ow&amp;_nc_ss=7b2a8&amp;oh=00_AQMqG_0OfCFEBtnajuW1SnpNd1vaz13Nn9gRH8-tbtGLmA&amp;oe=6AD477AD" alt="Admissions">
         <div class="slide-caption">
@@ -641,23 +735,28 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
     <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/497468479_4093534024249783_6339037596427117676_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x1542&ctp=s2048x1542&_nc_cat=108&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHFrA8al9wCh1_sxxj-44zhGYMZKRp7CIUZgxkpGnsIhQL0JQ57yogz5gv1wfRdQBaELytIaRJzn-bbjo9y1UXm&_nc_ohc=r80j3nBpgwYQ7kNvwG2ylEr&_nc_oc=Adq8BTuSuKykz2bjYFM6Y9jLKkSMYayVgE-s6kI7hLZjl2QOd_qtFlTv2BxCLtiGuIA&_nc_zt=23&_nc_ht=scontent.fjsr11-1.fna&_nc_gid=n5Pcer9wdoWNhY5AANidZw&_nc_ss=7b2a8&oh=00_AQNyTH7Iz5bCsdr8L_DrVzdqWyjexU2o3bZ3QKfs7TBLYg&oe=6AD47935" alt="About Al Azhar">
   </div>
   
-  <div class="exp-badge-floating reveal">
+  <div class="exp-badge-floating">
     <strong data-i18n="about_badge_num">5+</strong>
     <small data-i18n="about_badge_txt">Years of Excellence</small>
   </div>
 
-  <div class="about-text-wrapper reveal">
+  <div class="about-text-wrapper">
     <span class="eyebrow" data-i18n="about_eyebrow">About Us</span>
     <h2 data-i18n="about_title">A Sanctuary of Quranic Learning &amp; Modern Education</h2>
     <p data-i18n="about_p1">Al Azhar Madrasah unites traditional Islamic education — Hifz, Nazira, Fiqh and Akhlaq — with modern academic subjects, so our students flourish in both Deen and Dunya.</p>
     <ul class="check-list">
-      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li1">Certified Hifz &amp; Nazira department with individual care</span></li>
-      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li2">Modern classrooms with digital learning support</span></li>
-      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li3">Islamic environment devoted to character building</span></li>
-      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li4">Pre-Dakhil to 9th class (gradually up to Dakhil &amp; Alim)</span></li>
-      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li5">English, Arabic &amp; Bengali Tri-Language System</span></li>
-      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li6">Separate branches for boys and girls</span></li>
-      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li7">Own transport facility for students</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li1">All-in-One: complete learning inside the classroom — no private tutor, coaching or extra lessons needed</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li2">Exclusive Nursing Class for new and comparatively weaker students in English, Arabic &amp; Mathematics</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li3">Specially managed Hifz cum Academic programme — 80% Hifz and 20% core academics, with comfortable hostel &amp; healthy meals</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li4">Insha'Allah, complete Hifz alongside core academics by 4th / 5th / 6th grade</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li5">Full fluency in English &amp; Arabic by 8th grade</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li6">Ability to analyse Al-Quran &amp; Al-Hadith by 10th grade</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li7">Eligibility for renowned universities, engineering universities &amp; medical colleges at home and abroad after higher secondary</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li8">Debating &amp; Language Club (Arabic, English &amp; Bengali)</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li9">Rich library of subject-wise reference &amp; core books; Science &amp; Computer labs</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li10">24-hour CCTV security &amp; class monitoring; projectors and smart monitors in every classroom</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li11">Own transport service for students</span></li>
+      <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span><span data-i18n="about_li12">All forms of corporal punishment strictly prohibited</span></li>
     </ul>
   </div>
 </section>
@@ -665,54 +764,89 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
 <!-- Stats -->
 <section class="stats">
   <div class="stats-grid">
-    <div class="stat reveal"><div class="num" data-count="1200">0</div><div class="lbl" data-i18n="stat1">Students</div></div>
-    <div class="stat reveal d1"><div class="num" data-count="85">0</div><div class="lbl" data-i18n="stat2">Teachers &amp; Ustadhs</div></div>
-    <div class="stat reveal d2"><div class="num" data-count="250">0</div><div class="lbl" data-i18n="stat3">Huffaz Graduated</div></div>
-    <div class="stat reveal d3"><div class="num" data-count="5">0</div><div class="lbl" data-i18n="stat4">Years of Service</div></div>
+    <div class="stat"><div class="num" data-count="1200">0</div><div class="lbl" data-i18n="stat1">Students</div></div>
+    <div class="stat"><div class="num" data-count="85">0</div><div class="lbl" data-i18n="stat2">Teachers &amp; Ustadhs</div></div>
+    <div class="stat"><div class="num" data-count="250">0</div><div class="lbl" data-i18n="stat3">Huffaz Graduated</div></div>
+    <div class="stat"><div class="num" data-count="5">0</div><div class="lbl" data-i18n="stat4">Years of Service</div></div>
   </div>
 </section>
 
 <!-- Programs -->
 <section id="programs">
-  <div class="section-head reveal">
+  <div class="section-head">
     <span class="eyebrow" data-i18n="prog_eyebrow">Our Programs</span>
     <h2 data-i18n="prog_title">Paths of Learning</h2>
     <p data-i18n="prog_sub">From the first letters of the Quran to complete Hifz and higher Islamic studies — a path for every age.</p>
   </div>
 
   <div class="cards">
-    <div class="card reveal">
-      <h3 data-i18n="card1_t">Nazira &amp; Maktab</h3>
-      <p data-i18n="card1_p">Foundational Quran reading, daily duas, Islamic manners and elementary Arabic for young children.</p>
+    <div class="card">
+      <h3 data-i18n="card1_t">Maktab</h3>
+      <p data-i18n="card1_p">An introduction to basic Quran reading, daily duas and Islamic manners for young children.</p>
     </div>
-    <div class="card reveal d1">
-      <h3 data-i18n="card2_t">Hifzul Quran</h3>
-      <p data-i18n="card2_p">A complete memorization program with daily sabaq, sabqi and manzil under devoted ustadhs.</p>
+    <div class="card">
+      <h3 data-i18n="card2_t">Nurani</h3>
+      <p data-i18n="card2_p">Easy and accurate Quran recitation through the Nurani method in a short span of time.</p>
     </div>
-    <div class="card reveal d2">
-      <h3 data-i18n="card3_t">Kitab &amp; Academic Study</h3>
-      <p data-i18n="card3_p">Fiqh, Hadith, Tafsir and Arabic grammar alongside modern academics up to secondary level.</p>
+    <div class="card">
+      <h3 data-i18n="card3_t">Nazira</h3>
+      <p data-i18n="card3_p">Reading practice from the Quran with correct makhraj, tajwid and pronunciation.</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="card4_t">Hifz</h3>
+      <p data-i18n="card4_p">A complete Quran memorization programme with daily sabaq, sabqi and manzil.</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="card5_t">Shunani</h3>
+      <p data-i18n="card5_p">A special method of strengthening memorization through listening and repetition.</p>
+    </div>
+    <div class="card">
+      <h3 data-i18n="card6_t">Husne Sawt</h3>
+      <p data-i18n="card6_p">Training in melodious and beautiful Quranic recitation.</p>
     </div>
   </div>
 
-  <div class="sec-cta reveal">
-    <a href="programs.html" class="btn btn-outline">
-      <span data-i18n="prog_btn">View All Programs</span>
-      <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-    </a>
+  <!-- Worldly Objectives & Ultimate Goal -->
+  <div class="aims">
+    <div class="aim-card">
+      <h3 data-i18n="aim1_title">Worldly Objectives</h3>
+      <ul class="aim-list">
+        <li>
+          <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>
+          <span data-i18n="aim1_li1">By higher secondary (Grade 12), students of both general and Islamic streams will be enriched with globalization-ready practical and fundamental knowledge in every subject.</span>
+        </li>
+        <li>
+          <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>
+          <span data-i18n="aim1_li2">To prepare students to qualify for the University of Dhaka, medical colleges, BUET and seats of higher learning at home and abroad.</span>
+        </li>
+        <li>
+          <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>
+          <span data-i18n="aim1_li3">To build ideal, moral, patriotic and emerging entrepreneurs and enterprising individuals.</span>
+        </li>
+        <li>
+          <span class="ck"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>
+          <span data-i18n="aim1_li4">To serve the country and the nation by producing both general scholars and scholars of the Quran and Hadith.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="aim-card aim-goal">
+      <h3 data-i18n="aim2_title">Ultimate Goal</h3>
+      <p data-i18n="aim2_p">Success and well-being in this world and the Hereafter! Salvation from the punishment of Jahannam!</p>
+    </div>
   </div>
 </section>
 
 <!-- Voices -->
 <section class="voices" id="voices">
-  <div class="section-head reveal">
+  <div class="section-head">
     <span class="eyebrow" data-i18n="voices_eyebrow">Voices of Al Azhar</span>
     <h2 data-i18n="voices_title">Words from Our Family</h2>
     <p data-i18n="voices_sub">Guided by sincerity and devotion — hear from those who shape our students every day.</p>
   </div>
 
   <div class="voices-grid">
-    <div class="quote reveal">
+    <div class="quote">
       <p data-i18n="q1_text">"Our mission is not merely to teach the Quran, but to plant its light deep in every heart that walks through our doors."</p>
       <div class="author">
         <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&amp;q=80" alt="Principal">
@@ -723,7 +857,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
       </div>
     </div>
 
-    <div class="quote reveal d1">
+    <div class="quote">
       <p data-i18n="q2_text">"Every huffaz who completes the Quran is a lamp for their family — and we take pride in lighting as many lamps as we can."</p>
       <div class="author">
         <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&amp;q=80" alt="Hifz Head">
@@ -734,7 +868,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
       </div>
     </div>
 
-    <div class="quote reveal d2">
+    <div class="quote">
       <p data-i18n="q3_text">"Islamic values and modern knowledge are not rivals — together they raise a complete human being, ready for both worlds."</p>
       <div class="author">
         <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&amp;q=80" alt="Academic Head">
@@ -749,20 +883,20 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
 
 <!-- Notices -->
 <section class="notices-sec" id="notices">
-  <div class="section-head reveal">
+  <div class="section-head">
     <span class="eyebrow" data-i18n="notice_eyebrow">Notice Board</span>
     <h2 data-i18n="notice_title">Latest Updates</h2>
   </div>
 
   <div class="notice-grid">
-    <div class="notice reveal">
+    <div class="notice">
       <div class="date"><b>15</b><small>Oct</small></div>
       <div>
         <h4 data-i18n="n1_t">Admissions Open — 2027 Session</h4>
         <p data-i18n="n1_p">Applications are now open for Nazira, Hifz and Academic departments. Seats are limited.</p>
       </div>
     </div>
-    <div class="notice reveal d1">
+    <div class="notice">
       <div class="date"><b>22</b><small>Oct</small></div>
       <div>
         <h4 data-i18n="n2_t">Annual Quran Competition</h4>
@@ -771,7 +905,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
     </div>
   </div>
 
-  <div class="sec-cta reveal">
+  <div class="sec-cta">
     <a href="notices.html" class="btn btn-outline">
       <span data-i18n="notice_btn">View All Notices</span>
       <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
@@ -781,32 +915,24 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
 
 <!-- CTA -->
 <section>
-  <div class="cta reveal">
-    <svg class="ornament" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <pattern id="star" width="90" height="90" patternUnits="userSpaceOnUse">
-          <path d="M45 8 l7 22 23 1 -18 14 6 22 -18-13 -18 13 6-22 -18-14 23-1z" fill="none" stroke="#e4c97e" stroke-width="1"></path>
-        </pattern>
-      </defs>
-      <rect width="1200" height="400" fill="url(#star)"></rect>
-    </svg>
+  <div class="cta">
     <h2 data-i18n="cta_title">Enroll Your Child Today</h2>
     <p data-i18n="cta_p">Grant your child the gift of the Quran and a radiant future. Seats are limited — apply now for the upcoming session.</p>
     <a href="admission.html" class="btn btn-gold">
-      <span data-i18n="cta_btn">Apply for Admission</span>
+      <span data-i18n="cta_btn">View Admission Details</span>
     </a>
   </div>
 </section>
 
 <!-- Contact -->
 <section id="contact">
-  <div class="section-head reveal">
+  <div class="section-head">
     <span class="eyebrow" data-i18n="contact_eyebrow">Get in Touch</span>
     <h2 data-i18n="contact_title">Contact Us</h2>
   </div>
 
   <div class="contact-grid">
-    <div class="contact-info reveal">
+    <div class="contact-info">
       <h3 data-i18n="ci_title">We would be honored to hear from you</h3>
       <div class="contact-line">
         <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2.6"></circle></svg></div>
@@ -818,7 +944,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
       </div>
       <div class="contact-line">
         <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></div>
-        <span>info@alazhar.edu.bd</span>
+        <span>alazhar.rangpur@gmail.com</span>
       </div>
       <div class="contact-line">
         <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div>
@@ -826,7 +952,7 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
       </div>
     </div>
 
-    <form class="reveal d1" id="contactForm">
+    <form id="contactForm">
       <div class="field"><label data-i18n="f_name">Your Name</label><input type="text" required></div>
       <div class="field"><label data-i18n="f_phone">Phone Number</label><input type="tel" required></div>
       <div class="field"><label data-i18n="f_msg">Message</label><textarea rows="4" required></textarea></div>
@@ -837,16 +963,8 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
     </form>
   </div>
 
-  <!-- Google Maps Embed -->
-  <div class="map-container reveal">
+  <div class="map-container">
     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2910.8469428072844!2d89.23266327949366!3d25.75127906494056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e3339923912a73%3A0x71fb34440223408d!2z4KaG4KayIOCmhuCmnOCmueCmvuCmsCDgpq7gpr7gpqbgp43gprDgpr7gprjgpr4!5e1!3m2!1sen!2sbd!4v1791971078594!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-  </div>
-
-  <div class="sec-cta reveal">
-    <a href="contact.html" class="btn btn-outline">
-      <span data-i18n="contact_btn">Full Contact Details</span>
-      <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-    </a>
   </div>
 </section>
 
@@ -855,11 +973,11 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
   <div class="footer-content">
     <div class="foot-brand">
       <img src="https://scontent.fjsr11-1.fna.fbcdn.net/v/t39.30808-6/346055488_797738058166711_6914726485682693445_n.jpg?stp=dst-jpg_tt6&amp;cstp=mx515x515&amp;ctp=s515x515&amp;_nc_cat=102&amp;_nc_map=urlgen_bucketless&amp;ccb=1-7&amp;_nc_sid=6ee11a&amp;_nc_eui2=AeG59AbP-S0gRHAASuS6NkGR3BLPb3Y2JcvcEs9vdjYlywaDGbDpVw0ldJzjvZ-8mo5QSyPAYzGXs0haNfSrURXg&amp;_nc_ohc=syUNOzhlkGAQ7kNvwFxw19x&amp;_nc_oc=AdoOUZAWLJ_dAmfyl6s_gVEpICP2ZJt74heuKq2hcg79Q_1agCtn2-g-hgBBoylTF5w&amp;_nc_zt=23&amp;_nc_ht=scontent.fjsr11-1.fna&amp;_nc_gid=ns60QudKI-tic5M1le-llg&amp;_nc_ss=7b2a8&amp;oh=00_AQNhFM51RdZc_NcCiAZtj-ClYQwMaAF1GkP54WhLFapJiQ&amp;oe=6AD45C15" alt="Logo">
-      <span class="name">আল আজহার মাদরাসা</span>
+      <span class="name" data-i18n="brand_name">আল আজহার মাদরাসা</span>
     </div>
-    <p class="foot-desc">২০০১ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।</p>
+    <p class="foot-desc" data-i18n="foot_about">২০২২ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।</p>
     <div class="social-links">
-      <a href="mailto:info@alazhar.edu.bd" aria-label="Email">
+      <a href="mailto:alazhar.rangpur@gmail.com" aria-label="Email">
         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
       </a>
       <a href="https://facebook.com" target="_blank" aria-label="Facebook">
@@ -871,8 +989,8 @@ footer{background:#f9f9f9;color:var(--ink);padding:3.6rem 1.5rem 1.6rem;text-ali
     </div>
   </div>
   <div class="copy">
-    © 2026 আল আজহার মাদরাসা · All rights reserved<br>
-    Developed by <a href="https://hacker-ferdous.github.io/" target="_blank">Nafsin Ferdous</a>
+    <span data-i18n="copy_rights">© 2026 আল আজহার মাদরাসা · All rights reserved</span><br>
+    <span data-i18n="developed_by">Developed by</span> <a href="https://hacker-ferdous.github.io/" target="_blank">Nafsin Ferdous</a>
   </div>
 </footer>
 
@@ -916,22 +1034,37 @@ const I18N = {
     about_eyebrow:"About Us",
     about_title:"A Sanctuary of Quranic Learning & Modern Education",
     about_p1:"Al Azhar Madrasah unites traditional Islamic education — Hifz, Nazira, Fiqh and Akhlaq — with modern academic subjects, so our students flourish in both Deen and Dunya.",
-    about_li1:"Certified Hifz & Nazira department with individual care",
-    about_li2:"Modern classrooms with digital learning support",
-    about_li3:"Islamic environment devoted to character building",
-    about_li4:"Pre-Dakhil to 9th class (gradually up to Dakhil & Alim)",
-    about_li5:"English, Arabic & Bengali Tri-Language System",
-    about_li6:"Separate branches for boys and girls",
-    about_li7:"Own transport facility for students",
+    about_li1:"All-in-One: complete learning inside the classroom — no private tutor, coaching or extra lessons needed",
+    about_li2:"Exclusive Nursing Class for new and comparatively weaker students in English, Arabic & Mathematics",
+    about_li3:"Specially managed Hifz cum Academic programme — 80% Hifz and 20% core academics, with comfortable hostel & healthy meals",
+    about_li4:"Insha'Allah, complete Hifz alongside core academics by 4th / 5th / 6th grade",
+    about_li5:"Full fluency in English & Arabic by 8th grade",
+    about_li6:"Ability to analyse Al-Quran & Al-Hadith by 10th grade",
+    about_li7:"Eligibility for renowned universities, engineering universities & medical colleges at home and abroad after higher secondary",
+    about_li8:"Debating & Language Club (Arabic, English & Bengali)",
+    about_li9:"Rich library of subject-wise reference & core books; Science & Computer labs",
+    about_li10:"24-hour CCTV security & class monitoring; projectors and smart monitors in every classroom",
+    about_li11:"Own transport service for students",
+    about_li12:"All forms of corporal punishment strictly prohibited",
     about_btn:"See Details",
     about_badge_num:"5+", about_badge_txt:"Years of Excellence",
     stat1:"Students", stat2:"Teachers & Ustadhs", stat3:"Huffaz Graduated", stat4:"Years of Service",
     prog_eyebrow:"Our Programs", prog_title:"Paths of Learning",
     prog_sub:"From the first letters of the Quran to complete Hifz and higher Islamic studies — a path for every age.",
     prog_btn:"View All Programs",
-    card1_t:"Nazira & Maktab", card1_p:"Foundational Quran reading, daily duas, Islamic manners and elementary Arabic for young children.",
-    card2_t:"Hifzul Quran", card2_p:"A complete memorization program with daily sabaq, sabqi and manzil under devoted ustadhs.",
-    card3_t:"Kitab & Academic Study", card3_p:"Fiqh, Hadith, Tafsir and Arabic grammar alongside modern academics up to secondary level.",
+    card1_t:"Maktab", card1_p:"An introduction to basic Quran reading, daily duas and Islamic manners for young children.",
+    card2_t:"Nurani", card2_p:"Easy and accurate Quran recitation through the Nurani method in a short span of time.",
+    card3_t:"Nazira", card3_p:"Reading practice from the Quran with correct makhraj, tajwid and pronunciation.",
+    card4_t:"Hifz", card4_p:"A complete Quran memorization programme with daily sabaq, sabqi and manzil.",
+    card5_t:"Shunani", card5_p:"A special method of strengthening memorization through listening and repetition.",
+    card6_t:"Husne Sawt", card6_p:"Training in melodious and beautiful Quranic recitation.",
+    aim1_title:"Worldly Objectives",
+    aim1_li1:"By higher secondary (Grade 12), students of both general and Islamic streams will be enriched with globalization-ready practical and fundamental knowledge in every subject.",
+    aim1_li2:"To prepare students to qualify for the University of Dhaka, medical colleges, BUET and seats of higher learning at home and abroad.",
+    aim1_li3:"To build ideal, moral, patriotic and emerging entrepreneurs and enterprising individuals.",
+    aim1_li4:"To serve the country and the nation by producing both general scholars and scholars of the Quran and Hadith.",
+    aim2_title:"Ultimate Goal",
+    aim2_p:"Success and well-being in this world and the Hereafter! Salvation from the punishment of Jahannam!",
     voices_eyebrow:"Voices of Al Azhar",
     voices_title:"Words from Our Family",
     voices_sub:"Guided by sincerity and devotion — hear from those who shape our students every day.",
@@ -947,15 +1080,17 @@ const I18N = {
     n2_t:"Annual Quran Competition", n2_p:"All students are warmly invited to the annual Tilawat and Hifz competition.",
     cta_title:"Enroll Your Child Today",
     cta_p:"Grant your child the gift of the Quran and a radiant future. Seats are limited — apply now for the upcoming session.",
-    cta_btn:"Apply for Admission",
+    cta_btn:"View Admission Details",
     contact_eyebrow:"Get in Touch", contact_title:"Contact Us",
     contact_btn:"Full Contact Details",
     ci_title:"We would be honored to hear from you",
     ci_addr:"Sarkar Bari 2, Ideal Mor, Rangpur",
     ci_time:"Office: Sat–Thu, 8:00 AM – 2:00 PM",
     f_name:"Your Name", f_phone:"Phone Number", f_msg:"Message", f_btn:"Send Message",
-    foot_about:"A center of Quranic education and character development, serving the ummah with sincerity since 2001.",
+    foot_about:"A center of Quranic education and character development, serving the ummah with sincerity since 2022.",
     foot_links:"Quick Links", foot_contact:"Contact", foot_rights:"All rights reserved",
+    copy_rights:"© 2026 Al Azhar Madrasah · All rights reserved",
+    developed_by:"Developed by",
     ai_msg:"I'm still being prepared. Very soon I'll be able to answer your questions about admission, programs and timings.",
     ai_soon:"Coming Soon"
   },
@@ -973,22 +1108,37 @@ const I18N = {
     about_eyebrow:"আমাদের সম্পর্কে",
     about_title:"কুরআনী শিক্ষা ও আধুনিক শিক্ষার এক পবিত্র ঠিকানা",
     about_p1:"আল আজহার মাদরাসায় হিফজ, নাজেরা, ফিকহ ও আখলাকের পাশাপাশি আধুনিক শিক্ষার বিষয়গুলো পড়ানো হয়, যাতে ছাত্ররা দ্বীন ও দুনিয়া উভয় ক্ষেত্রেই সমৃদ্ধ হয়।",
-    about_li1:"প্রশিক্ষিত উস্তাদদের ব্যক্তিগত যত্নে হিফজ ও নাজেরা বিভাগ",
-    about_li2:"ডিজিটাল শিক্ষা সহায়তাসহ আধুনিক শ্রেণিকক্ষ",
-    about_li3:"চরিত্র গঠনে নিবেদিত ইসলামী পরিবেশ",
-    about_li4:"প্রাক-দাখিল থেকে ৯ম শ্রেণি (পর্যায়ক্রমে দাখিল ও আলিম পর্যন্ত)",
-    about_li5:"ইংরেজি, আরবি ও বাংলা ত্রিভাষিক শিক্ষা পদ্ধতি",
-    about_li6:"ছেলে ও মেয়েদের জন্য পৃথক শাখা",
-    about_li7:"শিক্ষার্থীদের জন্য নিজস্ব পরিবহন ব্যবস্থা",
+    about_li1:"ক্লাসেই পড়ালেখার সকল সুবিধা — প্রাইভেট, কোচিং বা বাড়তি পড়ার প্রয়োজন নেই (All in One)",
+    about_li2:"নতুন ও তুলনামূলক দুর্বল শিক্ষার্থীদের জন্য ইংরেজি, আরবি ও গণিতের নিবিড় পরিচর্যা ক্লাস (Exclusive Nursing Class)",
+    about_li3:"সম্পূর্ণ আলাদা ব্যবস্থাপনায় স্পেশালাইজড হিফয কাম একাডেমিক — ৮০% হিফয ও ২০% মৌলিক একাডেমিক, মনোরম আবাসন ও স্বাস্থ্যসম্মত খাবার",
+    about_li4:"ইনশা-আল্লাহ ৪র্থ/৫ম/৬ষ্ঠ শ্রেণির মধ্যে মৌলিক একাডেমিকের পাশাপাশি হিফয সম্পন্ন করার সুব্যবস্থা",
+    about_li5:"অষ্টম শ্রেণির মধ্যে পূর্ণরূপে ইংরেজি ও আরবি ভাষা শিখন",
+    about_li6:"দশম শ্রেণির মধ্যে আল-কুরআন ও আল-হাদীস বিশ্লেষণ করার সক্ষমতা",
+    about_li7:"উচ্চ মাধ্যমিকে দেশ-বিদেশের প্রসিদ্ধ বিশ্ববিদ্যালয়, প্রকৌশল বিশ্ববিদ্যালয় ও মেডিকেল কলেজে ভর্তির যোগ্যতা",
+    about_li8:"ডিবেটিং এন্ড ল্যাঙ্গুয়েজ ক্লাব (আরবি, ইংরেজি ও বাংলা)",
+    about_li9:"বিষয়ভিত্তিক রেফারেন্স ও মৌলিক বইয়ে সমৃদ্ধ লাইব্রেরি; বিজ্ঞান ও কম্পিউটার ল্যাব",
+    about_li10:"২৪ ঘণ্টা CCTV দ্বারা নিরাপত্তা ও পাঠদান পর্যবেক্ষণ; শ্রেণিকক্ষে প্রজেক্টর ও স্মার্ট মনিটর",
+    about_li11:"শিক্ষার্থীদের জন্য নিজস্ব পরিবহন ব্যবস্থা",
+    about_li12:"সর্বপ্রকার প্রহার সম্পূর্ণ নিষিদ্ধ",
     about_btn:"বিস্তারিত দেখুন",
     about_badge_num:"৫+", about_badge_txt:"বছরের অভিজ্ঞতা",
     stat1:"শিক্ষার্থী", stat2:"শিক্ষক ও উস্তাদ", stat3:"হাফেজে কুরআন", stat4:"বছরের সেবা",
     prog_eyebrow:"আমাদের বিভাগসমূহ", prog_title:"শিক্ষার পথসমূহ",
     prog_sub:"কুরআনের প্রথম হরফ থেকে সম্পূর্ণ হিফজ ও উচ্চতর ইসলামী শিক্ষা — প্রতিটি বয়সের জন্য একটি পথ।",
     prog_btn:"সব বিভাগ দেখুন",
-    card1_t:"নাজেরা ও মাকতাব", card1_p:"কোমলমতি শিশুদের জন্য কুরআন তিলাওয়াত, দৈনিক দোয়া, ইসলামী শিষ্টাচার ও প্রাথমিক আরবি শিক্ষা।",
-    card2_t:"হিফজুল কুরআন", card2_p:"নিবেদিত উস্তাদদের তত্ত্বাবধানে প্রতিদিনের সবক, সাবেকি ও মানজিলসহ সম্পূর্ণ হিফজ কর্মসূচি।",
-    card3_t:"কিতাব ও একাডেমিক বিভাগ", card3_p:"ফিকহ, হাদীস, তাফসীর ও আরবি ব্যাকরণের পাশাপাশি মাধ্যমিক পর্যায় পর্যন্ত আধুনিক শিক্ষা।",
+    card1_t:"মক্তব", card1_p:"কোমলমতি শিশুদের জন্য প্রাথমিক কুরআন শিক্ষা, দৈনিক দুআ ও ইসলামী আদবের সূচনা।",
+    card2_t:"নূরানী", card2_p:"নূরানী পদ্ধতিতে অল্প সময়ে সহজ ও শুদ্ধ কুরআন তিলাওয়াত শিক্ষা।",
+    card3_t:"নাজেরা", card3_p:"সঠিক মাখরাজ, তাজবিদ ও উচ্চারণে দেখে দেখে কুরআন তিলাওয়াতের অনুশীলন।",
+    card4_t:"হিফজ", card4_p:"প্রতিদিনের সবক, সাবেকি ও মানজিলসহ পূর্ণ কুরআন মুখস্থ করার কর্মসূচি।",
+    card5_t:"শুনানী", card5_p:"শ্রবণ ও পুনরাবৃত্তির মাধ্যমে হিফজ মজবুত করার বিশেষ পদ্ধতি।",
+    card6_t:"হুসনে সাউত", card6_p:"সুরেলা ও সুন্দর কণ্ঠে কুরআন তিলাওয়াতের প্রশিক্ষণ।",
+    aim1_title:"পার্থিব উদ্দেশ্য",
+    aim1_li1:"উচ্চ মাধ্যমিক (দ্বাদশ শ্রেণি) এর মধ্যে শিক্ষার্থীদেরকে (জেনারেল ও ইসলামি) প্রত্যেক বিষয়ে বিশ্বায়ন উপযোগী ব্যবহারিক ও মৌলিক জ্ঞানে পুষ্ট করা।",
+    aim1_li2:"শিক্ষার্থীদেরকে ঢাকা বিশ্ববিদ্যালয়, মেডিকেল কলেজ ও বুয়েটসহ দেশ-বিদেশের উচ্চ বিদ্যাপীঠসমূহে ভর্তির উপযুক্ত করে গড়ে তোলা।",
+    aim1_li3:"আদর্শ, নৈতিক, দেশপ্রেমী এবং উদীয়মান উদ্যোগী ও উদ্যোক্তা হিসেবে তৈরি করা।",
+    aim1_li4:"একই সাথে জেনারেল এবং কুরআন-হাদীসের স্কলার তৈরি করার মাধ্যমে দেশ ও জাতির সেবা করা।",
+    aim2_title:"চূড়ান্ত লক্ষ্য",
+    aim2_p:"ইহকাল ও পরকালের কল্যাণ এবং সফলতা অর্জন! জাহান্নামের শাস্তি থেকে পরিত্রাণ লাভ!",
     voices_eyebrow:"আল আজহারের কণ্ঠস্বর",
     voices_title:"আমাদের পরিবারের কথা",
     voices_sub:"আন্তরিকতা ও নিষ্ঠায় গড়া — যাঁরা প্রতিদিন আমাদের শিক্ষার্থীদের গড়ে তোলেন, তাঁদের কথা শুনুন।",
@@ -1004,15 +1154,17 @@ const I18N = {
     n2_t:"বার্ষিক কুরআন প্রতিযোগিতা", n2_p:"সকল ছাত্রদের বার্ষিক তিলাওয়াত ও হিফজ প্রতিযোগিতায় আন্তরিক আমন্ত্রণ।",
     cta_title:"আজই আপনার সন্তানের ভর্তি করান",
     cta_p:"আপনার সন্তানকে কুরআনের উপহার ও উজ্জ্বল ভবিষ্যৎ উপহার দিন। আসন সীমিত — এখনই আবেদন করুন।",
-    cta_btn:"ভর্তির জন্য আবেদন করুন",
+    cta_btn:"ভর্তি সংক্রান্ত তথ্য দেখুন",
     contact_eyebrow:"যোগাযোগ করুন", contact_title:"আমাদের সাথে যোগাযোগ",
     contact_btn:"বিস্তারিত যোগাযোগ",
     ci_title:"আপনার মতামত জানাতে আমরা সম্মানিত",
     ci_addr:"সরকার বাড়ি ২, আইডিয়াল মোড়, রংপুর",
     ci_time:"অফিস: শনি–বৃহঃ, সকাল ৮টা – দুপুর ২টা",
     f_name:"আপনার নাম", f_phone:"মোবাইল নম্বর", f_msg:"বার্তা", f_btn:"বার্তা পাঠান",
-    foot_about:"২০০১ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।",
+    foot_about:"২০২২ সাল থেকে আন্তরিকতার সাথে উম্মাহর সেবায় নিয়োজিত একটি কুরআনী শিক্ষা ও চরিত্র-বিকাশ কেন্দ্র।",
     foot_links:"দ্রুত লিংক", foot_contact:"যোগাযোগ", foot_rights:"সর্বস্বত্ব সংরক্ষিত",
+    copy_rights:"© ২০২৬ আল আজহার মাদরাসা · সর্বস্বত্ব সংরক্ষিত",
+    developed_by:"ডেভেলপ করেছে",
     ai_msg:"আমি এখনো তৈরি হচ্ছে। খুব শীঘ্রই ভর্তি, বিভাগ ও সময়সূচি সম্পর্কে আপনার প্রশ্নের উত্তর দিতে পারব ইনশাআল্লাহ।",
     ai_soon:"শীঘ্রই আসছে"
   }
@@ -1080,8 +1232,6 @@ document.getElementById('nextBtn').addEventListener('click', ()=>{ next(); resta
 document.getElementById('prevBtn').addEventListener('click', ()=>{ prev(); restart(); });
 
 const gallery = document.getElementById('gallery');
-gallery.addEventListener('mouseenter', ()=> cancelAnimationFrame(rafId));
-gallery.addEventListener('mouseleave', restart);
 
 let touchX = null;
 gallery.addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; cancelAnimationFrame(rafId); }, {passive:true});
@@ -1099,13 +1249,15 @@ restart();
 const header = document.getElementById('header');
 window.addEventListener('scroll', ()=> header.classList.toggle('scrolled', window.scrollY > 10));
 
+/* Counter animation on scroll */
 const io = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
-      e.target.classList.add('visible');
       e.target.querySelectorAll('[data-count]').forEach(el=>{
+        if(el.dataset.done) return;
+        el.dataset.done = "1";
         const target = +el.dataset.count;
-        const t0 = performance.now(), dur = 1700;
+        const t0 = performance.now(), dur = 1500;
         function step(t){
           const p = Math.min((t-t0)/dur, 1);
           el.textContent = Math.round(target * (1 - Math.pow(1-p,3))).toLocaleString() + (p===1 ? '+' : '');
@@ -1117,13 +1269,58 @@ const io = new IntersectionObserver(entries=>{
     }
   });
 },{threshold:.15});
-document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+document.querySelectorAll('.stat').forEach(el=> io.observe(el));
 
-/* Mobile menu & form */
+/* Mobile menu & backdrop */
 const navLinks = document.getElementById('navLinks');
-document.getElementById('hamburger').addEventListener('click', ()=> navLinks.classList.toggle('open'));
-navLinks.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> navLinks.classList.remove('open')));
+const navBackdrop = document.getElementById('navBackdrop');
+const hamburger = document.getElementById('hamburger');
+const mobileNavQuery = window.matchMedia('(max-width: 980px)');
 
+function openMenu(){
+  if(!mobileNavQuery.matches) return;
+  navLinks.classList.add('open');
+  navBackdrop.classList.add('active');
+  hamburger.setAttribute('aria-expanded', 'true');
+  document.body.classList.add('nav-menu-open');
+}
+function closeMenu(){
+  navLinks.classList.remove('open');
+  navBackdrop.classList.remove('active');
+  hamburger.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('nav-menu-open');
+}
+
+closeMenu();
+
+hamburger.addEventListener('click', (event)=>{
+  event.preventDefault();
+  if(navLinks.classList.contains('open')) closeMenu();
+  else openMenu();
+});
+navBackdrop.addEventListener('click', closeMenu);
+navLinks.querySelectorAll('a').forEach(a=> a.addEventListener('click', closeMenu));
+document.addEventListener('keydown', event=>{
+  if(event.key === 'Escape') closeMenu();
+});
+
+window.addEventListener('resize', closeMenu, {passive:true});
+if(typeof mobileNavQuery.addEventListener === 'function'){
+  mobileNavQuery.addEventListener('change', closeMenu);
+}else if(typeof mobileNavQuery.addListener === 'function'){
+  mobileNavQuery.addListener(closeMenu);
+}
+
+if(window.visualViewport){
+  let previousViewportScale = window.visualViewport.scale;
+  window.visualViewport.addEventListener('resize', ()=>{
+    const currentScale = window.visualViewport.scale;
+    if(Math.abs(currentScale - previousViewportScale) > 0.01) closeMenu();
+    previousViewportScale = currentScale;
+  }, {passive:true});
+}
+
+/* Contact form */
 document.getElementById('contactForm').addEventListener('submit', e=>{
   e.preventDefault();
   const btn = e.target.querySelector('button');
